@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Posts | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="Posts - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Posts">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/posts/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml+xml" href="https://leer.moe/posts/index.xml" title="LeeReindeer's blog" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/10/fuck_qiniu/" title="【博客事记】停用七牛云图床，更换图片链接">【博客事记】停用七牛云图床，更换图片链接</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年10月28日
+        </date>
+        
+        <div class="post-content">
+             邮箱里发来一份邮件：测试域名回收通知&ndash;七牛云服务，一直没在意。今天发现之前的博客里的图片全部失效了，当然这也无可厚非，毕竟免费的服务，说没就没了呗。于是我想下载回七牛云上的图片，放到GitHub Page 里就行了，其实根本不需要什么第三方图床嘛。
+ 但是恶心的时，竟然连下载也不行。为了恢复之前的图片，新建一个空间，就有有了一个测试域名，但是只有30天有效期，所以就等于没什么用处了。
+qshell 使用官方提供的工具：qshell，可以紧急恢复一下。
+列出 leebolgpic 空间中的图片到 move.conf：
+./qshell listbucket leebolgpic move.conf 将 leebolgpic 空间的图片移动到 fuckq：
+./qshell batchmove -force -overwrite leebolgpic fuckq move.conf 有趣的是，我们刚刚下载的move.conf文件，并不能直接用户移动，里面有很多垃圾信息，刚好昨天看了一下vim的宏录制功能可以派上用场：
+根据 qdown.conf 的配置下载文件：
+./qshell qdownload 10 qdown.conf 1 {&#34;dest_dir&#34; : &#34;/home/leer/Downloads/q&#34;, &#34;cdn_domain&#34;: &#34;phac5ew5s.bkt.clouddn.com&#34;, &#34;bucket&#34; : &#34;fuckq&#34;, &#34;suffixes&#34; : &#34;.png, .jpg, .jpeg, .gif, .ico&#34; } 接下来就是手动复制粘贴，一个一个替换链接了/(ㄒoㄒ)/~~ 
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/10/fuck_qiniu/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/10/hack_deepin/" title="【瞎折腾】Hack Deepin Desktop Environment">【瞎折腾】Hack Deepin Desktop Environment</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年10月26日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4'>实验室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <h2 id="我想要什么">我想要什么？</h2>
+<p>初来乍到 Deepin，界面不可谓不美观。试用不久就发现一个不爽的地方，键盘快捷方式太少了，特别是没有控制窗口停靠贴标的快捷方式，根本就没有这个选项。</p>
+<p>在官方论坛里搜索一番，<code>deepin-wm</code>的 commit message 中有一条 <code>:feat: support interactive tiling</code>，这个新功能在<a href="https://bbs.deepin.org/forum.php?mod=viewthread&amp;tid=155171">官方论坛</a>中也有介绍：</p>
+<blockquote>
+<p>1、当一个窗口拖到边界分屏的时候；
+2、剩下的应用窗口会全部平铺展示；
+3、这时候点击剩下的应用窗口，会自动放置在另一半屏幕，方便左右对比；</p>
+</blockquote>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/10/hack_deepin/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/10/semaphore/" title="Concurrent with Semaphore">Concurrent with Semaphore</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年10月18日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <h2 id="semaphore">Semaphore</h2>
+<p>Dijkstra 大佬提出了一种解决不同线程之前同步和互斥问题的方法。这种方法就是 PV 操作，它基于 Semaphore（信号量）。</p>
+<p>可以把信号量简单看成一个非负整数，只能使用两种操作来改变它的值，这两种操作就是 P 和 V，用伪代码描述如下（与教材《操作系统教程》上不同，这里的<a href="https://stackoverflow.com/questions/20656295/what-is-general-semaphores-range">信号量不能为负值</a>）。PV 操作的伪代码实现如下：</p>
+<ul>
+<li>
+<p>P(s)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">P(s) {
+    <span style="color:#66d9ef">if</span> (p <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) {
+     s<span style="color:#f92672">--</span>;
+    } <span style="color:#66d9ef">else</span> {
+     append this <span style="color:#66d9ef">thread</span> to list;
+     sleep();
+    }
+}
+</code></pre></div></li>
+<li>
+<p>V(s)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">V(s) {
+    s<span style="color:#f92672">++</span>;
+    <span style="color:#66d9ef">if</span> (list is no empty) {
+        list.pop().wakeup();
+    }
+}
+</code></pre></div></li>
+</ul>
+<p>P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。</p>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/10/semaphore/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/09/6.828_hw2_shell/" title="6.828 Homework 2:Shell">6.828 Homework 2:Shell</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年9月29日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <p>这次的作业是实现一个简单的 shell。通过阅读 <a href="https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf">xv6 book</a> 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。</p>
+<p>题目提供的<code>sh.c</code>已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成<code>runcmd</code>函数中缺少的代码即可。</p>
+<h2 id="流程">流程</h2>
+<p>先从 <code>main</code> 函数看起：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>) {
+  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">char</span> buf[<span style="color:#ae81ff">100</span>];
+  <span style="color:#66d9ef">int</span> fd, r;
+
+  <span style="color:#75715e">// Read and run input commands.
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (getcmd(buf, <span style="color:#66d9ef">sizeof</span>(buf)) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+    <span style="color:#66d9ef">if</span> (buf[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;c&#39;</span> <span style="color:#f92672">&amp;&amp;</span> buf[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;d&#39;</span> <span style="color:#f92672">&amp;&amp;</span> buf[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39; &#39;</span>) {
+      <span style="color:#75715e">// Clumsy but will have to do for now.
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">// Chdir has no effect on the parent if run in the child.
+</span><span style="color:#75715e"></span>      buf[strlen(buf) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">// chop \n
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> (chdir(buf <span style="color:#f92672">+</span> <span style="color:#ae81ff">3</span>) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>)
+        fprintf(stderr, <span style="color:#e6db74">&#34;cannot cd %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, buf <span style="color:#f92672">+</span> <span style="color:#ae81ff">3</span>);
+      <span style="color:#66d9ef">continue</span>;
+    }
+    <span style="color:#66d9ef">if</span> (fork1() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+      runcmd(parsecmd(buf));
+    wait(<span style="color:#f92672">&amp;</span>r);
+  }
+  exit(<span style="color:#ae81ff">0</span>);
+}
+</code></pre></div><p><code>main</code> 函数循环调用 <code>getcmd</code>从 console 读取命令，对 <code>cd </code>命令做了特别处理。之后<code>fork</code>创建子进程，调用<code>parsecmd</code>解析命令，再调用<code>runcmd</code>执行得到的命令。最后调用<code>wait</code>等待子进程结束。<code>main</code> 的基本流程就这样。</p>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/09/6.828_hw2_shell/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/08/javafx_main_kotlin/" title="JavaFX与Kotlin的Main函数">JavaFX与Kotlin的Main函数</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年8月2日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <p>晚上想做个小应用，不想用 丑陋的<code>swing</code>（确信）。于是试了试<code>JavaFX</code>。MVC 模式，XML 和 <code>Scene Builder</code>  设计 UI，设计出的 UI 颜值还高。这样一看还是比较熟悉的嘛，好像和 Android 的套路差不多。</p>
+<p>当然还是要用<code>Kotlin</code>。不过在写<code>Main</code>函数的时候就遇到问题了，简直气炸（</p>
+<h2 id="三次尝试">三次尝试</h2>
+<h3 id="一">一</h3>
+<p>首先，在 Java 里的代码应该是这样的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Main</span> <span style="color:#66d9ef">extends</span> Application <span style="color:#f92672">{</span>
+    <span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        launch<span style="color:#f92672">(</span>args<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>没有任何问题。</p>
+<p>那么在 Kotlin 中，我首先想到的是 <code>Top level</code> 的 Main 函数：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) = Application.launch(*args)
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Main</span> : Application() {
+	<span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>}
+</code></pre></div>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/08/javafx_main_kotlin/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/07/gallery_1/" title="Foggy">Foggy</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月26日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/07/gallery_1/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/07/how_to_insert_code_wps/" title="在WPS中优雅地插入代码">在WPS中优雅地插入代码</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月19日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4'>实验室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            最近课程设计做的有点多，想想从6月底开始到现在已经肝了3篇课程设计了。虽然也买了正版的 Office，但是日常使用还是 Ubuntu，所以就一直用的 WPS。这三次的课程设计也都是功归 WPS(笑)，Ubuntu 里的 WPS 还是很良心的了。
+虽然一直有用TeX排版的梦想，但是学校貌似规定要用Word格式吧，毕业论文也是。既然如此只能去适应了。这里介绍一下这个使用 WPS 的淫技：可以让插入的代码好看些，简直屡试不爽。
+其实很简单：
+ 只需要先插入1×1的表格 把带有高亮的代码粘贴到里面  最终效果如图：
+是不是看起来和markdown里的代码片段类似。
+如果需要添加行号呢，其实可以用 WPS 自带的编号系统，但是我们平时的编号都是后面带有小点点的：1. ，行号就没这种必要了。WPS 也支持自定义编号：
+  右击选中的代码，点击项目符号和编号。
+  选择一个系统的编号，点击自定义。
+  将编号格式中的小点删除。
+  最终就是这样的：
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/07/how_to_insert_code_wps/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/06/gitemoji/" title="Emoji in git commit">Emoji in git commit</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年6月21日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4'>实验室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            Text? Emoji? 今年早些时候，在 GitHub 上对某个开源项目贡献了一点代码。原作者（是小米的员工了）还帮着我 review code。过去几个月了还是记得很清楚。GitHub 是最大的同性交友社区，还是名副其实的（笑
+在看 commits history 的时候，发现原作者的 commit message 和我不太一样。前面加了个方括号表示这个 commit 的类别。于是我也学着这样写了，一直到今天我也还是这样写的。就像这样：
+git commit -m &#34;[fix] Fix stack overflow&#34; 直到后来某一天，发现了 gitmoji 这个神奇东西，我试了也不喜欢，虽然省下了手打 emoji 的时间，但是类别太多了，emoji 也不能自定义。于是就有了下表:full_moon_with_face:，规定了一些自己的类别和 emoji，用在自己的项目里。
+Emoji :ok_hand:    text emoji desp     chore :wrench: :wrench: 零碎（即不是新增功能，也不是修改 bug 的代码变动）   doc :memo: :memo: 文档（documentation）   feat :sparkles: :sparkles: 新功能（feature   fix :bug: :bug: 修复 bug   init :tada: :tada: initial commit   partial passed(OJ) :new_moon_with_face: :new_moon_with_face: Partial passed   passed(OJ) :tada: AC   refactor :recycle: :recycle: 重构   remove :fire: :fire: 删除文件   style :art: :art: 格式（不影响代码运行的变动）   test :white_check_mark: :white_check_mark: 增加测试   typo :pencil2: :pencil2: 拼写错误   update :ok_hand: :ok_heand: 更新/添加文件，当以上都不适合时使用。    举例  类别和 commit message 之间用一个空格分开
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/06/gitemoji/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/05/fuck-off/" title="「只差一个程序员」">「只差一个程序员」</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月27日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5'>碎碎念</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            跟人聊天，该人懂一点中文，外派几年管理江苏的一家企业，聊着聊着忽然说：“我发现在中国的日常生活里，人们喜欢彼此制造困难让大家日子难过（Die Leute mögen sich gegenseitig das Leben schwer machen.)而这么做通常都没什么理由或好处——这是我特别不能理解的一点。” - 罗开Kai
+ 事情还得从今年（2018）的 4 月 10 号开始，大概就是同学觉得我会 “做网站”，就把我的联系方式给 F 了。F 开始的时候倒是很客气的，现在看来都是假惺惺。
+最开始，F 这样问我：“你好，同学，我们这边需要一个会数据库或者网页制作的同学，希望加入我们的公司，这个团队也可以做到毕业以后。我们现在主要做的是人工穿戴智能，你在这边，主要做的就是制作相应的网页或者建立数据库，这样的。酬劳一类的，我们可以见面聊一下”。我就以为他是需要一个管理数据库的 DBA，就说我会数据库，网站只会一点。
+4 月 10 号晚上，见面的时候，我话比较少，但是 F 给我的感觉还是不错的，当时很热情。期间不时给我画大饼，说他这个项目怎么怎么好，待遇怎么怎么好。我问：“已经做出产品来了吗？”F 开始吱吱唔唔，开始转移话题，用一句草草带过：“已经在做了。”我想还是这样啊，没有一个靠谱的。然后 F 开始介绍他的公司，说要给我股份。我没有给出明确的答复，因为让我感觉不靠谱，而且如果拿了股份有一种被束缚的感觉。
+下一次见面的时候，他拿来了大概是分股份的合同，我没签，我说：“我可以拿工资帮你干活，不要股份”。F 说好。过了几天，他又拿着一份劳动合同找我签字。至于酬劳一字未提，当然这个时候我还是相信 F 的，我也知道刚开始创业是有困难。而且他也没有那种老板的架子，比较亲切，至少在这个时候。（虽然我很反感这样的，明明不太熟还那么亲切，但也没有到反胃的程度吧。
+我开始了解到 F 所说的 “已经在做了”，其实并无此事。他们什么都没有，要从零开始，但是「只差一个程序员」。
+到了 4 月 22 号。让我到他的办公室来，我问他：办公室在哪？他说：“在寝室，辅导员的办公室”。我一想为什么骗我？为什么和一开始说的不一样。如果情况是这样，可以告诉我真实的情况，为什么要骗我？这时候就开始不信任了吧。F 开始给我分配一些任务。一开始是是说要做桌面端的一个项目，然后我发现就我一个程序员。。大概就是「只差一个程序员」系列了吧。我想了一下桌面端的我知道 Java swing 和 Qt，接下来的一天我就开始了解这方面的。但是 F 下一天给我看了一下其他人做的成品，我当时有点生气，我说：“这不是网站吗？” F：“对啊，就是网站，就是做一个网站”。无语。。。我的一天就这样浪费了。
+我估计这个网站也是比较简单，所以还是答应了。如果数据接口都有的话，但是事实不是如此。我问 F 有没有这个项目的文档，F 说：“没有，要不我帮你写一份吧。“所以说到底还是一个 Idea？为什么一开始要和我扯那些犊子。这更让我觉得这是一个「只差一个程序员」的项目。这时候我已經对这个公司不报希望了，想着做好这个项目，拿了这个项目的钱就走人。
+F 的那个”办公室“我只去过一次，就在也不去了。他说那是他们团队工作的地方。最让我觉得不可思议的地方是，F 竟然在工作的时候抽烟，虽然他问了我抽不抽，我说不抽，他就出去抽了。还是无法相信竟然在办公的时候抽烟，这里不是说不能抽烟，你抽不抽烟和我没关系，但是至少工作的时候还是不要抽吧？？*这时候我对 F 个人也不报希望了，甚至开始讨厌。*我似乎同时想到了这个项目的下场。
+接下来的发展更加戏剧性，F 开始给我一系列的 Excle 表格，我也认了，因为这事我自己也干过，然后就转化一下格式，简化一些数据就导入数据库了。这里面的工作量，唉，我还不如去搬砖。最后，经过漫长的 ”wtf wtf wtf&hellip;“ 数据是有了（一部分）。接下来 F 开始疯狂提要求，我说没有数据我没有办法的。最后他说去和数据提供方沟通沟通。
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/05/fuck-off/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/05/lg/" title="LG">LG</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月27日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5'>碎碎念</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+             画比文字更抒情
+ 
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/05/lg/">阅读全文</a></p>
+    </article>
+    
+    
+    
+
+
+
+<ol class="page-navigator">
+    
+    <li class="prev">
+        <a href="https://leer.moe/posts/page/4/">上一页</a>
+    </li>
+    
+
+    
+    <li >
+        <a href="https://leer.moe/posts/">1</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/posts/page/2/">2</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/posts/page/3/">3</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/posts/page/4/">4</a>
+    </li>
+    
+    <li  class="current">
+        <a href="https://leer.moe/posts/page/5/">5</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/posts/page/6/">6</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/posts/page/7/">7</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/posts/page/8/">8</a>
+    </li>
+    
+
+    
+    <li class="next">
+        <a href="https://leer.moe/posts/page/6/">下一页</a>
+    </li>
+    
+</ol>
+
+
+
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/crime_and_punishment/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/final-project-codeflow/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/minesweeper/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/install_manjaro/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/ros/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/java-concurrent-aqs/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

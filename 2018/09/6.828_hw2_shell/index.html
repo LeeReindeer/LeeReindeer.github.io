@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>6.828 Homework 2:Shell | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="6.828 Homework 2:Shell - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-09-29T16:31:21&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-09-29T16:31:21&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="6.828 Homework 2:Shell">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2018/09/6.828_hw2_shell/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#流程">流程</a></li>
+    <li><a href="#system-interface">System interface</a></li>
+    <li><a href="#运行基本的命令">运行基本的命令</a>
+      <ul>
+        <li><a href="#改进">改进</a></li>
+      </ul>
+    </li>
+    <li><a href="#io-redirection">I/O Redirection</a></li>
+    <li><a href="#pipe">Pipe</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">6.828 Homework 2:Shell</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年9月29日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <p>这次的作业是实现一个简单的 shell。通过阅读 <a href="https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf">xv6 book</a> 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。</p>
+<p>题目提供的<code>sh.c</code>已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成<code>runcmd</code>函数中缺少的代码即可。</p>
+<h2 id="流程">流程</h2>
+<p>先从 <code>main</code> 函数看起：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>) {
+  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">char</span> buf[<span style="color:#ae81ff">100</span>];
+  <span style="color:#66d9ef">int</span> fd, r;
+
+  <span style="color:#75715e">// Read and run input commands.
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (getcmd(buf, <span style="color:#66d9ef">sizeof</span>(buf)) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+    <span style="color:#66d9ef">if</span> (buf[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;c&#39;</span> <span style="color:#f92672">&amp;&amp;</span> buf[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;d&#39;</span> <span style="color:#f92672">&amp;&amp;</span> buf[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39; &#39;</span>) {
+      <span style="color:#75715e">// Clumsy but will have to do for now.
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">// Chdir has no effect on the parent if run in the child.
+</span><span style="color:#75715e"></span>      buf[strlen(buf) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">// chop \n
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> (chdir(buf <span style="color:#f92672">+</span> <span style="color:#ae81ff">3</span>) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>)
+        fprintf(stderr, <span style="color:#e6db74">&#34;cannot cd %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, buf <span style="color:#f92672">+</span> <span style="color:#ae81ff">3</span>);
+      <span style="color:#66d9ef">continue</span>;
+    }
+    <span style="color:#66d9ef">if</span> (fork1() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+      runcmd(parsecmd(buf));
+    wait(<span style="color:#f92672">&amp;</span>r);
+  }
+  exit(<span style="color:#ae81ff">0</span>);
+}
+</code></pre></div><p><code>main</code> 函数循环调用 <code>getcmd</code>从 console 读取命令，对 <code>cd </code>命令做了特别处理。之后<code>fork</code>创建子进程，调用<code>parsecmd</code>解析命令，再调用<code>runcmd</code>执行得到的命令。最后调用<code>wait</code>等待子进程结束。<code>main</code> 的基本流程就这样。</p>
+<p><code>parsecmd</code>递归调用一系列的解析函数，先解析优先级高的（&lt;，&gt;和|）。cmd 分为三类：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">struct</span> execcmd {
+  <span style="color:#66d9ef">int</span> type;            <span style="color:#75715e">// &#39; &#39;
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>argv[MAXARGS]; <span style="color:#75715e">// arguments to the command to be exec-ed
+</span><span style="color:#75715e"></span>};
+
+<span style="color:#66d9ef">struct</span> redircmd {
+  <span style="color:#66d9ef">int</span> type;        <span style="color:#75715e">// &lt; or &gt;
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>cmd; <span style="color:#75715e">// the command to be run (e.g., an execcmd)
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>file;      <span style="color:#75715e">// the input/output file
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> flags;       <span style="color:#75715e">// flags for open() indicating read or write
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> fd;          <span style="color:#75715e">// the file descriptor number to use for the file
+</span><span style="color:#75715e"></span>};
+
+<span style="color:#66d9ef">struct</span> pipecmd {
+  <span style="color:#66d9ef">int</span> type;          <span style="color:#75715e">// |
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>left;  <span style="color:#75715e">// left side of pipe
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>right; <span style="color:#75715e">// right side of pipe
+</span><span style="color:#75715e"></span>};
+</code></pre></div><p><code>runcmd</code>根据 cmd 的类型进行分支处理，需要去完成的核心功能也在这个函数中。</p>
+<h2 id="system-interface">System interface</h2>
+<p>平时对shell的命令执行习以为常，却不曾想背后的实现。</p>
+<p>在了解shell的工作原理之前，需要对几个<code>system call</code>有所了解：fork，exec。</p>
+<blockquote>
+<p>Fork: creates a new process(child process), with exactly the same memory contents as the parent.</p>
+<p>Exec: replaces the calling process&rsquo;s memory but preserves its file table.</p>
+</blockquote>
+<p>还有<code>file descriptor</code> ，如果你写过 socket 的代码，应该对这个词不陌生。</p>
+<blockquote>
+<p>File descriptor: a small integer representing a kernel-managed object that a process may read from or write to.</p>
+</blockquote>
+<p>可以理解为<code>File descriptor</code>是对输入输出的抽象，调用的进程无需知道是从终端，文件还是 pipe 输入或输出的。</p>
+<h2 id="运行基本的命令">运行基本的命令</h2>
+<p>关键的一步是在这里调用<code>execv</code>执行命令，所谓的“执行命令”就是运行命令所指向的可执行文件，这个进程的内存会被改变，但是它的<code>file table</code>不会变。</p>
+<p>但是我们不能在主进程直接运行命令，需要<code>fork</code>，可以发现在<code>main</code>函数中已经帮我们做了。所以最简单觉得实现就是这样：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">execv(ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>], ecmd<span style="color:#f92672">-&gt;</span>argv);
+</code></pre></div><p>第一个参数是命令所在的执行文件的绝对路径。比如调用<code>ls</code>时，需要输入<code>/bin/ls</code>。每次都这样输入很麻烦，而且不一定每个命令都在<code>/bin</code> 下面。那么我们平时使用的 shell 是怎么实现的呢？</p>
+<p><code>PATH</code></p>
+<h3 id="改进">改进</h3>
+<p>使用<code>getenv(&quot;PATH&quot;)</code>可以得到<code>PATH</code>，对其进行分割存在数组中，遍历数组，把路径和命令名进行组合，如果那个路径下存在那个命令，执行。</p>
+<p>有两个问题：如何分割？如何检测可以执行？</p>
+<p>两个问题的答案分蘖对应两个函数：<code>strtok_r</code>，<code>access</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">access</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>pathname, <span style="color:#66d9ef">int</span> mode);
+</code></pre></div><p>mode 可以是<code>F_OK</code>，<code>R_OK</code>，<code>W_OK</code>，<code>X_OK</code>，分别检查文件是否存在，当前进程是否有权限读，写。执行该文件。mode 也可以是它们的按位或。</p>
+<p>所以我们可以调用<code>acess(abs_path, F_OK | X_OK)</code> 来检查该路径下是否可以执行。</p>
+<p>最终改进的版本：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39; &#39;</span><span style="color:#f92672">:</span>
+    ecmd <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> execcmd <span style="color:#f92672">*</span>)cmd;
+    <span style="color:#66d9ef">if</span> (ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+      _exit(<span style="color:#ae81ff">0</span>);
+
+    <span style="color:#66d9ef">if</span> (access(ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>], F_OK) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) { <span style="color:#75715e">// check current dir
+</span><span style="color:#75715e"></span>      execv(ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>], ecmd<span style="color:#f92672">-&gt;</span>argv);
+    } <span style="color:#66d9ef">else</span> {
+      <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>path <span style="color:#f92672">=</span> ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>];
+      <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>str1, <span style="color:#f92672">*</span>token, <span style="color:#f92672">*</span>saveptr1;
+      <span style="color:#66d9ef">int</span> i;
+      <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>env_path <span style="color:#f92672">=</span> getenv(<span style="color:#e6db74">&#34;PATH&#34;</span>);
+      <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>env_paths[<span style="color:#ae81ff">100</span>];
+      <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, str1 <span style="color:#f92672">=</span> env_path;; i<span style="color:#f92672">++</span>, str1 <span style="color:#f92672">=</span> NULL) {
+        token <span style="color:#f92672">=</span> strtok_r(str1, <span style="color:#e6db74">&#34;:&#34;</span>, <span style="color:#f92672">&amp;</span>saveptr1);
+        <span style="color:#66d9ef">if</span> (token <span style="color:#f92672">==</span> NULL)
+          <span style="color:#66d9ef">break</span>;
+        env_paths[i] <span style="color:#f92672">=</span> token;
+      }
+      <span style="color:#66d9ef">int</span> find <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+      <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>abs_path; <span style="color:#75715e">// evn_path[i] + &#34;/&#34; + path;
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">int</span> j;
+      <span style="color:#66d9ef">for</span> (j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; j <span style="color:#f92672">&lt;</span> i <span style="color:#f92672">&amp;&amp;</span> find <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; j<span style="color:#f92672">++</span>) {
+        abs_path <span style="color:#f92672">=</span> (<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)malloc(strlen(env_paths[j]) <span style="color:#f92672">+</span> strlen(path) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>);
+        strcpy(abs_path, env_paths[j]);
+        strcat(abs_path, <span style="color:#e6db74">&#34;/&#34;</span>);
+        strcat(abs_path, path);
+        <span style="color:#66d9ef">if</span> (access(abs_path, F_OK <span style="color:#f92672">|</span> X_OK) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+          find <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+          execv(abs_path, ecmd<span style="color:#f92672">-&gt;</span>argv);
+        }
+        free(abs_path);
+      }
+      <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>find) 
+        fprintf(stderr, <span style="color:#e6db74">&#34;Command not find: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>]);
+    }
+    <span style="color:#66d9ef">break</span>;
+</code></pre></div><h2 id="io-redirection">I/O Redirection</h2>
+<p>在看懂 xv6 book 的第10页之后实现，输入输出重定向变得很简单：<code>fork</code>之后关闭之前的 fd，打开需要输出或输出的 fd。</p>
+<p>这里需要用到的 <code>System call</code>是 <code>open</code> 和 <code>close</code>。</p>
+<p>而且也不需要对 <code>&lt;</code> 和 <code>&gt;</code> 做分别的处理。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span><span style="color:#a6e22e">redircmd</span>(<span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>subcmd, <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>file, <span style="color:#66d9ef">int</span> type) {
+  <span style="color:#66d9ef">struct</span> redircmd <span style="color:#f92672">*</span>cmd;
+
+  cmd <span style="color:#f92672">=</span> malloc(<span style="color:#66d9ef">sizeof</span>(<span style="color:#f92672">*</span>cmd));
+  memset(cmd, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">sizeof</span>(<span style="color:#f92672">*</span>cmd));
+  cmd<span style="color:#f92672">-&gt;</span>type <span style="color:#f92672">=</span> type;
+  cmd<span style="color:#f92672">-&gt;</span>cmd <span style="color:#f92672">=</span> subcmd;
+  cmd<span style="color:#f92672">-&gt;</span>file <span style="color:#f92672">=</span> file;
+  cmd<span style="color:#f92672">-&gt;</span>flags <span style="color:#f92672">=</span> (type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;&lt;&#39;</span>) <span style="color:#f92672">?</span> O_RDONLY : O_WRONLY <span style="color:#f92672">|</span> O_CREAT <span style="color:#f92672">|</span> O_TRUNC;
+  cmd<span style="color:#f92672">-&gt;</span>fd <span style="color:#f92672">=</span> (type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;&lt;&#39;</span>) <span style="color:#f92672">?</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">// stdin : stdout
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>)cmd;
+}
+</code></pre></div><p>当输入的命令重定向了输入，如：<code>cat &lt; t.sh</code>。那么<code>rcmd-&gt;fd</code>为0，<code>rcmd-&gt;flags</code>为<code>O_RDONLY</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39;&gt;&#39;</span><span style="color:#f92672">:</span>
+  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39;&lt;&#39;</span><span style="color:#f92672">:</span>
+    rcmd <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> redircmd <span style="color:#f92672">*</span>)cmd;
+    errno <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    close(rcmd<span style="color:#f92672">-&gt;</span>fd);
+    rcmd<span style="color:#f92672">-&gt;</span>fd <span style="color:#f92672">=</span> open(rcmd<span style="color:#f92672">-&gt;</span>file, rcmd<span style="color:#f92672">-&gt;</span>flags, <span style="color:#ae81ff">0644</span>);<span style="color:#75715e">//注意第三个参数是权限
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (rcmd<span style="color:#f92672">-&gt;</span>fd <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
+      fprintf(stderr, <span style="color:#e6db74">&#34;Error: %s&#34;</span>, strerror(errno));
+    }
+    runcmd(rcmd<span style="color:#f92672">-&gt;</span>cmd);
+    <span style="color:#66d9ef">break</span>;
+</code></pre></div><p>调用<code>close(rcmd-&gt;fd)</code>会关闭标准输入（0），此时最小可用的fd变为0,。接下来调用<code>open</code>打开<code>t.sh</code>文件，它的fd为0。这样一来这个子进程的输入就重定向为文件了。</p>
+<h2 id="pipe">Pipe</h2>
+<p>接下来时管道的实现，也是需要调用 System call：<code>pipe</code> 和 <code>dup</code>，创建用于进程通信的管道。</p>
+<blockquote>
+<p>pipe()  creates  a pipe, a unidirectional data channel that can be used for interprocess</p>
+<p>​       communication.  The array pipefd is used to return two file  descriptors  refer‐
+​       ring  to  the  ends  of  the  pipe.   pipefd[0]  refers  to the read end of the pipe.
+​       pipefd[1] refers to the write end of the pipe.  Data written to the write end of  the
+​       pipe  is  buffered by the kernel until it is read from the read end of the pipe.</p>
+<p>The  dup() system call creates a copy of the file descriptor oldfd, using the lowest-
+​       numbered unused file descriptor for the new descriptor.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> p[<span style="color:#ae81ff">2</span>], r;
+  <span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39;|&#39;</span><span style="color:#f92672">:</span>
+    pcmd <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> pipecmd <span style="color:#f92672">*</span>)cmd;
+    pipe(p);
+    <span style="color:#66d9ef">if</span> (fork1() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+      close(<span style="color:#ae81ff">1</span>);
+      dup(p[<span style="color:#ae81ff">1</span>]); <span style="color:#75715e">// use 1, write left cmd&#39;s output to p[1];
+</span><span style="color:#75715e"></span>      close(p[<span style="color:#ae81ff">0</span>]);
+      close(p[<span style="color:#ae81ff">1</span>]);
+      runcmd(pcmd<span style="color:#f92672">-&gt;</span>left);
+    } <span style="color:#66d9ef">else</span>{
+      close(<span style="color:#ae81ff">0</span>);
+      dup(p[<span style="color:#ae81ff">0</span>]); <span style="color:#75715e">// read right cmd&#39;s input from p[0]
+</span><span style="color:#75715e"></span>      close(p[<span style="color:#ae81ff">0</span>]);
+      close(p[<span style="color:#ae81ff">1</span>]);
+      runcmd(pcmd<span style="color:#f92672">-&gt;</span>right);
+    }
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * The wait() system call suspends execution of the calling
+</span><span style="color:#75715e">     * process  until one  of its children terminates.  The call wait(&amp;wstatus)
+</span><span style="color:#75715e">     * is equivalent to: waitpid(-1, &amp;wstatus, 0);
+</span><span style="color:#75715e">     */</span>
+    wait(<span style="color:#f92672">&amp;</span>r);
+    <span style="color:#66d9ef">break</span>;
+</code></pre></div><p>首先在子进程中执行<code>|</code>的左端命令，写入p[1]。父进程从中p[0]读入，执行右端命令。最终左端命令的输出通过管道连接到了右端命令的输入。</p>
+<p><del>这种方法，经我测试有时会出现多打印了一个“6.828$”提示符。</del>
+在 mit 的讲义里发现了<code>what if sh didn't fork for pcmd-&gt;right? [try it] would user-visible behavior change? sleep 10 | echo hi</code>，这样做的结果就是打印了<code>hi</code>， shell 看上去却没有<code>sleep 10</code>。所以这种实现是错误的。</p>
+<p>所以，看 xv6 的实现：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39;|&#39;</span><span style="color:#f92672">:</span>
+    pcmd <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> pipecmd <span style="color:#f92672">*</span>)cmd;
+    pipe(p);
+    <span style="color:#66d9ef">if</span> (fork1() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+      close(<span style="color:#ae81ff">1</span>);
+      dup(p[<span style="color:#ae81ff">1</span>]); <span style="color:#75715e">// write left cmd&#39;s output to p[1];
+</span><span style="color:#75715e"></span>      close(p[<span style="color:#ae81ff">0</span>]);
+      close(p[<span style="color:#ae81ff">1</span>]);
+      runcmd(pcmd<span style="color:#f92672">-&gt;</span>left);
+    }
+    <span style="color:#66d9ef">if</span> (fork1() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+      close(<span style="color:#ae81ff">0</span>);
+      dup(p[<span style="color:#ae81ff">0</span>]); <span style="color:#75715e">// read right cmd&#39;s input from p[0]
+</span><span style="color:#75715e"></span>      close(p[<span style="color:#ae81ff">0</span>]);
+      close(p[<span style="color:#ae81ff">1</span>]);
+      runcmd(pcmd<span style="color:#f92672">-&gt;</span>right);
+    }
+    close(p[<span style="color:#ae81ff">0</span>]);
+    close(p[<span style="color:#ae81ff">1</span>]);
+    wait(<span style="color:#f92672">&amp;</span>r);
+    wait(<span style="color:#f92672">&amp;</span>r);
+    <span style="color:#66d9ef">break</span>;
+</code></pre></div><p><code>fork</code> 了两次，创建了两个子进程，使用pipe管理它们之前的通信，最后也<code>wait</code>两次，等待两个子进程都结束，当然这里可以递归的创建多个子进程。使用这种方便则不会出现多打一个提示符的情况。（为什么我也不知道 啊-.-）</p>
+<p>执行<code>a.out &lt; t.sh</code>，<code>a.out</code>是shell自己的执行文件。</p>
+<p><img src="/images/6.828-hw2-shell.png" alt="rsh"></p>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2018/03/pointer_in_c/">C语言-可怕的指针</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/os'>OS</a></li>
+                
+                <li><a href='https://leer.moe/tags/shell'>Shell</a></li>
+                
+                <li><a href='https://leer.moe/tags/6.828'>6.828</a></li>
+                
+                <li><a href='https://leer.moe/tags/c'>C</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/crime_and_punishment/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/final-project-codeflow/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/minesweeper/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/install_manjaro/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/ros/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/java-concurrent-aqs/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

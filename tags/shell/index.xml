@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shell on LeeReindeer&#39;s blog</title>
+    <link>https://leer.moe/tags/shell/</link>
+    <description>Recent content in Shell on LeeReindeer&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 29 Sep 2018 16:31:21 +0000</lastBuildDate>
+    
+	<atom:link href="https://leer.moe/tags/shell/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>6.828 Homework 2:Shell</title>
+      <link>https://leer.moe/2018/09/6.828_hw2_shell/</link>
+      <pubDate>Sat, 29 Sep 2018 16:31:21 +0000</pubDate>
+      
+      <guid>https://leer.moe/2018/09/6.828_hw2_shell/</guid>
+      <description>&lt;p&gt;这次的作业是实现一个简单的 shell。通过阅读 &lt;a href=&#34;https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf&#34;&gt;xv6 book&lt;/a&gt; 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。&lt;/p&gt;
+&lt;p&gt;题目提供的&lt;code&gt;sh.c&lt;/code&gt;已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成&lt;code&gt;runcmd&lt;/code&gt;函数中缺少的代码即可。&lt;/p&gt;
+&lt;h2 id=&#34;流程&#34;&gt;流程&lt;/h2&gt;
+&lt;p&gt;先从 &lt;code&gt;main&lt;/code&gt; 函数看起：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt;) {
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; buf[&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;];
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; fd, r;
+
+  &lt;span style=&#34;color:#75715e&#34;&gt;// Read and run input commands.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (getcmd(buf, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(buf)) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) {
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (buf[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;c&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; buf[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;d&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; buf[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39; &amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color:#75715e&#34;&gt;// Clumsy but will have to do for now.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;      &lt;span style=&#34;color:#75715e&#34;&gt;// Chdir has no effect on the parent if run in the child.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;      buf[strlen(buf) &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// chop \n
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (chdir(buf &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)
+        fprintf(stderr, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cannot cd %s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, buf &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;);
+      &lt;span style=&#34;color:#66d9ef&#34;&gt;continue&lt;/span&gt;;
+    }
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (fork1() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)
+      runcmd(parsecmd(buf));
+    wait(&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;r);
+  }
+  exit(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;main&lt;/code&gt; 函数循环调用 &lt;code&gt;getcmd&lt;/code&gt;从 console 读取命令，对 &lt;code&gt;cd &lt;/code&gt;命令做了特别处理。之后&lt;code&gt;fork&lt;/code&gt;创建子进程，调用&lt;code&gt;parsecmd&lt;/code&gt;解析命令，再调用&lt;code&gt;runcmd&lt;/code&gt;执行得到的命令。最后调用&lt;code&gt;wait&lt;/code&gt;等待子进程结束。&lt;code&gt;main&lt;/code&gt; 的基本流程就这样。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

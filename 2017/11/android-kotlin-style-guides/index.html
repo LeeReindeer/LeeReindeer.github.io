@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android Kotlin 代码规范 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="Android Kotlin 代码规范 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2017-11-29T22:31:21&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2017-11-29T22:31:21&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Android Kotlin 代码规范">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2017/11/android-kotlin-style-guides/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#目录">目录</a></li>
+    <li><a href="#1-源文件">1. 源文件</a>
+      <ul>
+        <li><a href="#11-命名">1.1 命名</a></li>
+        <li><a href="#12-结构">1.2 结构</a></li>
+        <li><a href="#13-类成员的顺序">1.3 类成员的顺序</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-格式">2. 格式</a>
+      <ul>
+        <li><a href="#21-大括号">2.1 大括号</a></li>
+        <li><a href="#22-块缩进">2.2 块缩进</a></li>
+        <li><a href="#23-一行一语句">2.3 一行一语句</a></li>
+        <li><a href="#24-换行">2.4 换行</a></li>
+        <li><a href="#25-空白">2.5 空白</a></li>
+        <li><a href="#26-特殊构造">2.6 特殊构造</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-命名">3. 命名</a></li>
+    <li><a href="#4-文档">4. 文档</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android Kotlin 代码规范</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年11月29日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <ul>
+<li>
+<p>翻译自<a href="https://android.github.io/kotlin-guides/style.html">Android Kotlin Guides</a></p>
+</li>
+<li>
+<p>译者： <a href="https://github.com/LeeReindeer">LeeReindeer</a></p>
+</li>
+</ul>
+<p>转载请注明出处.This Translation is under <code>CC BY-NC-SA 3.0 CN</code> License.</p>
+<h1 id="android-kotlin-style-guide">Android Kotlin Style guide</h1>
+<blockquote>
+<p>Android Kotlin 代码规范</p>
+</blockquote>
+<h2 id="目录">目录</h2>
+<ul>
+<li><a href="#1-%E6%BA%90%E6%96%87%E4%BB%B6">1.源文件</a>
+<ul>
+<li><a href="#11-%E5%91%BD%E5%90%8D">1.1命名</a></li>
+<li><a href="#12-%E7%BB%93%E6%9E%84">1.2结构</a></li>
+<li><a href="#13-%E7%B1%BB%E6%88%90%E5%91%98%E7%9A%84%E9%A1%BA%E5%BA%8F">1.3类成员的顺序</a></li>
+</ul>
+</li>
+<li><a href="#2-%E6%A0%BC%E5%BC%8F">2.格式</a>
+<ul>
+<li><a href="#21-%E5%A4%A7%E6%8B%AC%E5%8F%B7">2.1大括号</a></li>
+<li><a href="#22-%E5%9D%97%E7%BC%A9%E8%BF%9B">2.2块缩进</a></li>
+<li><a href="#23-%E4%B8%80%E8%A1%8C%E4%B8%80%E8%AF%AD%E5%8F%A5">2.3一行一语句</a></li>
+<li><a href="#24-%E6%8D%A2%E8%A1%8C">2.4换行</a></li>
+</ul>
+</li>
+<li><a href="#3-%E5%91%BD%E5%90%8D">3.命名</a></li>
+<li><a href="#4-%E6%96%87%E6%A1%A3">4.文档</a></li>
+</ul>
+<hr>
+<h2 id="1-源文件">1. 源文件</h2>
+<p>所以的源文件都是 UTF-8 编码。</p>
+<h3 id="11-命名">1.1 命名</h3>
+<p>如果一个文件只有一个顶层的类，那么文件名应该是大小写敏感的，并且以 <code>.kt</code> 结尾。不然，如果一个文件有很多顶层类，选择一个符合内容的名字，用以驼峰命名法，并以 <code>.kt</code> 结尾。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Kotlin" data-lang="Kotlin"><span style="color:#75715e">// Foo.kt
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span> { }
+
+<span style="color:#75715e">// Bar.kt
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Bar</span> { }
+<span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">Runnable</span>.toBar(): Bar = <span style="color:#75715e">// …
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Map.kt
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">fun</span> &lt;T, O&gt; <span style="color:#a6e22e">Set</span>&lt;T&gt;.map(func: (T) -&gt; O): List&lt;O&gt; = <span style="color:#75715e">// …
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">fun</span> &lt;T, O&gt; <span style="color:#a6e22e">List</span>&lt;T&gt;.map(func: (T) -&gt; O): List&lt;O&gt; = <span style="color:#75715e">// …
+</span></code></pre></div><h4 id="111-特殊字符">1.1.1 特殊字符</h4>
+<h4 id="1111-空白字符">1.1.1.1 空白字符</h4>
+<p>除了终止序列外，ASCII horizontal space character (0x20) 是源文件里唯一可以出现的空白字符。也就是说：</p>
+<ol>
+<li>所有其他的空白字符都会被转义。</li>
+<li><code>Tab</code> 键不能用来缩进。</li>
+</ol>
+<h4 id="1112-特殊转义字符">1.1.1.2 特殊转义字符</h4>
+<p>对于所有的<a href="https://kotlinlang.org/docs/reference/basic-types.html#characters">转义字符</a>（\b, \n, \r, \t, ', &quot;, \, 和 $），使用上面这种表达方式，而尽量不使用Unicode（比如： <code>\u000a</code>）。</p>
+<h4 id="1113-非-ascii-字符">1.1.1.3 非-ASCII 字符</h4>
+<p>对于非-ASCII 字符，Unicode （比如：<code>∞</code>）和相同的转义字符（比如：<code>\u221e</code>）都可以使用。这取决于那种方式<strong>更容易理解</strong>。Unicode的转义字符对于可打印的字符不推荐使用，字符串和注释之外的地方更不推荐。</p>
+<table>
+<thead>
+<tr>
+<th>例子</th>
+<th>评价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>return &quot;\ufeff&quot; + content</code></td>
+<td>好：对于不可打印的字符是可行的</td>
+</tr>
+<tr>
+<td><code>val unitAbbrev = &quot;\u03bcs&quot; // μs</code></td>
+<td>差：多此一举</td>
+</tr>
+<tr>
+<td><code>val unitAbbrev = &quot;\u03bcs&quot;</code></td>
+<td>差：不知所云</td>
+</tr>
+<tr>
+<td><code>val unitAbbrev = &quot;μs&quot;</code></td>
+<td>棒：没有注释也十分清晰</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-结构">1.2 结构</h3>
+<p>一个 <code>.kt</code> 文件依次包含了下列的内容：</p>
+<ol>
+<li>
+<p>Copyright 和 License（可选的）</p>
+</li>
+<li>
+<p>文件级别的注解</p>
+</li>
+<li>
+<p>包语句</p>
+</li>
+<li>
+<p><code>import</code> 语句</p>
+</li>
+<li>
+<p>顶层的声明</p>
+</li>
+</ol>
+<p>每个结构可以用一个空白行隔开。</p>
+<h4 id="121-copyright-和-license">1.2.1 Copyright 和 License</h4>
+<p>如果有 Copyright 和 License 的话，它们应该在文件的最上方，并且以多行注释的方式。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Kotlin" data-lang="Kotlin"><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * Copyright 2017 Google, Inc.
+</span><span style="color:#75715e"> *
+</span><span style="color:#75715e"> * ...
+</span><span style="color:#75715e"> */</span>
+</code></pre></div><p><strong>不要</strong>使用 <a href="https://kotlinlang.org/docs/reference/kotlin-doc.html">KDoc-style</a> 或者单行注释的方式：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * Copyright 2017 Google, Inc.
+</span><span style="color:#75715e"> *
+</span><span style="color:#75715e"> * ...
+</span><span style="color:#75715e"> */</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// Copyright 2017 Google, Inc.
+</span><span style="color:#75715e">//
+</span><span style="color:#75715e">// ...
+</span></code></pre></div><h4 id="122-文件级别的注解">1.2.2 文件级别的注解</h4>
+<p>文件的注解使用 <a href="https://kotlinlang.org/docs/reference/annotations.html#annotation-use-site-targets">use-site target</a>应该写在 <code>Copyright</code> 的注释和包语句之间。</p>
+<h4 id="123-包语句">1.2.3 包语句</h4>
+<p>包声明不受任何限制，也不要换行（指<code>line-wrapping</code>）。</p>
+<h4 id="124-import-语句">1.2.4 import 语句</h4>
+<p>一切的导入语句应该放在一起。</p>
+<p>使用通配符导入是<strong>不允许</strong>的。</p>
+<p>和包语句类似，import 语句也不受任何限制，也不要换行（指<code>line-wrapping</code>）。</p>
+<h4 id="125-顶层声明">1.2.5 顶层声明</h4>
+<p>一个 <code>.kt</code> 文件一个或多个的类型、函数，属性或者类型别名在顶层（类级别）。</p>
+<p>一个文件的内容应该保持一个主题。也就是说，这个文件可以是一个单独的公有类或者是一系列功能耦合的扩展函数。不相关的声明应该分离出来写在另一个文件，并且一个文件里公有的声明应该尽量得少。</p>
+<p>但对文件内容的数量和顺序没有明确的限制。</p>
+<p>源文件一般都是从顶到底读取的（对读者而言），所以一般的，写在前面的声明可以帮助理解写在后面的声明。但是不同的文件可以选择不同的内容顺序。</p>
+<p>重要的是每个类都使用一些<strong>逻辑顺序</strong>,如果被问到,维护者可以解释清楚.比如说,新的方法不应该仅仅被添加到类的末尾,因为这是按时间排序而不是按逻辑排序.</p>
+<h3 id="13-类成员的顺序">1.3 类成员的顺序</h3>
+<p>一个类里的成员顺序和顶层声明的顺序一样。</p>
+<hr>
+<h2 id="2-格式">2. 格式</h2>
+<h3 id="21-大括号">2.1 大括号</h3>
+<p>大括号（<code>{}</code>）在 <code>if</code> 语句和 <code>when</code> 语句，没有 <code>elese if</code> 或 <code>else</code> 时，是可以省略的，并且写成一行。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">if</span> (string.isEmpty()) <span style="color:#66d9ef">return</span>
+
+<span style="color:#66d9ef">when</span> (value) {
+    <span style="color:#ae81ff">0</span> -&gt; <span style="color:#66d9ef">return</span>
+    <span style="color:#75715e">// …
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>除此之外，对于任何的 <code>if</code>，<code>for</code>，<code>when</code>，<code>do</code>，<code>while</code> 大括号都是必须的，即使是空语句。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">if</span> (string.isEmpty())
+    <span style="color:#66d9ef">return</span>  <span style="color:#75715e">// 错误
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">if</span> (string.isEmpty()) {
+    <span style="color:#66d9ef">return</span>  <span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span>}
+</code></pre></div><h4 id="211非空的代码块">2.1.1非空的代码块</h4>
+<p>对于非空的代码块和类似块结构的代码，大括号遵循 K&amp;R 风格。</p>
+<ul>
+<li>
+<p>左括号之前不换行</p>
+</li>
+<li>
+<p>左括号后换行</p>
+</li>
+<li>
+<p>右括号前换行</p>
+</li>
+<li>
+<p>右括号后换行，只有在这个括号结束了一个语句、函数、构造函数 或者 类，才换行。比如，<code>if</code> 的右大括号之后是不换行的，如果有 <code>else</code> 的话。</p>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">return</span> Runnable {
+    <span style="color:#66d9ef">while</span> (condition()) {
+        foo()
+    }
+}
+
+<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">object</span> <span style="color:#960050;background-color:#1e0010">: </span><span style="color:#a6e22e">MyClass</span>() {
+    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">foo</span>() {
+        <span style="color:#66d9ef">if</span> (condition()) {
+            <span style="color:#66d9ef">try</span> {
+                something()
+            } <span style="color:#66d9ef">catch</span> (e: ProblemException) {
+                recover()
+            }
+        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (otherCondition()) {
+            somethingElse()
+        } <span style="color:#66d9ef">else</span> {
+            lastThing()
+        }
+    }
+}
+</code></pre></div><p>几个例外见<a href="#-%E6%9E%9A%E4%B8%BE%E7%B1%BB">枚举类</a>。</p>
+<h4 id="212-空代码块">2.1.2 空代码块</h4>
+<p>一个空代码块必须是 K&amp;R 风格的。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">try</span> {
+    doSomething()
+} <span style="color:#66d9ef">catch</span> (e: Exception) {} <span style="color:#75715e">// 错误
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">try</span> {
+    doSomething()
+} <span style="color:#66d9ef">catch</span> (e: Exception) {
+} <span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span>
+</code></pre></div><h4 id="213-表达式">2.1.3 表达式</h4>
+<p>一个 <code>if、else</code> 判断在作为表达式的时候，如果一行之内写的下的话，可以省略大括号。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">val</span> value = <span style="color:#66d9ef">if</span> (string.isEmpty()) <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">1</span>  <span style="color:#75715e">// 正确
+</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">val</span> value = <span style="color:#66d9ef">if</span> (string.isEmpty())  <span style="color:#75715e">// 错误!
+</span><span style="color:#75715e"></span>                <span style="color:#ae81ff">0</span>
+            <span style="color:#66d9ef">else</span>
+                <span style="color:#ae81ff">1</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">val</span> value = <span style="color:#66d9ef">if</span> (string.isEmpty()) { <span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span>    <span style="color:#ae81ff">0</span>
+} <span style="color:#66d9ef">else</span> {
+    <span style="color:#ae81ff">1</span>
+}
+</code></pre></div><h3 id="22-块缩进">2.2 块缩进</h3>
+<p>每当创建一个新的代码块或者类似代码块的结构，代码块内的缩进增加4（JakeWharton大神也吐槽这一点？所以我也选择+2了，和Google Java Style 一样。）。当代码块结束的时候，缩进变回原来的缩进级别。缩进级别同时适用于代码和注释。</p>
+<h3 id="23-一行一语句">2.3 一行一语句</h3>
+<p>一行一个语句。不要使用分号。</p>
+<h3 id="24-换行">2.4 换行</h3>
+<blockquote>
+<p>译者注：2.4节的<code>换行</code>都是指 <code>Line wrapping</code>。</p>
+</blockquote>
+<p>一行的代码有100列的限制。任何超过这个限制的都需要换行。下面是几个例外：</p>
+<ul>
+<li>一些不可能遵从列限制的行（比如：一些很长的URL）。</li>
+<li><code>package</code> 和 <code>import</code> 语句。</li>
+<li>注释里的需要复制粘贴到命令行的命令语句。</li>
+</ul>
+<h4 id="241-何处换行">2.4.1 何处换行</h4>
+<p>自动换行的首要准则是:更倾向于在更高的语法级别处断开。</p>
+<ol>
+<li>
+<p>如果在一个非赋值运算符处断开，应该在该符号之前断开。(比如 +,他应该在下一行。)</p>
+<ul>
+<li>这也适用于以下“类运算符”符号
+<ul>
+<li>点分隔符 (.)</li>
+<li>双冒号方法引用 (::)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>如果在一个赋值运算符处断开,应该在该符号之后断开。(比如 =，它与前面的内容留在同一行。译者注)但是两种方案都是可以的。</p>
+</li>
+<li>
+<p>方法名或构造方法名与左括号（<code>(</code>）留在同一行。</p>
+</li>
+</ol>
+<p>1。 逗号（<code>,</code>）于前面的内容在同一行。</p>
+<ol>
+<li>Lambda表达式的箭头-&gt;处一般不会换行,除非lambda表达式只包含一个单独的无大括号的语句。例子:</li>
+</ol>
+<h4 id="242-换行后的缩进">2.4.2 换行后的缩进</h4>
+<p>换行时,每个延续的行都要至少+8空格的缩进.</p>
+<p>当有多个连续的行时,缩进可能不止8个空格.通常,当且仅当它们是语法上的并行元素时,才采用相同的缩进级别.</p>
+<h4 id="243-函数">2.4.3 函数</h4>
+<p>当一个函数的 signature 不能很好的写在一行时，可以把每个参数分成一行写。每行的参数缩进++8;。右括号<code>)</code>和 <code>return</code> 语句都放在一行里，并且不加缩进。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">fun</span> &lt;T&gt; <span style="color:#a6e22e">Iterable</span>&lt;T&gt;.joinToString(
+        separator: CharSequence = <span style="color:#e6db74">&#34;, &#34;</span>,
+        prefix: CharSequence = <span style="color:#e6db74">&#34;&#34;</span>,
+        postfix: CharSequence = <span style="color:#e6db74">&#34;&#34;</span>
+): String {
+    <span style="color:#75715e">// …
+</span><span style="color:#75715e"></span>}
+</code></pre></div><h4 id="2431-表达式函数">2.4.3.1 表达式函数</h4>
+<p>当一个函数只有一个表达式的时候，它可以写成<a href="https://kotlinlang.org/docs/reference/functions.html#single-expression-functions">表达式函数</a>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">toString</span>(): String {
+    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Hey&#34;</span>
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">toString</span>(): String = <span style="color:#e6db74">&#34;Hey&#34;</span>
+</code></pre></div><p>表达式函数不应该换行，如果一个表达式函数写不下一行的话，使用一般的函数体，缩进也按照一般的函数。</p>
+<h4 id="244-属性">2.4.4 属性</h4>
+<p>当一个属性（译者的理解：相当于 Java 里的字段/变量/对象）初始化的时候，不能在一行里写下，可以在 <code>=</code> 后面换行，使用块缩进（+2）。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">val</span> defaultCharset: Charset? =
+        EncodingRegistry.getInstance().getDefaultCharsetForPropertiesFiles(file)
+</code></pre></div><p>属性声明 <code>get</code> 和 <code>set</code> 时，采用块缩进，像函数一样。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">var</span> directory: File? = <span style="color:#66d9ef">null</span>
+    <span style="color:#66d9ef">set</span>(value) {
+        <span style="color:#75715e">// …
+</span><span style="color:#75715e"></span>    }
+</code></pre></div><p>只读的属性可以在一行内使用更简明的语法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">val</span> defaultExtension: String <span style="color:#66d9ef">get</span>() = <span style="color:#e6db74">&#34;kt&#34;</span>
+</code></pre></div><h3 id="25-空白">2.5 空白</h3>
+<h4 id="251-垂直空白空行">2.5.1 垂直空白（空行）</h4>
+<p>一个空行出现在:</p>
+<ol>
+<li>
+<p>在类的连续成员或初始化之间:属性，构造方法，函数，嵌套类等.</p>
+<ul>
+<li>
+<p>例外：两个连续的属性(它们之间没有其他代码)之间的空白行是可选的.这种情况下，空白行用来对属性进行逻辑分组的。</p>
+</li>
+<li>
+<p>例外：枚举常数之间的空白行。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>语句之间，根据需要把语句按逻辑分成组.</p>
+</li>
+<li>
+<p>可选地，在一个函数的第一个语句之前、在类的第一个成员以前或者在类的最后一个成员之后。（既不鼓励也不反对）。</p>
+</li>
+<li>
+<p>根据本文件其他部分的要求(不如<a href="#12-%E7%BB%93%E6%9E%84">1.2结构</a>)。</p>
+</li>
+</ol>
+<p>允许多个连续的空白行，但不鼓励.</p>
+<h4 id="252-水平空白">2.5.2 水平空白</h4>
+<p>除了语言和其他风格规则的要求和文字，注释，KDoc之外，单个的ASCII空格只出现在下面这几个地方。</p>
+<ol>
+<li>分离保留字(比如 if, for ,catch)和紧随其后的左括号(().</li>
+</ol>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span>(i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0.</span>.<span style="color:#ae81ff">1</span>) {
+}
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span> (i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0.</span>.<span style="color:#ae81ff">1</span>) {
+}
+</code></pre></div></li>
+</ul>
+<ol start="2">
+<li>分隔保留字与其前面的右大括号(<code>}</code>)(如else, catch)。</li>
+</ol>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误
+</span><span style="color:#75715e"></span>}<span style="color:#66d9ef">else</span> {
+}
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span>} <span style="color:#66d9ef">else</span> {
+}
+</code></pre></div></li>
+</ul>
+<ol start="3">
+<li>在任意的左括号前（<code>{</code>）</li>
+</ol>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#75715e">// 错误!
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (list.isEmpty()){
+  }
+</code></pre></div><pre><code>
+</code></pre></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#75715e">// 正确!
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (list.isEmpty()) {
+  }
+</code></pre></div></li>
+</ul>
+<ol start="4">
+<li>在任意的二元操作符之间</li>
+</ol>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误!
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">val</span> two = <span style="color:#ae81ff">1</span>+<span style="color:#ae81ff">1</span>
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">val</span> two = <span style="color:#ae81ff">1</span> + <span style="color:#ae81ff">1</span>
+</code></pre></div></li>
+</ul>
+<p>这也适用于”类操作符”:</p>
+<ul>
+<li>
+<p>Lambda表达式的箭头（<code>-&gt;</code>）。</p>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误!
+</span><span style="color:#75715e"></span>ints.map { value-&gt;value.toString() }
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span>ints.map { value -&gt; value.toString() }
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<p>但不适用：</p>
+<ul>
+<li>
+<p>双冒号(::)的方法引用：</p>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误!
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">val</span> toString = Any <span style="color:#f92672">::</span> toString
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确!
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">val</span> toString = Any<span style="color:#f92672">::</span>toString
+</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>句点操作符(.)：</p>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误
+</span><span style="color:#75715e"></span>it . toString()
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span>it.toString()
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<ol start="5">
+<li>在冒号（<code>:</code>）之前，仅仅在类/接口声明或者使用 <code>where</code> 来<a href="https://kotlinlang.org/docs/reference/generics.html#generic-constraints">约束上下限</a>的时候使用。</li>
+</ol>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误!
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>: Runnable
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span> : Runnable
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">fun</span> &lt;T: Comparable&gt; <span style="color:#a6e22e">max</span>(a: T, b: T)
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">fun</span> &lt;T : Comparable&gt; <span style="color:#a6e22e">max</span>(a: T, b: T)
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">fun</span> &lt;T&gt; <span style="color:#a6e22e">max</span>(a: T, b: T) <span style="color:#66d9ef">where</span> T: Comparable&lt;T&gt;
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">fun</span> &lt;T&gt; <span style="color:#a6e22e">max</span>(a: T, b: T) <span style="color:#66d9ef">where</span> T : Comparable&lt;T&gt;
+</code></pre></div></li>
+</ul>
+<ol start="6">
+<li>在逗号（<code>,</code>）和冒号（<code>:</code>）之后。</li>
+</ol>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误!
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">val</span> oneAndTwo = listOf(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>)
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">val</span> oneAndTwo = listOf(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误!
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span> :Runnable
+</code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span> : Runnable
+</code></pre></div></li>
+</ul>
+<ol start="7">
+<li>在注释的两个斜杠(//)两侧,这里允许多个空格,但不是必须的.</li>
+</ol>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 错误!
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> debugging = <span style="color:#66d9ef">false</span><span style="color:#75715e">//disabled by default
+</span></code></pre></div></li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#75715e">// 正确
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> debugging = <span style="color:#66d9ef">false</span> <span style="color:#75715e">// disabled by default
+</span></code></pre></div></li>
+</ul>
+<h3 id="26-特殊构造">2.6 特殊构造</h3>
+<h4 id="261-枚举类">2.6.1 枚举类</h4>
+<p>一个没有函数和文档的枚举类可以格式化为一行。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Answer</span> { YES, NO, MAYBE }
+</code></pre></div><p>而当一个枚举常量被分成多行时，枚举常量之间也是不需要空行的，除非它定义了函数体。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Answer</span> {
+    YES,
+    NO,
+
+    MAYBE {
+        <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">toString</span>() = <span style="color:#e6db74">&#34;&#34;&#34;¯\_(ツ)_/¯&#34;&#34;&#34;</span>
+    }
+}
+
+</code></pre></div><p>枚举类也是类，所以累的其他格式化规范也适用。</p>
+<h4 id="262-注解">2.6.2 注解</h4>
+<p>成员和类型注释放在被注解的结构的前面，并分行。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">@Retention(SOURCE)
+@Target(FUNCTION, PROPERTY_SETTER, FIELD)
+<span style="color:#66d9ef">annotation</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Global</span>
+</code></pre></div><p>没有参数的注解可以放在同一行。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">@JvmField @Volatile
+<span style="color:#66d9ef">var</span> disposable: Disposable? = <span style="color:#66d9ef">null</span>
+</code></pre></div><p>当只有一个没有参数的注解的时候，可以和声明放在同一行。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">@Volatile <span style="color:#66d9ef">var</span> disposable: Disposable? = <span style="color:#66d9ef">null</span>
+
+@Test <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">selectAll</span>() {
+    <span style="color:#75715e">// …
+</span><span style="color:#75715e"></span>}
+</code></pre></div><h4 id="263-隐式的-return-和-参数类型">2.6.3 隐式的 return 和 参数类型</h4>
+<p>如果一个表达式函数或者是属性的初始化是一个标量（译者注：明确的）值或者它的返回类型可以清楚的观察到，那么也可以省略返回类型。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">toString</span>(): String = <span style="color:#e6db74">&#34;Hey&#34;</span>
+<span style="color:#75715e">// 变成
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">toString</span>() = <span style="color:#e6db74">&#34;Hey&#34;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">val</span> ICON: Icon = IconLoader.getIcon(<span style="color:#e6db74">&#34;/icons/kotlin.png&#34;</span>)
+<span style="color:#75715e">// 变成
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">val</span> ICON = IconLoader.getIcon(<span style="color:#e6db74">&#34;/icons/kotlin.png&#34;</span>)
+</code></pre></div><p>但是如果你在写一个库的话，请保留明确的类型，如果是公共的API的话。</p>
+<hr>
+<h2 id="3-命名">3. 命名</h2>
+<blockquote>
+<p>不是偷懒2333，没有必要重复翻译嘛。</p>
+</blockquote>
+<p>与Google Java Style 一致，见<a href="http://leezoom.xyz/2017/09/18/google-java-style-guide/#5-%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99">Google Java 代码风格规范指南</a></p>
+<hr>
+<h2 id="4-文档">4. 文档</h2>
+<blockquote>
+<p>KDoc</p>
+</blockquote>
+<p>与Google Java Style 一致，见<a href="http://leezoom.xyz/2017/09/18/google-java-style-guide/#footer">Google Java 代码风格规范指南</a></p>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2017/09/google-java-style-guide/">Google Java 代码规范</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/%E7%BF%BB%E8%AF%91'>翻译</a></li>
+                
+                <li><a href='https://leer.moe/tags/kotlin'>Kotlin</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/crime_and_punishment/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/final-project-codeflow/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/minesweeper/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/install_manjaro/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/ros/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/java-concurrent-aqs/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>
