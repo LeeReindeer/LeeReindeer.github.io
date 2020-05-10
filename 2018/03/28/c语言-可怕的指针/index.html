@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>C语言-可怕的指针 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="C语言-可怕的指针 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-03-28T07:30:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-03-28T07:30:00&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="C语言-可怕的指针">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2018/03/28/c%E8%AF%AD%E8%A8%80-%E5%8F%AF%E6%80%95%E7%9A%84%E6%8C%87%E9%92%88/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一重指针">一重指针</a></li>
+    <li><a href="#二重多重指针">二重（多重）指针</a>
+      <ul>
+        <li><a href="#一个编程中遇到的问题">一个编程中遇到的问题</a></li>
+        <li><a href="#linus-关于指针的例子">Linus 关于指针的例子</a></li>
+      </ul>
+    </li>
+    <li><a href="#函数指针">函数指针</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">C语言-可怕的指针</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年3月28日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <h2 id="一重指针">一重指针</h2>
+<ul>
+<li>简单使用</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>p <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>a; <span style="color:#75715e">//defines an pointer to a, the address where a store.
+</span><span style="color:#75715e"></span>printf(<span style="color:#e6db74">&#34;%d&#34;</span>, a);
+printf(<span style="color:#e6db74">&#34;%d&#34;</span>, <span style="color:#f92672">*</span>p); <span style="color:#75715e">//here * is poiner operator, get the value of address = a.
+</span></code></pre></div><ul>
+<li>
+<p>数组指针</p>
+<ul>
+<li>
+<p>数组名代表数组的<strong>首地址</strong>，二维数组名则是<strong>行地址</strong>。</p>
+</li>
+<li>
+<p>一维数组</p>
+</li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> a[<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>};
+<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>p1 <span style="color:#f92672">=</span> a;
+printf(<span style="color:#e6db74">&#34;%d&#34;</span>, a[<span style="color:#ae81ff">1</span>]); <span style="color:#75715e">//2
+</span><span style="color:#75715e"></span>printf(<span style="color:#e6db74">&#34;%d&#34;</span>, (<span style="color:#f92672">*++</span>p1)); <span style="color:#75715e">//2
+</span></code></pre></div></li>
+<li>
+<p>二维（多维）数组</p>
+</li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> b[<span style="color:#ae81ff">2</span>][<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> {{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span> ,<span style="color:#ae81ff">4</span>},{<span style="color:#ae81ff">5.</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>}};
+<span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>p2)[<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> b; <span style="color:#75715e">//**A pointer** to a array of 4 integers,行地址
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>p3)[<span style="color:#ae81ff">2</span>][<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>b; <span style="color:#75715e">//**A pointer** to 2d array
+</span><span style="color:#75715e"></span>b[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>];<span style="color:#75715e">//5
+</span><span style="color:#75715e"></span><span style="color:#f92672">*</span>((<span style="color:#f92672">*</span>p2 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>); <span style="color:#75715e">//5,(*p + 1) == 一维数组b[1]的首地址
+</span><span style="color:#75715e"></span>p2[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>]; <span style="color:#75715e">//5
+</span><span style="color:#75715e"></span>(<span style="color:#f92672">*</span>p2)[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>]; <span style="color:#75715e">//5
+</span><span style="color:#75715e"></span>
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>
+<p>字符串和字符数组</p>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>s1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello&#34;</span>;
+<span style="color:#66d9ef">char</span> s2[] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello&#34;</span>;
+<span style="color:#66d9ef">char</span> s3[<span style="color:#ae81ff">5</span>];
+s3 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello&#34;</span>; <span style="color:#75715e">//error, assignment to expression with array type
+</span></code></pre></div></li>
+<li>
+<p>赋值方式不同，数组和指针都可以进行初始化，但是数组不能再次进行整体赋值。</p>
+</li>
+<li>
+<p>存储内容肯定不一样，数组存储字符串本身，字符型指针存储字符串的首地址</p>
+</li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">s1 <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">//s1 = &#34;ello&#34;
+</span><span style="color:#75715e"></span>s2 <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">//error, assignment to expression with array type
+</span></code></pre></div></li>
+<li>
+<p>指针变量可以改变值（值为地址），数组则不行。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>指针数组</p>
+<ul>
+<li>
+<p>字符串指针数组</p>
+</li>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>strings[] <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;Hello&#34;</span>, <span style="color:#e6db74">&#34;world!&#34;</span>}; <span style="color:#75715e">//a array of **two pointers**, which point to a string
+</span><span style="color:#75715e"></span>strings[<span style="color:#ae81ff">0</span>]; <span style="color:#75715e">//Hello
+</span><span style="color:#75715e"></span>strings[<span style="color:#ae81ff">1</span>]; <span style="color:#75715e">//world!
+</span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h2 id="二重多重指针">二重（多重）指针</h2>
+<ul>
+<li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>strings[] <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;Hello&#34;</span>, <span style="color:#e6db74">&#34;world!&#34;</span>};
+<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>string <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello world!&#34;</span>;
+<span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>p_string <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>string;  <span style="color:#75715e">//a 2d pointer
+</span><span style="color:#75715e"></span><span style="color:#f92672">*</span>p_string; <span style="color:#75715e">//Hello world!
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>cur_string <span style="color:#f92672">=</span> strings;
+cur_string[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#f92672">*</span>cur_string; <span style="color:#75715e">//true, Hello
+</span><span style="color:#75715e"></span>cur_string <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">//world!
+</span><span style="color:#75715e">//it&#39;s coool!!
+</span></code></pre></div></li>
+</ul>
+<p>二重指针存储的是一个指针的地址。就是指针的指针（。</p>
+<p>上面的例子可以表示如下图：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">p_string <span style="color:#f92672">-&gt;</span> string <span style="color:#f92672">-&gt;</span> <span style="color:#e6db74">&#34;Hello world!&#34;</span>
+
+cur_string <span style="color:#f92672">-&gt;</span> strings <span style="color:#f92672">-&gt;</span> <span style="color:#e6db74">&#34;Hello&#34;</span>
+					  <span style="color:#f92672">-&gt;</span> <span style="color:#e6db74">&#34;world!&#34;</span>
+</code></pre></div><p>二重指针可以对一重的指针数组进行操作，如 <code>cur_string + 1</code>就和 <code>cur_string[1]</code>的值是一样的。</p>
+<h3 id="一个编程中遇到的问题">一个编程中遇到的问题</h3>
+<p>在写一元多项式的按次数排序时，使用 <code>stdlib.h</code> 中的快速排序算法 <code>qsort</code> 时， 排序之后的结果总是和排序之前一模一样。</p>
+<p>结构体是长这样的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> Node {
+  <span style="color:#66d9ef">int</span> coeff;
+  <span style="color:#66d9ef">int</span> power;
+  <span style="color:#66d9ef">struct</span> Node <span style="color:#f92672">*</span>next;
+} Polynomial;
+
+<span style="color:#66d9ef">typedef</span> Polynomial <span style="color:#f92672">*</span>PtrToNode;
+<span style="color:#66d9ef">typedef</span> PtrToNode Item;
+<span style="color:#66d9ef">typedef</span> PtrToNode Poly;
+</code></pre></div><p>生成多项式的函数是这样的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">comparItem</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>item1, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>item2) {
+  Item p1 <span style="color:#f92672">=</span> (Polynomial <span style="color:#f92672">*</span>)item1;
+  Item p2 <span style="color:#f92672">=</span> (Polynomial <span style="color:#f92672">*</span>)item2;
+  <span style="color:#75715e">//printf(&#34;%d - %d\n&#34;, p1-&gt;power, p2-&gt;power);
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> (p2<span style="color:#f92672">-&gt;</span>power <span style="color:#f92672">-</span> p1<span style="color:#f92672">-&gt;</span>power);<span style="color:#75715e">//from lager to smaller
+</span><span style="color:#75715e"></span>}
+
+Poly <span style="color:#a6e22e">NewPoly</span>(Item <span style="color:#f92672">*</span>items, size_t size) {
+  qsort(items, size, <span style="color:#66d9ef">sizeof</span>(Item), comparItem);
+
+  Poly p <span style="color:#f92672">=</span> malloc(<span style="color:#66d9ef">sizeof</span>(Polynomial));
+  Poly header <span style="color:#f92672">=</span> p;
+  ZeroPoly(p);
+  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> size; i<span style="color:#f92672">++</span>) {
+    p<span style="color:#f92672">-&gt;</span>next <span style="color:#f92672">=</span> items[i];
+    p <span style="color:#f92672">=</span> p<span style="color:#f92672">-&gt;</span>next;
+  }
+
+  <span style="color:#66d9ef">return</span> header<span style="color:#f92672">-&gt;</span>next; <span style="color:#75715e">// ignore list header
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>那么只能用佛系调试法，在第四行的地方查看输出的次数(power)。结果很明显，输出并不是次数啊，而是一长串数字。虽然也猜到是指针了， 如果 <code>item1</code> 是 <code>Item</code> 的指针的话, 那么 <code>p1-&gt;power</code> 又是什么，是 <code>p1-&gt;power</code> 的指针？</p>
+<p>这时只能面向 Stackoverflow 编程，于是乎，还真有人遇到了和我一样的问题:</p>
+<p><a href="https://stackoverflow.com/questions/23689687/sorting-an-array-of-struct-pointers-using-qsort">Sorting an array of struct pointers using qsort</a></p>
+<blockquote>
+<p><strong>Your code suggests that you are actually trying sort an array of pointers to struct.</strong></p>
+<p>In this case you are missing a level of indirection. You also have your directions reversed.</p>
+</blockquote>
+<p>虽然验证了自己的猜测是对的，但是我没看到这个答案前并不知道怎么做，是菜鸡。</p>
+<p>于是，把比较函数改成这样就行了：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//item1(item2) 是指向 Item, 即 (Polynomial *) 的指针。是一个二重指针。
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">comparItem</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>item1, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>item2) {
+  Item p1 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(Polynomial <span style="color:#f92672">**</span>)item1;
+  Item p2 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(Polynomial <span style="color:#f92672">**</span>item2;
+  <span style="color:#66d9ef">return</span> (p2<span style="color:#f92672">-&gt;</span>power <span style="color:#f92672">-</span> p1<span style="color:#f92672">-&gt;</span>power);
+}
+</code></pre></div><h3 id="linus-关于指针的例子">Linus 关于指针的例子</h3>
+<blockquote>
+<p>For example, I&rsquo;ve seen too many people who delete a singly-linked list entry by keeping track of the &ldquo;prev&rdquo; entry, and then to delete the entry, doing something like</p>
+<p>if (prev)
+prev-&gt;next = entry-&gt;next;
+else
+list_head = entry-&gt;next;</p>
+<p>and whenever I see code like that, I just go &ldquo;This person doesn&rsquo;t understand pointers&rdquo;. And it&rsquo;s sadly quite common.</p>
+<p>People who understand pointers just use a &ldquo;pointer to the entry pointer&rdquo;, and initialize that with the address of the list_head. And then as they traverse the list, they can remove the entry without using any conditionals, by just doing a &ldquo;*pp = entry-&gt;next&rdquo;.</p>
+</blockquote>
+<p>这里 Linus 在 <a href="https://meta.slashdot.org/story/12/10/11/0030249/linus-torvalds-answers-your-questions">slashdot</a> 上举的一个关于单链表的例子。</p>
+<p>对于一个单链表，在删除节点的时候，需要先得到 prev 节点，利用它判断是否 current 是否为头节点。Linus 大神说不懂指针的人才会这样做。真的也只有大神才敢这样说，不过下面的评论里也有很多人反对 Linus 这种做法。</p>
+<p>Linus 说的 <code>by just doing a &quot;*pp = entry-&gt;next&quot;.</code> 到底是什么意思呢？完整的代码可以看<a href="http://wordaligned.org/articles/two-star-programming">这里</a>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">remove_if</span>(node <span style="color:#f92672">**</span> head, remove_fn rm)
+{
+    <span style="color:#66d9ef">for</span> (node<span style="color:#f92672">**</span> curr <span style="color:#f92672">=</span> head; <span style="color:#f92672">*</span>curr; )
+    {
+        node <span style="color:#f92672">*</span> entry <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>curr;
+        <span style="color:#66d9ef">if</span> (rm(entry))
+        {
+            <span style="color:#f92672">*</span>curr <span style="color:#f92672">=</span> entry<span style="color:#f92672">-&gt;</span>next;
+            free(entry);
+        }
+        <span style="color:#66d9ef">else</span>
+            curr <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>entry<span style="color:#f92672">-&gt;</span>next;
+    }
+}
+</code></pre></div><p>这样做代码更加简单，但是如果不了解指针的话，貌似也更难懂了呢。两个星星就是二重指针，我第一次看到二重指针还可以这样，很惊艳。</p>
+<ul>
+<li><code>curr</code> 是一个指向指针的指针， 也就是 <code>entry-&gt;next</code> 这个指针的指针。</li>
+<li>在下一次循环的时候， <code>entry</code> 为 <code>*curr</code>，对二重指针取值，也那么就是 <code>prev-&gt;next</code>。</li>
+<li>这时如果要删除 <code>entry</code>，就把 <code>curr</code> 所指的值（也是一个指针）改为 <code>entry-&gt;next</code>。于是 <code>prev-&gt;next</code> 就成了 <code>entry-&gt;next</code>。</li>
+<li>最后 <code>free</code> entry。</li>
+</ul>
+<p>看图更加清楚：</p>
+<p><img src="https://coolshell.cn/wp-content/uploads/2013/02/linus_pointer_to_pointer.jpg" alt="2dpointer"></p>
+<p>我也在书上看到一种删除节点方法。单链表有一个 dummy header，也就是第一个节点为 header， 从第二个节点开始才是存储用户数据的。这样的话也不需要判断是否为头节点。但还是需要一个<code>prev</code> 节点。</p>
+<p>可能你看到这里还是不理解二重指针到底是什么？有什么用处？</p>
+<p>我现在的理解是，比如说在我们希望给函数传一个值，并且在这个函数里改变它的值。如果直接传值的话（BTW，C 语言里函数之间的值传递，只是拷贝一份而不是操作原来的变量）为了解决这个问题，那么指针（一重）就出现了。可以向函数传递一个普通变量的指针（在内存中的地址），我们知道了地址就可以直接对原变量进行操作。<code>curr = entry-&gt;next</code>，仅仅是把 <code>entry-&gt;next</code> 的值复制给 <code>curr</code>;
+而二重指针，其中一重指针就相当于原来的普通变量，我们得到这个指针在内存中的地址，也就可以对这个指针的值进行改动。<strong><code>*curr = &amp;entry-&gt;next</code> 不是这个值的 copy，它是这个变量的地址，它也得到了 <code>entry-&gt;next</code> 这个变量的读写权。</strong></p>
+<p>不能再说了，我自己都要糊涂了。</p>
+<h2 id="函数指针">函数指针</h2>
+<blockquote>
+<p>函数指针照说也是一重指针，但是有比较特殊。函数指针指向的是函数在内存中的入口地址，这样就可以利用函数指针来调用函数，把“函数”作为函数的参数。</p>
+</blockquote>
+<p>一个简单的例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">max</span>(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">int</span> b) {
+    <span style="color:#66d9ef">return</span> a <span style="color:#f92672">&gt;</span> b <span style="color:#f92672">?</span> a : b;
+}
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">min</span>(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">int</span> b) {
+    <span style="color:#66d9ef">return</span> a <span style="color:#f92672">&gt;</span> b <span style="color:#f92672">?</span> b : a;
+}
+
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>cmp)(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">int</span> b) <span style="color:#f92672">=</span> max;
+    printf(<span style="color:#e6db74">&#34;Max: %d&#34;</span>, cmp(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>));
+    cmp <span style="color:#f92672">=</span> min;
+    printf(<span style="color:#e6db74">&#34;Min: %d&#34;</span>, cmp(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>));
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><ul>
+<li>函数指针的定义类似于：<code>int (*POINTER_NAME)(int a, int b)</code>， POINTER_NAME 为 指针的名字，指向函数。</li>
+<li>用 <code>typedef</code> 来简化 函数指针的申明：<code>typedef int (*POINTER_NAME)(int a, int b)</code>。</li>
+</ul>
+        </div>
+
+        
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/c'>C</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/%E7%BD%AA%E4%B8%8E%E7%BD%9A/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/human-animal-pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/%E8%B0%88%E8%B0%88%E7%9F%A5%E8%AF%86%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8A/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/%E5%BC%BA%E5%A2%99%E5%9B%BD%E4%B8%8B-github-%E4%B9%8B%E9%BE%9F%E9%80%9F-git-clone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/%E6%89%AB%E9%9B%B7%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95union-find-%E5%92%8C-flood-fill/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/manjaro%E5%AE%89%E8%A3%85%E5%B0%8F%E8%AE%B0%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/rtos%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/abstractqueuedsynchronizer/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

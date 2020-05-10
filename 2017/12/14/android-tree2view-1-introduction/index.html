@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android Tree2View 1-Introduction | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="Android Tree2View 1-Introduction - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2017-12-14T21:31:21&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2017-12-14T21:31:21&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Android Tree2View 1-Introduction">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2017/12/14/android-tree2view-1-introduction/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#主要功能---features">主要功能 - Features</a></li>
+    <li><a href="#效果预览---preview">效果预览 - Preview</a></li>
+    <li><a href="#实现---implement">实现 - Implement</a></li>
+    <li><a href="#下载---download">下载 - Download</a></li>
+    <li><a href="#使用---usage">使用 - Usage</a></li>
+    <li><a href="#后记---what">后记 - What？</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android Tree2View 1-Introduction</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年12月14日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <h1 id="tree2view">Tree2View</h1>
+<hr>
+<blockquote>
+<p>See on <a href="https://github.com/LeeReindeer/Tree2View">Github</a></p>
+</blockquote>
+<h2 id="主要功能---features">主要功能 - Features</h2>
+<table>
+<thead>
+<tr>
+<th>Tree2View</th>
+<th>FileManage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①多级分层的树结构视图</td>
+<td>基本的文件管理器布局</td>
+</tr>
+<tr>
+<td>②记忆展开状态</td>
+<td>自动展开上次打开未关闭的目录</td>
+</tr>
+<tr>
+<td>③使用适配器设计模式，用户可自定义 TreeAdapter</td>
+<td>对不同类型的文件显示不同的Icon</td>
+</tr>
+<tr>
+<td>④动态增删节点</td>
+<td>删除和添加文件后可自动刷新状态(To-do)</td>
+</tr>
+<tr>
+<td>⑤选择模式</td>
+<td>长按节点进行文件操作(Copy, Cut, Rename, Delete)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="效果预览---preview">效果预览 - Preview</h2>
+<p><img src="/images/tree_view_product1.png" alt="image"></p>
+<h2 id="实现---implement">实现 - Implement</h2>
+<ul>
+<li>
+<p>Tree2View 继承自 ListView</p>
+</li>
+<li>
+<p>分级的视觉效果通过 SimpleTreeAdapter（通过对不同深度的节点设置不同的缩进）来实现的。</p>
+</li>
+<li>
+<p>使用上直接使用 DefaultTreeNode （使用链表实现子节点之间的联系）增删节点。这样就实现了视觉效果和数据结构统一的设计。</p>
+</li>
+<li>
+<p>动态增删节点，ListView本身的特性，需要Adapter。</p>
+</li>
+<li>
+<p>得益于 Adapter 设计模式 Tree2View 可以由用户定制实现。</p>
+</li>
+<li>
+<p>选择模式。（比如，对于文件管理器，选择节点可以进行文件操作。</p>
+</li>
+</ul>
+<h2 id="下载---download">下载 - Download</h2>
+<blockquote>
+<p>未上传到 <code>jCenter()</code>，可直接clone本项目使用。</p>
+</blockquote>
+<pre><code class="language-git" data-lang="git">git clone git@github.com:LeeReindeer/Tree2View.git
+</code></pre><p>Then open your project in Android Studio, then Click <code>FIle</code> -&gt; <code>New</code> -&gt; <code>Import Module</code>, to import this
+module.</p>
+<p>And add dependence in your <code>build.gradle</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy"> implementation <span style="color:#a6e22e">project</span><span style="color:#f92672">(</span>path: <span style="color:#e6db74">&#39;:treeview&#39;</span><span style="color:#f92672">)</span>
+</code></pre></div><h2 id="使用---usage">使用 - Usage</h2>
+<p>Feel free to use it as <code>ListView</code>.</p>
+<p>XML:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#f92672">&lt;xyz.leezoom.view.treeview.TreeView</span>
+        <span style="color:#a6e22e">android:id=</span><span style="color:#e6db74">&#34;@+id/tree_view&#34;</span>
+        <span style="color:#a6e22e">android:layout_marginTop=</span><span style="color:#e6db74">&#34;16dp&#34;</span>
+        <span style="color:#a6e22e">android:layout_width=</span><span style="color:#e6db74">&#34;match_parent&#34;</span>
+        <span style="color:#a6e22e">android:layout_height=</span><span style="color:#e6db74">&#34;match_parent&#34;</span>
+        <span style="color:#a6e22e">android:divider=</span><span style="color:#e6db74">&#34;#ffffff&#34;</span>
+        <span style="color:#a6e22e">android:dividerHeight=</span><span style="color:#e6db74">&#34;1px&#34;</span><span style="color:#f92672">&gt;</span>
+
+    <span style="color:#f92672">&lt;/xyz.leezoom.view.treeview.TreeView&gt;</span>
+</code></pre></div><p>Kotlin(Java is similar whit it)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#66d9ef">var</span> root :DefaultTreeNode? = DefaultTreeNode(<span style="color:#e6db74">&#34;Root&#34;</span>)
+  <span style="color:#66d9ef">val</span> treeView = TreeView(<span style="color:#66d9ef">this</span>@MainActivity, root)
+  <span style="color:#66d9ef">val</span> child1 = DefaultTreeNode(<span style="color:#e6db74">&#34;Child1&#34;</span>)
+  <span style="color:#66d9ef">val</span> child2 = DefaultTreeNode(<span style="color:#e6db74">&#34;Child2&#34;</span>)
+  root.addChild(child1)
+  root.addChild(child2)
+  <span style="color:#66d9ef">val</span> child3 = DefaultTreeNode(<span style="color:#e6db74">&#34;Child3&#34;</span>)
+  child1.addChild(child3)
+</code></pre></div><p>If you want to use customized item view, you should implement <code>TreeAapater</code>, like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileTreeAdapter</span> <span style="color:#66d9ef">extends</span> TreeAdapter<span style="color:#f92672">&lt;</span>FileItem<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+  <span style="color:#75715e">//resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">FileTreeAdapter</span><span style="color:#f92672">(</span>Context context<span style="color:#f92672">,</span> DefaultTreeNode root<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> resourceId<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> root<span style="color:#f92672">,</span> resourceId<span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+  
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> View <span style="color:#a6e22e">getView</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> position<span style="color:#f92672">,</span> View convertView<span style="color:#f92672">,</span> ViewGroup parent<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+     <span style="color:#75715e">//your code here
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//call padding for a better UI
+</span><span style="color:#75715e"></span>     setPadding<span style="color:#f92672">(</span>holder<span style="color:#f92672">.</span><span style="color:#a6e22e">arrowIcon</span><span style="color:#f92672">,</span> depth<span style="color:#f92672">,</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">);</span>
+     <span style="color:#75715e">//toggle your view&#39;s status here
+</span><span style="color:#75715e"></span>     toggle<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> holder<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+    
+    <span style="color:#a6e22e">@Override</span>
+     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">toggle</span><span style="color:#f92672">(</span>Object<span style="color:#f92672">...</span> objects<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+     <span style="color:#f92672">}</span>
+</code></pre></div><p>Then simply add:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#66d9ef">val</span> adapter = FileTreeAdapter(<span style="color:#66d9ef">this</span>@MainActivity, root, R.layout.layout_file_tree_item)
+  treeView.treeAdapter = adapter
+</code></pre></div><h2 id="后记---what">后记 - What？</h2>
+<p>虽然是数据结构的课程设计，但是设计模式好像也挺重要的。其实，实现起来很简单，但是不知道为什么自己拖拖拉拉写了那么久。为什么叫 <code>Tree2View</code> 呢？因为我一个月之前，写个一个半成品叫 <code>TreeView</code>，所以这次就叫 <code>Tree2View</code>，本意并不是 <code>Tree to View</code> 的意思，但是这样解释也不错啊。</p>
+<p>至于为什么拖了那么那么久。。。因为最近有很多考试，然后自己对设计模式和 Android 的自定义View 也不是很熟悉。这一过程中，我读了大量的 Android 和 Java Api 源码（好像没什么进步。。。）。</p>
+<p>Tree2View 的设计参考了 Javax.swing 里 的 <code>JTree</code> 的设计，<a href="http://blog.csdn.net/carrey1989/article/details/10227165">这篇博客</a> 和 <a href="https://github.com/bmelnychuk/AndroidTreeView">AndroidTreeView</a>。</p>
+        </div>
+
+        
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/android'>Android</a></li>
+                
+                <li><a href='https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/%E7%BD%AA%E4%B8%8E%E7%BD%9A/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/human-animal-pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/%E8%B0%88%E8%B0%88%E7%9F%A5%E8%AF%86%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8A/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/%E5%BC%BA%E5%A2%99%E5%9B%BD%E4%B8%8B-github-%E4%B9%8B%E9%BE%9F%E9%80%9F-git-clone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/%E6%89%AB%E9%9B%B7%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95union-find-%E5%92%8C-flood-fill/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/manjaro%E5%AE%89%E8%A3%85%E5%B0%8F%E8%AE%B0%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/rtos%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/abstractqueuedsynchronizer/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

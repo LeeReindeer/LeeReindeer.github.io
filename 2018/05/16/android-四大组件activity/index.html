@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android 四大组件：Activity | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="Android 四大组件：Activity - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-16T07:30:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-16T07:30:00&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Android 四大组件：Activity">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2018/05/16/android-%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6activity/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#activity-是什么">Activity 是什么</a></li>
+    <li><a href="#activity-的生命周期">Activity 的生命周期</a>
+      <ul>
+        <li><a href="#activity-状态">Activity 状态</a></li>
+        <li><a href="#生命周期图">生命周期图</a></li>
+        <li><a href="#startactivity">startActivity</a></li>
+        <li><a href="#startactivityforresult">startActivityForResult</a></li>
+      </ul>
+    </li>
+    <li><a href="#保存-activity-的状态">保存 Activity 的状态</a>
+      <ul>
+        <li><a href="#pause-和-stop-activity">pause 和 stop Activity</a></li>
+        <li><a href="#重建-activity">重建 Activity</a></li>
+      </ul>
+    </li>
+    <li><a href="#任务和返回栈httpsdeveloperandroidcomguidecomponentsactivitiestasks-and-back-stack"><a href="https://developer.android.com/guide/components/activities/tasks-and-back-stack">任务和返回栈</a></a>
+      <ul>
+        <li><a href="#activity-的启动模式">Activity 的启动模式</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android 四大组件：Activity</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月16日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
+<p>参考 <a href="https://developer.android.com/guide/components/activities">Google 官方教程</a></p>
+</blockquote>
+<h2 id="activity-是什么">Activity 是什么</h2>
+<p>Activity 是四大组件之一，每个 Activity 有一个视图，是和用户交互的地方。一个 App 可以有零到多个 Activity，<strong>每个 Activity 都必须在 <code>AndroidManifest.xml</code> 清单文件中声明。</strong></p>
+<h2 id="activity-的生命周期">Activity 的生命周期</h2>
+<h3 id="activity-状态">Activity 状态</h3>
+<p>Activity 基本以三种状态存在：</p>
+<ul>
+<li>
+<p>Resumed</p>
+<p>Activity 位于前台，用户可见。</p>
+</li>
+<li>
+<p>Paused</p>
+<p>另一个 Activity（或者其他，比如 Dialog）位于前台获得用户焦点，但是这个 Activity 仍然可见。</p>
+</li>
+<li>
+<p>Stopped</p>
+<p>该 Activity 完全被另一个 Activity 覆盖，用户不可见。</p>
+</li>
+</ul>
+<h3 id="生命周期图">生命周期图</h3>
+<p><img src="/images/activity_lifecycle.png" alt="img"></p>
+<p>结合这张图，Activity的生命周期可分为三个部分：</p>
+<ul>
+<li>
+<p>Activity 的<strong>整个生命周期</strong>在 <code>onCreate()</code> 和 <code>onDestroy()</code> 之间。</p>
+</li>
+<li>
+<p>Activity 的<strong>可见生命周期</strong>在 <code>onStart()</code> 和 <code>onStop()</code> 之间。</p>
+</li>
+<li>
+<p>Activity 的前台申明周期在 <code>onResume()</code> 和 <code>onPause()</code> 之间。**当在 A activity 启动 B activity 时，完整的调用如下：<code>A:onPause()</code> -&gt; <code>B:onCreate()</code> -&gt; <code>B:onStart()</code>  -&gt;  <code>B:onResume()</code> -&gt;  <code>A:onStop()</code> 。**为了尽快的显示 B activity， 所以在这两个方法内尽量少写耗时的代码。在系统熄屏的时候，也会调用 <code>onPause()</code>。</p>
+</li>
+</ul>
+<p>可以新建一个 Activity 基类来显示每个子类的生命周期：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseActivity</span> : AppCompatActivity() {
+  <span style="color:#66d9ef">val</span> TAG = javaClass.simpleName
+
+  <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onCreate</span>(savedInstanceState: Bundle?) {
+    <span style="color:#66d9ef">super</span>.onCreate(savedInstanceState)
+    title = javaClass.simpleName
+    Log.d(TAG, <span style="color:#e6db74">&#34;onCreate&#34;</span>)
+  }
+
+  <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">initView</span>()
+  <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">initData</span>() {}
+
+  <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onStart</span>() {
+    <span style="color:#66d9ef">super</span>.onStart()
+    Log.d(TAG, <span style="color:#e6db74">&#34;onStart&#34;</span>)
+  }
+
+  <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onResume</span>() {
+    <span style="color:#66d9ef">super</span>.onResume()
+    Log.d(TAG, <span style="color:#e6db74">&#34;onResume&#34;</span>)
+  }
+
+  <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onPause</span>() {
+    <span style="color:#66d9ef">super</span>.onPause()
+    Log.d(TAG, <span style="color:#e6db74">&#34;onPause&#34;</span>)
+  }
+
+  <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onStop</span>() {
+    <span style="color:#66d9ef">super</span>.onStop()
+    Log.d(TAG, <span style="color:#e6db74">&#34;onStop&#34;</span>)
+  }
+
+  <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onDestroy</span>() {
+    <span style="color:#66d9ef">super</span>.onDestroy()
+    Log.d(TAG, <span style="color:#e6db74">&#34;onDestroy&#34;</span>)
+  }
+
+  <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onRestart</span>() {
+    <span style="color:#66d9ef">super</span>.onRestart()
+    Log.d(TAG, <span style="color:#e6db74">&#34;onRestart&#34;</span>)
+  }
+}
+</code></pre></div><blockquote>
+<p>名为“是否能事后终止？”的列表示系统是否能在不执行另一行 Activity 代码的情况下，在<em>方法返回后</em>随时终止承载 Activity 的进程。 有三个方法带有“是”标记：(<code>onPause()</code>、<code>onStop()</code> 和 <code>onDestroy()</code>)。由于 <code>onPause()</code> 是这三个方法中的第一个，因此 Activity 创建后，<code>onPause()</code> 必定成为最后调用的方法，然后才能终止进程 — 如果系统在紧急情况下必须恢复内存，则可能不会调用 <code>onStop()</code> 和 <code>onDestroy()</code>。**因此，您应该使用 <code>onPause()</code> 向存储设备写入至关重要的持久性数据（例如用户编辑）。**不过，您应该对 <code>onPause()</code> 调用期间必须保留的信息有所选择，因为该方法中的任何阻止过程都会妨碍向下一个 Activity 的转变并拖慢用户体验。</p>
+</blockquote>
+<p>这段话可能翻译的有些问题，其实就是说，在 调用 <code>onPause()</code> 之后系统就可以结束这个 Activity。所以应该在 <code>onPause()</code> 里做持久化。</p>
+<h3 id="startactivity">startActivity</h3>
+<p>启动一个 Activity，同时可以通过 <code>Intenet</code> 向下一个应用传递数据，但是有大小限制（？）</p>
+<ul>
+<li>
+<p>显式启动</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">startActivity(Intent(<span style="color:#66d9ef">this</span>, SecondActivity<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
+</code></pre></div></li>
+<li>
+<p>隐式启动</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">val</span> intent = Intent(Intent.ACTION_SEND).apply {
+    putExtra(Intent.EXTRA_EMAIL, recipientArray)
+}
+startActivity(intent)
+</code></pre></div></li>
+</ul>
+<h3 id="startactivityforresult">startActivityForResult</h3>
+<p>以 <code>startActivityForResult()</code> 方式启动 Activity，可以让这个 Activity 返回结果数据给上一个应用。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">initView</span>() {
+    first_button.setOnClickListener {
+    startActivityForResult(Intent(<span style="color:#66d9ef">this</span>, SecondActivity<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java).apply {
+        <span style="color:#66d9ef">val</span> text = first_edit.text.toString()
+        putExtra(<span style="color:#e6db74">&#34;sendToSecond&#34;</span>, rot13(
+            <span style="color:#66d9ef">if</span> (text.isNotBlank()) text <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#34;Hello world&#34;</span>)
+        )
+      }, <span style="color:#ae81ff">1</span>)
+    }
+}
+
+<span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onActivityResult</span>(requestCode: Int, resultCode: Int, <span style="color:#66d9ef">data</span>: Intent?) {
+    <span style="color:#66d9ef">if</span> (requestCode == <span style="color:#ae81ff">1</span>) {
+      <span style="color:#66d9ef">if</span> (resultCode == Activity.RESULT_OK) {
+        <span style="color:#66d9ef">val</span> decrypted = <span style="color:#66d9ef">data</span>.getStringExtra(<span style="color:#e6db74">&#34;fromSecond&#34;</span>)
+        toast(<span style="color:#e6db74">&#34;from SecondActivity: $decrypted&#34;</span>)
+        Log.d(TAG, <span style="color:#e6db74">&#34;onActivityResult: from SecondActivity: $decrypted&#34;</span>)
+      } <span style="color:#66d9ef">else</span> {
+        toast(<span style="color:#e6db74">&#34;onActivityResult: no data from SecondActivity&#34;</span>)
+      }
+    }
+}
+</code></pre></div><h2 id="保存-activity-的状态">保存 Activity 的状态</h2>
+<h3 id="pause-和-stop-activity">pause 和 stop Activity</h3>
+<blockquote>
+<p>当 Activity 暂停或停止时，Activity 的状态会得到保留。 确实如此，因为当 Activity 暂停或停止时，<code>Activity</code> 对象仍保留在内存中 — 有关其成员和当前状态的所有信息仍处于活动状态。 因此，用户在 Activity 内所做的任何更改都会得到保留，这样一来，当 Activity 返回前台（当它“继续”）时，这些更改仍然存在。</p>
+</blockquote>
+<h3 id="重建-activity">重建 Activity</h3>
+<blockquote>
+<p>不过，当系统为了恢复内存而销毁某项 Activity 时（只有当内存极度不足时才会发生），<code>Activity</code> 对象也会被销毁，因此系统在继续 Activity 时根本无法让其状态保持完好，而是必须在用户返回 Activity 时重建 <code>Activity</code> 对象。但用户并不知道系统销毁 Activity 后又对其进行了重建，因此他们很可能认为 Activity 状态毫无变化。 在这种情况下，您可以实现另一个回调方法对有关 Activity 状态的信息进行保存，以确保有关 Activity 状态的重要信息得到保留：<code>onSaveInstanceState()</code>。</p>
+</blockquote>
+<p>使用 <code>Bundle</code> 来暂时保存数据，但是因为系统不保证会调用 ``onSaveInstanceState()<code>，最好不要在这里保存重要的数据，而应该在</code>onPause() 里<code>。向 </code>Bundle<code>里传数据和</code>Intent` 类似。借此，可以恢复一些 UI 的信息（比如在 EditView 里输入的文字）。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onCreate</span>(savedInstanceState: Bundle?) {
+    <span style="color:#66d9ef">super</span>.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_first)
+
+    <span style="color:#66d9ef">if</span> (savedInstanceState != <span style="color:#66d9ef">null</span>) {
+      first_edit.setText(savedInstanceState.getString(<span style="color:#e6db74">&#34;edit&#34;</span>) <span style="color:#f92672">?:</span> <span style="color:#e6db74">&#34;&#34;</span>)
+    }
+    initView()
+  }
+<span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onSaveInstanceState</span>(outState: Bundle?) {
+    <span style="color:#66d9ef">super</span>.onSaveInstanceState(outState)
+    outState<span style="color:#f92672">?.</span>putString(<span style="color:#e6db74">&#34;edit&#34;</span>, first_edit.text.toString())
+  }
+</code></pre></div><p>即使不实现 <code>onSaveInstanceState()</code> ,系统也会默认实现：为每个布局恢复状态，比如，<code>EditText</code> 小部件保存用户输入的任何文本，<code>CheckBox</code> 小部件保存复选框的选中或未选中状态。<strong>只需为想要保存其状态的每个小部件提供一个唯一的 ID（通过 <a href="https://developer.android.com/guide/topics/resources/layout-resource.html#idvalue"><code>android:id</code></a> 属性）。如果小部件没有 ID，则系统无法保存其状态。</strong></p>
+<p>这里使用 CheckBox 作为例子，只需要旋转一下屏幕就可以让 Activity 销毁并重建，可以发现有 ID 的 checkbox1 恢复了之前的选中状态，而第二个 CheckBox 则没有。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#f92672">&lt;CheckBox</span>
+        <span style="color:#a6e22e">android:id=</span><span style="color:#e6db74">&#34;@+id/checkbox1&#34;</span>
+        <span style="color:#a6e22e">android:hint=</span><span style="color:#e6db74">&#34;check1&#34;</span>
+        <span style="color:#a6e22e">android:layout_width=</span><span style="color:#e6db74">&#34;wrap_content&#34;</span>
+        <span style="color:#a6e22e">android:layout_height=</span><span style="color:#e6db74">&#34;wrap_content&#34;</span>
+        <span style="color:#a6e22e">android:layout_below=</span><span style="color:#e6db74">&#34;@+id/home_text&#34;</span> <span style="color:#f92672">/&gt;</span>
+
+    <span style="color:#f92672">&lt;CheckBox</span>
+        <span style="color:#a6e22e">android:hint=</span><span style="color:#e6db74">&#34;check2&#34;</span>
+        <span style="color:#a6e22e">android:layout_width=</span><span style="color:#e6db74">&#34;wrap_content&#34;</span>
+        <span style="color:#a6e22e">android:layout_height=</span><span style="color:#e6db74">&#34;wrap_content&#34;</span>
+        <span style="color:#a6e22e">android:layout_below=</span><span style="color:#e6db74">&#34;@+id/check1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</code></pre></div><p><img src="/images/android_lifecycle_log.png" alt="1526456700052"></p>
+<p><img src="/images/saveInstance.png" alt="Screenshot_1526456426"></p>
+<p><img src="/images/restoreInstance.png" alt="Screenshot_1526456686"></p>
+<h4 id="textview-的状态恢复">TextView 的状态恢复</h4>
+<p>由于 <code>onSaveInstanceState()</code> 不一定会被调用，TextView里的文本会在屏幕旋转之后初始化，比如下面的代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MainActivity</span> : AppCompatActivity() {
+    <span style="color:#66d9ef">companion</span> <span style="color:#66d9ef">object</span> {
+        <span style="color:#66d9ef">var</span> thisCount = <span style="color:#ae81ff">0</span>;
+    }
+
+    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">onCreate</span>(savedInstanceState: Bundle?) {
+        <span style="color:#66d9ef">super</span>.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+
+    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">countUp</span>(view: View) {
+        thisCount++
+        show_count.text = thisCount.toString()
+    }
+}
+</code></pre></div><p>在屏幕旋转后，<code>show_count</code>显示0，但是<code>count</code>的值仍然为之前的值。要让 TextView 保存之前的状态，可以参考 <a href="https://stackoverflow.com/questions/5179686/restoring-state-of-textview-after-screen-rotation%3E">stackoverflow</a>上的解答：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;TextView</span>
+     <span style="color:#960050;background-color:#1e0010">...</span>
+     <span style="color:#a6e22e">android:freezesText=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">/&gt;</span>
+</code></pre></div><h2 id="任务和返回栈httpsdeveloperandroidcomguidecomponentsactivitiestasks-and-back-stack"><a href="https://developer.android.com/guide/components/activities/tasks-and-back-stack">任务和返回栈</a></h2>
+<blockquote>
+<p>翻译自 <a href="https://developer.android.com/guide/components/activities/tasks-and-back-stack">https://developer.android.com/guide/components/activities/tasks-and-back-stack</a></p>
+</blockquote>
+<p>任务是用户在执行某项工作时与之交互的 Activity 集合。而返回栈是 Activity 的的排列方式，以它被打开的顺序。</p>
+<p>Activity 和任务的默认行为概括如下：</p>
+<ul>
+<li>当 Activity A 启动 Activity B，Activity A stop 了，但是系统保持他的状态，如果用户在 Activity B 按下<strong>返回键</strong>，Activity A 会 resume， 并且保持原先的状态。</li>
+<li>当用户按下 Home 键 离开一个任务，当前的 Activity stop，并且任务处于后台。系统会保持任务中的所有 Activity 的状态。如果用户返回这个任务，这个任务回到前台，并且 resume 在栈顶的 Activity。</li>
+<li>如果用户一直按返回键，当然的 Activity stop 了，这个 Activity 出栈，停止并销毁。前一个 Activity resume。当 Activity 销毁时，系统不会保持它的状态。</li>
+<li>一个 Activity 可以被多次实例化，甚至从不同的任务里。</li>
+</ul>
+<h3 id="activity-的启动模式">Activity 的启动模式</h3>
+<blockquote>
+<p>这里有个 <a href="https://play.google.com/store/apps/details?id=com.novoda.demos.activitylaunchmode">App</a> 帮你理解四种启动模式。</p>
+</blockquote>
+<p>启动模式允许您定义活动的新实例如何与当前任务相关联。您可以通过两种方式定义不同的启动模式：</p>
+<ul>
+<li>使用 manifest 文件</li>
+<li>使用 Intent flag</li>
+</ul>
+<h4 id="使用-manifest-文件">使用 manifest 文件</h4>
+<h4 id="standard">standard</h4>
+<p>默认的模式，系统创建一个 Activity 的新实例，从它启动的地方，向它传递 <code>Intent</code>。Activity 可以被多次实例化，每个实例可以属于不同的任务，每个任务可以包含多个相同的 Activity。</p>
+<h4 id="singletop">singleTop</h4>
+<p>如果一个 Activity 已经在栈顶那么系统不会新建一个实例，而是调用这个 Activity 的 <code>onNewIntent()</code> 方法。当然如果这个 Activity 不再栈顶，那么处理方式和 standard 模式一样。</p>
+<h4 id="singletask">singleTask</h4>
+<p>创建<strong>一个新的任务</strong>来在其中启动这个 Activity，但是如果这个活动的实例已经存在，系统不会创建新的实例，而是调用这个 Activity 的 <code>onNewIntent()</code> 方法。把其他的 Activity 都出栈，让其处于栈顶。</p>
+<blockquote>
+<p>The <em>affinity</em> indicates which task an activity prefers to belong to. By default, all the activities from the same app have an affinity for each other. So, by default, all activities in the same app prefer to be in the same task. However, you can modify the default affinity for an activity. Activities defined in different apps can share an affinity, or activities defined in the same app can be assigned different task affinities.</p>
+</blockquote>
+<p>其实只是在 manifest 这样设置 <code>android:launchMode=&quot;singleTask&quot;</code>，Activity 也不会在新的 Task 里打开，而只有你改变 <code>ndroid:taskAffinity</code> 这个属性时，Activity 才会在新的 Task 亮丽启动。</p>
+<p>无论是在新的任务中启动 Activity 还是在新的 Activity 中启动活动，<strong>返回键</strong>总是会让界面返回上一个活动。但是如果你以 <code>singleTask</code> 模式启动，如果这个 Activity 已经存在后台的任务中，那么整个任务（栈中的所有 Activity）都会入栈。</p>
+<p><img src="/images/singletask_multiactivity.png" alt="singletask_multiactivity"></p>
+<p>####singleInstance</p>
+<p>与 <code>singleTask</code> 相同，但系统不会将任何其他活动发送到持有该实例的任务中。该活动始终是其任务中唯一且唯一的成员;任何一次模式启动的活动都将在单独的任务中打开。</p>
+<h4 id="使用-intent-flag">使用 Intent flag</h4>
+<p>在向 <code>startActivity()</code>传递树立 FLAG 的 intent。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">startActivity(Intent(<span style="color:#66d9ef">this</span>, FirstActivity<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java).apply {
+    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+})
+</code></pre></div><ul>
+<li>
+<p>FLAG_ACTIVITY_NEW_TASK</p>
+<p>与 <code>sinleTask</code>相同</p>
+</li>
+<li>
+<p>FLAG_ACTIVITY_SINGLE_TOP</p>
+<p>与 <code>singleTop</code>相同</p>
+</li>
+<li>
+<p>FLAG_ACTIVITY_CLEAR_TOP</p>
+<p>如果要启动的活动已经在当前任务中运行，那么不会创建该活动的新实例，而是将其上的所有其他活动销毁（出栈），并将此意向传递给活动的恢复实例（位于栈顶），调用<code>onNewIntent（）</code>）。</p>
+</li>
+</ul>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2018/01/02/android-tree2view-3-core-alogrithm/">Android Tree2View 3-Core Alogrithm</a></li>
+        
+        <li><a href="/2017/12/25/android-tree2view-2-adapter-in-tree2view/">Android Tree2View 2-Adapter in Tree2View</a></li>
+        
+        <li><a href="/2017/12/14/android-tree2view-1-introduction/">Android Tree2View 1-Introduction</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/android'>Android</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/%E7%BD%AA%E4%B8%8E%E7%BD%9A/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/human-animal-pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/%E8%B0%88%E8%B0%88%E7%9F%A5%E8%AF%86%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8A/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/%E5%BC%BA%E5%A2%99%E5%9B%BD%E4%B8%8B-github-%E4%B9%8B%E9%BE%9F%E9%80%9F-git-clone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/%E6%89%AB%E9%9B%B7%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95union-find-%E5%92%8C-flood-fill/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/manjaro%E5%AE%89%E8%A3%85%E5%B0%8F%E8%AE%B0%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/rtos%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/abstractqueuedsynchronizer/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

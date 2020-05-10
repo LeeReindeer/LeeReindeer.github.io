@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CSAPP Data Lab 思路和笔记 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="CSAPP Data Lab 思路和笔记 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-11-26T15:31:21&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-11-26T15:31:21&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="CSAPP Data Lab 思路和笔记">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2018/11/26/csapp-data-lab-%E6%80%9D%E8%B7%AF%E5%92%8C%E7%AC%94%E8%AE%B0/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#bitxor">bitXor</a></li>
+    <li><a href="#tmin">tmin</a></li>
+    <li><a href="#istmax">isTmax</a></li>
+    <li><a href="#alloddbits">allOddBits</a></li>
+    <li><a href="#negate">negate</a></li>
+    <li><a href="#isasciidigit">isAsciiDigit</a></li>
+    <li><a href="#conditional">conditional</a></li>
+    <li><a href="#islessorequal">isLessOrEqual</a></li>
+    <li><a href="#logicalneg">logicalNeg</a></li>
+    <li><a href="#逻辑右移和算术右移">逻辑右移和算术右移</a></li>
+    <li><a href="#ctrl--key">CTRL + KEY</a></li>
+    <li><a href="#upercase--lowercase">Upercase &amp; Lowercase</a></li>
+    <li><a href="#howmanybits">howManyBits</a></li>
+    <li><a href="#floatscale2">floatScale2</a></li>
+    <li><a href="#floatfloat2int">floatFloat2Int</a></li>
+    <li><a href="#floatpower2">floatPower2</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">CSAPP Data Lab 思路和笔记</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年11月26日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <h1 id="data-labhttpcsappcscmuedu3elabshtmlupdated-11218"><a href="http://csapp.cs.cmu.edu/3e/labs.html">Data Lab</a><em>[Updated 11/2/18]</em></h1>
+<blockquote>
+<p>11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。</p>
+<p>肝了两天还是没有全部做出来，之前很以为很简单呢（</p>
+<p>最近也终于买了 CS:APP3e 英文版，配合 CMU 的<a href="https://www.bilibili.com/video/av20304787">课程视频</a>食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（</p>
+<p>解题的思路一般会写在注释里的。</p>
+</blockquote>
+<h2 id="bitxor">bitXor</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*s
+</span><span style="color:#75715e"> * bitXor - x^y using only ~ and &amp;
+</span><span style="color:#75715e"> *   Example: bitXor(4, 5) = 1
+</span><span style="color:#75715e"> *   Legal ops: ~ &amp;
+</span><span style="color:#75715e"> *   Max ops: 14
+</span><span style="color:#75715e"> *   Rating: 1
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">bitXor</span>(<span style="color:#66d9ef">int</span> x, <span style="color:#66d9ef">int</span> y) {
+  <span style="color:#75715e">// 德摩根定律
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// a xor b = (~a | ~b) &amp; (a | b)
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// = ~(a &amp; b) &amp; ~(~a &amp; ~b)
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#f92672">~</span>(<span style="color:#f92672">~</span>x <span style="color:#f92672">&amp;</span> <span style="color:#f92672">~</span>y) <span style="color:#f92672">&amp;</span> <span style="color:#f92672">~</span>(x <span style="color:#f92672">&amp;</span> y);
+}
+</code></pre></div><p>虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。</p>
+<p>利用的性质主要是：</p>
+<ul>
+<li>a ^ b = (~a | ~b) &amp; (a | b)</li>
+<li>(~a | ~b) = ~(a &amp; b)</li>
+</ul>
+<h2 id="tmin">tmin</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * tmin - return minimum two&#39;s complement integer
+</span><span style="color:#75715e"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span style="color:#75715e"> *   Max ops: 4
+</span><span style="color:#75715e"> *   Rating: 1
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tmin</span>(<span style="color:#66d9ef">void</span>) {
+  <span style="color:#75715e">// minimum tow&#39;s complement is 0x80000000
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">31</span>;
+}
+</code></pre></div><p>最简单的一题，最小的有符号数是 <code>0x80000000</code>。</p>
+<hr>
+<h2 id="istmax">isTmax</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * isTmax - returns 1 if x is the maximum, two&#39;s complement number,
+</span><span style="color:#75715e"> *     and 0 otherwise
+</span><span style="color:#75715e"> *   Legal ops: ! ~ &amp; ^ | +
+</span><span style="color:#75715e"> *   Max ops: 10
+</span><span style="color:#75715e"> *   Rating: 1
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">isTmax</span>(<span style="color:#66d9ef">int</span> x) {
+    <span style="color:#75715e">// tmax = 0x7fffffff
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">!</span>(x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x7fffffff</span>);
+}
+</code></pre></div><p>我一开始是像上面这样写的，如果没有限定的话这样是对的。但是整数部分的要求比较严格：</p>
+<pre><code>Integer constants 0 through 255 (0xFF), inclusive. You are
+      not allowed to use big constants such as 0xffffffff.
+</code></pre><p>而且这一题不能使用移位操作，就不能通过移位来得到 <code>0x7fffffff</code>。然后只能Google了。。。</p>
+<p>这是我 Google 到的版本:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">isTmax</span>(<span style="color:#66d9ef">int</span> x) {
+  <span style="color:#75715e">// creates i = x plus 1 then makes x = that number plus x.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// then flips the bits of x and bangs i, adds them and returns.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// this effectively checks if the number was tmax
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// because if it was adding 1 would result in a leading 1.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// you flips the bits to get 1 and add either 0 or 1
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// and return the opposite of that by banging x to get 1 for true or 0 for
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// flase
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> x <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+  x <span style="color:#f92672">=</span> x <span style="color:#f92672">+</span> i;
+  x <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>x;
+  i <span style="color:#f92672">=</span> <span style="color:#f92672">!</span>i;
+  x <span style="color:#f92672">=</span> x <span style="color:#f92672">+</span> i;
+  <span style="color:#66d9ef">return</span> <span style="color:#f92672">!</span>x;
+}
+</code></pre></div><h2 id="alloddbits">allOddBits</h2>
+<p>和上一题一样，我一开始也违反了这条规定：</p>
+<pre><code>Integer constants 0 through 255 (0xFF), inclusive. You are
+      not allowed to use big constants such as 0xffffffff.
+</code></pre><p>幸运的是，这题可以用移位：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * allOddBits - return 1 if all odd-numbered bits in word set to 1
+</span><span style="color:#75715e"> *   where bits are numbered from 0 (least significant) to 31 (most significant)
+</span><span style="color:#75715e"> *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
+</span><span style="color:#75715e"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span style="color:#75715e"> *   Max ops: 12
+</span><span style="color:#75715e"> *   Rating: 2
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">allOddBits</span>(<span style="color:#66d9ef">int</span> x) {
+  <span style="color:#75715e">// x AND mask 0xAAAAAAAA(1010...1010), then XOR mask
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> m <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xAA</span>;
+  m <span style="color:#f92672">=</span> (m <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">|</span> m;
+  m <span style="color:#f92672">=</span> (m <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">|</span> m;
+  m <span style="color:#f92672">=</span> (m <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">|</span> m;
+  m <span style="color:#f92672">=</span> (m <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">|</span> m;
+  <span style="color:#66d9ef">return</span> <span style="color:#f92672">!</span>((x <span style="color:#f92672">&amp;</span> m) <span style="color:#f92672">^</span> m);
+}
+</code></pre></div><p>主要是利用了 <code>0xAAAAAAAA</code> 这个 mask，<code>x</code> 和 mask 相与来判断是否全部的奇数位都被置1。</p>
+<h2 id="negate">negate</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * negate - return -x
+</span><span style="color:#75715e"> *   Example: negate(1) = -1.
+</span><span style="color:#75715e"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span style="color:#75715e"> *   Max ops: 5
+</span><span style="color:#75715e"> *   Rating: 2
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">negate</span>(<span style="color:#66d9ef">int</span> x) {
+  <span style="color:#75715e">// two&#39;s complement equals ones&#39; complement + 1
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> (<span style="color:#f92672">~</span>x) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+}
+</code></pre></div><p>一个数取反加一，就是它的负数，利用了补码的性质。</p>
+<hr>
+<h2 id="isasciidigit">isAsciiDigit</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * isAsciiDigit - return 1 if 0x30 &lt;= x &lt;= 0x39 (ASCII codes for characters &#39;0&#39;
+</span><span style="color:#75715e"> * to &#39;9&#39;) Example: isAsciiDigit(0x35) = 1. isAsciiDigit(0x3a) = 0.
+</span><span style="color:#75715e"> *            isAsciiDigit(0x05) = 0.
+</span><span style="color:#75715e"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span style="color:#75715e"> *   Max ops: 15
+</span><span style="color:#75715e"> *   Rating: 3
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">isAsciiDigit</span>(<span style="color:#66d9ef">int</span> x) {
+  <span style="color:#75715e">// todo flow max ops
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> _0 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x30</span>;
+  <span style="color:#66d9ef">int</span> _1 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x31</span>;
+  <span style="color:#66d9ef">int</span> _2 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x32</span>;
+  <span style="color:#66d9ef">int</span> _3 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x33</span>;
+  <span style="color:#66d9ef">int</span> _4 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x34</span>;
+  <span style="color:#66d9ef">int</span> _5 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x35</span>;
+  <span style="color:#66d9ef">int</span> _6 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x36</span>;
+  <span style="color:#66d9ef">int</span> _7 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x37</span>;
+  <span style="color:#66d9ef">int</span> _8 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x38</span>;
+  <span style="color:#66d9ef">int</span> _9 <span style="color:#f92672">=</span> x <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x39</span>;
+  <span style="color:#66d9ef">return</span> <span style="color:#f92672">!</span>_0 <span style="color:#f92672">|</span> <span style="color:#f92672">!</span>_1 <span style="color:#f92672">|</span> <span style="color:#f92672">!</span>_2 <span style="color:#f92672">|</span> <span style="color:#f92672">!</span>_3 <span style="color:#f92672">|</span> <span style="color:#f92672">!</span>_4 <span style="color:#f92672">|</span> <span style="color:#f92672">!</span>_5 <span style="color:#f92672">|</span> <span style="color:#f92672">!</span>_6 <span style="color:#f92672">|</span> <span style="color:#f92672">!</span>_7 <span style="color:#f92672">|</span> <span style="color:#f92672">!</span>_8 <span style="color:#f92672">|</span> <span style="color:#f92672">!</span>_9;
+}
+</code></pre></div><p>这题我目前想到的解法就是这样，很明显超过了操作符个数的限制，而且看上去很蠢。就是判断这个数是否等于<code>‘0’</code>到<code>‘9’</code>中的一个。</p>
+<h2 id="conditional">conditional</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * conditional - same as x ? y : z
+</span><span style="color:#75715e"> *   Example: conditional(2,4,5) = 4
+</span><span style="color:#75715e"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span style="color:#75715e"> *   Max ops: 16
+</span><span style="color:#75715e"> *   Rating: 3
+</span><span style="color:#75715e"> */</span>
+</code></pre></div><p>在 <code>15213 - Recitation 3 - Datalab</code> 中有关于这题的小提示：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//Find an algorithm for computing the expression (cond) ? t : //f, which equals t if cond is
+</span><span style="color:#75715e">//1 and f if cond is 0.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">conditional</span>(<span style="color:#66d9ef">int</span> cond, <span style="color:#66d9ef">int</span> t, <span style="color:#66d9ef">int</span> f) {
+<span style="color:#75715e">/* Compute a mask that equals 0x00000000 or
+</span><span style="color:#75715e">0xFFFFFFFF depending on the value of cond */</span>
+<span style="color:#66d9ef">int</span> mask <span style="color:#f92672">=</span> ______________________________________;
+<span style="color:#75715e">/* Use the mask to toggle between returning t or returning f */</span>
+<span style="color:#66d9ef">return</span> __________________________________________;
+}
+</code></pre></div><p>当 x 取 0 时，返回 z，否则，返回 y。假设 <code>x = 0</code> 时，取 <code>mask = 0xffffffff</code>，否则，<code>mask = 0x0</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">conditional</span>(<span style="color:#66d9ef">int</span> x, <span style="color:#66d9ef">int</span> y, <span style="color:#66d9ef">int</span> z) {
+  <span style="color:#75715e">// when x = 0, t1 is overflow, it&#39;s value is 0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> t1 <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>x <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+  <span style="color:#75715e">// when x = 0, t2 =0, else its MSB is 1
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> t2 <span style="color:#f92672">=</span> x <span style="color:#f92672">|</span> t1;
+  <span style="color:#75715e">// when x = 0, t3 = 0xffffffff, else t3&#39;s MSB is 0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> t3 <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>t2;
+  <span style="color:#75715e">// arithmetical shift
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// x = 0, mask = 0xffffffff, else mask = 0x0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> mask <span style="color:#f92672">=</span> t3 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>;
+  <span style="color:#75715e">// use mask to toggle between y and z
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// x = 0, return z, else return y
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> (<span style="color:#f92672">~</span>mask <span style="color:#f92672">&amp;</span> y) <span style="color:#f92672">|</span> (mask <span style="color:#f92672">&amp;</span> z);
+}
+</code></pre></div><h2 id="islessorequal">isLessOrEqual</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * isLessOrEqual - if x &lt;= y  then return 1, else return 0
+</span><span style="color:#75715e"> *   Example: isLessOrEqual(4,5) = 1.
+</span><span style="color:#75715e"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span style="color:#75715e"> *   Max ops: 24
+</span><span style="color:#75715e"> *   Rating: 3
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">isLessOrEqual</span>(<span style="color:#66d9ef">int</span> x, <span style="color:#66d9ef">int</span> y) {
+  <span style="color:#75715e">// Cases:
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// 1. x == y
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// 2. x, y has different sign, so the negative is less
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// if just do x -y, it may overflow when x,y has different sign.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// 3. x - y &lt; 0, when x,y has same sign
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> mask <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1</span>;
+  <span style="color:#66d9ef">int</span> equals <span style="color:#f92672">=</span> <span style="color:#f92672">!</span>(x <span style="color:#f92672">^</span> y);
+
+  <span style="color:#66d9ef">int</span> x_sign <span style="color:#f92672">=</span> (x <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>) <span style="color:#f92672">&amp;</span> mask;
+  <span style="color:#66d9ef">int</span> y_sign <span style="color:#f92672">=</span> (y <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>) <span style="color:#f92672">&amp;</span> mask;
+  <span style="color:#75715e">// sign is diff and x_sign is 1
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> diff_sign <span style="color:#f92672">=</span> x_sign <span style="color:#f92672">^</span> y_sign;
+  <span style="color:#66d9ef">int</span> case2 <span style="color:#f92672">=</span> diff_sign <span style="color:#f92672">&amp;</span> x_sign;
+
+  <span style="color:#66d9ef">int</span> neg_y <span style="color:#f92672">=</span> (<span style="color:#f92672">~</span>y) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+  <span style="color:#75715e">// use logical right shift, but casting is not allowed.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// int less =  (unsigned)(x + neg_y) &gt;&gt; 31;
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// less is MSB(sign bit): 0 -&gt; x - y &gt; 0, 1-&gt; x - y &lt; 0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> less <span style="color:#f92672">=</span> ((x <span style="color:#f92672">+</span> neg_y) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>) <span style="color:#f92672">&amp;</span> mask;
+  <span style="color:#66d9ef">return</span> equals <span style="color:#f92672">|</span> case2 <span style="color:#f92672">|</span> (<span style="color:#f92672">!</span>diff_sign <span style="color:#f92672">&amp;</span> less);
+}
+</code></pre></div><p>考虑返回 1 的 3 种情况：</p>
+<ol>
+<li>x == y</li>
+<li>x , y 不同号且 x 是负数</li>
+<li>x, y 同号，x - y  &lt; 0</li>
+</ol>
+<p>为什么需要考虑 x, y 是否同号呢？</p>
+<p>其实我一开始也只考虑了两种情况，即 x == y；x - y &lt; 0。在进行测试的时候有如下输出：</p>
+<pre><code>ERROR: Test isLessOrEqual(-2147483648[0x80000000],2147483647[0x7fffffff]) failed...
+...Gives 0[0x0]. Should be 1[0x1]
+</code></pre><p>很明显 <code>0x80000000</code> 应该小于 <code>0x7fffffff</code>，但是却输出了 0。因为 <code>0x80000000 + 0x80000001</code> 发生了负溢出，产生的结果是一个大于 0 的数。所以 <code>less</code>会是 0。</p>
+<hr>
+<h2 id="logicalneg">logicalNeg</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * logicalNeg - implement the ! operator, using all of
+</span><span style="color:#75715e"> *              the legal operators except !
+</span><span style="color:#75715e"> *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
+</span><span style="color:#75715e"> *   Legal ops: ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span style="color:#75715e"> *   Max ops: 12
+</span><span style="color:#75715e"> *   Rating: 4
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">logicalNeg</span>(<span style="color:#66d9ef">int</span> x) {
+  <span style="color:#75715e">// when x = 0, t1 is overflow, it&#39;s value is 0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> t1 <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>x <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+  <span style="color:#75715e">// when x = 0, t2 =0, else its MSB is 1
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> t2 <span style="color:#f92672">=</span> x <span style="color:#f92672">|</span> t1;
+  <span style="color:#75715e">// when x = 0, t3 = 0xffffffff, else t3&#39;s MSB is 0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> t3 <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>t2;
+  <span style="color:#75715e">// logical shift
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// return (unsigned)t3 &gt;&gt; 31;
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// x = 0, mask = 0x1, else mask = 0x0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> (t3 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span>;
+}
+</code></pre></div><p>和 conditional 那题类似，不过我开始使用的是 <code>(unsigned)t3 &gt;&gt; 31;</code>，转化为 unsigned 执行逻辑右移来直接获取 MSB。但是题目是不允许使用强制类型转换的，所以改成 <code> (t3 &gt;&gt; 31) &amp; 1</code>。</p>
+<h2 id="逻辑右移和算术右移">逻辑右移和算术右移</h2>
+<p>在调试 logicalNeg 这题时，发生了一个小插曲。我想知道 C 在什么时候会用逻辑右移，什么时候会用算术右移。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">logicalNeg</span>(<span style="color:#66d9ef">int</span> x) {
+  <span style="color:#75715e">// when x = 0, t1 is overflow, it&#39;s value is 0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> t1 <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>x <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+  <span style="color:#75715e">// when x = 0, t2 =0, else its MSB is 1
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> t2 <span style="color:#f92672">=</span> x <span style="color:#f92672">|</span> t1;
+  <span style="color:#75715e">// when x = 0, t3 = 0xffffffff, else t3&#39;s MSB is 0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> t3 <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>t2;
+  <span style="color:#75715e">// 怎么使用 logical shift
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> t3 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>;
+}
+</code></pre></div><p>当 x 是 0时，t3 = 0xffffffff。此时是要使用逻辑右移就可以变成 <code>0x00000001</code>。</p>
+<p>再看下面的测试代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span>argv[]) {
+  <span style="color:#66d9ef">int</span> neg_one <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xffffffff</span>;
+  <span style="color:#66d9ef">int</span> shift <span style="color:#f92672">=</span> neg_one <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>;
+  <span style="color:#66d9ef">int</span> shift_inline <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xffffffff</span> <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>;
+
+  printf(<span style="color:#e6db74">&#34;------right shift-----</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+  printf(<span style="color:#e6db74">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span>, shift);
+  printf(<span style="color:#e6db74">&#34; = </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+  show_bytes((byte_pointer)<span style="color:#f92672">&amp;</span>shift, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>));
+
+  printf(<span style="color:#e6db74">&#34;------right shift inline-----</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+  printf(<span style="color:#e6db74">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span>, shift_inline);
+  printf(<span style="color:#e6db74">&#34; = </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+  show_bytes((byte_pointer)<span style="color:#f92672">&amp;</span>shift_inline, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>));
+  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>结果很奇怪，怎么两个一样的式子有不同的结果呢？第一个使用了算术右移，第二个使用了逻辑右移。唯一的区别就是 <code>0xffffffff</code> 所在的位置，第一个是被保存在 int 中的，第二个式子，则是包含在式子里面<code>int shift_inline = 0xffffffff &gt;&gt; 31;</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#960050;background-color:#1e0010">▶</span> .<span style="color:#f92672">/</span><span style="color:#e6db74">&#34;right_shift&#34;</span>
+<span style="color:#f92672">------</span>right shift<span style="color:#f92672">-----</span>
+<span style="color:#ae81ff">0xffffffff</span> <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">=</span>
+ ff ff ff ff
+<span style="color:#f92672">------</span>right shift <span style="color:#66d9ef">inline</span><span style="color:#f92672">-----</span>
+<span style="color:#ae81ff">0xffffffff</span> <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">=</span>
+ <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span>
+</code></pre></div><p>其实只要明白一点，就会茅塞顿开。（还是因为我没仔细看书吧），CSAPP上有这样一段话：</p>
+<blockquote>
+<p>The c standards do not precisely define which type of right shift should be used with signed numbers-either arithmetic or logical shifts may be used. This unfortunately means that any code assuming one form or the other will potentially encounter portability problems.<strong>In practice,however, almost all compiler/machine combinations use arithmetic right shifts for signed data, and many programmers assume this to be the case. For unsigned data, on the other hand, right shifts must be logical.</strong></p>
+</blockquote>
+<p>可以看做，C 中无符号数采用逻辑右移，而有符号数采用算术右移。</p>
+<p>那么 <code>  int shift_inline = 0xffffffff &gt;&gt; 31;</code> 这个式子会采用逻辑右移，也说明 C 中 0x 开头表示的16进制数默认被当做 unsigned 。</p>
+<p>而怎么使用逻辑右移的答案已经显而易见，<code>return (unsigned)t3 &gt;&gt; 31;</code>。</p>
+<h2 id="ctrl--key">CTRL + KEY</h2>
+<p>今天(2018/11/27)，在跟着这个<a href="https://viewsourcecode.org/snaptoken/kilo/03.rawInputAndOutput.html">从0 开始写编辑器的教程</a>敲代码的时候，发现几个有意思的位运算，同时不得不感叹ASCII表设计的很巧妙了。</p>
+<p><code>CTRL-C</code> 大家都用过，大部分情况是复制黏贴，或者是终止一个进程。它在 ASCII 表中的数值是 3，为什么是 3 呢？我从来没想过。</p>
+<p>因为就是这样设计的，<code>C</code> 是字母表中的第3个字母，所以可能为了方便？<code>CTRL-C</code> 就是 3。</p>
+<p>想在编辑器中捕捉<code>CTRL-C</code>首先要关闭<code>CTRL-C</code>的默认功能：发出<code>SIGINT</code> 信号终止程序。之后你可以写类似这样的代码：<code>if(c == 3)</code></p>
+<p>但是为了使代码更容易理解，使用这个宏来表示<code>CTRL-KEY</code>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#define CTRL_KEY(k) ((k)&amp;0x1f)
+</span></code></pre></div><p>这样你便可以用<code>if(c == CTRL_KEY('C'))</code> 来表示 <code>CTRL-C</code>了。</p>
+<p><code>CTRL</code> 键和 26 个字母组合分别对应 ASCII 表中的 1～26。最少需要用 5 位二进制表示。所以只需要用<code>0x1f</code>(0001 1111) 这个 mask 取字母的低五位便可以把字母转化成<code>CTRL+KEY</code>的组合。</p>
+<p>这个式子成立的前提还有一个，就是字母的低位必须是从1开始的，而 ASCII 表设计的恰恰满足这个条件：<code>A</code>：0x41，<code>a</code>：0x61。</p>
+<h2 id="upercase--lowercase">Upercase &amp; Lowercase</h2>
+<p>利用这个的性质，还可以用位运算完成大小写的转换。只需要变换第五位二进制数（大写字母和小写字母差32.）</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#a6e22e">toggle_case</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> a) {
+  <span style="color:#66d9ef">int</span> mask <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x20</span>;
+  <span style="color:#66d9ef">return</span> a <span style="color:#f92672">^</span> mask;
+}
+</code></pre></div><h2 id="howmanybits">howManyBits</h2>
+<blockquote>
+<p>//todo</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>//todo Floating  point</p>
+</blockquote>
+<h2 id="floatscale2">floatScale2</h2>
+<h2 id="floatfloat2int">floatFloat2Int</h2>
+<h2 id="floatpower2">floatPower2</h2>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2018/10/18/concurrent-with-semaphore/">Concurrent with Semaphore</a></li>
+        
+        <li><a href="/2018/09/29/6.828-homework-2shell/">6.828 Homework 2:Shell</a></li>
+        
+        <li><a href="/2018/03/28/c%E8%AF%AD%E8%A8%80-%E5%8F%AF%E6%80%95%E7%9A%84%E6%8C%87%E9%92%88/">C语言-可怕的指针</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/csapp'>CSAPP</a></li>
+                
+                <li><a href='https://leer.moe/tags/c'>C</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/%E7%BD%AA%E4%B8%8E%E7%BD%9A/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/human-animal-pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/%E8%B0%88%E8%B0%88%E7%9F%A5%E8%AF%86%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8A/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/%E5%BC%BA%E5%A2%99%E5%9B%BD%E4%B8%8B-github-%E4%B9%8B%E9%BE%9F%E9%80%9F-git-clone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/%E6%89%AB%E9%9B%B7%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95union-find-%E5%92%8C-flood-fill/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/manjaro%E5%AE%89%E8%A3%85%E5%B0%8F%E8%AE%B0%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/rtos%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/abstractqueuedsynchronizer/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

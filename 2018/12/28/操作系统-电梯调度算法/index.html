@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>操作系统-电梯调度算法 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="操作系统-电梯调度算法 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-12-28T18:31:21&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-12-28T18:31:21&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="操作系统-电梯调度算法">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2018/12/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E7%94%B5%E6%A2%AF%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景介绍">背景介绍</a></li>
+    <li><a href="#自然语言描述">自然语言描述</a></li>
+    <li><a href="#流程图">流程图</a></li>
+    <li><a href="#c">C++</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">操作系统-电梯调度算法</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年12月28日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
+<p>最近在复习操作系统，老师不讲设备管理这一部分，让我们自学，期末要考<strong>电梯调度算法</strong>。这篇文章分别用自然语言，流程图，<a href="https://gist.github.com/LeeReindeer/95efbc79b18636236dca4625bb5b83d5">C++语言</a>来描述电梯算法，其实电梯算法真的很简单:smile_cat:</p>
+</blockquote>
+<h2 id="背景介绍">背景介绍</h2>
+<p>在介绍电梯算法之前，我们需要了解一下，它出现的背景，它是为了解决什么问题？</p>
+<p>前面已经说过，这是设备管理的内容。对于电梯算法来说，它所管理的设备就是磁盘，而且是机械硬盘。硬盘的基本结构如下图，这里需要搞清几个概念：盘面、柱面、磁道、扇区、磁头：</p>
+<p><img src="/images/cylinder.gif" alt="cylinder"></p>
+<p><img src="/images/cylinder2.gif" alt="cylinder2"></p>
+<p>一图胜千言，我看书上的文字描述，一直没搞懂柱面是什么，看了上面的两张图才恍然大悟。</p>
+<blockquote>
+<p>顺便说一下《操作系统教程》这本书就是 shit ，出到第五版还是这个样子，而且还有错别字，算式也有错的。当然，这并不能限制我去读 CSAPP。</p>
+</blockquote>
+<p>用一句话说就是：一个盘有两个盘面，分别对应两个磁头；垂直方向上同一半径的磁道组成一个柱面；水平方向上把一个盘面等分成多个扇区。</p>
+<p>要访问一个文件，我们需要三个参数，即：柱面号、磁头号、扇区号。</p>
+<p>硬盘需要根据柱面号控制移动臂做横向<strong>机械运行</strong>，带动磁头到指定的柱面。我们都知道机械运动是很慢的，所以在一系列的磁盘访问中，如果可以减少磁头移动的距离，就可以减少读取的总时间。为此诞生了很多算法：FCFS，最短查找时间优先算法、扫描算法、分步扫描算法、循环扫描算法、<strong>电梯算法</strong>。</p>
+<p>接下来，就是今天的主角：电梯算法，将会用自然语言，流程图，C++语言分别进行描述。</p>
+<h2 id="自然语言描述">自然语言描述</h2>
+<p>电梯算法在无访问请求时移动臂停止不动，有访问请求时，移动臂按电梯规律移动。这里我们假设**磁盘柱面号通常由外向里递增。**每次总是选择沿移动臂的移动方向最近的那个柱面。如果当前移动方向上没有但相反方向有访问请求时，就改变移动臂的移动方向然后处理所遇到的最近的I/O请求。我们来看下面的例子，这个例子会贯穿整篇文章：</p>
+<blockquote>
+<p>假设硬盘有 200 个柱面，编号从 0 到 199 ，有如下的访问序列：
+<code>150 30 190 20 100 55 90</code>
+当前磁头处于 50 号柱面，并且正在向内移动。</p>
+</blockquote>
+<p>使用电梯算法移动的次序为：<code>55 90 100 150 90 30 20</code>，移动的总柱面数为 310。</p>
+<h2 id="流程图">流程图</h2>
+<p>电梯算法的流程图如下：</p>
+<blockquote>
+<p>画图工具：draw.io</p>
+</blockquote>
+<p><img src="/images/%E7%94%B5%E6%A2%AF%E7%AE%97%E6%B3%95.jpg" alt="电梯算法"></p>
+<h2 id="c">C++</h2>
+<p>有了自然语言描述和流程图，编码的实现相对变得简单了些。这里我模仿 ACM 竞赛题的格式，把电梯算法改造成一道题目，一起来 AC 吧（</p>
+<blockquote>
+<p>假设磁盘柱面编号由外向内递增，从0开始编号</p>
+<p>输入格式：</p>
+<p>第一行分别为：磁盘的柱面总数N，当前处于的柱面cur，当前移动的方向dir（1表示向内，-1表示向外）</p>
+<p>第二行为请求访问的柱面个数n</p>
+<p>接下来访问柱面的次序。</p>
+<p>输出格式：</p>
+<p>访问柱面的次序和移动臂移动的柱面总数。</p>
+<p>输入样例：</p>
+<p>200 50 1</p>
+<p>7</p>
+<p>150 30 190 20 100 55 90</p>
+<p>输出样例：</p>
+<p>55 90 100 150 190 30 20</p>
+<p>310</p>
+</blockquote>
+<p>需要对访问的序列进行搜索，判断是否和当前所在的柱面相同，可以用二分法加快搜索速度。接下来根据它的移动方向，判断是否有比当前柱面大或这小的柱面，有的话就去处理大于当前柱面中最小的或者是小于当前柱面中最大的。这样可以一次性处理完同一个方向的请求，并且不会有重复的移动。</p>
+<p>main 函数代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> maxn <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>;
+<span style="color:#66d9ef">int</span> N, n;
+<span style="color:#66d9ef">int</span> order[maxn], ans[maxn];
+<span style="color:#66d9ef">int</span> cylinder[maxn] <span style="color:#f92672">=</span> {<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>};
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+  <span style="color:#66d9ef">int</span> cur, dir;
+  cin <span style="color:#f92672">&gt;&gt;</span> N <span style="color:#f92672">&gt;&gt;</span> cur <span style="color:#f92672">&gt;&gt;</span> dir <span style="color:#f92672">&gt;&gt;</span> n;
+
+  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) {
+    cin <span style="color:#f92672">&gt;&gt;</span> order[i];
+  }
+
+  sort(order, order <span style="color:#f92672">+</span> n);
+  <span style="color:#66d9ef">int</span> sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, cur_order <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+  <span style="color:#66d9ef">while</span> (cur_order <span style="color:#f92672">&lt;</span> n) {
+    <span style="color:#66d9ef">int</span> index <span style="color:#f92672">=</span> find_same(cur);
+    <span style="color:#66d9ef">if</span> (index <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {  <span style="color:#75715e">// find same
+</span><span style="color:#75715e"></span>      cylinder[order[index]] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+      ans[cur_order<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> order[index];
+    } <span style="color:#66d9ef">else</span> {
+      index <span style="color:#f92672">=</span> find_greater_less(cur, dir);  <span style="color:#75715e">// find greater or less
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> (index <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
+        sum <span style="color:#f92672">+=</span> (abs(order[index] <span style="color:#f92672">-</span> cur));
+        cylinder[order[index]] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+        ans[cur_order<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> order[index];
+        cur <span style="color:#f92672">=</span> order[index];  <span style="color:#75715e">// change cur
+</span><span style="color:#75715e"></span>      } <span style="color:#66d9ef">else</span> {
+        <span style="color:#75715e">// change dir
+</span><span style="color:#75715e"></span>        dir <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>dir;
+      }
+    }
+  }
+
+  print_order(ans);
+  cout <span style="color:#f92672">&lt;&lt;</span> sum <span style="color:#f92672">&lt;&lt;</span> endl;
+  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>使用一个<code>cylinder</code> 数组来标记这个柱面是否已经访问过了，在二分查找时，如果这个柱面已经访问过了，就不记录。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * @brief  find the index of current cylinder,
+</span><span style="color:#75715e"> * if there is no same, return the
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">find_same</span>(<span style="color:#66d9ef">int</span> cur) {
+  <span style="color:#66d9ef">int</span> L <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, R <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+  <span style="color:#66d9ef">while</span> (R <span style="color:#f92672">-</span> L <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+    <span style="color:#66d9ef">int</span> m <span style="color:#f92672">=</span> (L <span style="color:#f92672">+</span> R) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>;
+    <span style="color:#75715e">// order[m] 没有被访问并且和当前柱面相同
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (order[m] <span style="color:#f92672">==</span> cur <span style="color:#f92672">&amp;&amp;</span> cylinder[order[m]] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>) {
+      <span style="color:#66d9ef">return</span> m;
+    } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (order[m] <span style="color:#f92672">&gt;</span> cur)
+      R <span style="color:#f92672">=</span> m <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+    <span style="color:#66d9ef">else</span>
+      L <span style="color:#f92672">=</span> m <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+  }
+  <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+}
+</code></pre></div><p>对于查找大于当前柱面中最小的或者是小于当前柱面中最大的，我直接使用了顺序查找，应该也可以使用二分法来查找，但我没有过多的去优化这个实现。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">find_greater_less</span>(<span style="color:#66d9ef">int</span> current, <span style="color:#66d9ef">int</span> dir) {
+  <span style="color:#66d9ef">if</span> (dir <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) {  <span style="color:#75715e">//向内,查找大于当前柱面中最小的
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 从小到大搜索
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) {
+      <span style="color:#66d9ef">if</span> (current <span style="color:#f92672">&lt;</span> order[i] <span style="color:#f92672">&amp;&amp;</span> cylinder[order[i]] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>) {
+        <span style="color:#66d9ef">return</span> i;
+      }
+    }
+  } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (dir <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {  <span style="color:#75715e">//向外，查找小于当前柱面中最大的
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 从大到小搜索
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>; i<span style="color:#f92672">--</span>) {
+      <span style="color:#66d9ef">if</span> (current <span style="color:#f92672">&gt;</span> order[i] <span style="color:#f92672">&amp;&amp;</span> cylinder[order[i]] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>) {
+        <span style="color:#66d9ef">return</span> i;
+      }
+    }
+  }
+  <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+}
+</code></pre></div><p>运行结果和书上的一致：</p>
+<p><img src="/images/elevator-result.png" alt="elevator-result"></p>
+<p>所以总的来讲我实现的电梯算法的时间复杂度是<code>O(n^2)</code>，但是我觉得可以优化到<code>O(nlgn)</code>，等我考完试再说。。。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li>
+<p>《操作系统教程》第五版 P272</p>
+</li>
+<li>
+<p><a href="https://segmentfault.com/a/1190000007392163">硬盘中磁头、扇区、柱面的概念简单介绍</a></p>
+</li>
+</ul>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2018/09/29/6.828-homework-2shell/">6.828 Homework 2:Shell</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/os'>OS</a></li>
+                
+                <li><a href='https://leer.moe/tags/%E7%AE%97%E6%B3%95'>算法</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/%E7%BD%AA%E4%B8%8E%E7%BD%9A/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/human-animal-pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/%E8%B0%88%E8%B0%88%E7%9F%A5%E8%AF%86%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8A/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/%E5%BC%BA%E5%A2%99%E5%9B%BD%E4%B8%8B-github-%E4%B9%8B%E9%BE%9F%E9%80%9F-git-clone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/%E6%89%AB%E9%9B%B7%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95union-find-%E5%92%8C-flood-fill/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/manjaro%E5%AE%89%E8%A3%85%E5%B0%8F%E8%AE%B0%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/rtos%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/abstractqueuedsynchronizer/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

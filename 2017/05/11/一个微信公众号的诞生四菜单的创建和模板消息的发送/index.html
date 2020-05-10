@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>一个微信公众号的诞生（四）菜单的创建和模板消息的发送 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="一个微信公众号的诞生（四）菜单的创建和模板消息的发送 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2017-05-11T22:42:37&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2017-05-11T22:42:37&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="一个微信公众号的诞生（四）菜单的创建和模板消息的发送">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2017/05/11/%E4%B8%80%E4%B8%AA%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E7%9A%84%E8%AF%9E%E7%94%9F%E5%9B%9B%E8%8F%9C%E5%8D%95%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E6%A8%A1%E6%9D%BF%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%91%E9%80%81/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#数据结构分析">数据结构分析</a></li>
+    <li><a href="#具体实现">具体实现</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#数据结果分析">数据结果分析</a></li>
+    <li><a href="#具体实现-1">具体实现</a>
+      <ul>
+        <li><a href="#新建模板">新建模板</a></li>
+        <li><a href="#封装消息">封装消息</a></li>
+        <li><a href="#群发todo">群发(todo)</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">一个微信公众号的诞生（四）菜单的创建和模板消息的发送</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年5月11日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
+<p>前面已经成功的获取了access_token，应该已经猜到，菜单的创建和模板消息的发送这两个接口，都要用到access_token．</p>
+</blockquote>
+<h1 id="菜单的创建">菜单的创建</h1>
+<h2 id="数据结构分析">数据结构分析</h2>
+<p>Button的类型可以分为cilck和view，分别是点击的时间推送和跳转网页．看下面开发文档中的例子</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"> {
+     <span style="color:#f92672">&#34;button&#34;</span>:[
+     {
+          <span style="color:#f92672">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;click&#34;</span>,
+          <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;今日歌曲&#34;</span>,
+          <span style="color:#f92672">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;V1001_TODAY_MUSIC&#34;</span>
+      },
+      {
+           <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;菜单&#34;</span>,
+           <span style="color:#f92672">&#34;sub_button&#34;</span>:[
+           {
+               <span style="color:#f92672">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;view&#34;</span>,
+               <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;搜索&#34;</span>,
+               <span style="color:#f92672">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;http://www.soso.com/&#34;</span>
+            },
+            {
+               <span style="color:#f92672">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;view&#34;</span>,
+               <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;视频&#34;</span>,
+               <span style="color:#f92672">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;http://v.qq.com/&#34;</span>
+            },
+            {
+               <span style="color:#f92672">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;click&#34;</span>,
+               <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;赞一下我们&#34;</span>,
+               <span style="color:#f92672">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;V1001_GOOD&#34;</span>
+            }]
+       }]
+ }
+</code></pre></div><p>这是一个button数组,里面有两个按钮分别是&quot;今日歌曲&rdquo;，&ldquo;菜单&rdquo;，&ldquo;菜单&quot;按钮又有二级按钮&quot;搜索&rdquo;,&ldquo;视频&rdquo;,&ldquo;赞一下我们&rdquo;.这样分析之后，可知要创建几个实体类来封装json数据包,这里主要以viewbutton为例．</p>
+<h2 id="具体实现">具体实现</h2>
+<p>新建Button类,ClickButton类（继承Button）,VIewButton类（继承Button），和Menu类．各种参数参考开发文档.Button类代码如下．</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Button</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> String type<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> Button<span style="color:#f92672">[]</span> sub_button<span style="color:#f92672">;</span>
+
+
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+
+        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getType</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+
+        <span style="color:#66d9ef">return</span> type<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> Button<span style="color:#f92672">[]</span> <span style="color:#a6e22e">getSub_button</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+
+        <span style="color:#66d9ef">return</span> sub_button<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setSub_button</span><span style="color:#f92672">(</span>Button<span style="color:#f92672">[]</span> sub_button<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">sub_button</span> <span style="color:#f92672">=</span> sub_button<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setType</span><span style="color:#f92672">(</span>String type<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">type</span> <span style="color:#f92672">=</span> type<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Menu类</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Menu</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> Button<span style="color:#f92672">[]</span> button<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">public</span> Button<span style="color:#f92672">[]</span> <span style="color:#a6e22e">getButton</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> button<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setButton</span><span style="color:#f92672">(</span>Button<span style="color:#f92672">[]</span> button<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">button</span> <span style="color:#f92672">=</span> button<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>接下来可以看到创建菜单是通过向微信服务器发送POST请求的．所以在WechatUtil类增加一个doPost()方法，同样也是返回JSONOBject对象．传入两个参数:请求地址和需要post的数据（这里是菜单的json数据).
+<code>public JSONObject doPost(String url,String outStr){}</code>
+接着继续添加代码,</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> Menu <span style="color:#a6e22e">initMenu</span><span style="color:#f92672">(){</span>
+        Menu menu<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> Menu<span style="color:#f92672">();</span>
+        ViewButton viewButton<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ViewButton<span style="color:#f92672">();</span>
+        viewButton<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://http://leezoom.xyz&#34;</span><span style="color:#f92672">);</span>
+        viewButton<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;新建通知&#34;</span><span style="color:#f92672">);</span>
+
+        ViewButton viewButton1<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ViewButton<span style="color:#f92672">();</span>
+        viewButton1<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;课表&#34;</span><span style="color:#f92672">);</span>
+        viewButton1<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leezoom.xyz&#34;</span><span style="color:#f92672">);</span>
+
+        <span style="color:#75715e">//子菜单
+</span><span style="color:#75715e"></span>        ViewButton viewButton2<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ViewButton<span style="color:#f92672">();</span>
+        viewButton2<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;绑定微信&#34;</span><span style="color:#f92672">);</span>
+        viewButton2<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leezoom.xyz&#34;</span><span style="color:#f92672">);</span>
+
+        <span style="color:#75715e">//子菜单
+</span><span style="color:#75715e"></span>        ViewButton viewButton3<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ViewButton<span style="color:#f92672">();</span>
+        viewButton3<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;全部通知&#34;</span><span style="color:#f92672">);</span>
+        viewButton3<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leezoom.xyz&#34;</span><span style="color:#f92672">);</span>
+
+
+        Button button<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> Button<span style="color:#f92672">();</span>
+        button<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;我&#34;</span><span style="color:#f92672">);</span>
+        button<span style="color:#f92672">.</span><span style="color:#a6e22e">setSub_button</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Button<span style="color:#f92672">[]{</span>viewButton3<span style="color:#f92672">,</span>viewButton2<span style="color:#f92672">});</span>
+
+        menu<span style="color:#f92672">.</span><span style="color:#a6e22e">setButton</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Button<span style="color:#f92672">[]{</span>viewButton<span style="color:#f92672">,</span>viewButton1<span style="color:#f92672">,</span>button<span style="color:#f92672">});</span>
+        <span style="color:#66d9ef">return</span> menu<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">creatMenu</span><span style="color:#f92672">(</span>String menu<span style="color:#f92672">,</span>String token<span style="color:#f92672">){</span>
+        <span style="color:#66d9ef">int</span> errcode<span style="color:#f92672">=</span>0<span style="color:#f92672">;</span>
+        String url<span style="color:#f92672">=</span>BUtton_URL<span style="color:#f92672">.</span><span style="color:#a6e22e">replace</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ACCESS_TOKEN&#34;</span><span style="color:#f92672">,</span>token<span style="color:#f92672">);</span>
+        JSONObject jsonObject<span style="color:#f92672">=</span>doPost<span style="color:#f92672">(</span>url<span style="color:#f92672">,</span>menu<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>jsonObject<span style="color:#f92672">!=</span><span style="color:#66d9ef">null</span><span style="color:#f92672">){</span>
+            errcode<span style="color:#f92672">=</span>jsonObject<span style="color:#f92672">.</span><span style="color:#a6e22e">getInt</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;errcode&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">return</span>  errcode<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p>然后也在WechatInitial类中进行测试．</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String menu<span style="color:#f92672">=</span> JSONObject<span style="color:#f92672">.</span><span style="color:#a6e22e">fromObject</span><span style="color:#f92672">(</span>wechatUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">initMenu</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">int</span> errcode<span style="color:#f92672">=</span>wechatUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">creatMenu</span><span style="color:#f92672">(</span>menu<span style="color:#f92672">,</span>access_token<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>errcode<span style="color:#f92672">==</span>0<span style="color:#f92672">){</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;创建菜单成功&#34;</span><span style="color:#f92672">);</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>menu<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;创建菜单失败&#34;</span><span style="color:#f92672">+</span>errcode<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+</code></pre></div><p>然后然后查看手机微信端，等一下，似乎有延迟，
+<img src="/images/wechat_test1.png" alt=""></p>
+<h1 id="模板消息的发送主动发送消息">模板消息的发送(主动发送消息)</h1>
+<h2 id="数据结果分析">数据结果分析</h2>
+<p>这个做法都差不多，先看看开发文档的例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">      {
+           <span style="color:#f92672">&#34;touser&#34;</span>:<span style="color:#e6db74">&#34;OPENID&#34;</span>,
+           <span style="color:#f92672">&#34;template_id&#34;</span>:<span style="color:#e6db74">&#34;ngqIpbwh8bUfcSsECmogfXcV14J0tQlEpBO27izEYtY&#34;</span>,
+           <span style="color:#f92672">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;http://weixin.qq.com/download&#34;</span>,
+           <span style="color:#f92672">&#34;data&#34;</span>:{
+                   <span style="color:#f92672">&#34;first&#34;</span>: {
+                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;恭喜你购买成功！&#34;</span>,
+                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+                   },
+                   <span style="color:#f92672">&#34;keynote1&#34;</span>:{
+                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;巧克力&#34;</span>,
+                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+                   },
+                   <span style="color:#f92672">&#34;keynote2&#34;</span>: {
+                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;39.8元&#34;</span>,
+                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+                   },
+                   <span style="color:#f92672">&#34;keynote3&#34;</span>: {
+                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;2014年9月22日&#34;</span>,
+                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+                   },
+                   <span style="color:#f92672">&#34;remark&#34;</span>:{
+                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;欢迎再次购买！&#34;</span>,
+                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+                   }
+           }
+       }
+</code></pre></div><p>这也太麻烦了，不知是我能力有限还是．直接写好消息然后发送字符串是也可以的，加入几个变量便可实现．但我还是想用JSONObject来组装，于是写了一些奇怪的代码．</p>
+<h2 id="具体实现-1">具体实现</h2>
+<p>由于要在网页内发送消息，暂定发送的内容为：通知内容和时间．</p>
+<h3 id="新建模板">新建模板</h3>
+<p>首先要在测试号新建模板，所谓模板消息嘛．如图,注意参数的格式，以.DATA结尾．
+<img src="/images/wechat_test2.png" alt=""></p>
+<h3 id="封装消息">封装消息</h3>
+<p>然后创建与之对应的实体类，我分别创建了ArrivedTime类，Content类，都继承Datas,然后用Data类封装他们，再用ModMsg封装Data类．
+继续在WechatUtil中添加代码，也同样是利用之前写的doPost方法．</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> ModMsg <span style="color:#a6e22e">initModMsg</span><span style="color:#f92672">(</span>String mcontent<span style="color:#f92672">,</span>String openid<span style="color:#f92672">){</span>
+        ModMsg modMsg<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ModMsg<span style="color:#f92672">();</span>
+        CalUtil calUtil<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> CalUtil<span style="color:#f92672">();</span>
+        modMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setTouser</span><span style="color:#f92672">(</span>openid<span style="color:#f92672">);</span><span style="color:#75715e">//用户的openid
+</span><span style="color:#75715e"></span>        modMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://120.24.73.230/Echoo1/sendmsg.jsp&#34;</span><span style="color:#f92672">);</span>
+        Data data<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> Data<span style="color:#f92672">();</span>
+        <span style="color:#75715e">//内容
+</span><span style="color:#75715e"></span>        Content content<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> Content<span style="color:#f92672">();</span>
+        content<span style="color:#f92672">.</span><span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span>mcontent<span style="color:#f92672">);</span>
+        content<span style="color:#f92672">.</span><span style="color:#a6e22e">setColor</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;#173177&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#75715e">//时间
+</span><span style="color:#75715e"></span>        ArrivedTime arrivedTime<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ArrivedTime<span style="color:#f92672">();</span>
+        arrivedTime<span style="color:#f92672">.</span><span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span>calUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">getCurrentDate</span><span style="color:#f92672">());</span>
+        arrivedTime<span style="color:#f92672">.</span><span style="color:#a6e22e">setColor</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;#000000&#34;</span><span style="color:#f92672">);</span>
+        data<span style="color:#f92672">.</span><span style="color:#a6e22e">setContent</span><span style="color:#f92672">(</span>content<span style="color:#f92672">);</span>
+        data<span style="color:#f92672">.</span><span style="color:#a6e22e">setArrivedTime</span><span style="color:#f92672">(</span>arrivedTime<span style="color:#f92672">);</span>
+        modMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setData</span><span style="color:#f92672">(</span>data<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">return</span> modMsg<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">sendModMessage</span><span style="color:#f92672">(</span>String modmsg<span style="color:#f92672">,</span>String token<span style="color:#f92672">){</span>
+        <span style="color:#66d9ef">int</span> errcode<span style="color:#f92672">=</span>0<span style="color:#f92672">;</span>
+        String url<span style="color:#f92672">=</span>SEND_MODMSG<span style="color:#f92672">.</span><span style="color:#a6e22e">replace</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ACCESS_TOKEN&#34;</span><span style="color:#f92672">,</span>token<span style="color:#f92672">);</span>
+        JSONObject jsonObject<span style="color:#f92672">=</span>doPost<span style="color:#f92672">(</span>url<span style="color:#f92672">,</span>modmsg<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>jsonObject<span style="color:#f92672">!=</span><span style="color:#66d9ef">null</span><span style="color:#f92672">){</span>
+            errcode<span style="color:#f92672">=</span>jsonObject<span style="color:#f92672">.</span><span style="color:#a6e22e">getInt</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;errcode&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">return</span>  errcode<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p>先在WechatInitial中测试，当然最后是要在网页上发送的．这里暂时不讲这个了，有时间写一写网页的，预计会写在&lt;一个微信公众号的诞生　番外篇&gt;23333.貌似跑题了．</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String content<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;明天下午的三四两节线代课不上了&#34;</span><span style="color:#f92672">;</span>
+            String openid<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;OPENID&#34;</span><span style="color:#f92672">;</span>
+            String modmsg<span style="color:#f92672">=</span>JSONObject<span style="color:#f92672">.</span><span style="color:#a6e22e">fromObject</span><span style="color:#f92672">(</span>wechatUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">initModMsg</span><span style="color:#f92672">(</span>content<span style="color:#f92672">,</span>openid<span style="color:#f92672">)).</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">int</span> errcode1<span style="color:#f92672">=(</span>wechatUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">sendModMessage</span><span style="color:#f92672">(</span>modmsg<span style="color:#f92672">,</span>access_token<span style="color:#f92672">));</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>errcode1<span style="color:#f92672">==</span>0<span style="color:#f92672">){</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;发送模板信息成功&#34;</span><span style="color:#f92672">);</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>modmsg<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;发送模板信息失败&#34;</span><span style="color:#f92672">+</span>errcode1<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+</code></pre></div><p>把openid改成自己的，然后请查看手机＝＝
+<img src="wechat_test3.png" alt=""></p>
+<h3 id="群发todo">群发(todo)</h3>
+<blockquote>
+<p>实现一下，群发貌似就是套个循环？？</p>
+</blockquote>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2017/05/10/%E4%B8%80%E4%B8%AA%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E7%9A%84%E8%AF%9E%E7%94%9F%E4%B8%89access-token%E7%9A%84%E8%8E%B7%E5%8F%96/">一个微信公众号的诞生（三）Access Token的获取</a></li>
+        
+        <li><a href="/2017/05/04/%E4%B8%80%E4%B8%AA%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E7%9A%84%E8%AF%9E%E7%94%9F%E4%BA%8C%E5%85%AC%E4%BC%97%E5%8F%B7%E5%AF%B9%E6%8E%A5%E5%92%8C%E6%B6%88%E6%81%AF%E7%9A%84%E6%8E%A5%E6%94%B6%E5%8F%91%E9%80%81/">一个微信公众号的诞生（二）公众号对接和消息的接收发送</a></li>
+        
+        <li><a href="/2017/04/20/%E4%B8%80%E4%B8%AA%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E7%9A%84%E8%AF%9E%E7%94%9F%E4%B8%80%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BA/">一个微信公众号的诞生（一）开发环境的搭建</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/%E6%8A%80%E6%9C%AF'>技术</a></li>
+                
+                <li><a href='https://leer.moe/tags/web'>Web</a></li>
+                
+                <li><a href='https://leer.moe/tags/%E5%BE%AE%E4%BF%A1'>微信</a></li>
+                
+                <li><a href='https://leer.moe/tags/java'>Java</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/%E7%BD%AA%E4%B8%8E%E7%BD%9A/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/human-animal-pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/%E8%B0%88%E8%B0%88%E7%9F%A5%E8%AF%86%E7%9A%84%E8%8E%B7%E5%8F%96%E4%B8%8A/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/%E5%BC%BA%E5%A2%99%E5%9B%BD%E4%B8%8B-github-%E4%B9%8B%E9%BE%9F%E9%80%9F-git-clone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/%E6%89%AB%E9%9B%B7%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95union-find-%E5%92%8C-flood-fill/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/manjaro%E5%AE%89%E8%A3%85%E5%B0%8F%E8%AE%B0%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/rtos%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/abstractqueuedsynchronizer/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>
