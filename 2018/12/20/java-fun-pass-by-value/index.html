@@ -188,45 +188,45 @@
 </blockquote>
 <h2 id="和c语言的比较">和C语言的比较</h2>
 <p>C语言和Java一样是 pass by value的。在C中，如果你想在另一个函数中改变一个结构体内部数据的值，你只要向那个函数传递指针即可；而如果你想在另一个函数中改变它的指针的指向，你需要使用二重指针。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> {
-  <span style="color:#66d9ef">int</span> x, y;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;stdlib.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> {
+  <span style="color:#458;font-weight:bold">int</span> x, y;
 } Point;
 
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">edit_point</span>(Point <span style="color:#f92672">*</span>point) {
-  point<span style="color:#f92672">-&gt;</span>x <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>;
-  point<span style="color:#f92672">-&gt;</span>y <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>;
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">edit_point</span>(Point <span style="color:#000;font-weight:bold">*</span>point) {
+  point<span style="color:#000;font-weight:bold">-&gt;</span>x <span style="color:#000;font-weight:bold">+=</span> <span style="color:#099">1</span>;
+  point<span style="color:#000;font-weight:bold">-&gt;</span>y <span style="color:#000;font-weight:bold">+=</span> <span style="color:#099">1</span>;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">change_point</span>(Point <span style="color:#f92672">**</span>point_ref) {
-  <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> (<span style="color:#f92672">*</span>point_ref)<span style="color:#f92672">-&gt;</span>x;
-  <span style="color:#66d9ef">int</span> y <span style="color:#f92672">=</span> (<span style="color:#f92672">*</span>point_ref)<span style="color:#f92672">-&gt;</span>y;
-  free(<span style="color:#f92672">*</span>point_ref);
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">change_point</span>(Point <span style="color:#000;font-weight:bold">**</span>point_ref) {
+  <span style="color:#458;font-weight:bold">int</span> x <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">*</span>point_ref)<span style="color:#000;font-weight:bold">-&gt;</span>x;
+  <span style="color:#458;font-weight:bold">int</span> y <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">*</span>point_ref)<span style="color:#000;font-weight:bold">-&gt;</span>y;
+  free(<span style="color:#000;font-weight:bold">*</span>point_ref);
 
-  <span style="color:#f92672">*</span>point_ref <span style="color:#f92672">=</span> realloc(<span style="color:#f92672">*</span>point_ref, <span style="color:#66d9ef">sizeof</span>(Point));
-  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>point_ref <span style="color:#f92672">==</span> NULL) <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
-  (<span style="color:#f92672">*</span>point_ref)<span style="color:#f92672">-&gt;</span>x <span style="color:#f92672">=</span> x <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span>;
-  (<span style="color:#f92672">*</span>point_ref)<span style="color:#f92672">-&gt;</span>y <span style="color:#f92672">=</span> y <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span>;
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+  <span style="color:#000;font-weight:bold">*</span>point_ref <span style="color:#000;font-weight:bold">=</span> realloc(<span style="color:#000;font-weight:bold">*</span>point_ref, <span style="color:#000;font-weight:bold">sizeof</span>(Point));
+  <span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">*</span>point_ref <span style="color:#000;font-weight:bold">==</span> <span style="color:#0086b3">NULL</span>) <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+  (<span style="color:#000;font-weight:bold">*</span>point_ref)<span style="color:#000;font-weight:bold">-&gt;</span>x <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">*</span> <span style="color:#099">10</span>;
+  (<span style="color:#000;font-weight:bold">*</span>point_ref)<span style="color:#000;font-weight:bold">-&gt;</span>y <span style="color:#000;font-weight:bold">=</span> y <span style="color:#000;font-weight:bold">*</span> <span style="color:#099">10</span>;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">show_point</span>(Point <span style="color:#f92672">*</span>point) {
-  printf(<span style="color:#e6db74">&#34;(%d, %d)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, point<span style="color:#f92672">-&gt;</span>x, point<span style="color:#f92672">-&gt;</span>y);
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">show_point</span>(Point <span style="color:#000;font-weight:bold">*</span>point) {
+  printf(<span style="color:#d14">&#34;(%d, %d)</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, point<span style="color:#000;font-weight:bold">-&gt;</span>x, point<span style="color:#000;font-weight:bold">-&gt;</span>y);
 }
 
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
-  Point <span style="color:#f92672">*</span>point <span style="color:#f92672">=</span> malloc(<span style="color:#66d9ef">sizeof</span>(Point));
-  point<span style="color:#f92672">-&gt;</span>x <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-  point<span style="color:#f92672">-&gt;</span>y <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
+  Point <span style="color:#000;font-weight:bold">*</span>point <span style="color:#000;font-weight:bold">=</span> malloc(<span style="color:#000;font-weight:bold">sizeof</span>(Point));
+  point<span style="color:#000;font-weight:bold">-&gt;</span>x <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
+  point<span style="color:#000;font-weight:bold">-&gt;</span>y <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>;
   show_point(point);
 
   edit_point(point);
   show_point(point);
 
-  change_point(<span style="color:#f92672">&amp;</span>point);
+  change_point(<span style="color:#000;font-weight:bold">&amp;</span>point);
   show_point(point);
 }
 </code></pre></div><p>输出结果：</p>
@@ -236,44 +236,44 @@
 (2, 3)
 (20, 30)
 </code></pre><p>以上C代码用Java实现如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pass</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Point</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">int</span> x<span style="color:#f92672">,</span> y<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Pass</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Point</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#458;font-weight:bold">int</span> x<span style="color:#000;font-weight:bold">,</span> y<span style="color:#000;font-weight:bold">;</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Point</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> x<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> y<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">x</span> <span style="color:#f92672">=</span> x<span style="color:#f92672">;</span>
-      <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">y</span> <span style="color:#f92672">=</span> y<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Point</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> x<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> y<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">x</span> <span style="color:#000;font-weight:bold">=</span> x<span style="color:#000;font-weight:bold">;</span>
+      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">y</span> <span style="color:#000;font-weight:bold">=</span> y<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">return</span> String<span style="color:#f92672">.</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;(%d, %d)&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">x</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">y</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">toString</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">return</span> String<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;(%d, %d)&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">x</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">y</span><span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">editPoint</span><span style="color:#f92672">(</span>Point pointCopy<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    pointCopy<span style="color:#f92672">.</span><span style="color:#a6e22e">x</span> <span style="color:#f92672">+=</span> 1<span style="color:#f92672">;</span>
-    pointCopy<span style="color:#f92672">.</span><span style="color:#a6e22e">y</span> <span style="color:#f92672">+=</span> 1<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">editPoint</span><span style="color:#000;font-weight:bold">(</span>Point pointCopy<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    pointCopy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">x</span> <span style="color:#000;font-weight:bold">+=</span> 1<span style="color:#000;font-weight:bold">;</span>
+    pointCopy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">y</span> <span style="color:#000;font-weight:bold">+=</span> 1<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">static</span> Point <span style="color:#a6e22e">changePoint</span><span style="color:#f92672">(</span>Point pointCopy<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Point<span style="color:#f92672">(</span>pointCopy<span style="color:#f92672">.</span><span style="color:#a6e22e">x</span> <span style="color:#f92672">*</span> 10<span style="color:#f92672">,</span> pointCopy<span style="color:#f92672">.</span><span style="color:#a6e22e">y</span> <span style="color:#f92672">*</span> 10<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">static</span> Point <span style="color:#900;font-weight:bold">changePoint</span><span style="color:#000;font-weight:bold">(</span>Point pointCopy<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> Point<span style="color:#000;font-weight:bold">(</span>pointCopy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">x</span> <span style="color:#000;font-weight:bold">*</span> 10<span style="color:#000;font-weight:bold">,</span> pointCopy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">y</span> <span style="color:#000;font-weight:bold">*</span> 10<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    Point point <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Point<span style="color:#f92672">(</span>1<span style="color:#f92672">,</span> 2<span style="color:#f92672">);</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>point<span style="color:#f92672">);</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    Point point <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Point<span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">);</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>point<span style="color:#000;font-weight:bold">);</span>
 
-    editPoint<span style="color:#f92672">(</span>point<span style="color:#f92672">);</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>point<span style="color:#f92672">);</span>
+    editPoint<span style="color:#000;font-weight:bold">(</span>point<span style="color:#000;font-weight:bold">);</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>point<span style="color:#000;font-weight:bold">);</span>
 
-    point <span style="color:#f92672">=</span> changePoint<span style="color:#f92672">(</span>point<span style="color:#f92672">);</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>point<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+    point <span style="color:#000;font-weight:bold">=</span> changePoint<span style="color:#000;font-weight:bold">(</span>point<span style="color:#000;font-weight:bold">);</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>point<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>由于Java没有二级指针这个概念，所以没办法在另一个方法中得到原来对象的真实引用（除非是字段，即全局变量），只能通过返回新的引用，并在调用者那里进行赋值。</p>
 <h2 id="和汇编代码的比较">和汇编代码的比较</h2>
-<!-- raw HTML omitted -->
+<!-- todo -->
 <p>二重指针在汇编的层次就是首先进行一次寄存器寻址，再进行一次间接寻址。可以结合下面的图加以理解。</p>
 <p><img src="/images/pointer-of-pointer.jpg" alt="pointer-of-pointer"></p>
 <p>接下来为使用gdb调试得到二重指针的内存地址和<code>Point</code>的内存地址：</p>
@@ -282,70 +282,70 @@
 </blockquote>
 <p><img src="/images/asm-value.png" alt="asm-value"></p>
 <p>汇编代码如下，几个重要的步骤我已经加上注释：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-asm" data-lang="asm">edit_point:
-	<span style="color:#a6e22e">addl</span>	<span style="color:#66d9ef">$1</span>, (%rdi)
-	<span style="color:#a6e22e">addl</span>	<span style="color:#66d9ef">$1</span>, <span style="color:#ae81ff">4</span>(%rdi)
-	<span style="color:#a6e22e">movl</span>	<span style="color:#66d9ef">$0</span>, %eax
-	<span style="color:#a6e22e">ret</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-asm" data-lang="asm"><span style="color:#900;font-weight:bold">edit_point:</span>
+	<span style="color:#900;font-weight:bold">addl</span>	<span style="color:#008080">$1</span>, (<span style="color:#008080">%rdi</span>)
+	<span style="color:#900;font-weight:bold">addl</span>	<span style="color:#008080">$1</span>, <span style="color:#099">4</span>(<span style="color:#008080">%rdi</span>)
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">$0</span>, <span style="color:#008080">%eax</span>
+	<span style="color:#900;font-weight:bold">ret</span>
 
-change_point:
-	<span style="color:#a6e22e">pushq</span>	%r12
-	<span style="color:#a6e22e">pushq</span>	%rbp
-	<span style="color:#a6e22e">pushq</span>	%rbx
-	<span style="color:#a6e22e">movq</span>	%rdi, %rbx
-	<span style="color:#a6e22e">movq</span>	(%rdi), %rdi <span style="color:#75715e"># 此时%rdi为0x7fffffffe040，这条指令把0x7fffffffe040内存位置中的值（0x555555756260）复制到%rdi
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">movl</span>	(%rdi), %r12d <span style="color:#75715e"># 0x7fffffffe040中存储的是0x555555756260，这才是Point所在的内存地址，把point-&gt;x复制给%r12
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">movl</span>	<span style="color:#ae81ff">4</span>(%rdi), %ebp <span style="color:#75715e"># 把 point-&gt;y 复制给%ebp
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">call</span>	<span style="color:#66d9ef">free@PLT</span>
-	<span style="color:#a6e22e">movl</span>	<span style="color:#66d9ef">$8</span>, %esi
-	<span style="color:#a6e22e">movq</span>	(%rbx), %rdi
-	<span style="color:#a6e22e">call</span>	<span style="color:#66d9ef">realloc@PLT</span>
-	<span style="color:#a6e22e">movq</span>	%rax, (%rbx)
-	<span style="color:#a6e22e">testq</span>	%rax, %rax
-	<span style="color:#a6e22e">je</span>	<span style="color:#66d9ef">.L4</span>
-	<span style="color:#a6e22e">leal</span>	(%r12,%r12,<span style="color:#ae81ff">4</span>), %ecx
-	<span style="color:#a6e22e">leal</span>	(%rcx,%rcx), %edx
-	<span style="color:#a6e22e">movl</span>	%edx, (%rax)
-	<span style="color:#a6e22e">movq</span>	(%rbx), %rcx
-	<span style="color:#a6e22e">leal</span>	<span style="color:#ae81ff">0</span>(%rbp,%rbp,<span style="color:#ae81ff">4</span>), %edx
-	<span style="color:#a6e22e">leal</span>	(%rdx,%rdx), %eax
-	<span style="color:#a6e22e">movl</span>	%eax, <span style="color:#ae81ff">4</span>(%rcx)
-	<span style="color:#a6e22e">movl</span>	<span style="color:#66d9ef">$0</span>, %eax
-.L2:
-	<span style="color:#a6e22e">popq</span>	%rbx
-	<span style="color:#a6e22e">popq</span>	%rbp
-	<span style="color:#a6e22e">popq</span>	%r12
-	<span style="color:#a6e22e">ret</span>
-.L4:
-	<span style="color:#a6e22e">movl</span>	<span style="color:#66d9ef">$-1</span>, %eax
-	<span style="color:#a6e22e">jmp</span>	<span style="color:#66d9ef">.L2</span>
+<span style="color:#900;font-weight:bold">change_point:</span>
+	<span style="color:#900;font-weight:bold">pushq</span>	<span style="color:#008080">%r12</span>
+	<span style="color:#900;font-weight:bold">pushq</span>	<span style="color:#008080">%rbp</span>
+	<span style="color:#900;font-weight:bold">pushq</span>	<span style="color:#008080">%rbx</span>
+	<span style="color:#900;font-weight:bold">movq</span>	<span style="color:#008080">%rdi</span>, <span style="color:#008080">%rbx</span>
+	<span style="color:#900;font-weight:bold">movq</span>	(<span style="color:#008080">%rdi</span>), <span style="color:#008080">%rdi</span> <span style="color:#998;font-style:italic"># 此时%rdi为0x7fffffffe040，这条指令把0x7fffffffe040内存位置中的值（0x555555756260）复制到%rdi
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#008080">movl</span>	(<span style="color:#008080">%rdi</span>), <span style="color:#008080">%r12d</span> <span style="color:#998;font-style:italic"># 0x7fffffffe040中存储的是0x555555756260，这才是Point所在的内存地址，把point-&gt;x复制给%r12
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#008080">movl</span>	<span style="color:#099">4</span>(<span style="color:#008080">%rdi</span>), <span style="color:#008080">%ebp</span> <span style="color:#998;font-style:italic"># 把 point-&gt;y 复制给%ebp
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#008080">call</span>	<span style="color:#008080">free@PLT</span>
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">$8</span>, <span style="color:#008080">%esi</span>
+	<span style="color:#900;font-weight:bold">movq</span>	(<span style="color:#008080">%rbx</span>), <span style="color:#008080">%rdi</span>
+	<span style="color:#900;font-weight:bold">call</span>	<span style="color:#008080">realloc@PLT</span>
+	<span style="color:#900;font-weight:bold">movq</span>	<span style="color:#008080">%rax</span>, (<span style="color:#008080">%rbx</span>)
+	<span style="color:#900;font-weight:bold">testq</span>	<span style="color:#008080">%rax</span>, <span style="color:#008080">%rax</span>
+	<span style="color:#900;font-weight:bold">je</span>	<span style="color:#008080">.L4</span>
+	<span style="color:#900;font-weight:bold">leal</span>	(<span style="color:#008080">%r12</span>,<span style="color:#008080">%r12</span>,<span style="color:#099">4</span>), <span style="color:#008080">%ecx</span>
+	<span style="color:#900;font-weight:bold">leal</span>	(<span style="color:#008080">%rcx</span>,<span style="color:#008080">%rcx</span>), <span style="color:#008080">%edx</span>
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">%edx</span>, (<span style="color:#008080">%rax</span>)
+	<span style="color:#900;font-weight:bold">movq</span>	(<span style="color:#008080">%rbx</span>), <span style="color:#008080">%rcx</span>
+	<span style="color:#900;font-weight:bold">leal</span>	<span style="color:#099">0</span>(<span style="color:#008080">%rbp</span>,<span style="color:#008080">%rbp</span>,<span style="color:#099">4</span>), <span style="color:#008080">%edx</span>
+	<span style="color:#900;font-weight:bold">leal</span>	(<span style="color:#008080">%rdx</span>,<span style="color:#008080">%rdx</span>), <span style="color:#008080">%eax</span>
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">%eax</span>, <span style="color:#099">4</span>(<span style="color:#008080">%rcx</span>)
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">$0</span>, <span style="color:#008080">%eax</span>
+<span style="color:#900;font-weight:bold">.L2:</span>
+	<span style="color:#900;font-weight:bold">popq</span>	<span style="color:#008080">%rbx</span>
+	<span style="color:#900;font-weight:bold">popq</span>	<span style="color:#008080">%rbp</span>
+	<span style="color:#900;font-weight:bold">popq</span>	<span style="color:#008080">%r12</span>
+	<span style="color:#900;font-weight:bold">ret</span>
+<span style="color:#900;font-weight:bold">.L4:</span>
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">$-1</span>, <span style="color:#008080">%eax</span>
+	<span style="color:#900;font-weight:bold">jmp</span>	<span style="color:#008080">.L2</span>
 
-main:
-	<span style="color:#a6e22e">subq</span>	<span style="color:#66d9ef">$24</span>, %rsp
-	<span style="color:#a6e22e">movq</span>	%fs:<span style="color:#ae81ff">40</span>, %rax
-	<span style="color:#a6e22e">movq</span>	%rax, <span style="color:#ae81ff">8</span>(%rsp)
-	<span style="color:#a6e22e">xorl</span>	%eax, %eax
-	<span style="color:#a6e22e">movl</span>	<span style="color:#66d9ef">$8</span>, %edi
-	<span style="color:#a6e22e">call</span>	<span style="color:#66d9ef">malloc@PLT</span>
-	<span style="color:#a6e22e">movq</span>	%rax, (%rsp)
-	<span style="color:#a6e22e">movl</span>	<span style="color:#66d9ef">$1</span>, (%rax)
-	<span style="color:#a6e22e">movl</span>	<span style="color:#66d9ef">$2</span>, <span style="color:#ae81ff">4</span>(%rax)
-	<span style="color:#a6e22e">movq</span>	%rax, %rdi
-	<span style="color:#a6e22e">call</span>	<span style="color:#66d9ef">show_point</span>
-	<span style="color:#a6e22e">movq</span>	(%rsp), %rdi
-	<span style="color:#a6e22e">call</span>	<span style="color:#66d9ef">edit_point</span>
-	<span style="color:#a6e22e">movq</span>	(%rsp), %rdi
-	<span style="color:#a6e22e">call</span>	<span style="color:#66d9ef">show_point</span>
-	<span style="color:#a6e22e">movq</span>	%rsp, %rdi <span style="color:#75715e"># %rps中保存的是二级指针的内存地址（0x7fffffffe040）
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">call</span>	<span style="color:#66d9ef">change_point</span>
-	<span style="color:#a6e22e">movq</span>	(%rsp), %rdi
-	<span style="color:#a6e22e">call</span>	<span style="color:#66d9ef">show_point</span>
-	<span style="color:#a6e22e">movq</span>	<span style="color:#ae81ff">8</span>(%rsp), %rdx
-	<span style="color:#a6e22e">xorq</span>	%fs:<span style="color:#ae81ff">40</span>, %rdx
-	<span style="color:#a6e22e">jne</span>	<span style="color:#66d9ef">.L11</span>
-	<span style="color:#a6e22e">movl</span>	<span style="color:#66d9ef">$0</span>, %eax
-	<span style="color:#a6e22e">addq</span>	<span style="color:#66d9ef">$24</span>, %rsp
-	<span style="color:#a6e22e">ret</span>
+<span style="color:#900;font-weight:bold">main:</span>
+	<span style="color:#900;font-weight:bold">subq</span>	<span style="color:#008080">$24</span>, <span style="color:#008080">%rsp</span>
+	<span style="color:#900;font-weight:bold">movq</span>	<span style="color:#008080">%fs</span>:<span style="color:#099">40</span>, <span style="color:#008080">%rax</span>
+	<span style="color:#900;font-weight:bold">movq</span>	<span style="color:#008080">%rax</span>, <span style="color:#099">8</span>(<span style="color:#008080">%rsp</span>)
+	<span style="color:#900;font-weight:bold">xorl</span>	<span style="color:#008080">%eax</span>, <span style="color:#008080">%eax</span>
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">$8</span>, <span style="color:#008080">%edi</span>
+	<span style="color:#900;font-weight:bold">call</span>	<span style="color:#008080">malloc@PLT</span>
+	<span style="color:#900;font-weight:bold">movq</span>	<span style="color:#008080">%rax</span>, (<span style="color:#008080">%rsp</span>)
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">$1</span>, (<span style="color:#008080">%rax</span>)
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">$2</span>, <span style="color:#099">4</span>(<span style="color:#008080">%rax</span>)
+	<span style="color:#900;font-weight:bold">movq</span>	<span style="color:#008080">%rax</span>, <span style="color:#008080">%rdi</span>
+	<span style="color:#900;font-weight:bold">call</span>	<span style="color:#008080">show_point</span>
+	<span style="color:#900;font-weight:bold">movq</span>	(<span style="color:#008080">%rsp</span>), <span style="color:#008080">%rdi</span>
+	<span style="color:#900;font-weight:bold">call</span>	<span style="color:#008080">edit_point</span>
+	<span style="color:#900;font-weight:bold">movq</span>	(<span style="color:#008080">%rsp</span>), <span style="color:#008080">%rdi</span>
+	<span style="color:#900;font-weight:bold">call</span>	<span style="color:#008080">show_point</span>
+	<span style="color:#900;font-weight:bold">movq</span>	<span style="color:#008080">%rsp</span>, <span style="color:#008080">%rdi</span> <span style="color:#998;font-style:italic"># %rps中保存的是二级指针的内存地址（0x7fffffffe040）
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#008080">call</span>	<span style="color:#008080">change_point</span>
+	<span style="color:#900;font-weight:bold">movq</span>	(<span style="color:#008080">%rsp</span>), <span style="color:#008080">%rdi</span>
+	<span style="color:#900;font-weight:bold">call</span>	<span style="color:#008080">show_point</span>
+	<span style="color:#900;font-weight:bold">movq</span>	<span style="color:#099">8</span>(<span style="color:#008080">%rsp</span>), <span style="color:#008080">%rdx</span>
+	<span style="color:#900;font-weight:bold">xorq</span>	<span style="color:#008080">%fs</span>:<span style="color:#099">40</span>, <span style="color:#008080">%rdx</span>
+	<span style="color:#900;font-weight:bold">jne</span>	<span style="color:#008080">.L11</span>
+	<span style="color:#900;font-weight:bold">movl</span>	<span style="color:#008080">$0</span>, <span style="color:#008080">%eax</span>
+	<span style="color:#900;font-weight:bold">addq</span>	<span style="color:#008080">$24</span>, <span style="color:#008080">%rsp</span>
+	<span style="color:#900;font-weight:bold">ret</span>
 </code></pre></div><h2 id="参考">参考</h2>
 <ul>
 <li><a href="https://www.zhihu.com/question/31203609">知乎：Java 到底是值传递还是引用传递？</a></li>

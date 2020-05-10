@@ -193,46 +193,46 @@
 <p>题目提供的<code>sh.c</code>已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成<code>runcmd</code>函数中缺少的代码即可。</p>
 <h2 id="流程">流程</h2>
 <p>先从 <code>main</code> 函数看起：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>) {
-  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">char</span> buf[<span style="color:#ae81ff">100</span>];
-  <span style="color:#66d9ef">int</span> fd, r;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">void</span>) {
+  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">char</span> buf[<span style="color:#099">100</span>];
+  <span style="color:#458;font-weight:bold">int</span> fd, r;
 
-  <span style="color:#75715e">// Read and run input commands.
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (getcmd(buf, <span style="color:#66d9ef">sizeof</span>(buf)) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
-    <span style="color:#66d9ef">if</span> (buf[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;c&#39;</span> <span style="color:#f92672">&amp;&amp;</span> buf[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;d&#39;</span> <span style="color:#f92672">&amp;&amp;</span> buf[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39; &#39;</span>) {
-      <span style="color:#75715e">// Clumsy but will have to do for now.
-</span><span style="color:#75715e"></span>      <span style="color:#75715e">// Chdir has no effect on the parent if run in the child.
-</span><span style="color:#75715e"></span>      buf[strlen(buf) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">// chop \n
-</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> (chdir(buf <span style="color:#f92672">+</span> <span style="color:#ae81ff">3</span>) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>)
-        fprintf(stderr, <span style="color:#e6db74">&#34;cannot cd %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, buf <span style="color:#f92672">+</span> <span style="color:#ae81ff">3</span>);
-      <span style="color:#66d9ef">continue</span>;
+  <span style="color:#998;font-style:italic">// Read and run input commands.
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">while</span> (getcmd(buf, <span style="color:#000;font-weight:bold">sizeof</span>(buf)) <span style="color:#000;font-weight:bold">&gt;=</span> <span style="color:#099">0</span>) {
+    <span style="color:#000;font-weight:bold">if</span> (buf[<span style="color:#099">0</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;c&#39;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> buf[<span style="color:#099">1</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;d&#39;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> buf[<span style="color:#099">2</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39; &#39;</span>) {
+      <span style="color:#998;font-style:italic">// Clumsy but will have to do for now.
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#998;font-style:italic">// Chdir has no effect on the parent if run in the child.
+</span><span style="color:#998;font-style:italic"></span>      buf[strlen(buf) <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>] <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; <span style="color:#998;font-style:italic">// chop \n
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">if</span> (chdir(buf <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">3</span>) <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">0</span>)
+        fprintf(stderr, <span style="color:#d14">&#34;cannot cd %s</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, buf <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">3</span>);
+      <span style="color:#000;font-weight:bold">continue</span>;
     }
-    <span style="color:#66d9ef">if</span> (fork1() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+    <span style="color:#000;font-weight:bold">if</span> (fork1() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>)
       runcmd(parsecmd(buf));
-    wait(<span style="color:#f92672">&amp;</span>r);
+    wait(<span style="color:#000;font-weight:bold">&amp;</span>r);
   }
-  exit(<span style="color:#ae81ff">0</span>);
+  exit(<span style="color:#099">0</span>);
 }
 </code></pre></div><p><code>main</code> 函数循环调用 <code>getcmd</code>从 console 读取命令，对 <code>cd </code>命令做了特别处理。之后<code>fork</code>创建子进程，调用<code>parsecmd</code>解析命令，再调用<code>runcmd</code>执行得到的命令。最后调用<code>wait</code>等待子进程结束。<code>main</code> 的基本流程就这样。</p>
 <p><code>parsecmd</code>递归调用一系列的解析函数，先解析优先级高的（&lt;，&gt;和|）。cmd 分为三类：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">struct</span> execcmd {
-  <span style="color:#66d9ef">int</span> type;            <span style="color:#75715e">// &#39; &#39;
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>argv[MAXARGS]; <span style="color:#75715e">// arguments to the command to be exec-ed
-</span><span style="color:#75715e"></span>};
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">struct</span> execcmd {
+  <span style="color:#458;font-weight:bold">int</span> type;            <span style="color:#998;font-style:italic">// &#39; &#39;
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>argv[MAXARGS]; <span style="color:#998;font-style:italic">// arguments to the command to be exec-ed
+</span><span style="color:#998;font-style:italic"></span>};
 
-<span style="color:#66d9ef">struct</span> redircmd {
-  <span style="color:#66d9ef">int</span> type;        <span style="color:#75715e">// &lt; or &gt;
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>cmd; <span style="color:#75715e">// the command to be run (e.g., an execcmd)
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>file;      <span style="color:#75715e">// the input/output file
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> flags;       <span style="color:#75715e">// flags for open() indicating read or write
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> fd;          <span style="color:#75715e">// the file descriptor number to use for the file
-</span><span style="color:#75715e"></span>};
+<span style="color:#000;font-weight:bold">struct</span> redircmd {
+  <span style="color:#458;font-weight:bold">int</span> type;        <span style="color:#998;font-style:italic">// &lt; or &gt;
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>cmd; <span style="color:#998;font-style:italic">// the command to be run (e.g., an execcmd)
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>file;      <span style="color:#998;font-style:italic">// the input/output file
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> flags;       <span style="color:#998;font-style:italic">// flags for open() indicating read or write
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> fd;          <span style="color:#998;font-style:italic">// the file descriptor number to use for the file
+</span><span style="color:#998;font-style:italic"></span>};
 
-<span style="color:#66d9ef">struct</span> pipecmd {
-  <span style="color:#66d9ef">int</span> type;          <span style="color:#75715e">// |
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>left;  <span style="color:#75715e">// left side of pipe
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>right; <span style="color:#75715e">// right side of pipe
-</span><span style="color:#75715e"></span>};
+<span style="color:#000;font-weight:bold">struct</span> pipecmd {
+  <span style="color:#458;font-weight:bold">int</span> type;          <span style="color:#998;font-style:italic">// |
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>left;  <span style="color:#998;font-style:italic">// left side of pipe
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>right; <span style="color:#998;font-style:italic">// right side of pipe
+</span><span style="color:#998;font-style:italic"></span>};
 </code></pre></div><p><code>runcmd</code>根据 cmd 的类型进行分支处理，需要去完成的核心功能也在这个函数中。</p>
 <h2 id="system-interface">System interface</h2>
 <p>平时对shell的命令执行习以为常，却不曾想背后的实现。</p>
@@ -249,82 +249,82 @@
 <h2 id="运行基本的命令">运行基本的命令</h2>
 <p>关键的一步是在这里调用<code>execv</code>执行命令，所谓的“执行命令”就是运行命令所指向的可执行文件，这个进程的内存会被改变，但是它的<code>file table</code>不会变。</p>
 <p>但是我们不能在主进程直接运行命令，需要<code>fork</code>，可以发现在<code>main</code>函数中已经帮我们做了。所以最简单觉得实现就是这样：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">execv(ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>], ecmd<span style="color:#f92672">-&gt;</span>argv);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">execv(ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>], ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv);
 </code></pre></div><p>第一个参数是命令所在的执行文件的绝对路径。比如调用<code>ls</code>时，需要输入<code>/bin/ls</code>。每次都这样输入很麻烦，而且不一定每个命令都在<code>/bin</code> 下面。那么我们平时使用的 shell 是怎么实现的呢？</p>
 <p><code>PATH</code></p>
 <h3 id="改进">改进</h3>
 <p>使用<code>getenv(&quot;PATH&quot;)</code>可以得到<code>PATH</code>，对其进行分割存在数组中，遍历数组，把路径和命令名进行组合，如果那个路径下存在那个命令，执行。</p>
 <p>有两个问题：如何分割？如何检测可以执行？</p>
 <p>两个问题的答案分蘖对应两个函数：<code>strtok_r</code>，<code>access</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">access</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>pathname, <span style="color:#66d9ef">int</span> mode);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">access</span>(<span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>pathname, <span style="color:#458;font-weight:bold">int</span> mode);
 </code></pre></div><p>mode 可以是<code>F_OK</code>，<code>R_OK</code>，<code>W_OK</code>，<code>X_OK</code>，分别检查文件是否存在，当前进程是否有权限读，写。执行该文件。mode 也可以是它们的按位或。</p>
 <p>所以我们可以调用<code>acess(abs_path, F_OK | X_OK)</code> 来检查该路径下是否可以执行。</p>
 <p>最终改进的版本：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39; &#39;</span><span style="color:#f92672">:</span>
-    ecmd <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> execcmd <span style="color:#f92672">*</span>)cmd;
-    <span style="color:#66d9ef">if</span> (ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
-      _exit(<span style="color:#ae81ff">0</span>);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39; &#39;</span><span style="color:#000;font-weight:bold">:</span>
+    ecmd <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">struct</span> execcmd <span style="color:#000;font-weight:bold">*</span>)cmd;
+    <span style="color:#000;font-weight:bold">if</span> (ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>)
+      _exit(<span style="color:#099">0</span>);
 
-    <span style="color:#66d9ef">if</span> (access(ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>], F_OK) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) { <span style="color:#75715e">// check current dir
-</span><span style="color:#75715e"></span>      execv(ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>], ecmd<span style="color:#f92672">-&gt;</span>argv);
-    } <span style="color:#66d9ef">else</span> {
-      <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>path <span style="color:#f92672">=</span> ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>];
-      <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>str1, <span style="color:#f92672">*</span>token, <span style="color:#f92672">*</span>saveptr1;
-      <span style="color:#66d9ef">int</span> i;
-      <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>env_path <span style="color:#f92672">=</span> getenv(<span style="color:#e6db74">&#34;PATH&#34;</span>);
-      <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>env_paths[<span style="color:#ae81ff">100</span>];
-      <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, str1 <span style="color:#f92672">=</span> env_path;; i<span style="color:#f92672">++</span>, str1 <span style="color:#f92672">=</span> NULL) {
-        token <span style="color:#f92672">=</span> strtok_r(str1, <span style="color:#e6db74">&#34;:&#34;</span>, <span style="color:#f92672">&amp;</span>saveptr1);
-        <span style="color:#66d9ef">if</span> (token <span style="color:#f92672">==</span> NULL)
-          <span style="color:#66d9ef">break</span>;
-        env_paths[i] <span style="color:#f92672">=</span> token;
+    <span style="color:#000;font-weight:bold">if</span> (access(ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>], F_OK) <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) { <span style="color:#998;font-style:italic">// check current dir
+</span><span style="color:#998;font-style:italic"></span>      execv(ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>], ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv);
+    } <span style="color:#000;font-weight:bold">else</span> {
+      <span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>path <span style="color:#000;font-weight:bold">=</span> ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>];
+      <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>str1, <span style="color:#000;font-weight:bold">*</span>token, <span style="color:#000;font-weight:bold">*</span>saveptr1;
+      <span style="color:#458;font-weight:bold">int</span> i;
+      <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>env_path <span style="color:#000;font-weight:bold">=</span> getenv(<span style="color:#d14">&#34;PATH&#34;</span>);
+      <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>env_paths[<span style="color:#099">100</span>];
+      <span style="color:#000;font-weight:bold">for</span> (i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, str1 <span style="color:#000;font-weight:bold">=</span> env_path;; i<span style="color:#000;font-weight:bold">++</span>, str1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>) {
+        token <span style="color:#000;font-weight:bold">=</span> strtok_r(str1, <span style="color:#d14">&#34;:&#34;</span>, <span style="color:#000;font-weight:bold">&amp;</span>saveptr1);
+        <span style="color:#000;font-weight:bold">if</span> (token <span style="color:#000;font-weight:bold">==</span> <span style="color:#0086b3">NULL</span>)
+          <span style="color:#000;font-weight:bold">break</span>;
+        env_paths[i] <span style="color:#000;font-weight:bold">=</span> token;
       }
-      <span style="color:#66d9ef">int</span> find <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-      <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>abs_path; <span style="color:#75715e">// evn_path[i] + &#34;/&#34; + path;
-</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">int</span> j;
-      <span style="color:#66d9ef">for</span> (j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; j <span style="color:#f92672">&lt;</span> i <span style="color:#f92672">&amp;&amp;</span> find <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>; j<span style="color:#f92672">++</span>) {
-        abs_path <span style="color:#f92672">=</span> (<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)malloc(strlen(env_paths[j]) <span style="color:#f92672">+</span> strlen(path) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>);
+      <span style="color:#458;font-weight:bold">int</span> find <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+      <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>abs_path; <span style="color:#998;font-style:italic">// evn_path[i] + &#34;/&#34; + path;
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#458;font-weight:bold">int</span> j;
+      <span style="color:#000;font-weight:bold">for</span> (j <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; j <span style="color:#000;font-weight:bold">&lt;</span> i <span style="color:#000;font-weight:bold">&amp;&amp;</span> find <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>; j<span style="color:#000;font-weight:bold">++</span>) {
+        abs_path <span style="color:#000;font-weight:bold">=</span> (<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>)malloc(strlen(env_paths[j]) <span style="color:#000;font-weight:bold">+</span> strlen(path) <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>);
         strcpy(abs_path, env_paths[j]);
-        strcat(abs_path, <span style="color:#e6db74">&#34;/&#34;</span>);
+        strcat(abs_path, <span style="color:#d14">&#34;/&#34;</span>);
         strcat(abs_path, path);
-        <span style="color:#66d9ef">if</span> (access(abs_path, F_OK <span style="color:#f92672">|</span> X_OK) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
-          find <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-          execv(abs_path, ecmd<span style="color:#f92672">-&gt;</span>argv);
+        <span style="color:#000;font-weight:bold">if</span> (access(abs_path, F_OK <span style="color:#000;font-weight:bold">|</span> X_OK) <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
+          find <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
+          execv(abs_path, ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv);
         }
         free(abs_path);
       }
-      <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>find) 
-        fprintf(stderr, <span style="color:#e6db74">&#34;Command not find: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ecmd<span style="color:#f92672">-&gt;</span>argv[<span style="color:#ae81ff">0</span>]);
+      <span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>find) 
+        fprintf(stderr, <span style="color:#d14">&#34;Command not find: %s</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>]);
     }
-    <span style="color:#66d9ef">break</span>;
+    <span style="color:#000;font-weight:bold">break</span>;
 </code></pre></div><h2 id="io-redirection">I/O Redirection</h2>
 <p>在看懂 xv6 book 的第10页之后实现，输入输出重定向变得很简单：<code>fork</code>之后关闭之前的 fd，打开需要输出或输出的 fd。</p>
 <p>这里需要用到的 <code>System call</code>是 <code>open</code> 和 <code>close</code>。</p>
 <p>而且也不需要对 <code>&lt;</code> 和 <code>&gt;</code> 做分别的处理。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span><span style="color:#a6e22e">redircmd</span>(<span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>subcmd, <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>file, <span style="color:#66d9ef">int</span> type) {
-  <span style="color:#66d9ef">struct</span> redircmd <span style="color:#f92672">*</span>cmd;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">redircmd</span>(<span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>subcmd, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>file, <span style="color:#458;font-weight:bold">int</span> type) {
+  <span style="color:#000;font-weight:bold">struct</span> redircmd <span style="color:#000;font-weight:bold">*</span>cmd;
 
-  cmd <span style="color:#f92672">=</span> malloc(<span style="color:#66d9ef">sizeof</span>(<span style="color:#f92672">*</span>cmd));
-  memset(cmd, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">sizeof</span>(<span style="color:#f92672">*</span>cmd));
-  cmd<span style="color:#f92672">-&gt;</span>type <span style="color:#f92672">=</span> type;
-  cmd<span style="color:#f92672">-&gt;</span>cmd <span style="color:#f92672">=</span> subcmd;
-  cmd<span style="color:#f92672">-&gt;</span>file <span style="color:#f92672">=</span> file;
-  cmd<span style="color:#f92672">-&gt;</span>flags <span style="color:#f92672">=</span> (type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;&lt;&#39;</span>) <span style="color:#f92672">?</span> O_RDONLY : O_WRONLY <span style="color:#f92672">|</span> O_CREAT <span style="color:#f92672">|</span> O_TRUNC;
-  cmd<span style="color:#f92672">-&gt;</span>fd <span style="color:#f92672">=</span> (type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;&lt;&#39;</span>) <span style="color:#f92672">?</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">// stdin : stdout
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">struct</span> cmd <span style="color:#f92672">*</span>)cmd;
+  cmd <span style="color:#000;font-weight:bold">=</span> malloc(<span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#000;font-weight:bold">*</span>cmd));
+  memset(cmd, <span style="color:#099">0</span>, <span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#000;font-weight:bold">*</span>cmd));
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>type <span style="color:#000;font-weight:bold">=</span> type;
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>cmd <span style="color:#000;font-weight:bold">=</span> subcmd;
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>file <span style="color:#000;font-weight:bold">=</span> file;
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>flags <span style="color:#000;font-weight:bold">=</span> (type <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;&lt;&#39;</span>) <span style="color:#000;font-weight:bold">?</span> <span style="color:#900;font-weight:bold">O_RDONLY</span> : O_WRONLY <span style="color:#000;font-weight:bold">|</span> O_CREAT <span style="color:#000;font-weight:bold">|</span> O_TRUNC;
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>fd <span style="color:#000;font-weight:bold">=</span> (type <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;&lt;&#39;</span>) <span style="color:#000;font-weight:bold">?</span> <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#099">1</span>; <span style="color:#998;font-style:italic">// stdin : stdout
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> (<span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>)cmd;
 }
 </code></pre></div><p>当输入的命令重定向了输入，如：<code>cat &lt; t.sh</code>。那么<code>rcmd-&gt;fd</code>为0，<code>rcmd-&gt;flags</code>为<code>O_RDONLY</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39;&gt;&#39;</span><span style="color:#f92672">:</span>
-  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39;&lt;&#39;</span><span style="color:#f92672">:</span>
-    rcmd <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> redircmd <span style="color:#f92672">*</span>)cmd;
-    errno <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-    close(rcmd<span style="color:#f92672">-&gt;</span>fd);
-    rcmd<span style="color:#f92672">-&gt;</span>fd <span style="color:#f92672">=</span> open(rcmd<span style="color:#f92672">-&gt;</span>file, rcmd<span style="color:#f92672">-&gt;</span>flags, <span style="color:#ae81ff">0644</span>);<span style="color:#75715e">//注意第三个参数是权限
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (rcmd<span style="color:#f92672">-&gt;</span>fd <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
-      fprintf(stderr, <span style="color:#e6db74">&#34;Error: %s&#34;</span>, strerror(errno));
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39;&gt;&#39;</span><span style="color:#000;font-weight:bold">:</span>
+  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39;&lt;&#39;</span><span style="color:#000;font-weight:bold">:</span>
+    rcmd <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">struct</span> redircmd <span style="color:#000;font-weight:bold">*</span>)cmd;
+    errno <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+    close(rcmd<span style="color:#000;font-weight:bold">-&gt;</span>fd);
+    rcmd<span style="color:#000;font-weight:bold">-&gt;</span>fd <span style="color:#000;font-weight:bold">=</span> open(rcmd<span style="color:#000;font-weight:bold">-&gt;</span>file, rcmd<span style="color:#000;font-weight:bold">-&gt;</span>flags, <span style="color:#099">0644</span>);<span style="color:#998;font-style:italic">//注意第三个参数是权限
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> (rcmd<span style="color:#000;font-weight:bold">-&gt;</span>fd <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) {
+      fprintf(stderr, <span style="color:#d14">&#34;Error: %s&#34;</span>, strerror(errno));
     }
-    runcmd(rcmd<span style="color:#f92672">-&gt;</span>cmd);
-    <span style="color:#66d9ef">break</span>;
+    runcmd(rcmd<span style="color:#000;font-weight:bold">-&gt;</span>cmd);
+    <span style="color:#000;font-weight:bold">break</span>;
 </code></pre></div><p>调用<code>close(rcmd-&gt;fd)</code>会关闭标准输入（0），此时最小可用的fd变为0,。接下来调用<code>open</code>打开<code>t.sh</code>文件，它的fd为0。这样一来这个子进程的输入就重定向为文件了。</p>
 <h2 id="pipe">Pipe</h2>
 <p>接下来时管道的实现，也是需要调用 System call：<code>pipe</code> 和 <code>dup</code>，创建用于进程通信的管道。</p>
@@ -337,58 +337,58 @@
 <p>The  dup() system call creates a copy of the file descriptor oldfd, using the lowest-
 ​       numbered unused file descriptor for the new descriptor.</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#75715e">//...
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> p[<span style="color:#ae81ff">2</span>], r;
-  <span style="color:#75715e">//...
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39;|&#39;</span><span style="color:#f92672">:</span>
-    pcmd <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> pipecmd <span style="color:#f92672">*</span>)cmd;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> p[<span style="color:#099">2</span>], r;
+  <span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39;|&#39;</span><span style="color:#000;font-weight:bold">:</span>
+    pcmd <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">struct</span> pipecmd <span style="color:#000;font-weight:bold">*</span>)cmd;
     pipe(p);
-    <span style="color:#66d9ef">if</span> (fork1() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
-      close(<span style="color:#ae81ff">1</span>);
-      dup(p[<span style="color:#ae81ff">1</span>]); <span style="color:#75715e">// use 1, write left cmd&#39;s output to p[1];
-</span><span style="color:#75715e"></span>      close(p[<span style="color:#ae81ff">0</span>]);
-      close(p[<span style="color:#ae81ff">1</span>]);
-      runcmd(pcmd<span style="color:#f92672">-&gt;</span>left);
-    } <span style="color:#66d9ef">else</span>{
-      close(<span style="color:#ae81ff">0</span>);
-      dup(p[<span style="color:#ae81ff">0</span>]); <span style="color:#75715e">// read right cmd&#39;s input from p[0]
-</span><span style="color:#75715e"></span>      close(p[<span style="color:#ae81ff">0</span>]);
-      close(p[<span style="color:#ae81ff">1</span>]);
-      runcmd(pcmd<span style="color:#f92672">-&gt;</span>right);
+    <span style="color:#000;font-weight:bold">if</span> (fork1() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
+      close(<span style="color:#099">1</span>);
+      dup(p[<span style="color:#099">1</span>]); <span style="color:#998;font-style:italic">// use 1, write left cmd&#39;s output to p[1];
+</span><span style="color:#998;font-style:italic"></span>      close(p[<span style="color:#099">0</span>]);
+      close(p[<span style="color:#099">1</span>]);
+      runcmd(pcmd<span style="color:#000;font-weight:bold">-&gt;</span>left);
+    } <span style="color:#000;font-weight:bold">else</span>{
+      close(<span style="color:#099">0</span>);
+      dup(p[<span style="color:#099">0</span>]); <span style="color:#998;font-style:italic">// read right cmd&#39;s input from p[0]
+</span><span style="color:#998;font-style:italic"></span>      close(p[<span style="color:#099">0</span>]);
+      close(p[<span style="color:#099">1</span>]);
+      runcmd(pcmd<span style="color:#000;font-weight:bold">-&gt;</span>right);
     }
-    <span style="color:#75715e">/**
-</span><span style="color:#75715e">     * The wait() system call suspends execution of the calling
-</span><span style="color:#75715e">     * process  until one  of its children terminates.  The call wait(&amp;wstatus)
-</span><span style="color:#75715e">     * is equivalent to: waitpid(-1, &amp;wstatus, 0);
-</span><span style="color:#75715e">     */</span>
-    wait(<span style="color:#f92672">&amp;</span>r);
-    <span style="color:#66d9ef">break</span>;
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * The wait() system call suspends execution of the calling
+</span><span style="color:#998;font-style:italic">     * process  until one  of its children terminates.  The call wait(&amp;wstatus)
+</span><span style="color:#998;font-style:italic">     * is equivalent to: waitpid(-1, &amp;wstatus, 0);
+</span><span style="color:#998;font-style:italic">     */</span>
+    wait(<span style="color:#000;font-weight:bold">&amp;</span>r);
+    <span style="color:#000;font-weight:bold">break</span>;
 </code></pre></div><p>首先在子进程中执行<code>|</code>的左端命令，写入p[1]。父进程从中p[0]读入，执行右端命令。最终左端命令的输出通过管道连接到了右端命令的输入。</p>
 <p><del>这种方法，经我测试有时会出现多打印了一个“6.828$”提示符。</del>
 在 mit 的讲义里发现了<code>what if sh didn't fork for pcmd-&gt;right? [try it] would user-visible behavior change? sleep 10 | echo hi</code>，这样做的结果就是打印了<code>hi</code>， shell 看上去却没有<code>sleep 10</code>。所以这种实现是错误的。</p>
 <p>所以，看 xv6 的实现：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#39;|&#39;</span><span style="color:#f92672">:</span>
-    pcmd <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> pipecmd <span style="color:#f92672">*</span>)cmd;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39;|&#39;</span><span style="color:#000;font-weight:bold">:</span>
+    pcmd <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">struct</span> pipecmd <span style="color:#000;font-weight:bold">*</span>)cmd;
     pipe(p);
-    <span style="color:#66d9ef">if</span> (fork1() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
-      close(<span style="color:#ae81ff">1</span>);
-      dup(p[<span style="color:#ae81ff">1</span>]); <span style="color:#75715e">// write left cmd&#39;s output to p[1];
-</span><span style="color:#75715e"></span>      close(p[<span style="color:#ae81ff">0</span>]);
-      close(p[<span style="color:#ae81ff">1</span>]);
-      runcmd(pcmd<span style="color:#f92672">-&gt;</span>left);
+    <span style="color:#000;font-weight:bold">if</span> (fork1() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
+      close(<span style="color:#099">1</span>);
+      dup(p[<span style="color:#099">1</span>]); <span style="color:#998;font-style:italic">// write left cmd&#39;s output to p[1];
+</span><span style="color:#998;font-style:italic"></span>      close(p[<span style="color:#099">0</span>]);
+      close(p[<span style="color:#099">1</span>]);
+      runcmd(pcmd<span style="color:#000;font-weight:bold">-&gt;</span>left);
     }
-    <span style="color:#66d9ef">if</span> (fork1() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
-      close(<span style="color:#ae81ff">0</span>);
-      dup(p[<span style="color:#ae81ff">0</span>]); <span style="color:#75715e">// read right cmd&#39;s input from p[0]
-</span><span style="color:#75715e"></span>      close(p[<span style="color:#ae81ff">0</span>]);
-      close(p[<span style="color:#ae81ff">1</span>]);
-      runcmd(pcmd<span style="color:#f92672">-&gt;</span>right);
+    <span style="color:#000;font-weight:bold">if</span> (fork1() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
+      close(<span style="color:#099">0</span>);
+      dup(p[<span style="color:#099">0</span>]); <span style="color:#998;font-style:italic">// read right cmd&#39;s input from p[0]
+</span><span style="color:#998;font-style:italic"></span>      close(p[<span style="color:#099">0</span>]);
+      close(p[<span style="color:#099">1</span>]);
+      runcmd(pcmd<span style="color:#000;font-weight:bold">-&gt;</span>right);
     }
-    close(p[<span style="color:#ae81ff">0</span>]);
-    close(p[<span style="color:#ae81ff">1</span>]);
-    wait(<span style="color:#f92672">&amp;</span>r);
-    wait(<span style="color:#f92672">&amp;</span>r);
-    <span style="color:#66d9ef">break</span>;
+    close(p[<span style="color:#099">0</span>]);
+    close(p[<span style="color:#099">1</span>]);
+    wait(<span style="color:#000;font-weight:bold">&amp;</span>r);
+    wait(<span style="color:#000;font-weight:bold">&amp;</span>r);
+    <span style="color:#000;font-weight:bold">break</span>;
 </code></pre></div><p><code>fork</code> 了两次，创建了两个子进程，使用pipe管理它们之前的通信，最后也<code>wait</code>两次，等待两个子进程都结束，当然这里可以递归的创建多个子进程。使用这种方便则不会出现多打一个提示符的情况。（为什么我也不知道 啊-.-）</p>
 <p>执行<code>a.out &lt; t.sh</code>，<code>a.out</code>是shell自己的执行文件。</p>
 <p><img src="/images/6.828-hw2-shell.png" alt="rsh"></p>

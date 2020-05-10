@@ -197,90 +197,90 @@
 <p>JCP 第五章：在单线程代码中也可能抛出<code>ConcurrentModificationException</code>。当对象直接从容器中删除而不是通过<code>Iterator.remove</code>来删除时，就会抛出这个异常。</p>
 </blockquote>
 <p>虽然<code>ConcurrentModificationException</code>这个异常听上去是多线程环境下出现的。但是如上面的引用，单线程里如果使用不当也会出现。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ArrayList<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">iterateAndRemove</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Integer i <span style="color:#f92672">:</span> list<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>i <span style="color:#f92672">%</span> 4 <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        list<span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span>
-      <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> list <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
+  <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">iterateAndRemove</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>Integer i <span style="color:#000;font-weight:bold">:</span> list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">%</span> 4 <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        list<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">remove</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">);</span>
+      <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>在使用<code>for-each</code>遍历列表时，实际上就是用<code>Iterator</code>遍历，但在删除的时候使用了<code>list.remove()</code>，这就造成了<code>ArrayList</code>中的<code>modCount</code>和<code>Iterator</code>中的<code>modCount</code>不相同，从而抛出异常。</p>
 <p>解决办法也很简单，只要使用<code>Iterator.remove</code>就不会有异常。<strong>所以即使在单线程中也不能混用<code>Iterator</code>和容器中的方法。</strong></p>
 <h2 id="multi-thread">Multi Thread</h2>
 <p>多线程的情况下，情况变得更加复杂。我们来看下面的实例代码：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcurrentModificationExceptionTest</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ConcurrentModificationExceptionTest</span> <span style="color:#000;font-weight:bold">{</span>
 
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ExecutorService executor <span style="color:#f92672">=</span> Executors<span style="color:#f92672">.</span><span style="color:#a6e22e">newFixedThreadPool</span><span style="color:#f92672">(</span>10<span style="color:#f92672">);</span>
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ArrayList<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> ExecutorService executor <span style="color:#000;font-weight:bold">=</span> Executors<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newFixedThreadPool</span><span style="color:#000;font-weight:bold">(</span>10<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> list <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
 
-  <span style="color:#75715e">// works
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Runnable iteratorRunnable <span style="color:#f92672">=</span> <span style="color:#f92672">()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-    Iterator<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> it <span style="color:#f92672">=</span> list<span style="color:#f92672">.</span><span style="color:#a6e22e">iterator</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>it<span style="color:#f92672">.</span><span style="color:#a6e22e">hasNext</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> it<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">();</span>
-      <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>i <span style="color:#f92672">%</span> 4 <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        it<span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">();</span>
-        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Removed &#34;</span> <span style="color:#f92672">+</span> i<span style="color:#f92672">);</span>
-      <span style="color:#f92672">}</span>
-      <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>100<span style="color:#f92672">);</span>
-      <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">};</span>
+  <span style="color:#998;font-style:italic">// works
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> Runnable iteratorRunnable <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+    Iterator<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> it <span style="color:#000;font-weight:bold">=</span> list<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">iterator</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span>it<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hasNext</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> it<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">next</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">%</span> 4 <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        it<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">remove</span><span style="color:#000;font-weight:bold">();</span>
+        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Removed &#34;</span> <span style="color:#000;font-weight:bold">+</span> i<span style="color:#000;font-weight:bold">);</span>
+      <span style="color:#000;font-weight:bold">}</span>
+      <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+        Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>100<span style="color:#000;font-weight:bold">);</span>
+      <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">};</span>
   
-  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ConcurrentModificationExceptionTest</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> 100<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
-      list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">ConcurrentModificationExceptionTest</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> 100<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
+      list<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testArrayList</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> 20<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
-      executor<span style="color:#f92672">.</span><span style="color:#a6e22e">execute</span><span style="color:#f92672">(</span>iteratorRunnable<span style="color:#f92672">);</span>
-      executor<span style="color:#f92672">.</span><span style="color:#a6e22e">execute</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Integer integer <span style="color:#f92672">:</span> list<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-          System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>integer<span style="color:#f92672">);</span>
-          <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-            Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>100<span style="color:#f92672">);</span>
-          <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-          <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
-      <span style="color:#f92672">});</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testArrayList</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> 20<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
+      executor<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">execute</span><span style="color:#000;font-weight:bold">(</span>iteratorRunnable<span style="color:#000;font-weight:bold">);</span>
+      executor<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">execute</span><span style="color:#000;font-weight:bold">(()</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>Integer integer <span style="color:#000;font-weight:bold">:</span> list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+          System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>integer<span style="color:#000;font-weight:bold">);</span>
+          <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>100<span style="color:#000;font-weight:bold">);</span>
+          <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+          <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+      <span style="color:#000;font-weight:bold">});</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">stop</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-    executor<span style="color:#f92672">.</span><span style="color:#a6e22e">shutdown</span><span style="color:#f92672">();</span>
-    executor<span style="color:#f92672">.</span><span style="color:#a6e22e">awaitTermination</span><span style="color:#f92672">(</span>5<span style="color:#f92672">,</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">stop</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> InterruptedException <span style="color:#000;font-weight:bold">{</span>
+    executor<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">shutdown</span><span style="color:#000;font-weight:bold">();</span>
+    executor<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">awaitTermination</span><span style="color:#000;font-weight:bold">(</span>5<span style="color:#000;font-weight:bold">,</span> TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SECONDS</span><span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-    ConcurrentModificationExceptionTest test <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ConcurrentModificationExceptionTest<span style="color:#f92672">();</span>
-    test<span style="color:#f92672">.</span><span style="color:#a6e22e">testArrayList</span><span style="color:#f92672">();</span>
-    test<span style="color:#f92672">.</span><span style="color:#a6e22e">stop</span><span style="color:#f92672">();</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> InterruptedException <span style="color:#000;font-weight:bold">{</span>
+    ConcurrentModificationExceptionTest test <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ConcurrentModificationExceptionTest<span style="color:#000;font-weight:bold">();</span>
+    test<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">testArrayList</span><span style="color:#000;font-weight:bold">();</span>
+    test<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">stop</span><span style="color:#000;font-weight:bold">();</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>上面的代码也会造成<code>ConcurrentModificationException</code>，因为多个线程同时遍历列表，也可能造成<code>ArrayList</code>中的<code>modCount</code>和<code>Iterator</code>中的<code>modCount</code>不相同。</p>
 <h3 id="solution">Solution</h3>
 <ul>
 <li>迭代时对容器加锁</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>list<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Integer integer <span style="color:#f92672">:</span> list<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-		<span style="color:#75715e">//doSomething
-</span><span style="color:#75715e"></span>  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span>list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>Integer integer <span style="color:#000;font-weight:bold">:</span> list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#998;font-style:italic">//doSomething
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><ul>
 <li>在副本上进行迭代</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ArrayList<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> cloneList <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>ArrayList<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;)</span> list<span style="color:#f92672">.</span><span style="color:#a6e22e">clone</span><span style="color:#f92672">();</span>
-<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Integer integer <span style="color:#f92672">:</span> cloneList<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-	<span style="color:#75715e">//doSomething
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> cloneList <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;)</span> list<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">();</span>
+<span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>Integer integer <span style="color:#000;font-weight:bold">:</span> cloneList<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#998;font-style:italic">//doSomething
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><ul>
 <li>使用<code>CopyOnWriteArrayList</code></li>
 </ul>

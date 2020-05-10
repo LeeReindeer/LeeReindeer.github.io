@@ -187,35 +187,35 @@
 </blockquote>
 <h2 id="方法-1-设置代理">方法 1 设置代理</h2>
 <p>这种方法很简单粗暴，你需要拥有一个代理，协议可以是 socks5 或者 http 代理。但在某些网络环境下，经过尝试，速度基本上没有提升。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git config --global http.proxy <span style="color:#e6db74">&#39;socks5://127.0.0.1:1081&#39;</span>
-git config --global https.proxy <span style="color:#e6db74">&#39;socks5://127.0.0.1:1081&#39;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git config --global http.proxy <span style="color:#d14">&#39;socks5://127.0.0.1:1081&#39;</span>
+git config --global https.proxy <span style="color:#d14">&#39;socks5://127.0.0.1:1081&#39;</span>
 </code></pre></div><h2 id="方法-2-远程克隆">方法 2 远程克隆</h2>
 <p>这是我自创的一个办法：既然本地网络环境连接 GitHub 很慢，那么可以借助一台服务器进行 clone（一般服务器上都比较快的哦），然后再下载到本地。思路是很简单，接下来就是 bash 脚本大显身手的时候了。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
-</span><span style="color:#75715e"></span>
-git_url<span style="color:#f92672">=</span>$1
-dir<span style="color:#f92672">=</span>$2
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#999;font-weight:bold;font-style:italic">#!/bin/bash
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
+<span style="color:#008080">git_url</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$1</span>
+<span style="color:#008080">dir</span><span style="color:#000;font-weight:bold">=</span><span style="color:#008080">$2</span>
 
-remote_clone<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-  echo <span style="color:#e6db74">&#34;git clone </span>$1<span style="color:#e6db74"> </span>$2<span style="color:#e6db74"> on remote&#34;</span>
-  ssh -t root@1.2.3.4 <span style="color:#e6db74">&#34;git clone </span>$1<span style="color:#e6db74"> </span>$2<span style="color:#e6db74">&#34;</span>
-<span style="color:#f92672">}</span>
+remote_clone<span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;git clone </span><span style="color:#008080">$1</span><span style="color:#d14"> </span><span style="color:#008080">$2</span><span style="color:#d14"> on remote&#34;</span>
+  ssh -t root@1.2.3.4 <span style="color:#d14">&#34;git clone </span><span style="color:#008080">$1</span><span style="color:#d14"> </span><span style="color:#008080">$2</span><span style="color:#d14">&#34;</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-download<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-  echo <span style="color:#e6db74">&#34;Downloading </span>$dir<span style="color:#e6db74"> to local...&#34;</span>
-  scp -q -r root@1.2.3.4:/root/$dir/ $dir
-<span style="color:#f92672">}</span>
+download<span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;Downloading </span><span style="color:#008080">$dir</span><span style="color:#d14"> to local...&#34;</span>
+  scp -q -r root@1.2.3.4:/root/<span style="color:#008080">$dir</span>/ <span style="color:#008080">$dir</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-rm_clone<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-  echo <span style="color:#e6db74">&#34;Remove </span>$dir<span style="color:#e6db74"> on remote machine...&#34;</span>
-  ssh -q -t root@1.2.3.4 <span style="color:#e6db74">&#34;rm -rf </span>$dir<span style="color:#e6db74">&#34;</span>
-<span style="color:#f92672">}</span>
+rm_clone<span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;Remove </span><span style="color:#008080">$dir</span><span style="color:#d14"> on remote machine...&#34;</span>
+  ssh -q -t root@1.2.3.4 <span style="color:#d14">&#34;rm -rf </span><span style="color:#008080">$dir</span><span style="color:#d14">&#34;</span>
+<span style="color:#000;font-weight:bold">}</span>
 
 
-remote_clone $git_url $dir
+remote_clone <span style="color:#008080">$git_url</span> <span style="color:#008080">$dir</span>
 download
 rm_clone
-echo <span style="color:#e6db74">&#34;Finish!!!&#34;</span>
+<span style="color:#0086b3">echo</span> <span style="color:#d14">&#34;Finish!!!&#34;</span>
 </code></pre></div><p><code>ssh</code> 加上 <code>-t</code> flag 将登录并运行指定的命令，然后退出，它不会与远程服务器保持连接。比如 <code>ssh -t root@1.2.3.4 &quot;ls&quot;</code> 就会在远程执行 ls 命令，并将结果打印在本地终端上，这也符合我们的预期。</p>
 <p>我们使用 root 用户登录服务器，也可以使用拥有<code>rm</code>命令权限的用户登录。脚本会在下载完成后，使用<code>rm</code>命令删除服务器上的文件。</p>
 <p>使用时只需将脚本中的 IP <code>1.2.3.4</code>改为你的服务器 IP 即可。下图是使用截图:tada: :tada: :tada:</p>

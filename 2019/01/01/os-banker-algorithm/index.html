@@ -137,7 +137,12 @@
       <ul>
         <li><a href="#自然语言描述">自然语言描述</a></li>
         <li><a href="#c-实现">C++ 实现</a></li>
-        <li><a href="#测试用例">测试用例</a></li>
+        <li><a href="#测试用例">测试用例</a>
+          <ul>
+            <li><a href="#test-case-1">Test Case 1</a></li>
+            <li><a href="#test-case-2">Test Case 2</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="#参考">参考</a></li>
@@ -216,9 +221,9 @@
 <li>每个进程当前申请各类资源数量矩阵 <code>Request[i, j] = k</code>，表示进程 P 当前申请R类资源k个。</li>
 </ul>
 <p>对应在 C++ 中的定义如下，在这里向量和矩阵其实就是一维数组和二维数组：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> resource[MAX_RESOURCE], available[MAX_RESOURCE];
-<span style="color:#66d9ef">int</span> allocation[THREAD_NUM][MAX_RESOURCE];
-<span style="color:#66d9ef">int</span> claim[THREAD_NUM][MAX_RESOURCE], need[THREAD_NUM][MAX_RESOURCE];
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#458;font-weight:bold">int</span> resource[MAX_RESOURCE], available[MAX_RESOURCE];
+<span style="color:#458;font-weight:bold">int</span> allocation[THREAD_NUM][MAX_RESOURCE];
+<span style="color:#458;font-weight:bold">int</span> claim[THREAD_NUM][MAX_RESOURCE], need[THREAD_NUM][MAX_RESOURCE];
 </code></pre></div><h2 id="算法实现">算法实现</h2>
 <p>当前系统状态是安全的，当且仅当存在一个进程序列 <code>P0，P2，…，Pn-1</code>，对进程 <code>P(k=0, 2, …，n - 1)</code>满足公式（第一次尝试在 Markdown 里写数学公式 :cat:）：</p>
 <p>$$Need[k, i] ≤  Available[i] +\sum_{j=0}^{k-1}Allocation[j, i] (i = 0,&hellip;,m-1;k=1,&hellip;, n-1)$$</p>
@@ -265,89 +270,89 @@ Need[i, *] = Need[i, *] + Request[i, *]
 </ol>
 <h3 id="c-实现">C++ 实现</h3>
 <p>安全性测试算法基本上和自然语言描述的步骤一致：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">/** Wether current state is safe.
-</span><span style="color:#75715e"> * return true if safe, else return false.
-</span><span style="color:#75715e"> * if return true, the safe_seq will be filled with the sequence that thread
-</span><span style="color:#75715e"> * process
-</span><span style="color:#75715e"> */</span>
-<span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">is_safe</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>available, <span style="color:#66d9ef">int</span> need[][MAX_RESOURCE],
-             <span style="color:#66d9ef">int</span> alloction[][MAX_RESOURCE], <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>safe_seq) {
-  <span style="color:#66d9ef">int</span> work[RESOURCE_NUM];
-  memcpy(work, available, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span> RESOURCE_NUM);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#998;font-style:italic">/** Wether current state is safe.
+</span><span style="color:#998;font-style:italic"> * return true if safe, else return false.
+</span><span style="color:#998;font-style:italic"> * if return true, the safe_seq will be filled with the sequence that thread
+</span><span style="color:#998;font-style:italic"> * process
+</span><span style="color:#998;font-style:italic"> */</span>
+<span style="color:#458;font-weight:bold">bool</span> <span style="color:#900;font-weight:bold">is_safe</span>(<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>available, <span style="color:#458;font-weight:bold">int</span> need[][MAX_RESOURCE],
+             <span style="color:#458;font-weight:bold">int</span> alloction[][MAX_RESOURCE], <span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>safe_seq) {
+  <span style="color:#458;font-weight:bold">int</span> work[RESOURCE_NUM];
+  memcpy(work, available, <span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#458;font-weight:bold">int</span>) <span style="color:#000;font-weight:bold">*</span> RESOURCE_NUM);
 
-  set<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> rest;
-  set<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;::</span>iterator it;
+  set<span style="color:#000;font-weight:bold">&lt;</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">&gt;</span> rest;
+  set<span style="color:#000;font-weight:bold">&lt;</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">&gt;::</span>iterator it;
 
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> THREAD_NUM; i<span style="color:#f92672">++</span>) {
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> THREAD_NUM; i<span style="color:#000;font-weight:bold">++</span>) {
     rest.insert(i);
   }
 
-  <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-  <span style="color:#66d9ef">while</span> (rest.size() <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) {
-    <span style="color:#75715e">// find a thread that its need &lt; available
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> id <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
-    <span style="color:#66d9ef">bool</span> no_possible <span style="color:#f92672">=</span> true;
+  <span style="color:#458;font-weight:bold">int</span> size <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+  <span style="color:#000;font-weight:bold">while</span> (rest.size() <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span>) {
+    <span style="color:#998;font-style:italic">// find a thread that its need &lt; available
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">int</span> id <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+    <span style="color:#458;font-weight:bold">bool</span> no_possible <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">true</span>;
 
-    <span style="color:#66d9ef">for</span> (it <span style="color:#f92672">=</span> rest.begin(); it <span style="color:#f92672">!=</span> rest.end(); it<span style="color:#f92672">++</span>) {
-      <span style="color:#66d9ef">bool</span> ok <span style="color:#f92672">=</span> true;
-      <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; j <span style="color:#f92672">&lt;</span> RESOURCE_NUM; j<span style="color:#f92672">++</span>) {
-        <span style="color:#66d9ef">if</span> (need[<span style="color:#f92672">*</span>it][j] <span style="color:#f92672">&gt;</span> work[j]) {
-          ok <span style="color:#f92672">=</span> false;
-          <span style="color:#75715e">// break inner loop
-</span><span style="color:#75715e"></span>          j <span style="color:#f92672">=</span> RESOURCE_NUM;
+    <span style="color:#000;font-weight:bold">for</span> (it <span style="color:#000;font-weight:bold">=</span> rest.begin(); it <span style="color:#000;font-weight:bold">!=</span> rest.end(); it<span style="color:#000;font-weight:bold">++</span>) {
+      <span style="color:#458;font-weight:bold">bool</span> ok <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">true</span>;
+      <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> j <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; j <span style="color:#000;font-weight:bold">&lt;</span> RESOURCE_NUM; j<span style="color:#000;font-weight:bold">++</span>) {
+        <span style="color:#000;font-weight:bold">if</span> (need[<span style="color:#000;font-weight:bold">*</span>it][j] <span style="color:#000;font-weight:bold">&gt;</span> work[j]) {
+          ok <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">false</span>;
+          <span style="color:#998;font-style:italic">// break inner loop
+</span><span style="color:#998;font-style:italic"></span>          j <span style="color:#000;font-weight:bold">=</span> RESOURCE_NUM;
         }
       }
-      <span style="color:#66d9ef">if</span> (ok) {
-        no_possible <span style="color:#f92672">=</span> false;
-        id <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>it;
-        safe_seq[size<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> id;
-        <span style="color:#75715e">// remove from set
-</span><span style="color:#75715e"></span>        rest.erase(it);
-        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; k <span style="color:#f92672">&lt;</span> RESOURCE_NUM; k<span style="color:#f92672">++</span>) {
-          <span style="color:#75715e">// assume we release this thread&#39;s resource
-</span><span style="color:#75715e"></span>          work[k] <span style="color:#f92672">+=</span> alloction[<span style="color:#f92672">*</span>it][k];
+      <span style="color:#000;font-weight:bold">if</span> (ok) {
+        no_possible <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">false</span>;
+        id <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">*</span>it;
+        safe_seq[size<span style="color:#000;font-weight:bold">++</span>] <span style="color:#000;font-weight:bold">=</span> id;
+        <span style="color:#998;font-style:italic">// remove from set
+</span><span style="color:#998;font-style:italic"></span>        rest.erase(it);
+        <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> k <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; k <span style="color:#000;font-weight:bold">&lt;</span> RESOURCE_NUM; k<span style="color:#000;font-weight:bold">++</span>) {
+          <span style="color:#998;font-style:italic">// assume we release this thread&#39;s resource
+</span><span style="color:#998;font-style:italic"></span>          work[k] <span style="color:#000;font-weight:bold">+=</span> alloction[<span style="color:#000;font-weight:bold">*</span>it][k];
         }
-        <span style="color:#66d9ef">break</span>;
+        <span style="color:#000;font-weight:bold">break</span>;
       }
     }
-    <span style="color:#75715e">// no thread satisfied, stop search
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (no_possible) <span style="color:#66d9ef">break</span>;
+    <span style="color:#998;font-style:italic">// no thread satisfied, stop search
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> (no_possible) <span style="color:#000;font-weight:bold">break</span>;
   }
-  <span style="color:#66d9ef">return</span> rest.size() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;
+  <span style="color:#000;font-weight:bold">return</span> rest.size() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><p>处理进程的资源请求：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#66d9ef">int</span> thread_id;
-  <span style="color:#66d9ef">int</span> request[RESOURCE_NUM];
-  <span style="color:#75715e">// input request thread id, index start from 0
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (scanf(<span style="color:#e6db74">&#34;%d&#34;</span>, <span style="color:#f92672">&amp;</span>thread_id) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) {
-    <span style="color:#75715e">// input request
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bool</span> overflow <span style="color:#f92672">=</span> false;
-    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> RESOURCE_NUM; i<span style="color:#f92672">++</span>) {
-      scanf(<span style="color:#e6db74">&#34;%d&#34;</span>, <span style="color:#f92672">&amp;</span>request[i]);
-      <span style="color:#66d9ef">if</span> (request[i] <span style="color:#f92672">&gt;</span> need[thread_id][i] <span style="color:#f92672">||</span> request[i] <span style="color:#f92672">&gt;</span> available[i]) {
-        overflow <span style="color:#f92672">=</span> true;
-        printf(<span style="color:#e6db74">&#34;request rejected: request too much resource</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#458;font-weight:bold">int</span> thread_id;
+  <span style="color:#458;font-weight:bold">int</span> request[RESOURCE_NUM];
+  <span style="color:#998;font-style:italic">// input request thread id, index start from 0
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">while</span> (scanf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;font-weight:bold">&amp;</span>thread_id) <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {
+    <span style="color:#998;font-style:italic">// input request
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">bool</span> overflow <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">false</span>;
+    <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> RESOURCE_NUM; i<span style="color:#000;font-weight:bold">++</span>) {
+      scanf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;font-weight:bold">&amp;</span>request[i]);
+      <span style="color:#000;font-weight:bold">if</span> (request[i] <span style="color:#000;font-weight:bold">&gt;</span> need[thread_id][i] <span style="color:#000;font-weight:bold">||</span> request[i] <span style="color:#000;font-weight:bold">&gt;</span> available[i]) {
+        overflow <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">true</span>;
+        printf(<span style="color:#d14">&#34;request rejected: request too much resource</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
       }
     }
-    <span style="color:#66d9ef">if</span> (overflow) <span style="color:#66d9ef">continue</span>;
+    <span style="color:#000;font-weight:bold">if</span> (overflow) <span style="color:#000;font-weight:bold">continue</span>;
 
-    <span style="color:#75715e">// try to satisfy request
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> RESOURCE_NUM; i<span style="color:#f92672">++</span>) {
-      allocation[thread_id][i] <span style="color:#f92672">+=</span> request[i];
-      available[i] <span style="color:#f92672">-=</span> request[i];
-      need[thread_id][i] <span style="color:#f92672">-=</span> request[i];
+    <span style="color:#998;font-style:italic">// try to satisfy request
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> RESOURCE_NUM; i<span style="color:#000;font-weight:bold">++</span>) {
+      allocation[thread_id][i] <span style="color:#000;font-weight:bold">+=</span> request[i];
+      available[i] <span style="color:#000;font-weight:bold">-=</span> request[i];
+      need[thread_id][i] <span style="color:#000;font-weight:bold">-=</span> request[i];
     }
-    printf(<span style="color:#e6db74">&#34;try to satisfy request, now available:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+    printf(<span style="color:#d14">&#34;try to satisfy request, now available:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
     print_sequence(available, RESOURCE_NUM);
-    <span style="color:#66d9ef">if</span> (is_safe(available, need, allocation, safe_sequence)) {
-      printf(<span style="color:#e6db74">&#34;request accepted</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-    } <span style="color:#66d9ef">else</span> {
-      printf(<span style="color:#e6db74">&#34;request rejected: state not safe</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-      <span style="color:#75715e">// restore previous state
-</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> RESOURCE_NUM; i<span style="color:#f92672">++</span>) {
-        allocation[thread_id][i] <span style="color:#f92672">-=</span> request[i];
-        available[i] <span style="color:#f92672">+=</span> request[i];
-        need[thread_id][i] <span style="color:#f92672">+=</span> request[i];
+    <span style="color:#000;font-weight:bold">if</span> (is_safe(available, need, allocation, safe_sequence)) {
+      printf(<span style="color:#d14">&#34;request accepted</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+    } <span style="color:#000;font-weight:bold">else</span> {
+      printf(<span style="color:#d14">&#34;request rejected: state not safe</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+      <span style="color:#998;font-style:italic">// restore previous state
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> RESOURCE_NUM; i<span style="color:#000;font-weight:bold">++</span>) {
+        allocation[thread_id][i] <span style="color:#000;font-weight:bold">-=</span> request[i];
+        available[i] <span style="color:#000;font-weight:bold">+=</span> request[i];
+        need[thread_id][i] <span style="color:#000;font-weight:bold">+=</span> request[i];
       }
     }
   }

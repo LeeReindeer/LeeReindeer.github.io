@@ -209,95 +209,95 @@
 <li>和<code>Vector</code>类似，但<code>ArrayList</code><strong>不是</strong>线程安全的</li>
 </ul>
 <h3 id="add方法">add方法</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    ensureCapacityInternal<span style="color:#f92672">(</span>size <span style="color:#f92672">+</span> 1<span style="color:#f92672">);</span>  <span style="color:#75715e">// Increments modCount!!
-</span><span style="color:#75715e"></span>    elementData<span style="color:#f92672">[</span>size<span style="color:#f92672">++]</span> <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">add</span><span style="color:#000;font-weight:bold">(</span>E e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    ensureCapacityInternal<span style="color:#000;font-weight:bold">(</span>size <span style="color:#000;font-weight:bold">+</span> 1<span style="color:#000;font-weight:bold">);</span>  <span style="color:#998;font-style:italic">// Increments modCount!!
+</span><span style="color:#998;font-style:italic"></span>    elementData<span style="color:#000;font-weight:bold">[</span>size<span style="color:#000;font-weight:bold">++]</span> <span style="color:#000;font-weight:bold">=</span> e<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>可以看到<code>add</code>方法直接将元素放到数组的最后，如果<code>size + 1</code>超过了数组的长度，会进行扩容。下面来看一下核心的扩容机制。</p>
 <h3 id="扩容机制">扩容机制</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">ensureCapacityInternal</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> minCapacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>elementData <span style="color:#f92672">==</span> DEFAULTCAPACITY_EMPTY_ELEMENTDATA<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        minCapacity <span style="color:#f92672">=</span> Math<span style="color:#f92672">.</span><span style="color:#a6e22e">max</span><span style="color:#f92672">(</span>DEFAULT_CAPACITY<span style="color:#f92672">,</span> minCapacity<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-    ensureExplicitCapacity<span style="color:#f92672">(</span>minCapacity<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">ensureExplicitCapacity</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> minCapacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    modCount<span style="color:#f92672">++;</span>
-    <span style="color:#75715e">// overflow-conscious code
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>minCapacity <span style="color:#f92672">-</span> elementData<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span>
-        grow<span style="color:#f92672">(</span>minCapacity<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">grow</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> minCapacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// overflow-conscious code
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> oldCapacity <span style="color:#f92672">=</span> elementData<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 扩容为原来的1.5倍
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> newCapacity <span style="color:#f92672">=</span> oldCapacity <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>oldCapacity <span style="color:#f92672">&gt;&gt;</span> 1<span style="color:#f92672">);</span>
-    <span style="color:#75715e">// 如果扩为1.5倍还不满足需求，直接扩为最小可以满足容量的值
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>newCapacity <span style="color:#f92672">-</span> minCapacity <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span>
-        newCapacity <span style="color:#f92672">=</span> minCapacity<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>newCapacity <span style="color:#f92672">-</span> MAX_ARRAY_SIZE <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span>
-        newCapacity <span style="color:#f92672">=</span> hugeCapacity<span style="color:#f92672">(</span>minCapacity<span style="color:#f92672">);</span>
-    <span style="color:#75715e">// minCapacity is usually close to size, so this is a win:
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 拷贝数组
-</span><span style="color:#75715e"></span>    elementData <span style="color:#f92672">=</span> Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">copyOf</span><span style="color:#f92672">(</span>elementData<span style="color:#f92672">,</span> newCapacity<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ensureCapacityInternal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> minCapacity<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>elementData <span style="color:#000;font-weight:bold">==</span> DEFAULTCAPACITY_EMPTY_ELEMENTDATA<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        minCapacity <span style="color:#000;font-weight:bold">=</span> Math<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">max</span><span style="color:#000;font-weight:bold">(</span>DEFAULT_CAPACITY<span style="color:#000;font-weight:bold">,</span> minCapacity<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    ensureExplicitCapacity<span style="color:#000;font-weight:bold">(</span>minCapacity<span style="color:#000;font-weight:bold">);</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ensureExplicitCapacity</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> minCapacity<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    modCount<span style="color:#000;font-weight:bold">++;</span>
+    <span style="color:#998;font-style:italic">// overflow-conscious code
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>minCapacity <span style="color:#000;font-weight:bold">-</span> elementData<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">length</span> <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">)</span>
+        grow<span style="color:#000;font-weight:bold">(</span>minCapacity<span style="color:#000;font-weight:bold">);</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">grow</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> minCapacity<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">// overflow-conscious code
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">int</span> oldCapacity <span style="color:#000;font-weight:bold">=</span> elementData<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">length</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#998;font-style:italic">// 扩容为原来的1.5倍
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">int</span> newCapacity <span style="color:#000;font-weight:bold">=</span> oldCapacity <span style="color:#000;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">(</span>oldCapacity <span style="color:#000;font-weight:bold">&gt;&gt;</span> 1<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#998;font-style:italic">// 如果扩为1.5倍还不满足需求，直接扩为最小可以满足容量的值
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>newCapacity <span style="color:#000;font-weight:bold">-</span> minCapacity <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span>
+        newCapacity <span style="color:#000;font-weight:bold">=</span> minCapacity<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>newCapacity <span style="color:#000;font-weight:bold">-</span> MAX_ARRAY_SIZE <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">)</span>
+        newCapacity <span style="color:#000;font-weight:bold">=</span> hugeCapacity<span style="color:#000;font-weight:bold">(</span>minCapacity<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#998;font-style:italic">// minCapacity is usually close to size, so this is a win:
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 拷贝数组
+</span><span style="color:#998;font-style:italic"></span>    elementData <span style="color:#000;font-weight:bold">=</span> Arrays<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">copyOf</span><span style="color:#000;font-weight:bold">(</span>elementData<span style="color:#000;font-weight:bold">,</span> newCapacity<span style="color:#000;font-weight:bold">);</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>当添加数据的时候，如果ArrayList的大小已经不满足需求时，<strong>那么就将数组变为原长度的1.5倍，如果还是不能满足直接扩容为需要的容量（主要是对于<code>addAll</code>函数）</strong>。之后的操作就是把老的数组拷到新的数组里面。例如，默认的数组大小是10，也就是说当我们<code>add</code>10个元素之后，再进行一次add时，就会发生自动扩容，数组长度由10变为了15。</p>
 <p>测试用例如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
-</span><span style="color:#75715e"> * @author leer
-</span><span style="color:#75715e"> * Created at 12/17/18 11:51 AM
-</span><span style="color:#75715e"> */</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ArrayListTest</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic"> * @author leer
+</span><span style="color:#998;font-style:italic"> * Created at 12/17/18 11:51 AM
+</span><span style="color:#998;font-style:italic"> */</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ArrayListTest</span> <span style="color:#000;font-weight:bold">{</span>
 
-  <span style="color:#75715e">// 反射获取数组的长度
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getArrayListCapacity</span><span style="color:#f92672">(</span>ArrayList list<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">int</span> cap <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-      Field array <span style="color:#f92672">=</span> ArrayList<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;elementData&#34;</span><span style="color:#f92672">);</span>
-      array<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
-      cap <span style="color:#f92672">=</span> <span style="color:#f92672">((</span>Object<span style="color:#f92672">[])</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>list<span style="color:#f92672">)).</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
-      array<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>NoSuchFieldException <span style="color:#f92672">|</span> IllegalAccessException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">return</span> cap<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#998;font-style:italic">// 反射获取数组的长度
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getArrayListCapacity</span><span style="color:#000;font-weight:bold">(</span>ArrayList list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#458;font-weight:bold">int</span> cap <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+      Field array <span style="color:#000;font-weight:bold">=</span> ArrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDeclaredField</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;elementData&#34;</span><span style="color:#000;font-weight:bold">);</span>
+      array<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAccessible</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">);</span>
+      cap <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">((</span>Object<span style="color:#000;font-weight:bold">[])</span> array<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>list<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">length</span><span style="color:#000;font-weight:bold">;</span>
+      array<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAccessible</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>NoSuchFieldException <span style="color:#000;font-weight:bold">|</span> IllegalAccessException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">return</span> cap<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#a6e22e">@Test</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testArrayList</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    ArrayList<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> arrayList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
-    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> 10<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
-      arrayList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>i <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;test&#34;</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;size before resize: &#34;</span> <span style="color:#f92672">+</span> getArrayListCapacity<span style="color:#f92672">(</span>arrayList<span style="color:#f92672">));</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Test</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testArrayList</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    ArrayList<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> arrayList <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
+    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> 10<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
+      arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;test&#34;</span><span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;size before resize: &#34;</span> <span style="color:#000;font-weight:bold">+</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>arrayList<span style="color:#000;font-weight:bold">));</span>
 
-    arrayList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;resize it!&#34;</span><span style="color:#f92672">);</span>
+    arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;resize it!&#34;</span><span style="color:#000;font-weight:bold">);</span>
 
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;size after resize: &#34;</span> <span style="color:#f92672">+</span> getArrayListCapacity<span style="color:#f92672">(</span>arrayList<span style="color:#f92672">));</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;size after resize: &#34;</span> <span style="color:#000;font-weight:bold">+</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>arrayList<span style="color:#000;font-weight:bold">));</span>
 
-    ArrayList<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> anotherList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
-    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> 30<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
-      anotherList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>i <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;another&#34;</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+    ArrayList<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> anotherList <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
+    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> 30<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
+      anotherList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;another&#34;</span><span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;another list capacity: &#34;</span> <span style="color:#f92672">+</span> getArrayListCapacity<span style="color:#f92672">(</span>anotherList<span style="color:#f92672">));</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;another list size: &#34;</span> <span style="color:#f92672">+</span> anotherList<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">());</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;arrayList size: &#34;</span> <span style="color:#f92672">+</span> arrayList<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">());</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;another list capacity: &#34;</span> <span style="color:#000;font-weight:bold">+</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>anotherList<span style="color:#000;font-weight:bold">));</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;another list size: &#34;</span> <span style="color:#000;font-weight:bold">+</span> anotherList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">());</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;arrayList size: &#34;</span> <span style="color:#000;font-weight:bold">+</span> arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">());</span>
 
-    <span style="color:#66d9ef">int</span> originSize <span style="color:#f92672">=</span> arrayList<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">();</span>
-    arrayList<span style="color:#f92672">.</span><span style="color:#a6e22e">addAll</span><span style="color:#f92672">(</span>anotherList<span style="color:#f92672">);</span>
+    <span style="color:#458;font-weight:bold">int</span> originSize <span style="color:#000;font-weight:bold">=</span> arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">();</span>
+    arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addAll</span><span style="color:#000;font-weight:bold">(</span>anotherList<span style="color:#000;font-weight:bold">);</span>
 
-    org<span style="color:#f92672">.</span><span style="color:#a6e22e">junit</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Assert</span><span style="color:#f92672">.</span><span style="color:#a6e22e">assertEquals</span><span style="color:#f92672">(</span>anotherList<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> originSize<span style="color:#f92672">,</span> getArrayListCapacity<span style="color:#f92672">(</span>arrayList<span style="color:#f92672">));</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;size after addAll = anotherList.size() + arrayList.size() = &#34;</span> <span style="color:#f92672">+</span> getArrayListCapacity<span style="color:#f92672">(</span>arrayList<span style="color:#f92672">));</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+    org<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">junit</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Assert</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">assertEquals</span><span style="color:#000;font-weight:bold">(</span>anotherList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> originSize<span style="color:#000;font-weight:bold">,</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>arrayList<span style="color:#000;font-weight:bold">));</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;size after addAll = anotherList.size() + arrayList.size() = &#34;</span> <span style="color:#000;font-weight:bold">+</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>arrayList<span style="color:#000;font-weight:bold">));</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>结果如下：</p>
 <p><img src="/images/arraylist-test.png" alt="arraylist-test"></p>
 <h3 id="线程安全">线程安全</h3>
 <p>todo</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<!--todo-->
+<!--可以参考[ArrayList 是线程不安全的](https://twiceyuan.com/2016/06/09/ArrayList-is-not-thread-safe/)-->
 <h2 id="linkedlist">LinkedList</h2>
 <p>我们还是来看一下JavaDoc：</p>
 <blockquote>
@@ -317,25 +317,25 @@ the beginning or the end, whichever is closer to the specified index.</p>
 <h3 id="get方法">get方法</h3>
 <p>我们知道链表的头部或尾部插入，删除数据的时间复杂度为O(1)，同时也不需要扩容。而如果我们想要按下标遍历链表，时间复杂性度就变成了O(N)。</p>
 <p><code>LinkedList</code>采用双链表，可使按下标访问的时间复杂度变为<strong>O(N/2)</strong>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> index<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    checkElementIndex<span style="color:#f92672">(</span>index<span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">return</span> node<span style="color:#f92672">(</span>index<span style="color:#f92672">).</span><span style="color:#a6e22e">item</span><span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> E <span style="color:#900;font-weight:bold">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> index<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    checkElementIndex<span style="color:#000;font-weight:bold">(</span>index<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">return</span> node<span style="color:#000;font-weight:bold">(</span>index<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">item</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">node</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> index<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// assert isElementIndex(index);
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>index <span style="color:#f92672">&lt;</span> <span style="color:#f92672">(</span>size <span style="color:#f92672">&gt;&gt;</span> 1<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-        Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> x <span style="color:#f92672">=</span> first<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> index<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span>
-            x <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-        Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> x <span style="color:#f92672">=</span> last<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> size <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span> i <span style="color:#f92672">&gt;</span> index<span style="color:#f92672">;</span> i<span style="color:#f92672">--)</span>
-            x <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span><span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+Node<span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">node</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> index<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">// assert isElementIndex(index);
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>index <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#000;font-weight:bold">(</span>size <span style="color:#000;font-weight:bold">&gt;&gt;</span> 1<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
+        Node<span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> x <span style="color:#000;font-weight:bold">=</span> first<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> index<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span>
+            x <span style="color:#000;font-weight:bold">=</span> x<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">next</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span> x<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+        Node<span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> x <span style="color:#000;font-weight:bold">=</span> last<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> size <span style="color:#000;font-weight:bold">-</span> 1<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&gt;</span> index<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">--)</span>
+            x <span style="color:#000;font-weight:bold">=</span> x<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">prev</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span> x<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>在<code>node</code>方法中得到特定下标的节点：当下标小于长度的1/2时，从头部开始遍历，否则从尾部开始遍历。</p>
 <h2 id="区别和联系">区别和联系</h2>
 <ul>

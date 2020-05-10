@@ -280,11 +280,11 @@ if (state may premit a blocked thread acuire) {
 }s
 </code></pre><h2 id="使用">使用</h2>
 <p>实现一个同步器需要实现下面的方法：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">tryAcquire<span style="color:#f92672">()</span>
-tryRelease<span style="color:#f92672">()</span>
-tryAcquireShared<span style="color:#f92672">()</span>
-tryReleaseShared<span style="color:#f92672">()</span>
-isHeldExclusively<span style="color:#f92672">()</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">tryAcquire<span style="color:#000;font-weight:bold">()</span>
+tryRelease<span style="color:#000;font-weight:bold">()</span>
+tryAcquireShared<span style="color:#000;font-weight:bold">()</span>
+tryReleaseShared<span style="color:#000;font-weight:bold">()</span>
+isHeldExclusively<span style="color:#000;font-weight:bold">()</span>
 </code></pre></div><p>以上方法不需要全部实现，根据获取的锁的种类可以选择实现不同的方法.</p>
 <ul>
 <li>支持独占 (排他) 获取锁的同步器应该实现<code>tryAcquire</code>、 <code>tryRelease</code>、<code>isHeldExclusively</code></li>
@@ -295,36 +295,36 @@ isHeldExclusively<span style="color:#f92672">()</span>
 <p>实现一个同步器最好的设计模式是把功能委托给一个AQS的私有内部子类，而不是直接继承 AQS 来实现（这样会破坏同步器的简洁性，调用者可能会调用 AQS 的其他方法破坏同步状态）。</p>
 </blockquote>
 <h3 id="例子">例子</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">import</span> java.util.concurrent.locks.AbstractQueuedSynchronizer<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">java.util.concurrent.locks.AbstractQueuedSynchronizer</span><span style="color:#000;font-weight:bold">;</span>
 
-<span style="color:#75715e">/**
-</span><span style="color:#75715e"> * @author leer
-</span><span style="color:#75715e"> * Created at 4/25/19 6:24 PM
-</span><span style="color:#75715e"> * 一个不可重入的互斥锁
-</span><span style="color:#75715e"> */</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Mutex</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Sync</span> <span style="color:#66d9ef">extends</span> AbstractQueuedSynchronizer <span style="color:#f92672">{</span>
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryAcquire</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> ignore<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">return</span> compareAndSetState<span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> 1<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+<span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic"> * @author leer
+</span><span style="color:#998;font-style:italic"> * Created at 4/25/19 6:24 PM
+</span><span style="color:#998;font-style:italic"> * 一个不可重入的互斥锁
+</span><span style="color:#998;font-style:italic"> */</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Mutex</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Sync</span> <span style="color:#000;font-weight:bold">extends</span> AbstractQueuedSynchronizer <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">tryAcquire</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> ignore<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">return</span> compareAndSetState<span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryRelease</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> ignore<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      setState<span style="color:#f92672">(</span>0<span style="color:#f92672">);</span>
-      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Sync sync <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Sync<span style="color:#f92672">();</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">tryRelease</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> ignore<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      setState<span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">);</span>
+      <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> Sync sync <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Sync<span style="color:#000;font-weight:bold">();</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">acquire</span><span style="color:#f92672">(</span>0<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">lock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    sync<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">acquire</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">release</span><span style="color:#f92672">(</span>0<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">unlock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    sync<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">release</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h2 id="aqs-在-synchronizers-中的具体实现">AQS 在 Synchronizers 中的具体实现</h2>
 <h3 id="reentrantlock">ReentrantLock</h3>
 <ul>
@@ -332,24 +332,24 @@ isHeldExclusively<span style="color:#f92672">()</span>
 <li>ReentrantLock 有公平锁和非公平锁两种模式：对应的， ReentrantLock 内部有两个 AQS 的子类。（the fair one disabling barging）</li>
 </ul>
 <p>非公平锁的<code>tryAcquire</code>实现：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">       <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">nonfairTryAcquire</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">final</span> Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
-            <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
-            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> acquires<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-                    setExclusiveOwnerThread<span style="color:#f92672">(</span>current<span style="color:#f92672">);</span>
-                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-                <span style="color:#f92672">}</span>
-            <span style="color:#f92672">}</span>
-            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>current <span style="color:#f92672">==</span> getExclusiveOwnerThread<span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
-                <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> c <span style="color:#f92672">+</span> acquires<span style="color:#f92672">;</span>
-                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nextc <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#75715e">// overflow
-</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum lock count exceeded&#34;</span><span style="color:#f92672">);</span>
-                setState<span style="color:#f92672">(</span>nextc<span style="color:#f92672">);</span>
-                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-            <span style="color:#f92672">}</span>
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-        <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">       <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">nonfairTryAcquire</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">final</span> Thread current <span style="color:#000;font-weight:bold">=</span> Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentThread</span><span style="color:#000;font-weight:bold">();</span>
+            <span style="color:#458;font-weight:bold">int</span> c <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>c <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>compareAndSetState<span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">,</span> acquires<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
+                    setExclusiveOwnerThread<span style="color:#000;font-weight:bold">(</span>current<span style="color:#000;font-weight:bold">);</span>
+                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>current <span style="color:#000;font-weight:bold">==</span> getExclusiveOwnerThread<span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#458;font-weight:bold">int</span> nextc <span style="color:#000;font-weight:bold">=</span> c <span style="color:#000;font-weight:bold">+</span> acquires<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nextc <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">// overflow
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> Error<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Maximum lock count exceeded&#34;</span><span style="color:#000;font-weight:bold">);</span>
+                setState<span style="color:#000;font-weight:bold">(</span>nextc<span style="color:#000;font-weight:bold">);</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h3 id="reentrantreadwritelock">ReentrantReadWriteLock</h3>
 <p>ReentrantReadWriteLock 使用 同步状态的 16 位来存放读锁计数，另外的 16 位存放写锁计数。</p>
 <ul>
@@ -358,43 +358,43 @@ isHeldExclusively<span style="color:#f92672">()</span>
 </ul>
 <h3 id="semaphore">Semaphore</h3>
 <p><code>Semaphore</code>使用同步状态来保存当前可用许可数量。它重写<code>tryAcquireShared</code>来减少计数来模拟获取资源，如果计数小于 0 则会阻塞线程；重写<code>tryReleaseShared</code>来模拟释放资源。同时它也有公平模式和非公平模式。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">nonfairTryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-                <span style="color:#66d9ef">int</span> available <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
-                <span style="color:#66d9ef">int</span> remaining <span style="color:#f92672">=</span> available <span style="color:#f92672">-</span> acquires<span style="color:#f92672">;</span>
-                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>remaining <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">||</span>
-                    compareAndSetState<span style="color:#f92672">(</span>available<span style="color:#f92672">,</span> remaining<span style="color:#f92672">))</span>
-                    <span style="color:#66d9ef">return</span> remaining<span style="color:#f92672">;</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">nonfairTryAcquireShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(;;)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#458;font-weight:bold">int</span> available <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
+                <span style="color:#458;font-weight:bold">int</span> remaining <span style="color:#000;font-weight:bold">=</span> available <span style="color:#000;font-weight:bold">-</span> acquires<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>remaining <span style="color:#000;font-weight:bold">&lt;</span> 0 <span style="color:#000;font-weight:bold">||</span>
+                    compareAndSetState<span style="color:#000;font-weight:bold">(</span>available<span style="color:#000;font-weight:bold">,</span> remaining<span style="color:#000;font-weight:bold">))</span>
+                    <span style="color:#000;font-weight:bold">return</span> remaining<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
 
-        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> releases<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-                <span style="color:#66d9ef">int</span> current <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
-                <span style="color:#66d9ef">int</span> next <span style="color:#f92672">=</span> current <span style="color:#f92672">+</span> releases<span style="color:#f92672">;</span>
-                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>next <span style="color:#f92672">&lt;</span> current<span style="color:#f92672">)</span> <span style="color:#75715e">// overflow
-</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum permit count exceeded&#34;</span><span style="color:#f92672">);</span>
-                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>current<span style="color:#f92672">,</span> next<span style="color:#f92672">))</span>
-                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
+        <span style="color:#000;font-weight:bold">protected</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">tryReleaseShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> releases<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(;;)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#458;font-weight:bold">int</span> current <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
+                <span style="color:#458;font-weight:bold">int</span> next <span style="color:#000;font-weight:bold">=</span> current <span style="color:#000;font-weight:bold">+</span> releases<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>next <span style="color:#000;font-weight:bold">&lt;</span> current<span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">// overflow
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> Error<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Maximum permit count exceeded&#34;</span><span style="color:#000;font-weight:bold">);</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>compareAndSetState<span style="color:#000;font-weight:bold">(</span>current<span style="color:#000;font-weight:bold">,</span> next<span style="color:#000;font-weight:bold">))</span>
+                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h3 id="countdownlatch">CountDownLatch</h3>
 <p>和<code>Semaphore</code>类似，同步状态保存当前的计数值。<code>countDown()</code>调用<code>releaseShared()</code>，<code>await()</code>方法调用<code>acquireShared()</code>，等待计数器到零。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>getState<span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
-        <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">tryAcquireShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>getState<span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">?</span> 1 <span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
 
-        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> releases<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// Decrement count; signal when transition to zero
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-                <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
-                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
-                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-                <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> c<span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
-                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> nextc<span style="color:#f92672">))</span>
-                    <span style="color:#66d9ef">return</span> nextc <span style="color:#f92672">==</span> 0<span style="color:#f92672">;</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
+        <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">tryReleaseShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> releases<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#998;font-style:italic">// Decrement count; signal when transition to zero
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(;;)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#458;font-weight:bold">int</span> c <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>c <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span>
+                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#458;font-weight:bold">int</span> nextc <span style="color:#000;font-weight:bold">=</span> c<span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>compareAndSetState<span style="color:#000;font-weight:bold">(</span>c<span style="color:#000;font-weight:bold">,</span> nextc<span style="color:#000;font-weight:bold">))</span>
+                    <span style="color:#000;font-weight:bold">return</span> nextc <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h3 id="futuretask">FutureTask</h3>
 <blockquote>
 <p>Only when JDK version &lt; JDK1.7</p>

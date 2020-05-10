@@ -193,19 +193,19 @@
 <h2 id="三次尝试">三次尝试</h2>
 <h3 id="一">一</h3>
 <p>首先，在 Java 里的代码应该是这样的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Main</span> <span style="color:#66d9ef">extends</span> Application <span style="color:#f92672">{</span>
-    <span style="color:#75715e">//...
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        launch<span style="color:#f92672">(</span>args<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> <span style="color:#000;font-weight:bold">extends</span> Application <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        launch<span style="color:#000;font-weight:bold">(</span>args<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>没有任何问题。</p>
 <p>那么在 Kotlin 中，我首先想到的是 <code>Top level</code> 的 Main 函数：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) = Application.launch(*args)
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) = Application.launch(*args)
 
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Main</span> : Application() {
-	<span style="color:#75715e">//...
-</span><span style="color:#75715e"></span>}
+<span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {
+	<span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div><p>结果会报错：</p>
 <p><code>Exception in thread &quot;main&quot; java.lang.RuntimeException: Error: class moe.leer.MainKt is not a subclass of javafx.application.Application</code>，很明显我猜想 这个<code>Main</code>函数是另一个类的 <code>Main</code> 函数，而不是 <code>Main</code> 类的。</p>
 <p>利用 IDEA 的 Kotlin Bytecode 工具可以看到字节码，再把字节码反编译，可以看到 Java 的实现。</p>
@@ -213,31 +213,31 @@
 <p>Java 的实现确实是再创建一个类，来实现<code>Top level</code> 的 Main 函数：）</p>
 <h3 id="二">二</h3>
 <p>接下来尝试了<code>companion object </code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Main</span> : Application() {  
-	<span style="color:#75715e">//...
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">companion</span> <span style="color:#66d9ef">object</span> {
-    	@JvmStatic <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {  
+	<span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">companion</span> <span style="color:#000;font-weight:bold">object</span> {
+    	@JvmStatic <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) {
       	launch(*args)
     }
 }
 </code></pre></div><p>结果类似与第一个尝试，还是相同的报错：<code>java.lang.RuntimeException: Error: class moe.leer.Main$Companion is not a subclass of javafx.application.Application</code>。那也可以肯定 <code>companion object </code>是创建了内部类来实现的。</p>
 <h3 id="三">三</h3>
 <p>最后出场的是<code>object</code>，Kotlin 里单例模式的实现。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">
-<span style="color:#66d9ef">object</span> <span style="color:#a6e22e">Main</span> : Application() {
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">
+<span style="color:#000;font-weight:bold">object</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {
 
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">lateinit</span> <span style="color:#66d9ef">var</span> stage: Stage
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">lateinit</span> <span style="color:#66d9ef">var</span> rootLayout: BorderPane
+  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">lateinit</span> <span style="color:#000;font-weight:bold">var</span> stage: Stage
+  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">lateinit</span> <span style="color:#000;font-weight:bold">var</span> rootLayout: BorderPane
 
-  @JvmStatic <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
+  @JvmStatic <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) {
     launch(*args)
   }
 }
 </code></pre></div><p>这次的错误信息终于和前两次不同了（笑）</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">java<span style="color:#f92672">.</span><span style="color:#a6e22e">lang</span><span style="color:#f92672">.</span><span style="color:#a6e22e">reflect</span><span style="color:#f92672">.</span><span style="color:#a6e22e">InvocationTargetException</span>
-	at com<span style="color:#f92672">.</span><span style="color:#a6e22e">sun</span><span style="color:#f92672">.</span><span style="color:#a6e22e">javafx</span><span style="color:#f92672">.</span><span style="color:#a6e22e">application</span><span style="color:#f92672">.</span><span style="color:#a6e22e">LauncherImpl</span><span style="color:#f92672">.</span><span style="color:#a6e22e">launchApplicationWithArgs</span><span style="color:#f92672">(</span>LauncherImpl<span style="color:#f92672">.</span><span style="color:#a6e22e">java</span><span style="color:#f92672">:</span>389<span style="color:#f92672">)</span>
-	at sun<span style="color:#f92672">.</span><span style="color:#a6e22e">launcher</span><span style="color:#f92672">.</span><span style="color:#a6e22e">LauncherHelper$FXHelper</span><span style="color:#f92672">.</span><span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>LauncherHelper<span style="color:#f92672">.</span><span style="color:#a6e22e">java</span><span style="color:#f92672">:</span>767<span style="color:#f92672">)</span>
-Caused by<span style="color:#f92672">:</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">lang</span><span style="color:#f92672">.</span><span style="color:#a6e22e">RuntimeException</span><span style="color:#f92672">:</span> Unable to construct Application instance<span style="color:#f92672">:</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">moe</span><span style="color:#f92672">.</span><span style="color:#a6e22e">leer</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Main</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reflect</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">InvocationTargetException</span>
+	at com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sun</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">javafx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">application</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LauncherImpl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">launchApplicationWithArgs</span><span style="color:#000;font-weight:bold">(</span>LauncherImpl<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">java</span><span style="color:#000;font-weight:bold">:</span>389<span style="color:#000;font-weight:bold">)</span>
+	at sun<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">launcher</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LauncherHelper$FXHelper</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">main</span><span style="color:#000;font-weight:bold">(</span>LauncherHelper<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">java</span><span style="color:#000;font-weight:bold">:</span>767<span style="color:#000;font-weight:bold">)</span>
+Caused by<span style="color:#000;font-weight:bold">:</span> java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RuntimeException</span><span style="color:#000;font-weight:bold">:</span> Unable to construct Application instance<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">moe</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">leer</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Main</span>
 </code></pre></div><p>那么应该是反射的时候，调用<code>Main</code>方法失败了，关于反射的我也是浅尝辄止，所以解释不了了。</p>
 <h2 id="面向-stack-overflow">面向 stack overflow</h2>
 <p><img src="/images/wordless.jpg" alt="wordless"></p>
@@ -249,19 +249,19 @@ Caused by<span style="color:#f92672">:</span> java<span style="color:#f92672">.<
 <p>不过我反编译了一下好像没有看到所说的<code>private constructor</code>，所以还是一知半解了。</p>
 <p>但是解决方法和这个没关系，只是调用了另一个<code>launch</code>函数而已，不过最终都是反射来调用里面的方法吧。</p>
 <p>可以这样写：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Main</span> : Application() {
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {
 
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">lateinit</span> <span style="color:#66d9ef">var</span> stage: Stage
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">lateinit</span> <span style="color:#66d9ef">var</span> rootLayout: BorderPane
+  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">lateinit</span> <span style="color:#000;font-weight:bold">var</span> stage: Stage
+  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">lateinit</span> <span style="color:#000;font-weight:bold">var</span> rootLayout: BorderPane
 
-  <span style="color:#66d9ef">companion</span> <span style="color:#66d9ef">object</span> {
-    @JvmStatic <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) {
-      launch(Main<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java, *args)
+  <span style="color:#000;font-weight:bold">companion</span> <span style="color:#000;font-weight:bold">object</span> {
+    @JvmStatic <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) {
+      launch(Main<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java, *args)
     }
   }
 }
 </code></pre></div><p>你也可以用 <code>Top level</code> 的 Main 函数：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">main</span>(args: Array&lt;String&gt;) = Application.launch(Main<span style="color:#f92672">::</span><span style="color:#66d9ef">class</span>.java)
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) = Application.launch(Main<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java)
 </code></pre></div><p>:tada::tada::tada: 可以慢慢玩<code>JavaFX</code>了。</p>
         </div>
 

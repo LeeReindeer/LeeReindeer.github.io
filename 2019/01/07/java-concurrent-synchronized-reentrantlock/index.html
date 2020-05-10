@@ -134,7 +134,12 @@
     <li><a href="#临界区管理的问题">临界区管理的问题</a></li>
     <li><a href="#synchronized">synchronized</a>
       <ul>
-        <li><a href="#synchronized的使用">synchronized的使用</a></li>
+        <li><a href="#synchronized的使用">synchronized的使用</a>
+          <ul>
+            <li><a href="#代码块同步">代码块同步</a></li>
+            <li><a href="#方法同步">方法同步</a></li>
+          </ul>
+        </li>
         <li><a href="#synchronized的解决方案">synchronized的解决方案</a></li>
         <li><a href="#synchronized-原理">synchronized 原理</a></li>
       </ul>
@@ -204,33 +209,33 @@
 <h2 id="临界区管理的问题">临界区管理的问题</h2>
 <p>临界区是多个并发的进程中访问共享变量的代码段。如果多个线程同步访问一个共享变量，而不加以限制，会产生和时间相关的错误，导致结果不一致。</p>
 <p>比如一个售票系统，它的简单代码如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WrongTicket</span> <span style="color:#66d9ef">implements</span> Runnable <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">int</span> num <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">WrongTicket</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#458;font-weight:bold">int</span> num <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
 
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>num <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-          <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-            Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
-          <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-          <span style="color:#f92672">}</span>
-          System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;: sale &#34;</span> <span style="color:#f92672">+</span> num<span style="color:#f92672">--);</span>
-        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-          <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-        <span style="color:#f92672">}</span>
-      <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">run</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>num <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+          <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">);</span>
+          <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+          <span style="color:#000;font-weight:bold">}</span>
+          System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentThread</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;: sale &#34;</span> <span style="color:#000;font-weight:bold">+</span> num<span style="color:#000;font-weight:bold">--);</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+          <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+      <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      WrongTicket ticket <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> WrongTicket<span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      WrongTicket ticket <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> WrongTicket<span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>输出结果可能会是这样的：</p>
 <pre><code>Thread-3: sale 10
 Thread-0: sale 9
@@ -270,99 +275,99 @@ Thread-0: sale -2
 <li>对象同步</li>
 </ul>
 <p>只有对同一个对象实例执行这段代码时，才能达到互斥访问的效果，因为锁住的是这一个对象。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">synchronized</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
   
-<span style="color:#f92672">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><ul>
 <li>类同步</li>
 </ul>
 <p>锁住的是类，即使存在多个对象实例，也可以互斥的访问这段代码。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">synchronized</span><span style="color:#f92672">(</span>SynchronizedTest<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span><span style="color:#000;font-weight:bold">(</span>SynchronizedTest<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
   
-<span style="color:#f92672">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h4 id="方法同步">方法同步</h4>
 <ul>
 <li>对象同步</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">synchronized</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method1</span><span style="color:#f92672">()</span> <span style="color:#f92672">{}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{}</span>
 </code></pre></div><ul>
 <li>类同步</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">synchronized</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method2</span><span style="color:#f92672">()</span> <span style="color:#f92672">{}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method2</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{}</span>
 </code></pre></div><h3 id="synchronized的解决方案">synchronized的解决方案</h3>
 <p>只要对临界区这段代码加上代码块同步即可：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Ticket</span> <span style="color:#66d9ef">implements</span> Runnable <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">int</span> num <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Ticket</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#458;font-weight:bold">int</span> num <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
 
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-          Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-          e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#75715e">// lock this Object
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-          <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>num <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;: sale &#34;</span> <span style="color:#f92672">+</span> num<span style="color:#f92672">--);</span>
-          <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-          <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
-      <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">run</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+          Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+          e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#998;font-style:italic">// lock this Object
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+          <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>num <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentThread</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;: sale &#34;</span> <span style="color:#000;font-weight:bold">+</span> num<span style="color:#000;font-weight:bold">--);</span>
+          <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+          <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+      <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      Ticket ticket <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Ticket<span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      Ticket ticket <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Ticket<span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h3 id="synchronized-原理">synchronized 原理</h3>
 <p>代码块同步和方法同步，两者虽然实现细节不同，但本质上都是对一个对象的监视器（monitor）的获取。<strong>任意一个对象都拥有自己的监视器</strong>，当同步代码块或同步方法时，执行方法的线程必须先获得该对象的监视器才能进入同步块或同步方法，没有获取到监视器的线程将会被阻塞，并进入同步队列，状态变为<code>BLOCKED</code>。当成功获取监视器的线程释放了锁后，会唤醒阻塞在同步队列的线程，使其重新尝试对监视器的获取。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">public</span> moe<span style="color:#f92672">.</span><span style="color:#a6e22e">leer</span><span style="color:#f92672">.</span><span style="color:#a6e22e">javareview</span><span style="color:#f92672">.</span><span style="color:#a6e22e">concurrent</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Test</span><span style="color:#f92672">();</span>
-    descriptor<span style="color:#f92672">:</span> <span style="color:#f92672">()</span>V
-    flags<span style="color:#f92672">:</span> ACC_PUBLIC
-    Code<span style="color:#f92672">:</span>
-      stack<span style="color:#f92672">=</span>1<span style="color:#f92672">,</span> locals<span style="color:#f92672">=</span>1<span style="color:#f92672">,</span> args_size<span style="color:#f92672">=</span>1
-         0<span style="color:#f92672">:</span> aload_0
-         1<span style="color:#f92672">:</span> invokespecial <span style="color:#960050;background-color:#1e0010">#</span>1                  <span style="color:#75715e">// Method java/lang/Object.&#34;&lt;init&gt;&#34;:()V
-</span><span style="color:#75715e"></span>         4<span style="color:#f92672">:</span> <span style="color:#66d9ef">return</span>
-      LineNumberTable<span style="color:#f92672">:</span>
-        line 7<span style="color:#f92672">:</span> 0
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">public</span> moe<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">leer</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">javareview</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">concurrent</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Test</span><span style="color:#000;font-weight:bold">();</span>
+    descriptor<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">()</span>V
+    flags<span style="color:#000;font-weight:bold">:</span> ACC_PUBLIC
+    Code<span style="color:#000;font-weight:bold">:</span>
+      stack<span style="color:#000;font-weight:bold">=</span>1<span style="color:#000;font-weight:bold">,</span> locals<span style="color:#000;font-weight:bold">=</span>1<span style="color:#000;font-weight:bold">,</span> args_size<span style="color:#000;font-weight:bold">=</span>1
+         0<span style="color:#000;font-weight:bold">:</span> aload_0
+         1<span style="color:#000;font-weight:bold">:</span> invokespecial <span style="color:#a61717;background-color:#e3d2d2">#</span>1                  <span style="color:#998;font-style:italic">// Method java/lang/Object.&#34;&lt;init&gt;&#34;:()V
+</span><span style="color:#998;font-style:italic"></span>         4<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">return</span>
+      LineNumberTable<span style="color:#000;font-weight:bold">:</span>
+        line 7<span style="color:#000;font-weight:bold">:</span> 0
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method1</span><span style="color:#f92672">();</span>
-    descriptor<span style="color:#f92672">:</span> <span style="color:#f92672">()</span>V
-    flags<span style="color:#f92672">:</span> ACC_PUBLIC
-    Code<span style="color:#f92672">:</span>
-      stack<span style="color:#f92672">=</span>2<span style="color:#f92672">,</span> locals<span style="color:#f92672">=</span>3<span style="color:#f92672">,</span> args_size<span style="color:#f92672">=</span>1
-         0<span style="color:#f92672">:</span> aload_0
-         1<span style="color:#f92672">:</span> dup
-         2<span style="color:#f92672">:</span> astore_1
-         3<span style="color:#f92672">:</span> monitorenter
-         4<span style="color:#f92672">:</span> aload_1
-         5<span style="color:#f92672">:</span> monitorexit
-         6<span style="color:#f92672">:</span> <span style="color:#66d9ef">goto</span>          14
-         9<span style="color:#f92672">:</span> astore_2
-        10<span style="color:#f92672">:</span> aload_1
-        11<span style="color:#f92672">:</span> monitorexit
-        12<span style="color:#f92672">:</span> aload_2
-        13<span style="color:#f92672">:</span> athrow
-        14<span style="color:#f92672">:</span> <span style="color:#66d9ef">return</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">();</span>
+    descriptor<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">()</span>V
+    flags<span style="color:#000;font-weight:bold">:</span> ACC_PUBLIC
+    Code<span style="color:#000;font-weight:bold">:</span>
+      stack<span style="color:#000;font-weight:bold">=</span>2<span style="color:#000;font-weight:bold">,</span> locals<span style="color:#000;font-weight:bold">=</span>3<span style="color:#000;font-weight:bold">,</span> args_size<span style="color:#000;font-weight:bold">=</span>1
+         0<span style="color:#000;font-weight:bold">:</span> aload_0
+         1<span style="color:#000;font-weight:bold">:</span> dup
+         2<span style="color:#000;font-weight:bold">:</span> astore_1
+         3<span style="color:#000;font-weight:bold">:</span> monitorenter
+         4<span style="color:#000;font-weight:bold">:</span> aload_1
+         5<span style="color:#000;font-weight:bold">:</span> monitorexit
+         6<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">goto</span>          14
+         9<span style="color:#000;font-weight:bold">:</span> astore_2
+        10<span style="color:#000;font-weight:bold">:</span> aload_1
+        11<span style="color:#000;font-weight:bold">:</span> monitorexit
+        12<span style="color:#000;font-weight:bold">:</span> aload_2
+        13<span style="color:#000;font-weight:bold">:</span> athrow
+        14<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">return</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">synchronized</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method2</span><span style="color:#f92672">();</span>
-    descriptor<span style="color:#f92672">:</span> <span style="color:#f92672">()</span>V
-    flags<span style="color:#f92672">:</span> ACC_PUBLIC<span style="color:#f92672">,</span> ACC_SYNCHRONIZED
-    Code<span style="color:#f92672">:</span>
-      stack<span style="color:#f92672">=</span>0<span style="color:#f92672">,</span> locals<span style="color:#f92672">=</span>1<span style="color:#f92672">,</span> args_size<span style="color:#f92672">=</span>1
-         0<span style="color:#f92672">:</span> <span style="color:#66d9ef">return</span>
-      LineNumberTable<span style="color:#f92672">:</span>
-        line 16<span style="color:#f92672">:</span> 0
-<span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method2</span><span style="color:#000;font-weight:bold">();</span>
+    descriptor<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">()</span>V
+    flags<span style="color:#000;font-weight:bold">:</span> ACC_PUBLIC<span style="color:#000;font-weight:bold">,</span> ACC_SYNCHRONIZED
+    Code<span style="color:#000;font-weight:bold">:</span>
+      stack<span style="color:#000;font-weight:bold">=</span>0<span style="color:#000;font-weight:bold">,</span> locals<span style="color:#000;font-weight:bold">=</span>1<span style="color:#000;font-weight:bold">,</span> args_size<span style="color:#000;font-weight:bold">=</span>1
+         0<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">return</span>
+      LineNumberTable<span style="color:#000;font-weight:bold">:</span>
+        line 16<span style="color:#000;font-weight:bold">:</span> 0
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>同步方法通过<code>ACC_SYNCHRONIZED</code>关键字隐式的对方法进行加锁。当线程要执行的方法被标注上<code>ACC_SYNCHRONIZED</code>时，需要先获得锁才能执行该方法。</p>
 <p>同步代码块通过<code>monitorenter</code>和<code>monitorexit</code>执行来进行加锁。当线程执行到<code>monitorenter</code>的时候要先获得所锁，才能执行后面的方法。当线程执行到<code>monitorexit</code>的时候则要释放锁。</p>
 <p>每个对象自身维护这一个被加锁次数的计数器，当计数器数字为0时表示可以被任意线程获得锁。当计数器不为0时，只有获得锁的线程才能再次获得锁。即可重入锁。</p>
@@ -381,88 +386,88 @@ capabilities.</p>
 </blockquote>
 <p>上面的描述在<code>ReentrantLock</code>源码的注释中。一个可重入锁和<code>synchronized</code>关键字实现的基本功能类似，都可以获取对象的monitor，来实现互斥访问。<code>ReentrantLock</code>在此基础上扩展了一些功能。</p>
 <h3 id="reentrantlock-的使用">ReentrantLock 的使用</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ReentrantLock lock <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ReentrantLock<span style="color:#000;font-weight:bold">();</span>
 
-publick <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method1</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#75715e">//do something
-</span><span style="color:#75715e"></span>  <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+publick <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+    lock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lock</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#998;font-style:italic">//do something
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">finally</span> <span style="color:#000;font-weight:bold">{</span>
+    lock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unlock</span><span style="color:#000;font-weight:bold">();</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h3 id="reentrantlock的解决方案">ReentrantLock的解决方案</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LockTicket</span> <span style="color:#66d9ef">implements</span> Runnable <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">int</span> num <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span>
-    ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">LockTicket</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#458;font-weight:bold">int</span> num <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
+    ReentrantLock lock <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ReentrantLock<span style="color:#000;font-weight:bold">();</span>
 
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-          Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-          e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>num <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-          lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-          System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;: sale &#34;</span> <span style="color:#f92672">+</span> num<span style="color:#f92672">--);</span>
-          lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-          <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-        <span style="color:#f92672">}</span>
-      <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">run</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+          Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+          e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>num <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+          lock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lock</span><span style="color:#000;font-weight:bold">();</span>
+          System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentThread</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;: sale &#34;</span> <span style="color:#000;font-weight:bold">+</span> num<span style="color:#000;font-weight:bold">--);</span>
+          lock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unlock</span><span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+          <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+      <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      LockTicket ticket <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LockTicket<span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-      <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>ticket<span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      LockTicket ticket <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> LockTicket<span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+      <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span>ticket<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h2 id="可重入">可重入</h2>
 <p><code>synchronized</code>和<code>ReentrantLock</code>都是可重入的。那么什么是可重入呢？</p>
 <p>就是如果已经获得这把锁，那么可以再次获取。</p>
 <ul>
 <li>synchronized</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method1</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>SynchronizedTest<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;method1 get lock&#34;</span><span style="color:#f92672">);</span>
-      method2<span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span>SynchronizedTest<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;method1 get lock&#34;</span><span style="color:#000;font-weight:bold">);</span>
+      method2<span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#75715e">//可重入锁：已经获得锁的进程可以再次获得这把锁。
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method2</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>SynchronizedTest<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;method2 get lock again&#34;</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#998;font-style:italic">//可重入锁：已经获得锁的进程可以再次获得这把锁。
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method2</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span>SynchronizedTest<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;method2 get lock again&#34;</span><span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><ul>
 <li>ReentrantLock</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method1</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-      lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-      System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;method1 get lock&#34;</span><span style="color:#f92672">);</span>
-      method2<span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-      lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+      lock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lock</span><span style="color:#000;font-weight:bold">();</span>
+      System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;method1 get lock&#34;</span><span style="color:#000;font-weight:bold">);</span>
+      method2<span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">finally</span> <span style="color:#000;font-weight:bold">{</span>
+      lock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unlock</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#75715e">//可重入锁：已经获得锁的进程可以再次获得这把锁。
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">method2</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-      lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-      System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;method2 get lock&#34;</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-      lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#998;font-style:italic">//可重入锁：已经获得锁的进程可以再次获得这把锁。
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method2</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+      lock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lock</span><span style="color:#000;font-weight:bold">();</span>
+      System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;method2 get lock&#34;</span><span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">finally</span> <span style="color:#000;font-weight:bold">{</span>
+      lock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unlock</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h2 id="synchronized-和-reentrantlock-的区别">synchronized 和 ReentrantLock 的区别</h2>
 <p>1）Lock是一个接口，而synchronized是Java中的关键字，synchronized是内置的语言实现；</p>
 <p>2）synchronized在发生异常时，会自动释放线程占有的锁，因此不会导致死锁现象发生；而Lock在发生异常时，如果没有主动通过unLock()去释放锁，则很可能造成死锁现象，因此使用Lock时需要在finally块中释放锁；</p>

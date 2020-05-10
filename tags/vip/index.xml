@@ -37,18 +37,18 @@
 &lt;p&gt;这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&amp;hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。&lt;/p&gt;
 &lt;h2 id=&#34;makefile&#34;&gt;Makefile&lt;/h2&gt;
 &lt;p&gt;我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;CC &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; gcc
-CFLAGS &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; -Wall -Wextra -pedantic -std&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;c99 -O3
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;color:#008080&#34;&gt;CC&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; gcc
+&lt;span style=&#34;color:#008080&#34;&gt;CFLAGS&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; -Wall -Wextra -pedantic -std&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt;c99 -O3
 
-&lt;span style=&#34;color:#a6e22e&#34;&gt;all&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; vip
+&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;all&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; vip
 
-&lt;span style=&#34;color:#a6e22e&#34;&gt;debug&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;CC&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;CFLAGS&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt; vip.c -g -o vipd
+&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;debug&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;
+	&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;$(&lt;/span&gt;CC&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;$(&lt;/span&gt;CFLAGS&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt; vip.c -g -o vipd
 
-&lt;span style=&#34;color:#a6e22e&#34;&gt;re&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
+&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;re&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;
 	make clean;make
 
-&lt;span style=&#34;color:#a6e22e&#34;&gt;clean&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
+&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;clean&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;
 	rm -f vip vipd
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CFLAGS 里使用 c99 标准；使用&lt;code&gt; -O3&lt;/code&gt;进行编译优化，主要是对内联函数进行优化；&lt;code&gt;-Wall -Wextra -pedantic &lt;/code&gt;会打印一些额外的警告，对 debug 有帮助。&lt;/p&gt;</description>
     </item>

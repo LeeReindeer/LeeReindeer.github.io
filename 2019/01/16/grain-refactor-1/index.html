@@ -135,7 +135,13 @@
     <li><a href="#登录和登出">登录和登出</a>
       <ul>
         <li><a href="#分析">分析</a></li>
-        <li><a href="#实现">实现</a></li>
+        <li><a href="#实现">实现</a>
+          <ul>
+            <li><a href="#获取-execution">获取 <code>execution</code></a></li>
+            <li><a href="#登录">登录</a></li>
+            <li><a href="#登出">登出</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="#成绩">成绩</a></li>
@@ -255,18 +261,18 @@
 <h3 id="实现">实现</h3>
 <p>使用<code>Okhttp</code> 发起网络请求，用 <code>Jsoup</code>来解析HTML，用<code>Rxjava</code>来处理异步调用。</p>
 <h4 id="获取-execution">获取 <code>execution</code></h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">getExecution</span>(): Observable&lt;String&gt; {
-        <span style="color:#66d9ef">return</span> Observable.fromCallable {
-            <span style="color:#66d9ef">val</span> response = httpClient.newCall(executionRequest).execute()
-            <span style="color:#66d9ef">if</span> (!response.isSuccessful) {
-                <span style="color:#e6db74">&#34;&#34;</span>
-            } <span style="color:#66d9ef">else</span> {
-                <span style="color:#66d9ef">val</span> respString = response.body()<span style="color:#f92672">!!</span>.string()
-                <span style="color:#66d9ef">val</span> doc = Jsoup.parse(respString)
-                <span style="color:#66d9ef">val</span> selected = doc.select(<span style="color:#e6db74">&#34;input[type=hidden]&#34;</span>)
-                <span style="color:#66d9ef">val</span> executionNode = selected[<span style="color:#ae81ff">1</span>]
-                <span style="color:#66d9ef">val</span> executionStr = executionNode.attr(<span style="color:#e6db74">&#34;value&#34;</span>)
-                Log.d(TAG, <span style="color:#e6db74">&#34;onResponse: execution: $executionStr&#34;</span>)
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getExecution</span>(): Observable&lt;String&gt; {
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(executionRequest).execute()
+            <span style="color:#000;font-weight:bold">if</span> (!response.isSuccessful) {
+                <span style="color:#d14">&#34;&#34;</span>
+            } <span style="color:#000;font-weight:bold">else</span> {
+                <span style="color:#000;font-weight:bold">val</span> respString = response.body()<span style="color:#000;font-weight:bold">!!</span>.string()
+                <span style="color:#000;font-weight:bold">val</span> doc = Jsoup.parse(respString)
+                <span style="color:#000;font-weight:bold">val</span> selected = doc.select(<span style="color:#d14">&#34;input[type=hidden]&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> executionNode = selected[<span style="color:#099">1</span>]
+                <span style="color:#000;font-weight:bold">val</span> executionStr = executionNode.attr(<span style="color:#d14">&#34;value&#34;</span>)
+                Log.d(TAG, <span style="color:#d14">&#34;onResponse: execution: $executionStr&#34;</span>)
                 executionStr
             }
         }
@@ -274,43 +280,43 @@
             .observeOn(AndroidSchedulers.mainThread())
     }
 </code></pre></div><h4 id="登录">登录</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#75715e">/**
-</span><span style="color:#75715e">     * @param user user to login with is and password
-</span><span style="color:#75715e">     * @return return observable of login status code
-</span><span style="color:#75715e">     * @see LOGIN_NET_ERROR -1 -&gt; network error
-</span><span style="color:#75715e">     * @see LOGIN_ID_PASS_ERROR 0 -&gt; password error
-</span><span style="color:#75715e">     * @see LOGIN_SUCCESS 1 -&gt; success
-</span><span style="color:#75715e">     */</span>
-    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">login</span>(user: User, execution: String): Observable&lt;Int&gt; {
-        <span style="color:#66d9ef">if</span> (execution.isEmpty()) {
-            Log.e(TAG, <span style="color:#e6db74">&#34;getExecution failed&#34;</span>);
-            <span style="color:#66d9ef">return</span> Observable.fromCallable { LOGIN_NET_ERROR }
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * @param user user to login with is and password
+</span><span style="color:#998;font-style:italic">     * @return return observable of login status code
+</span><span style="color:#998;font-style:italic">     * @see LOGIN_NET_ERROR -1 -&gt; network error
+</span><span style="color:#998;font-style:italic">     * @see LOGIN_ID_PASS_ERROR 0 -&gt; password error
+</span><span style="color:#998;font-style:italic">     * @see LOGIN_SUCCESS 1 -&gt; success
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">login</span>(user: User, execution: String): Observable&lt;Int&gt; {
+        <span style="color:#000;font-weight:bold">if</span> (execution.isEmpty()) {
+            Log.e(TAG, <span style="color:#d14">&#34;getExecution failed&#34;</span>);
+            <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable { LOGIN_NET_ERROR }
         }
-        <span style="color:#66d9ef">val</span> formBody = FormBody.Builder()
-            .add(<span style="color:#e6db74">&#34;authType&#34;</span>, <span style="color:#e6db74">&#34;0&#34;</span>)
-            .add(<span style="color:#e6db74">&#34;username&#34;</span>, user.id.toString())
-            .add(<span style="color:#e6db74">&#34;password&#34;</span>, user.password)
-            .add(<span style="color:#e6db74">&#34;lt&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)
-            .add(<span style="color:#e6db74">&#34;execution&#34;</span>, execution)
-            .add(<span style="color:#e6db74">&#34;_eventId&#34;</span>, <span style="color:#e6db74">&#34;submit&#34;</span>)
-            .add(<span style="color:#e6db74">&#34;randomStr&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)
+        <span style="color:#000;font-weight:bold">val</span> formBody = FormBody.Builder()
+            .add(<span style="color:#d14">&#34;authType&#34;</span>, <span style="color:#d14">&#34;0&#34;</span>)
+            .add(<span style="color:#d14">&#34;username&#34;</span>, user.id.toString())
+            .add(<span style="color:#d14">&#34;password&#34;</span>, user.password)
+            .add(<span style="color:#d14">&#34;lt&#34;</span>, <span style="color:#d14">&#34;&#34;</span>)
+            .add(<span style="color:#d14">&#34;execution&#34;</span>, execution)
+            .add(<span style="color:#d14">&#34;_eventId&#34;</span>, <span style="color:#d14">&#34;submit&#34;</span>)
+            .add(<span style="color:#d14">&#34;randomStr&#34;</span>, <span style="color:#d14">&#34;&#34;</span>)
             .build()
-        <span style="color:#66d9ef">val</span> loginRequest = Request.Builder()
-            .url(<span style="color:#e6db74">&#34;https://my.zjou.edu.cn/cas/login?service=http%3A%2F%2Fportal.zjou.edu.cn%2Findex.portal&#34;</span>)
-            .header(<span style="color:#e6db74">&#34;User-Agent&#34;</span>, USER_AGENT)
+        <span style="color:#000;font-weight:bold">val</span> loginRequest = Request.Builder()
+            .url(<span style="color:#d14">&#34;https://my.zjou.edu.cn/cas/login?service=http%3A%2F%2Fportal.zjou.edu.cn%2Findex.portal&#34;</span>)
+            .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)
             .post(formBody)
             .build()
 
-        <span style="color:#66d9ef">return</span> Observable.fromCallable {
-            <span style="color:#66d9ef">val</span> response = httpClient.newCall(loginRequest).execute()
-            Log.d(TAG, <span style="color:#e6db74">&#34;login: respose code: ${response.code()}&#34;</span>)
-            <span style="color:#66d9ef">val</span> doc = Jsoup.parse(response.body()<span style="color:#f92672">?.</span>string())
-            <span style="color:#75715e">// password or ID error
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">val</span> statusDiv = doc.getElementById(<span style="color:#e6db74">&#34;status&#34;</span>)
-            <span style="color:#66d9ef">if</span> (statusDiv != <span style="color:#66d9ef">null</span>) {
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(loginRequest).execute()
+            Log.d(TAG, <span style="color:#d14">&#34;login: respose code: ${response.code()}&#34;</span>)
+            <span style="color:#000;font-weight:bold">val</span> doc = Jsoup.parse(response.body()<span style="color:#000;font-weight:bold">?.</span>string())
+            <span style="color:#998;font-style:italic">// password or ID error
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">val</span> statusDiv = doc.getElementById(<span style="color:#d14">&#34;status&#34;</span>)
+            <span style="color:#000;font-weight:bold">if</span> (statusDiv != <span style="color:#000;font-weight:bold">null</span>) {
                 LOGIN_ID_PASS_ERROR
-            } <span style="color:#66d9ef">else</span> { <span style="color:#75715e">// login succeed, redirect to home page
-</span><span style="color:#75715e"></span>                LOGIN_SUCCESS
+            } <span style="color:#000;font-weight:bold">else</span> { <span style="color:#998;font-style:italic">// login succeed, redirect to home page
+</span><span style="color:#998;font-style:italic"></span>                LOGIN_SUCCESS
             }
         }
             .subscribeOn(Schedulers.io())
@@ -318,32 +324,32 @@
     }
 </code></pre></div><p><code>login</code>方法需要用户id、密码和<code>execution</code>。所以需要在登录之前先获取<code>execution</code>，获取成功之后才会登录。</p>
 <h4 id="登出">登出</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">logoutAsync</span>(callback: Callback) {
-        <span style="color:#66d9ef">val</span> logoutRequest = Request.Builder()
-            .url(<span style="color:#e6db74">&#34;https://my.zjou.edu.cn/cas/logout?service=http://portal.zjou.edu.cn&#34;</span>)
-            .header(<span style="color:#e6db74">&#34;User-Agent&#34;</span>, USER_AGENT)
-            .<span style="color:#66d9ef">get</span>()
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">logoutAsync</span>(callback: Callback) {
+        <span style="color:#000;font-weight:bold">val</span> logoutRequest = Request.Builder()
+            .url(<span style="color:#d14">&#34;https://my.zjou.edu.cn/cas/logout?service=http://portal.zjou.edu.cn&#34;</span>)
+            .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)
+            .<span style="color:#000;font-weight:bold">get</span>()
             .build()
         httpClient.newCall(logoutRequest).enqueue(callback)
     }
 </code></pre></div><p><code>logout</code>没有返回<code>Rxjava</code>的<code>Observable</code>，而是传入<code>okhttp3.Callback</code>，<code>Callback</code>中的方法是异步的，不在主线程。其实效果和<code>Rxjava</code>差不多，返回的<code>Observable</code>可以<code>subscribe</code>一个<code>Observer</code>。在<code>Observable</code>中处理网络请求，在<code>Observer</code>中处理结果。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">observable
-	.subscribeOn(Schedulers.io()) <span style="color:#75715e">// Observable 运行在 IO 线程
-</span><span style="color:#75715e"></span>	.observeOn(AndroidSchedulers.mainThread()) <span style="color:#75715e">// Observer 运行在 Main 线程
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">observable
+	.subscribeOn(Schedulers.io()) <span style="color:#998;font-style:italic">// Observable 运行在 IO 线程
+</span><span style="color:#998;font-style:italic"></span>	.observeOn(AndroidSchedulers.mainThread()) <span style="color:#998;font-style:italic">// Observer 运行在 Main 线程
 </span></code></pre></div><p>我个人比较喜欢<code>Rxjava</code>的链式调用。</p>
 <h2 id="成绩">成绩</h2>
 <p>解决了登录问题，那么接下来的问题都不是问题了（</p>
 <p>返回数据的Content-Type为text/html，但实际上就是json数据，这也太垃圾了吧（搞的我要手动去解析。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">getTranscript</span>(): Observable&lt;MutableList&lt;Transcript&gt;?&gt; {
-        <span style="color:#66d9ef">return</span> Observable.fromCallable {
-            <span style="color:#66d9ef">val</span> response = httpClient.newCall(transcriptRequest).execute()
-            Log.d(TAG, <span style="color:#e6db74">&#34;onResponse: code: ${response.code()}&#34;</span>)
-            <span style="color:#66d9ef">val</span> resp = response.body()<span style="color:#f92672">?.</span>string()
-            <span style="color:#66d9ef">if</span> (resp<span style="color:#f92672">?.</span>startsWith(<span style="color:#e6db74">&#34;{&#34;</span>) == <span style="color:#66d9ef">true</span>) {
-                Log.d(TAG, <span style="color:#e6db74">&#34;onResponse: $resp&#34;</span>)
-                <span style="color:#66d9ef">val</span> transcriptResponse = Gson().parseJson&lt;TranscriptResponse&gt;(resp)
-                transcriptResponse<span style="color:#f92672">?.</span>transcriptList
-            } <span style="color:#66d9ef">else</span> {
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getTranscript</span>(): Observable&lt;MutableList&lt;Transcript&gt;?&gt; {
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(transcriptRequest).execute()
+            Log.d(TAG, <span style="color:#d14">&#34;onResponse: code: ${response.code()}&#34;</span>)
+            <span style="color:#000;font-weight:bold">val</span> resp = response.body()<span style="color:#000;font-weight:bold">?.</span>string()
+            <span style="color:#000;font-weight:bold">if</span> (resp<span style="color:#000;font-weight:bold">?.</span>startsWith(<span style="color:#d14">&#34;{&#34;</span>) == <span style="color:#000;font-weight:bold">true</span>) {
+                Log.d(TAG, <span style="color:#d14">&#34;onResponse: $resp&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> transcriptResponse = Gson().parseJson&lt;TranscriptResponse&gt;(resp)
+                transcriptResponse<span style="color:#000;font-weight:bold">?.</span>transcriptList
+            } <span style="color:#000;font-weight:bold">else</span> {
                 ArrayList&lt;Transcript&gt;()
             }
         }
@@ -357,26 +363,26 @@
 </blockquote>
 <h2 id="校园卡">校园卡</h2>
 <p><img src="/images/ecard-request.png" alt="ecard-request"></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#75715e">/**
-</span><span style="color:#75715e">     * @param pageIndex page start from 1
-</span><span style="color:#75715e">     */</span>
-    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">getECardList</span>(pageIndex: Int, pageSize: Int): Observable&lt;ArrayList&lt;ECard&gt;?&gt; {
-        <span style="color:#66d9ef">val</span> form = FormBody.Builder()
-            .add(<span style="color:#e6db74">&#34;pageIndex&#34;</span>, pageIndex.toString())
-            .add(<span style="color:#e6db74">&#34;pageSize&#34;</span>, pageSize.toString())
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * @param pageIndex page start from 1
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getECardList</span>(pageIndex: Int, pageSize: Int): Observable&lt;ArrayList&lt;ECard&gt;?&gt; {
+        <span style="color:#000;font-weight:bold">val</span> form = FormBody.Builder()
+            .add(<span style="color:#d14">&#34;pageIndex&#34;</span>, pageIndex.toString())
+            .add(<span style="color:#d14">&#34;pageSize&#34;</span>, pageSize.toString())
             .build()
-        <span style="color:#66d9ef">val</span> request = Request.Builder()
-            .url(<span style="color:#e6db74">&#34;http://portal.zjou.edu.cn/independent.portal?.cs=ZHxjb20uZWR1LmRrLnN0YXJnYXRlLnBvcnRhbC5jb250YWluZXIuY29yZS5pbXBsLlBvcnRsZXRFbnRpdHlXaW5kb3d8aW50ZS1qeXh4fHZpZXd8bm9ybWFsfHBtX2ludGUtanl4eF9hY3Rpb249cXVlcnlKeXh4fHJtX3xwcm1f&#34;</span>)
-            .header(<span style="color:#e6db74">&#34;User-Agent&#34;</span>, USER_AGENT)
+        <span style="color:#000;font-weight:bold">val</span> request = Request.Builder()
+            .url(<span style="color:#d14">&#34;http://portal.zjou.edu.cn/independent.portal?.cs=ZHxjb20uZWR1LmRrLnN0YXJnYXRlLnBvcnRhbC5jb250YWluZXIuY29yZS5pbXBsLlBvcnRsZXRFbnRpdHlXaW5kb3d8aW50ZS1qeXh4fHZpZXd8bm9ybWFsfHBtX2ludGUtanl4eF9hY3Rpb249cXVlcnlKeXh4fHJtX3xwcm1f&#34;</span>)
+            .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)
             .post(form)
             .build()
 
-        <span style="color:#66d9ef">return</span> Observable.fromCallable {
-            <span style="color:#66d9ef">val</span> response = httpClient.newCall(request).execute()
-            <span style="color:#66d9ef">if</span> (!response.isSuccessful || response.body() == <span style="color:#66d9ef">null</span>) {
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(request).execute()
+            <span style="color:#000;font-weight:bold">if</span> (!response.isSuccessful || response.body() == <span style="color:#000;font-weight:bold">null</span>) {
                 ArrayList()
-            } <span style="color:#66d9ef">else</span> {
-                parseCardTable(response.body()<span style="color:#f92672">!!</span>.string())
+            } <span style="color:#000;font-weight:bold">else</span> {
+                parseCardTable(response.body()<span style="color:#000;font-weight:bold">!!</span>.string())
             }
         }
             .subscribeOn(Schedulers.io())
@@ -384,147 +390,147 @@
     }
 </code></pre></div><p>校园卡的消费记录是一个表单 post 请求，response 是 html。。。大概是没有做专门的 RESTful API 吧。所以只能使用 Jsoup 解析表格。</p>
 <p>下面是一段 HTML 表格代码的截取：第一个<code>tr</code>标签是表头，不需要。从第二个<code>tr</code>开始提取我们想要的<code>td</code>，组成每一项消费记录。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">table</span> <span style="color:#a6e22e">isscroll</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;false&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;portlet-table&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;queryGridPluto_inte_jyxx_&#34;</span>&gt;
-&lt;<span style="color:#f92672">thead</span>&gt;
-&lt;<span style="color:#f92672">tr</span>&gt;
-&lt;<span style="color:#f92672">th</span>&gt;卡号&lt;/<span style="color:#f92672">th</span>&gt;
-&lt;<span style="color:#f92672">th</span>&gt;交易流水号&lt;/<span style="color:#f92672">th</span>&gt;
-&lt;<span style="color:#f92672">th</span>&gt;交易时间&lt;/<span style="color:#f92672">th</span>&gt;
-&lt;<span style="color:#f92672">th</span>&gt;商户代码&lt;/<span style="color:#f92672">th</span>&gt;
-&lt;<span style="color:#f92672">th</span>&gt;交易类型&lt;/<span style="color:#f92672">th</span>&gt;
-&lt;<span style="color:#f92672">th</span>&gt;交易金额&lt;/<span style="color:#f92672">th</span>&gt;
-&lt;<span style="color:#f92672">th</span>&gt;交易余额&lt;/<span style="color:#f92672">th</span>&gt;&lt;/<span style="color:#f92672">tr</span>&gt;&lt;/<span style="color:#f92672">thead</span>&gt;
-&lt;<span style="color:#f92672">tbody</span>&gt;
-&lt;<span style="color:#f92672">tr</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;odd&#34;</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:10%;&#34;</span>&gt;57016&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:10%;&#34;</span>&gt;219171082&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:6%;&#34;</span>&gt;2019-01-12 11:41:05&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:6%;&#34;</span>&gt;长峙学生宿舍P&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:10%;&#34;</span>&gt;收费冲正&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:8%;&#34;</span>&gt;4.69&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:8%;&#34;</span>&gt;43.3&lt;/<span style="color:#f92672">td</span>&gt;&lt;/<span style="color:#f92672">tr</span>&gt;
-&lt;<span style="color:#f92672">tr</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;even&#34;</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:10%;&#34;</span>&gt;57016&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:10%;&#34;</span>&gt;219169846&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:6%;&#34;</span>&gt;2019-01-12 11:32:01&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:6%;&#34;</span>&gt;长峙学生宿舍P&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:10%;&#34;</span>&gt;商务收费&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:8%;&#34;</span>&gt;-5&lt;/<span style="color:#f92672">td</span>&gt;
-&lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width:8%;&#34;</span>&gt;38.61&lt;/<span style="color:#f92672">td</span>&gt;&lt;/<span style="color:#f92672">tr</span>&gt;&lt;/<span style="color:#f92672">tbody</span>&gt;
-&lt;/<span style="color:#f92672">table</span>&gt;
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#66d9ef">val</span> table = doc.getElementById(<span style="color:#e6db74">&#34;queryGridPluto_inte_jyxx_&#34;</span>)
-<span style="color:#66d9ef">val</span> rows = table.select(<span style="color:#e6db74">&#34;tr&#34;</span>)
-<span style="color:#66d9ef">for</span> (i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span> until rows.size) {
-  <span style="color:#66d9ef">val</span> cols = rows[i].select(<span style="color:#e6db74">&#34;td&#34;</span>)
-	<span style="color:#75715e">//...
-</span><span style="color:#75715e"></span>}
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#000080">table</span> <span style="color:#008080">isscroll</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;false&#34;</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;portlet-table&#34;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>&gt;
+&lt;<span style="color:#000080">thead</span>&gt;
+&lt;<span style="color:#000080">tr</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;卡号&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易流水号&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易时间&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;商户代码&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易类型&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易金额&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易余额&lt;/<span style="color:#000080">th</span>&gt;&lt;/<span style="color:#000080">tr</span>&gt;&lt;/<span style="color:#000080">thead</span>&gt;
+&lt;<span style="color:#000080">tbody</span>&gt;
+&lt;<span style="color:#000080">tr</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;odd&#34;</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;57016&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;219171082&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:6%;&#34;</span>&gt;2019-01-12 11:41:05&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:6%;&#34;</span>&gt;长峙学生宿舍P&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;收费冲正&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;4.69&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;43.3&lt;/<span style="color:#000080">td</span>&gt;&lt;/<span style="color:#000080">tr</span>&gt;
+&lt;<span style="color:#000080">tr</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;even&#34;</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;57016&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;219169846&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:6%;&#34;</span>&gt;2019-01-12 11:32:01&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:6%;&#34;</span>&gt;长峙学生宿舍P&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;商务收费&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;-5&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;38.61&lt;/<span style="color:#000080">td</span>&gt;&lt;/<span style="color:#000080">tr</span>&gt;&lt;/<span style="color:#000080">tbody</span>&gt;
+&lt;/<span style="color:#000080">table</span>&gt;
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">val</span> table = doc.getElementById(<span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>)
+<span style="color:#000;font-weight:bold">val</span> rows = table.select(<span style="color:#d14">&#34;tr&#34;</span>)
+<span style="color:#000;font-weight:bold">for</span> (i <span style="color:#000;font-weight:bold">in</span> <span style="color:#099">1</span> until rows.size) {
+  <span style="color:#000;font-weight:bold">val</span> cols = rows[i].select(<span style="color:#d14">&#34;td&#34;</span>)
+	<span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div><p>交易流水号、交易时间、商户代码、交易金额都是我们需要的数据，分别对其进行提取和提纯：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">val</span> regex1 = Regex(<span style="color:#e6db74">&#34;(消费机|同力|多媒体)[0-9]*&#34;</span>)
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">val</span> regexToRemoveNum = Regex(<span style="color:#e6db74">&#34;[0-9]+&#34;</span>)
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">parseCardTable</span>(responseString: String, pageSize: Int): ArrayList&lt;ECard&gt;? {
-        <span style="color:#66d9ef">if</span> (responseString.isEmpty()) {
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">val</span> regex1 = Regex(<span style="color:#d14">&#34;(消费机|同力|多媒体)[0-9]*&#34;</span>)
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">val</span> regexToRemoveNum = Regex(<span style="color:#d14">&#34;[0-9]+&#34;</span>)
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">parseCardTable</span>(responseString: String, pageSize: Int): ArrayList&lt;ECard&gt;? {
+        <span style="color:#000;font-weight:bold">if</span> (responseString.isEmpty()) {
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span>
         }
-        <span style="color:#66d9ef">val</span> itemList = ArrayList&lt;ECard&gt;(pageSize)
-        <span style="color:#66d9ef">val</span> doc = Jsoup.parse(responseString)
-        <span style="color:#66d9ef">val</span> table = doc.getElementById(<span style="color:#e6db74">&#34;queryGridPluto_inte_jyxx_&#34;</span>)
-        <span style="color:#66d9ef">val</span> rows = table.select(<span style="color:#e6db74">&#34;tr&#34;</span>)
+        <span style="color:#000;font-weight:bold">val</span> itemList = ArrayList&lt;ECard&gt;(pageSize)
+        <span style="color:#000;font-weight:bold">val</span> doc = Jsoup.parse(responseString)
+        <span style="color:#000;font-weight:bold">val</span> table = doc.getElementById(<span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>)
+        <span style="color:#000;font-weight:bold">val</span> rows = table.select(<span style="color:#d14">&#34;tr&#34;</span>)
 
-        Util.formatSecondThreadLocal.<span style="color:#66d9ef">set</span>(SimpleDateFormat(<span style="color:#e6db74">&#34;yyyy-MM-dd HH:mm:ss&#34;</span>, Locale.CHINA))
+        Util.formatSecondThreadLocal.<span style="color:#000;font-weight:bold">set</span>(SimpleDateFormat(<span style="color:#d14">&#34;yyyy-MM-dd HH:mm:ss&#34;</span>, Locale.CHINA))
 
-        <span style="color:#66d9ef">for</span> (i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span> until rows.size) {
-            <span style="color:#66d9ef">val</span> cols = rows[i].select(<span style="color:#e6db74">&#34;td&#34;</span>)
-            <span style="color:#66d9ef">var</span> money = <span style="color:#ae81ff">0.0</span>
-            <span style="color:#66d9ef">try</span> {
-                money = cols[<span style="color:#ae81ff">5</span>].text().toDouble()
-            } <span style="color:#66d9ef">catch</span> (ignore: NumberFormatException) {
-                <span style="color:#66d9ef">continue</span>
+        <span style="color:#000;font-weight:bold">for</span> (i <span style="color:#000;font-weight:bold">in</span> <span style="color:#099">1</span> until rows.size) {
+            <span style="color:#000;font-weight:bold">val</span> cols = rows[i].select(<span style="color:#d14">&#34;td&#34;</span>)
+            <span style="color:#000;font-weight:bold">var</span> money = <span style="color:#099">0.0</span>
+            <span style="color:#000;font-weight:bold">try</span> {
+                money = cols[<span style="color:#099">5</span>].text().toDouble()
+            } <span style="color:#000;font-weight:bold">catch</span> (ignore: NumberFormatException) {
+                <span style="color:#000;font-weight:bold">continue</span>
             }
-            <span style="color:#66d9ef">if</span> (money != <span style="color:#ae81ff">0.0</span>) {
-                <span style="color:#66d9ef">val</span> name = prettyName(cols[<span style="color:#ae81ff">3</span>].text())
-                <span style="color:#66d9ef">var</span> item: ECard? = <span style="color:#66d9ef">null</span>
-                <span style="color:#66d9ef">try</span> {
-                    <span style="color:#66d9ef">val</span> date = Util.getTimeDate(cols[<span style="color:#ae81ff">2</span>].text())
-                    <span style="color:#66d9ef">if</span> (date == <span style="color:#66d9ef">null</span>) <span style="color:#66d9ef">continue</span>
-                    item = ECard(cols[<span style="color:#ae81ff">1</span>].text().toLong(), name, date, money)
-                } <span style="color:#66d9ef">catch</span> (e: ArrayIndexOutOfBoundsException) {
+            <span style="color:#000;font-weight:bold">if</span> (money != <span style="color:#099">0.0</span>) {
+                <span style="color:#000;font-weight:bold">val</span> name = prettyName(cols[<span style="color:#099">3</span>].text())
+                <span style="color:#000;font-weight:bold">var</span> item: ECard? = <span style="color:#000;font-weight:bold">null</span>
+                <span style="color:#000;font-weight:bold">try</span> {
+                    <span style="color:#000;font-weight:bold">val</span> date = Util.getTimeDate(cols[<span style="color:#099">2</span>].text())
+                    <span style="color:#000;font-weight:bold">if</span> (date == <span style="color:#000;font-weight:bold">null</span>) <span style="color:#000;font-weight:bold">continue</span>
+                    item = ECard(cols[<span style="color:#099">1</span>].text().toLong(), name, date, money)
+                } <span style="color:#000;font-weight:bold">catch</span> (e: ArrayIndexOutOfBoundsException) {
                     e.printStackTrace()
-                    <span style="color:#66d9ef">continue</span>
+                    <span style="color:#000;font-weight:bold">continue</span>
                 }
                 itemList.add(item)
             }
         }
-        <span style="color:#66d9ef">return</span> itemList
+        <span style="color:#000;font-weight:bold">return</span> itemList
     }
 
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">prettyName</span>(name: String): String {
-        <span style="color:#66d9ef">var</span> tmp = name
-        tmp = tmp.replace(regex1, <span style="color:#e6db74">&#34;&#34;</span>)
-        tmp = tmp.replace(regexToRemoveNum, <span style="color:#e6db74">&#34;&#34;</span>)
-        <span style="color:#66d9ef">return</span> tmp
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">prettyName</span>(name: String): String {
+        <span style="color:#000;font-weight:bold">var</span> tmp = name
+        tmp = tmp.replace(regex1, <span style="color:#d14">&#34;&#34;</span>)
+        tmp = tmp.replace(regexToRemoveNum, <span style="color:#d14">&#34;&#34;</span>)
+        <span style="color:#000;font-weight:bold">return</span> tmp
     }
 </code></pre></div><h2 id="用户信息">用户信息</h2>
 <p>网站的主页包含一些用户的信息：班级，学号，校园卡余额，图书借阅情况，同样可以用 Jsoup 对其进行提取，在 app 中展示。</p>
 <p><img src="/images/book-request.png" alt="book-request"></p>
 <p>唯一需要注意的是：一个标签的第0项是它和它所以子标签内容的合集。所以这里取第一项：<code>val nameText = div[1].text()</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">getUserInfo</span>(): Observable&lt;User&gt; {
-        <span style="color:#66d9ef">val</span> request = Request.Builder()
-            .url(<span style="color:#e6db74">&#34;http://portal.zjou.edu.cn/index.portal&#34;</span>)
-            .header(<span style="color:#e6db74">&#34;User-Agent&#34;</span>, USER_AGENT)
-            .<span style="color:#66d9ef">get</span>()
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getUserInfo</span>(): Observable&lt;User&gt; {
+        <span style="color:#000;font-weight:bold">val</span> request = Request.Builder()
+            .url(<span style="color:#d14">&#34;http://portal.zjou.edu.cn/index.portal&#34;</span>)
+            .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)
+            .<span style="color:#000;font-weight:bold">get</span>()
             .build()
-        <span style="color:#66d9ef">return</span> Observable.fromCallable {
-            <span style="color:#66d9ef">val</span> response = httpClient.newCall(request).execute()
-            <span style="color:#66d9ef">val</span> user = User(<span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#34;&#34;</span>)
-            <span style="color:#66d9ef">val</span> resp = response.body()<span style="color:#f92672">?.</span>string()
-            <span style="color:#66d9ef">if</span> (resp.isNullOrEmpty()) {
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(request).execute()
+            <span style="color:#000;font-weight:bold">val</span> user = User(<span style="color:#099">0</span>, <span style="color:#d14">&#34;&#34;</span>)
+            <span style="color:#000;font-weight:bold">val</span> resp = response.body()<span style="color:#000;font-weight:bold">?.</span>string()
+            <span style="color:#000;font-weight:bold">if</span> (resp.isNullOrEmpty()) {
                 user
-            } <span style="color:#66d9ef">else</span> {
-                <span style="color:#66d9ef">val</span> doc = Jsoup.parse(resp)
-                <span style="color:#66d9ef">var</span> div: Elements? = <span style="color:#66d9ef">null</span>
-                <span style="color:#66d9ef">try</span> {
-                    div = doc.getElementsByClass(<span style="color:#e6db74">&#34;user_info&#34;</span>)[<span style="color:#ae81ff">0</span>].allElements
-                } <span style="color:#66d9ef">catch</span> (ignore: Exception) {
-                    <span style="color:#66d9ef">return</span>@fromCallable user
+            } <span style="color:#000;font-weight:bold">else</span> {
+                <span style="color:#000;font-weight:bold">val</span> doc = Jsoup.parse(resp)
+                <span style="color:#000;font-weight:bold">var</span> div: Elements? = <span style="color:#000;font-weight:bold">null</span>
+                <span style="color:#000;font-weight:bold">try</span> {
+                    div = doc.getElementsByClass(<span style="color:#d14">&#34;user_info&#34;</span>)[<span style="color:#099">0</span>].allElements
+                } <span style="color:#000;font-weight:bold">catch</span> (ignore: Exception) {
+                    <span style="color:#000;font-weight:bold">return</span>@fromCallable user
                 }
 
-                <span style="color:#75715e">// index 0 is all content text in the div
-</span><span style="color:#75715e"></span>                Log.d(TAG, <span style="color:#e6db74">&#34;nameText: ${div!![1].text()}&#34;</span>)
-                <span style="color:#66d9ef">val</span> nameText = div[<span style="color:#ae81ff">1</span>].text().let { str -&gt;
-                    <span style="color:#66d9ef">val</span> index = str.indexOfFirst { it == <span style="color:#e6db74">&#39;，&#39;</span> }
-                    str.substring(<span style="color:#ae81ff">0</span>, index)
+                <span style="color:#998;font-style:italic">// index 0 is all content text in the div
+</span><span style="color:#998;font-style:italic"></span>                Log.d(TAG, <span style="color:#d14">&#34;nameText: ${div!![1].text()}&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> nameText = div[<span style="color:#099">1</span>].text().let { str -&gt;
+                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { it == <span style="color:#d14">&#39;，&#39;</span> }
+                    str.substring(<span style="color:#099">0</span>, index)
                 }
-                Log.d(TAG, <span style="color:#e6db74">&#34;name: $nameText&#34;</span>)
+                Log.d(TAG, <span style="color:#d14">&#34;name: $nameText&#34;</span>)
 
-                Log.d(TAG, <span style="color:#e6db74">&#34;idText: ${div[2].text()}&#34;</span>)
-                <span style="color:#66d9ef">val</span> idText = div[<span style="color:#ae81ff">2</span>].text().let { str -&gt;
-                    <span style="color:#66d9ef">val</span> index = str.indexOfFirst { it == <span style="color:#e6db74">&#39;：&#39;</span> }
-                    str.substring(index + <span style="color:#ae81ff">1</span>, str.length)
+                Log.d(TAG, <span style="color:#d14">&#34;idText: ${div[2].text()}&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> idText = div[<span style="color:#099">2</span>].text().let { str -&gt;
+                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { it == <span style="color:#d14">&#39;：&#39;</span> }
+                    str.substring(index + <span style="color:#099">1</span>, str.length)
                 }
-                Log.d(TAG, <span style="color:#e6db74">&#34;id: $idText&#34;</span>)
+                Log.d(TAG, <span style="color:#d14">&#34;id: $idText&#34;</span>)
 
-                Log.d(TAG, <span style="color:#e6db74">&#34;classText: ${div[3].text()}&#34;</span>)
-                <span style="color:#66d9ef">val</span> classText = div[<span style="color:#ae81ff">3</span>].text().let { str -&gt;
-                    <span style="color:#66d9ef">val</span> index = str.indexOfFirst { it == <span style="color:#e6db74">&#39;：&#39;</span> }
-                    str.substring(index + <span style="color:#ae81ff">1</span>, str.length)
+                Log.d(TAG, <span style="color:#d14">&#34;classText: ${div[3].text()}&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> classText = div[<span style="color:#099">3</span>].text().let { str -&gt;
+                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { it == <span style="color:#d14">&#39;：&#39;</span> }
+                    str.substring(index + <span style="color:#099">1</span>, str.length)
                 }
-                Log.d(TAG, <span style="color:#e6db74">&#34;class: $classText&#34;</span>)
+                Log.d(TAG, <span style="color:#d14">&#34;class: $classText&#34;</span>)
 
-                <span style="color:#66d9ef">val</span> cardLi = doc.getElementsByClass(<span style="color:#e6db74">&#34;ykt&#34;</span>)
-                <span style="color:#66d9ef">val</span> libraryLi = doc.getElementsByClass(<span style="color:#e6db74">&#34;tsg&#34;</span>)
-                <span style="color:#66d9ef">val</span> bookRentTexts = libraryLi[<span style="color:#ae81ff">0</span>].allElements[<span style="color:#ae81ff">0</span>].text().split(<span style="color:#e6db74">&#34; &#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> cardLi = doc.getElementsByClass(<span style="color:#d14">&#34;ykt&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> libraryLi = doc.getElementsByClass(<span style="color:#d14">&#34;tsg&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> bookRentTexts = libraryLi[<span style="color:#099">0</span>].allElements[<span style="color:#099">0</span>].text().split(<span style="color:#d14">&#34; &#34;</span>)
 
-                <span style="color:#66d9ef">var</span> moneyRem = <span style="color:#ae81ff">0.0</span>
-                <span style="color:#66d9ef">var</span> bookRentNum = <span style="color:#ae81ff">0</span>
-                <span style="color:#66d9ef">var</span> bookRentOutDateNum = <span style="color:#ae81ff">0</span>
-                <span style="color:#66d9ef">try</span> {
-                    moneyRem = cardLi[<span style="color:#ae81ff">0</span>].allElements[<span style="color:#ae81ff">0</span>].text().filter { it.isDigit() || it == <span style="color:#e6db74">&#39;.&#39;</span> }.toDouble()
-                    bookRentNum = bookRentTexts[<span style="color:#ae81ff">1</span>].toInt()
-                    bookRentOutDateNum = bookRentTexts[<span style="color:#ae81ff">2</span>].filter { it.isDigit() }.toInt()
-                } <span style="color:#66d9ef">catch</span> (ignore: NumberFormatException) {
+                <span style="color:#000;font-weight:bold">var</span> moneyRem = <span style="color:#099">0.0</span>
+                <span style="color:#000;font-weight:bold">var</span> bookRentNum = <span style="color:#099">0</span>
+                <span style="color:#000;font-weight:bold">var</span> bookRentOutDateNum = <span style="color:#099">0</span>
+                <span style="color:#000;font-weight:bold">try</span> {
+                    moneyRem = cardLi[<span style="color:#099">0</span>].allElements[<span style="color:#099">0</span>].text().filter { it.isDigit() || it == <span style="color:#d14">&#39;.&#39;</span> }.toDouble()
+                    bookRentNum = bookRentTexts[<span style="color:#099">1</span>].toInt()
+                    bookRentOutDateNum = bookRentTexts[<span style="color:#099">2</span>].filter { it.isDigit() }.toInt()
+                } <span style="color:#000;font-weight:bold">catch</span> (ignore: NumberFormatException) {
                 }
 
-                User(idText.toInt(), <span style="color:#e6db74">&#34;&#34;</span>, nameText, classText, moneyRem, bookRentNum, bookRentOutDateNum)
+                User(idText.toInt(), <span style="color:#d14">&#34;&#34;</span>, nameText, classText, moneyRem, bookRentNum, bookRentOutDateNum)
             }
         }
             .subscribeOn(Schedulers.io())

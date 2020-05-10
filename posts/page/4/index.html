@@ -156,18 +156,18 @@
 <p>这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。</p>
 <h2 id="makefile">Makefile</h2>
 <p>我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile">CC <span style="color:#f92672">=</span> gcc
-CFLAGS <span style="color:#f92672">=</span> -Wall -Wextra -pedantic -std<span style="color:#f92672">=</span>c99 -O3
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#008080">CC</span> <span style="color:#000;font-weight:bold">=</span> gcc
+<span style="color:#008080">CFLAGS</span> <span style="color:#000;font-weight:bold">=</span> -Wall -Wextra -pedantic -std<span style="color:#000;font-weight:bold">=</span>c99 -O3
 
-<span style="color:#a6e22e">all</span><span style="color:#f92672">:</span> vip
+<span style="color:#900;font-weight:bold">all</span><span style="color:#000;font-weight:bold">:</span> vip
 
-<span style="color:#a6e22e">debug</span><span style="color:#f92672">:</span>
-	<span style="color:#66d9ef">$(</span>CC<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>CFLAGS<span style="color:#66d9ef">)</span> vip.c -g -o vipd
+<span style="color:#900;font-weight:bold">debug</span><span style="color:#000;font-weight:bold">:</span>
+	<span style="color:#000;font-weight:bold">$(</span>CC<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">$(</span>CFLAGS<span style="color:#000;font-weight:bold">)</span> vip.c -g -o vipd
 
-<span style="color:#a6e22e">re</span><span style="color:#f92672">:</span>
+<span style="color:#900;font-weight:bold">re</span><span style="color:#000;font-weight:bold">:</span>
 	make clean;make
 
-<span style="color:#a6e22e">clean</span><span style="color:#f92672">:</span>
+<span style="color:#900;font-weight:bold">clean</span><span style="color:#000;font-weight:bold">:</span>
 	rm -f vip vipd
 </code></pre></div><p>CFLAGS 里使用 c99 标准；使用<code> -O3</code>进行编译优化，主要是对内联函数进行优化；<code>-Wall -Wextra -pedantic </code>会打印一些额外的警告，对 debug 有帮助。</p>
         </div>
@@ -229,18 +229,18 @@ This booklet walks you through building the editor in 184 steps. Each step, you�
 <p>解题的思路一般会写在注释里的。</p>
 </blockquote>
 <h2 id="bitxor">bitXor</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*s
-</span><span style="color:#75715e"> * bitXor - x^y using only ~ and &amp;
-</span><span style="color:#75715e"> *   Example: bitXor(4, 5) = 1
-</span><span style="color:#75715e"> *   Legal ops: ~ &amp;
-</span><span style="color:#75715e"> *   Max ops: 14
-</span><span style="color:#75715e"> *   Rating: 1
-</span><span style="color:#75715e"> */</span>
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">bitXor</span>(<span style="color:#66d9ef">int</span> x, <span style="color:#66d9ef">int</span> y) {
-  <span style="color:#75715e">// 德摩根定律
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// a xor b = (~a | ~b) &amp; (a | b)
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// = ~(a &amp; b) &amp; ~(~a &amp; ~b)
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#f92672">~</span>(<span style="color:#f92672">~</span>x <span style="color:#f92672">&amp;</span> <span style="color:#f92672">~</span>y) <span style="color:#f92672">&amp;</span> <span style="color:#f92672">~</span>(x <span style="color:#f92672">&amp;</span> y);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*s
+</span><span style="color:#998;font-style:italic"> * bitXor - x^y using only ~ and &amp;
+</span><span style="color:#998;font-style:italic"> *   Example: bitXor(4, 5) = 1
+</span><span style="color:#998;font-style:italic"> *   Legal ops: ~ &amp;
+</span><span style="color:#998;font-style:italic"> *   Max ops: 14
+</span><span style="color:#998;font-style:italic"> *   Rating: 1
+</span><span style="color:#998;font-style:italic"> */</span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">bitXor</span>(<span style="color:#458;font-weight:bold">int</span> x, <span style="color:#458;font-weight:bold">int</span> y) {
+  <span style="color:#998;font-style:italic">// 德摩根定律
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// a xor b = (~a | ~b) &amp; (a | b)
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// = ~(a &amp; b) &amp; ~(~a &amp; ~b)
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">~</span>(<span style="color:#000;font-weight:bold">~</span>x <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">~</span>y) <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">~</span>(x <span style="color:#000;font-weight:bold">&amp;</span> y);
 }
 </code></pre></div><p>虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。</p>
 <p>利用的性质主要是：</p>

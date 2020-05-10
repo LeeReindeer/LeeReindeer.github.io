@@ -196,20 +196,20 @@
 <ul>
 <li>
 <p>P(s)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">P(s) {
-    <span style="color:#66d9ef">if</span> (p <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) {
-     s<span style="color:#f92672">--</span>;
-    } <span style="color:#66d9ef">else</span> {
-     append this <span style="color:#66d9ef">thread</span> to list;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">P(s) {
+    <span style="color:#000;font-weight:bold">if</span> (p <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span>) {
+     s<span style="color:#000;font-weight:bold">--</span>;
+    } <span style="color:#000;font-weight:bold">else</span> {
+     append this <span style="color:#000;font-weight:bold">thread</span> to list;
      sleep();
     }
 }
 </code></pre></div></li>
 <li>
 <p>V(s)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">V(s) {
-    s<span style="color:#f92672">++</span>;
-    <span style="color:#66d9ef">if</span> (list is no empty) {
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">V(s) {
+    s<span style="color:#000;font-weight:bold">++</span>;
+    <span style="color:#000;font-weight:bold">if</span> (list is no empty) {
         list.pop().wakeup();
     }
 }
@@ -221,89 +221,89 @@
 <h2 id="semaphore-in-c">Semaphore in C</h2>
 <p>在使用信号量实现互斥之前，先来介绍一下 <code>POSIX</code> 标准中的线程（<code>pthread</code>）。在 C 语言中可以使用 <code>pthread</code> 接口来编写多进程的程序。</p>
 <p>下面是一个简单的 hello world（进程版），参考了CSAPP 中的代码，所以使用 CSAPP 对 <code>pthread</code> 的 wrapper 函数：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">thread1</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>vargp);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">thread1</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>vargp);
 
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span>argv[]) {
-  <span style="color:#75715e">//平时编写的C程序只有一个线程--主线程
-</span><span style="color:#75715e"></span>  pthread_t tid1;
-  <span style="color:#75715e">//创建线程，同时开始运行
-</span><span style="color:#75715e"></span>  Pthread_create(<span style="color:#f92672">&amp;</span>tid1, NULL, thread1, NULL);
-  <span style="color:#75715e">//阻塞主线程，直到tid1线程结束
-</span><span style="color:#75715e"></span>  Pthread_join(tid1, NULL);
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  <span style="color:#998;font-style:italic">//平时编写的C程序只有一个线程--主线程
+</span><span style="color:#998;font-style:italic"></span>  pthread_t tid1;
+  <span style="color:#998;font-style:italic">//创建线程，同时开始运行
+</span><span style="color:#998;font-style:italic"></span>  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>tid1, <span style="color:#0086b3">NULL</span>, thread1, <span style="color:#0086b3">NULL</span>);
+  <span style="color:#998;font-style:italic">//阻塞主线程，直到tid1线程结束
+</span><span style="color:#998;font-style:italic"></span>  Pthread_join(tid1, <span style="color:#0086b3">NULL</span>);
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 
-<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">thread1</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>vargp) {
-  printf(<span style="color:#e6db74">&#34;Hello world</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-  <span style="color:#66d9ef">return</span> NULL;
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">thread1</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>vargp) {
+  printf(<span style="color:#d14">&#34;Hello world</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p>对 pthread 不再过多介绍，还不如去看<code>man page</code>。</p>
 <p>如果两个并发的进程，在访问同一个个共享变量的时候不加限制，可能会造成结果与预期不同。比如下面的计数器例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;csapp.h&#34;</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg);
-<span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">// shared counter
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span>argv[]) {
-  <span style="color:#66d9ef">if</span> (argc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">2</span>) {
-    printf(<span style="color:#e6db74">&#34;Usage: %s &lt;n&gt;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, argv[<span style="color:#ae81ff">0</span>]);
-    exit(<span style="color:#ae81ff">1</span>);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&#34;csapp.h&#34;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg);
+<span style="color:#000;font-weight:bold">volatile</span> <span style="color:#458;font-weight:bold">int</span> cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; <span style="color:#998;font-style:italic">// shared counter
+</span><span style="color:#998;font-style:italic"></span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  <span style="color:#000;font-weight:bold">if</span> (argc <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">2</span>) {
+    printf(<span style="color:#d14">&#34;Usage: %s &lt;n&gt;</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, argv[<span style="color:#099">0</span>]);
+    exit(<span style="color:#099">1</span>);
   }
-  <span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> atoi(argv[<span style="color:#ae81ff">1</span>]);
+  <span style="color:#458;font-weight:bold">int</span> n <span style="color:#000;font-weight:bold">=</span> atoi(argv[<span style="color:#099">1</span>]);
   pthread_t tid1, tid2;
-  Pthread_create(<span style="color:#f92672">&amp;</span>tid1, NULL, <span style="color:#66d9ef">thread</span>, <span style="color:#f92672">&amp;</span>n);
-  Pthread_create(<span style="color:#f92672">&amp;</span>tid2, NULL, <span style="color:#66d9ef">thread</span>, <span style="color:#f92672">&amp;</span>n);
-  Pthread_join(tid1, NULL);
-  Pthread_join(tid2, NULL);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>tid1, <span style="color:#0086b3">NULL</span>, <span style="color:#000;font-weight:bold">thread</span>, <span style="color:#000;font-weight:bold">&amp;</span>n);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>tid2, <span style="color:#0086b3">NULL</span>, <span style="color:#000;font-weight:bold">thread</span>, <span style="color:#000;font-weight:bold">&amp;</span>n);
+  Pthread_join(tid1, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(tid2, <span style="color:#0086b3">NULL</span>);
 
-  <span style="color:#66d9ef">if</span> (cnt <span style="color:#f92672">!=</span> (<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> n))
-    printf(<span style="color:#e6db74">&#34;BOOM! cnt=%d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, cnt);
-  <span style="color:#66d9ef">else</span>
-    printf(<span style="color:#e6db74">&#34;OK cnt=%d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, cnt);
+  <span style="color:#000;font-weight:bold">if</span> (cnt <span style="color:#000;font-weight:bold">!=</span> (<span style="color:#099">2</span> <span style="color:#000;font-weight:bold">*</span> n))
+    printf(<span style="color:#d14">&#34;BOOM! cnt=%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, cnt);
+  <span style="color:#000;font-weight:bold">else</span>
+    printf(<span style="color:#d14">&#34;OK cnt=%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, cnt);
 
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 
-<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>)arg;
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) {
-    cnt<span style="color:#f92672">++</span>;
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#458;font-weight:bold">int</span> n <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">*</span>(<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>)arg;
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> n; i<span style="color:#000;font-weight:bold">++</span>) {
+    cnt<span style="color:#000;font-weight:bold">++</span>;
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p><code>cnt</code>变量被两个进程同时访问，在访问它的过程中随时可能被打断，即使<code>cnt++</code>看起来是不会被打断的操作，但是当它被编译成汇编语言时：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-asm" data-lang="asm"><span style="color:#a6e22e">movl</span> <span style="color:#66d9ef">cnt</span>, %eax
-<span style="color:#a6e22e">incl</span> %eax
-<span style="color:#a6e22e">movl</span> %eax, <span style="color:#66d9ef">cnt</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-asm" data-lang="asm"><span style="color:#900;font-weight:bold">movl</span> <span style="color:#008080">cnt</span>, <span style="color:#008080">%eax</span>
+<span style="color:#900;font-weight:bold">incl</span> <span style="color:#008080">%eax</span>
+<span style="color:#900;font-weight:bold">movl</span> <span style="color:#008080">%eax</span>, <span style="color:#008080">cnt</span>
 </code></pre></div><p>这样看来，机器在执行的时候可能会有问题。具体一点，一开始 cnt 为 0 ，一个进程如果在第二条指令被另一个进程打断，%eax 已经加一，而 cnt 的值还未保存。另一个进程完成操作后， cnt 为 1。接着原先的进程继续运行， cnt 也为 1。所以结果应该会比两倍的 n 要小。</p>
 <p>为了解决这个问题，就可以使用二元信号量，对 临界区（critical section）加锁,来保证同时只有一个进程访问它。在上面的例子里，临界区就是那三条汇编指令，即  <code>cnt++</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t mutex;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t mutex;
 
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
-    <span style="color:#75715e">//...
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// init mutex with 1
-</span><span style="color:#75715e"></span>    sem_init(<span style="color:#f92672">&amp;</span>mutex, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>);
-    <span style="color:#75715e">//...
-</span><span style="color:#75715e"></span>}
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
+    <span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// init mutex with 1
+</span><span style="color:#998;font-style:italic"></span>    sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
+    <span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>}
 
-<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>)arg;
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) {
-    P(<span style="color:#f92672">&amp;</span>mutex); <span style="color:#75715e">// sem_wait(sem_t *s)
-</span><span style="color:#75715e"></span>    cnt<span style="color:#f92672">++</span>;
-    V(<span style="color:#f92672">&amp;</span>mutex); <span style="color:#75715e">// sem_post(sem_t *s)
-</span><span style="color:#75715e"></span>  }
-  <span style="color:#66d9ef">return</span> NULL;
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#458;font-weight:bold">int</span> n <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">*</span>(<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>)arg;
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> n; i<span style="color:#000;font-weight:bold">++</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex); <span style="color:#998;font-style:italic">// sem_wait(sem_t *s)
+</span><span style="color:#998;font-style:italic"></span>    cnt<span style="color:#000;font-weight:bold">++</span>;
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex); <span style="color:#998;font-style:italic">// sem_post(sem_t *s)
+</span><span style="color:#998;font-style:italic"></span>  }
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p><strong>其中的<code>P()</code>，<code>V()</code>两个函数分别是对 Linux 下信号量函数的简单封装</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">P</span>(sem_t <span style="color:#f92672">*</span>sem) {
-  <span style="color:#66d9ef">if</span> (sem_wait(sem) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>)
-    unix_error(<span style="color:#e6db74">&#34;P error&#34;</span>);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">P</span>(sem_t <span style="color:#000;font-weight:bold">*</span>sem) {
+  <span style="color:#000;font-weight:bold">if</span> (sem_wait(sem) <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">0</span>)
+    unix_error(<span style="color:#d14">&#34;P error&#34;</span>);
 }
 
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">V</span>(sem_t <span style="color:#f92672">*</span>sem) {
-  <span style="color:#66d9ef">if</span> (sem_post(sem) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>)
-    unix_error(<span style="color:#e6db74">&#34;V error&#34;</span>);
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">V</span>(sem_t <span style="color:#000;font-weight:bold">*</span>sem) {
+  <span style="color:#000;font-weight:bold">if</span> (sem_post(sem) <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">0</span>)
+    unix_error(<span style="color:#d14">&#34;V error&#34;</span>);
 }
 </code></pre></div><p>接下来讨论几个老师上课讲到的和没讲到的:cry:几个进程同步问题，分别为<strong>生产者-消费者问题</strong>，<strong>读者-写者问题</strong>，<strong>睡眠理发师问题</strong>，<strong>吸烟者问题</strong>，<strong>和尚吃水问题</strong>，<strong>吃水果问题</strong>。顺便可以写写代码（</p>
 <h2 id="producer-consumer">Producer-Consumer</h2>
@@ -338,128 +338,128 @@
 <li>生产者和消费者<strong>分别</strong>对缓存区的访问互斥</li>
 <li>对缓存区中可用资源的计数</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> {
-  <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>buf; <span style="color:#75715e">// buffer array
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> n; <span style="color:#75715e">// size of solts, the buffer size is n - 1, because index 0 will not be
-</span><span style="color:#75715e"></span>         <span style="color:#75715e">// filled.
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> front;     <span style="color:#75715e">// buf[(front+1)%n] is the first item
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> rear;      <span style="color:#75715e">// buf[rear%n] is the last item
-</span><span style="color:#75715e"></span>  sem_t mutex_p; <span style="color:#75715e">// protect access to buf for prodecter
-</span><span style="color:#75715e"></span>  sem_t mutex_c;
-  sem_t slots; <span style="color:#75715e">// counts available solts
-</span><span style="color:#75715e"></span>  sem_t items; <span style="color:#75715e">// counts available items;
-</span><span style="color:#75715e"></span>} sbuf_t;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> {
+  <span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>buf; <span style="color:#998;font-style:italic">// buffer array
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> n; <span style="color:#998;font-style:italic">// size of solts, the buffer size is n - 1, because index 0 will not be
+</span><span style="color:#998;font-style:italic"></span>         <span style="color:#998;font-style:italic">// filled.
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> front;     <span style="color:#998;font-style:italic">// buf[(front+1)%n] is the first item
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> rear;      <span style="color:#998;font-style:italic">// buf[rear%n] is the last item
+</span><span style="color:#998;font-style:italic"></span>  sem_t mutex_p; <span style="color:#998;font-style:italic">// protect access to buf for prodecter
+</span><span style="color:#998;font-style:italic"></span>  sem_t mutex_c;
+  sem_t slots; <span style="color:#998;font-style:italic">// counts available solts
+</span><span style="color:#998;font-style:italic"></span>  sem_t items; <span style="color:#998;font-style:italic">// counts available items;
+</span><span style="color:#998;font-style:italic"></span>} sbuf_t;
 </code></pre></div><p>我们使用两个互斥锁来保证缓存区的访问是互斥，同时使用信号量：slots 和 items 来对缓存区中的空位和数据进行计数。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sbuf_t <span style="color:#f92672">*</span>sp;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sbuf_t <span style="color:#000;font-weight:bold">*</span>sp;
 
 sem_t mutex_c, mutex_p;
-<span style="color:#66d9ef">int</span> p_cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, c_cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+<span style="color:#458;font-weight:bold">int</span> p_cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, c_cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
 
-<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">producter_thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>; i<span style="color:#f92672">++</span>) {
-    printf(<span style="color:#e6db74">&#34;produce: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, i);
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">producter_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">10</span>; i<span style="color:#000;font-weight:bold">++</span>) {
+    printf(<span style="color:#d14">&#34;produce: %d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, i);
     sbuf_insert(sp, i);
-    P(<span style="color:#f92672">&amp;</span>mutex_p);
-    p_cnt<span style="color:#f92672">++</span>;
-    V(<span style="color:#f92672">&amp;</span>mutex_p);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex_p);
+    p_cnt<span style="color:#000;font-weight:bold">++</span>;
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex_p);
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 
-<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">consumer_thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>; i<span style="color:#f92672">++</span>) {
-    printf(<span style="color:#e6db74">&#34;consume: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, sbuf_remove(sp));
-    P(<span style="color:#f92672">&amp;</span>mutex_c);
-    c_cnt<span style="color:#f92672">++</span>;
-    V(<span style="color:#f92672">&amp;</span>mutex_c);
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">consumer_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">10</span>; i<span style="color:#000;font-weight:bold">++</span>) {
+    printf(<span style="color:#d14">&#34;consume: %d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, sbuf_remove(sp));
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex_c);
+    c_cnt<span style="color:#000;font-weight:bold">++</span>;
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex_c);
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span>argv[]) {
-  sp <span style="color:#f92672">=</span> Calloc(<span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">sizeof</span>(sbuf_t));
-  sbuf_init(sp, <span style="color:#ae81ff">10</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>mutex_p, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>mutex_c, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>);
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  sp <span style="color:#000;font-weight:bold">=</span> Calloc(<span style="color:#099">1</span>, <span style="color:#000;font-weight:bold">sizeof</span>(sbuf_t));
+  sbuf_init(sp, <span style="color:#099">10</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex_p, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex_c, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
 
-  pthread_t tids[<span style="color:#ae81ff">10</span>];
+  pthread_t tids[<span style="color:#099">10</span>];
 
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>; i<span style="color:#f92672">++</span>) {
-    <span style="color:#66d9ef">if</span> (i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
-      Pthread_create(<span style="color:#f92672">&amp;</span>tids[i], NULL, producter_thread, NULL);
-    <span style="color:#66d9ef">else</span>
-      Pthread_create(<span style="color:#f92672">&amp;</span>tids[i], NULL, consumer_thread, NULL);
-    Pthread_join(tids[i], NULL);
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">10</span>; i<span style="color:#000;font-weight:bold">++</span>) {
+    <span style="color:#000;font-weight:bold">if</span> (i <span style="color:#000;font-weight:bold">%</span> <span style="color:#099">2</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>)
+      Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>tids[i], <span style="color:#0086b3">NULL</span>, producter_thread, <span style="color:#0086b3">NULL</span>);
+    <span style="color:#000;font-weight:bold">else</span>
+      Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>tids[i], <span style="color:#0086b3">NULL</span>, consumer_thread, <span style="color:#0086b3">NULL</span>);
+    Pthread_join(tids[i], <span style="color:#0086b3">NULL</span>);
   }
   sbuf_deinit(sp);
-  printf(<span style="color:#e6db74">&#34;producters run: %d times</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, p_cnt);
-  printf(<span style="color:#e6db74">&#34;consumers run: %d times</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, c_cnt);
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+  printf(<span style="color:#d14">&#34;producters run: %d times</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, p_cnt);
+  printf(<span style="color:#d14">&#34;consumers run: %d times</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, c_cnt);
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 
-<span style="color:#75715e">// Create an empty, bounded, shared FIFO buffer with n slots
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sbuf_init</span>(sbuf_t <span style="color:#f92672">*</span>sp, <span style="color:#66d9ef">int</span> n) {
-  sp<span style="color:#f92672">-&gt;</span>buf <span style="color:#f92672">=</span> Calloc(n, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>));
-  sp<span style="color:#f92672">-&gt;</span>n <span style="color:#f92672">=</span> n;                    <span style="color:#75715e">/* Buffer holds max of n items */</span>
-  sp<span style="color:#f92672">-&gt;</span>front <span style="color:#f92672">=</span> sp<span style="color:#f92672">-&gt;</span>rear <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;     <span style="color:#75715e">/* Empty buffer iff front == rear */</span>
-  Sem_init(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_p, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>); <span style="color:#75715e">/* Binary semaphore for locking */</span>
-  Sem_init(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_c, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>); <span style="color:#75715e">/* Binary semaphore for locking */</span>
-  Sem_init(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>slots, <span style="color:#ae81ff">0</span>, n);   <span style="color:#75715e">/* Initially, buf has n empty slots */</span>
-  Sem_init(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>items, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);   <span style="color:#75715e">/* Initially, buf has zero data items */</span>
+<span style="color:#998;font-style:italic">// Create an empty, bounded, shared FIFO buffer with n slots
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">sbuf_init</span>(sbuf_t <span style="color:#000;font-weight:bold">*</span>sp, <span style="color:#458;font-weight:bold">int</span> n) {
+  sp<span style="color:#000;font-weight:bold">-&gt;</span>buf <span style="color:#000;font-weight:bold">=</span> Calloc(n, <span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#458;font-weight:bold">int</span>));
+  sp<span style="color:#000;font-weight:bold">-&gt;</span>n <span style="color:#000;font-weight:bold">=</span> n;                    <span style="color:#998;font-style:italic">/* Buffer holds max of n items */</span>
+  sp<span style="color:#000;font-weight:bold">-&gt;</span>front <span style="color:#000;font-weight:bold">=</span> sp<span style="color:#000;font-weight:bold">-&gt;</span>rear <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;     <span style="color:#998;font-style:italic">/* Empty buffer iff front == rear */</span>
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_p, <span style="color:#099">0</span>, <span style="color:#099">1</span>); <span style="color:#998;font-style:italic">/* Binary semaphore for locking */</span>
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_c, <span style="color:#099">0</span>, <span style="color:#099">1</span>); <span style="color:#998;font-style:italic">/* Binary semaphore for locking */</span>
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>slots, <span style="color:#099">0</span>, n);   <span style="color:#998;font-style:italic">/* Initially, buf has n empty slots */</span>
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>items, <span style="color:#099">0</span>, <span style="color:#099">0</span>);   <span style="color:#998;font-style:italic">/* Initially, buf has zero data items */</span>
 }
 
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sbuf_deinit</span>(sbuf_t <span style="color:#f92672">*</span>sp) {
-  Free(sp<span style="color:#f92672">-&gt;</span>buf);
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">sbuf_deinit</span>(sbuf_t <span style="color:#000;font-weight:bold">*</span>sp) {
+  Free(sp<span style="color:#000;font-weight:bold">-&gt;</span>buf);
   Free(sp);
 }
 
-<span style="color:#75715e">// add to rear
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sbuf_insert</span>(sbuf_t <span style="color:#f92672">*</span>sp, <span style="color:#66d9ef">int</span> item) {
-  P(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>slots);  		<span style="color:#75715e">// Request solts
-</span><span style="color:#75715e"></span>  P(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_p); 		<span style="color:#75715e">// Lock buf for producter
-</span><span style="color:#75715e"></span>  sp<span style="color:#f92672">-&gt;</span>buf[(<span style="color:#f92672">++</span>sp<span style="color:#f92672">-&gt;</span>rear) <span style="color:#f92672">%</span> sp<span style="color:#f92672">-&gt;</span>n] <span style="color:#f92672">=</span> item;
-  V(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_p);  	<span style="color:#75715e">// unlock
-</span><span style="color:#75715e"></span>  V(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>items); 		<span style="color:#75715e">// Make a item
-</span><span style="color:#75715e"></span>}
+<span style="color:#998;font-style:italic">// add to rear
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">sbuf_insert</span>(sbuf_t <span style="color:#000;font-weight:bold">*</span>sp, <span style="color:#458;font-weight:bold">int</span> item) {
+  P(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>slots);  		<span style="color:#998;font-style:italic">// Request solts
+</span><span style="color:#998;font-style:italic"></span>  P(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_p); 		<span style="color:#998;font-style:italic">// Lock buf for producter
+</span><span style="color:#998;font-style:italic"></span>  sp<span style="color:#000;font-weight:bold">-&gt;</span>buf[(<span style="color:#000;font-weight:bold">++</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>rear) <span style="color:#000;font-weight:bold">%</span> sp<span style="color:#000;font-weight:bold">-&gt;</span>n] <span style="color:#000;font-weight:bold">=</span> item;
+  V(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_p);  	<span style="color:#998;font-style:italic">// unlock
+</span><span style="color:#998;font-style:italic"></span>  V(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>items); 		<span style="color:#998;font-style:italic">// Make a item
+</span><span style="color:#998;font-style:italic"></span>}
 
-<span style="color:#75715e">// remove from head
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">sbuf_remove</span>(sbuf_t <span style="color:#f92672">*</span>sp) {
-  <span style="color:#66d9ef">int</span> item;
-  P(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>items);
-  P(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_c);
-  item <span style="color:#f92672">=</span> sp<span style="color:#f92672">-&gt;</span>buf[(<span style="color:#f92672">++</span>sp<span style="color:#f92672">-&gt;</span>front) <span style="color:#f92672">%</span> sp<span style="color:#f92672">-&gt;</span>n];
-  V(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_c);
-  V(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>slots);
-  <span style="color:#66d9ef">return</span> item;
+<span style="color:#998;font-style:italic">// remove from head
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">sbuf_remove</span>(sbuf_t <span style="color:#000;font-weight:bold">*</span>sp) {
+  <span style="color:#458;font-weight:bold">int</span> item;
+  P(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>items);
+  P(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_c);
+  item <span style="color:#000;font-weight:bold">=</span> sp<span style="color:#000;font-weight:bold">-&gt;</span>buf[(<span style="color:#000;font-weight:bold">++</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>front) <span style="color:#000;font-weight:bold">%</span> sp<span style="color:#000;font-weight:bold">-&gt;</span>n];
+  V(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_c);
+  V(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>slots);
+  <span style="color:#000;font-weight:bold">return</span> item;
 }
 </code></pre></div><p>从 main 函数 看起，初始化信号量和缓存区，接着我们创建 10 个进程：5 个消费者,5 个生产者。</p>
 <p>在生产者进程中，我们模拟生产10条数据便结束进程。消费者进程相同地取走10条数据也就结束了。同时引入 <code>c_cnt, p_cnt</code>来验证我们的结果是否正确，对他们的访问也需要加锁。</p>
 <p><code>sbuf_insert</code> 函数等待一个可用的空位，加互斥锁，插入数据，然后宣布一个数据可用，来唤醒可能在等待的消费者进程；<code>sbuf_remove</code>函数等待可用的数据，加互斥锁，取走数据，然后宣布一个空位可用。</p>
 <p>如果要进一步提高它们的并发性，当插入数据和取出数据很耗时时，把它们放在互斥锁中是不合理的。比如一个消费者正在取走数据，这需要花费很久时间，而其他消费者也只能等待，即使还有可用的空位。可以使用一个局部变量保存数据的下标，把读写操作放到互斥锁之后。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// add to rear
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sbuf_insert</span>(sbuf_t <span style="color:#f92672">*</span>sp, <span style="color:#66d9ef">int</span> item) {
-  <span style="color:#66d9ef">int</span> tmp;
-  P(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>slots);
-  P(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_p);
-  tmp <span style="color:#f92672">=</span> (<span style="color:#f92672">++</span>sp<span style="color:#f92672">-&gt;</span>rear) <span style="color:#f92672">%</span> sp<span style="color:#f92672">-&gt;</span>n;
-  V(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_p);
-  sp<span style="color:#f92672">-&gt;</span>buf[tmp] <span style="color:#f92672">=</span> item; <span style="color:#75715e">// assume this operation consume too much time,
-</span><span style="color:#75715e"></span>                       <span style="color:#75715e">// so put it out of the lock of the buffer, make
-</span><span style="color:#75715e"></span>                       <span style="color:#75715e">// producters more concurrent.
-</span><span style="color:#75715e"></span>  V(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>items);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// add to rear
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">sbuf_insert</span>(sbuf_t <span style="color:#000;font-weight:bold">*</span>sp, <span style="color:#458;font-weight:bold">int</span> item) {
+  <span style="color:#458;font-weight:bold">int</span> tmp;
+  P(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>slots);
+  P(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_p);
+  tmp <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">++</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>rear) <span style="color:#000;font-weight:bold">%</span> sp<span style="color:#000;font-weight:bold">-&gt;</span>n;
+  V(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_p);
+  sp<span style="color:#000;font-weight:bold">-&gt;</span>buf[tmp] <span style="color:#000;font-weight:bold">=</span> item; <span style="color:#998;font-style:italic">// assume this operation consume too much time,
+</span><span style="color:#998;font-style:italic"></span>                       <span style="color:#998;font-style:italic">// so put it out of the lock of the buffer, make
+</span><span style="color:#998;font-style:italic"></span>                       <span style="color:#998;font-style:italic">// producters more concurrent.
+</span><span style="color:#998;font-style:italic"></span>  V(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>items);
 }
 
-<span style="color:#75715e">// remove from head
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">sbuf_remove</span>(sbuf_t <span style="color:#f92672">*</span>sp) {
-  <span style="color:#66d9ef">int</span> item;
-  <span style="color:#66d9ef">int</span> tmp;
-  P(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>items);
-  P(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_c);
-  tmp <span style="color:#f92672">=</span> (<span style="color:#f92672">++</span>sp<span style="color:#f92672">-&gt;</span>front) <span style="color:#f92672">%</span> sp<span style="color:#f92672">-&gt;</span>n;
-  V(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>mutex_c);
-  item <span style="color:#f92672">=</span> sp<span style="color:#f92672">-&gt;</span>buf[tmp]; <span style="color:#75715e">// same as productor
-</span><span style="color:#75715e"></span>  V(<span style="color:#f92672">&amp;</span>sp<span style="color:#f92672">-&gt;</span>slots);
-  <span style="color:#66d9ef">return</span> item;
+<span style="color:#998;font-style:italic">// remove from head
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">sbuf_remove</span>(sbuf_t <span style="color:#000;font-weight:bold">*</span>sp) {
+  <span style="color:#458;font-weight:bold">int</span> item;
+  <span style="color:#458;font-weight:bold">int</span> tmp;
+  P(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>items);
+  P(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_c);
+  tmp <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">++</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>front) <span style="color:#000;font-weight:bold">%</span> sp<span style="color:#000;font-weight:bold">-&gt;</span>n;
+  V(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>mutex_c);
+  item <span style="color:#000;font-weight:bold">=</span> sp<span style="color:#000;font-weight:bold">-&gt;</span>buf[tmp]; <span style="color:#998;font-style:italic">// same as productor
+</span><span style="color:#998;font-style:italic"></span>  V(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>slots);
+  <span style="color:#000;font-weight:bold">return</span> item;
 }
 </code></pre></div><h2 id="reader-writer">Reader-Writer</h2>
 <p>读者-写者问题的描述如下：</p>
@@ -481,7 +481,7 @@ sem_t mutex_c, mutex_p;
 <tbody>
 <tr>
 <td>R-R</td>
-<td>同步：<!-- raw HTML omitted -->已经有读者在读：直接进行读操作；<!-- raw HTML omitted -->无读者在读：等待写操作完成</td>
+<td>同步：<br />已经有读者在读：直接进行读操作；<br />无读者在读：等待写操作完成</td>
 </tr>
 <tr>
 <td>R-W</td>
@@ -494,127 +494,127 @@ sem_t mutex_c, mutex_p;
 </tbody>
 </table>
 <p>读者和写者之前，需要判断是否已经有读者在读，那么仅仅使用信号量不能解决这问题。所以，我们定义<code>reader_cnt</code>来统计当前的读者进程数，<code>mutex</code>为对<code>read_cnt</code>这个共享变量的互斥锁，而<code>w</code>为读者数量的信号量，因为最大只允许一个写者进行写操作，所以也相当于一个二元信号量。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#define THREAD_SIZE 10
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">char</span> file[<span style="color:#ae81ff">20</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Init file&#34;</span>; <span style="color:#75715e">// simulate file I/O
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> reader_cnt;
-sem_t mutex; <span style="color:#75715e">// mutux for reader_cnt
-</span><span style="color:#75715e"></span>sem_t w;     <span style="color:#75715e">// mutex for writer
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#define THREAD_SIZE 10
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
+<span style="color:#458;font-weight:bold">char</span> file[<span style="color:#099">20</span>] <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Init file&#34;</span>; <span style="color:#998;font-style:italic">// simulate file I/O
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> reader_cnt;
+sem_t mutex; <span style="color:#998;font-style:italic">// mutux for reader_cnt
+</span><span style="color:#998;font-style:italic"></span>sem_t w;     <span style="color:#998;font-style:italic">// mutex for writer
 </span></code></pre></div><p>main 函数，初始化信号量<code>mutex</code>和<code>w</code>为 1 ，并且创建读者和写者进程，使得读者进程个数大于写着进程：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span>argv[]) {
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
   pthread_t tid_list[THREAD_SIZE];
-  Sem_init(<span style="color:#f92672">&amp;</span>mutex, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>w, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>w, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
 
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> THREAD_SIZE; i<span style="color:#f92672">++</span>) {
-    <span style="color:#66d9ef">if</span> (i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) <span style="color:#75715e">// more reader
-</span><span style="color:#75715e"></span>      Pthread_create(<span style="color:#f92672">&amp;</span>tid_list[i], NULL, reader_thread, NULL);
-    <span style="color:#66d9ef">else</span>
-      Pthread_create(<span style="color:#f92672">&amp;</span>tid_list[i], NULL, writer_thread, NULL);
-    Pthread_join(tid_list[i], NULL); <span style="color:#75715e">// WAIT
-</span><span style="color:#75715e"></span>  }
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> THREAD_SIZE; i<span style="color:#000;font-weight:bold">++</span>) {
+    <span style="color:#000;font-weight:bold">if</span> (i <span style="color:#000;font-weight:bold">%</span> <span style="color:#099">2</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">||</span> i <span style="color:#000;font-weight:bold">%</span> <span style="color:#099">3</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) <span style="color:#998;font-style:italic">// more reader
+</span><span style="color:#998;font-style:italic"></span>      Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>tid_list[i], <span style="color:#0086b3">NULL</span>, reader_thread, <span style="color:#0086b3">NULL</span>);
+    <span style="color:#000;font-weight:bold">else</span>
+      Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>tid_list[i], <span style="color:#0086b3">NULL</span>, writer_thread, <span style="color:#0086b3">NULL</span>);
+    Pthread_join(tid_list[i], <span style="color:#0086b3">NULL</span>); <span style="color:#998;font-style:italic">// WAIT
+</span><span style="color:#998;font-style:italic"></span>  }
 
-  puts(<span style="color:#e6db74">&#34;Finally file:&#34;</span>);
+  puts(<span style="color:#d14">&#34;Finally file:&#34;</span>);
   puts(file);
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><p>读者进程，每个读者进程模拟进行5次读操作：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">reader_thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">int</span> cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-  <span style="color:#66d9ef">while</span> (cnt<span style="color:#f92672">++</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">5</span>) {
-    <span style="color:#75715e">// printf(&#34;%d\n&#34;, cnt);
-</span><span style="color:#75715e"></span>    P(<span style="color:#f92672">&amp;</span>mutex);
-    reader_cnt<span style="color:#f92672">++</span>;
-    <span style="color:#66d9ef">if</span> (reader_cnt <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) <span style="color:#75715e">// first reader
-</span><span style="color:#75715e"></span>      P(<span style="color:#f92672">&amp;</span>w);
-    V(<span style="color:#f92672">&amp;</span>mutex);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">reader_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#458;font-weight:bold">int</span> cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+  <span style="color:#000;font-weight:bold">while</span> (cnt<span style="color:#000;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">5</span>) {
+    <span style="color:#998;font-style:italic">// printf(&#34;%d\n&#34;, cnt);
+</span><span style="color:#998;font-style:italic"></span>    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    reader_cnt<span style="color:#000;font-weight:bold">++</span>;
+    <span style="color:#000;font-weight:bold">if</span> (reader_cnt <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) <span style="color:#998;font-style:italic">// first reader
+</span><span style="color:#998;font-style:italic"></span>      P(<span style="color:#000;font-weight:bold">&amp;</span>w);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
 
-    <span style="color:#75715e">// read file...
-</span><span style="color:#75715e"></span>    printf(<span style="color:#e6db74">&#34;Read file: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, file);
+    <span style="color:#998;font-style:italic">// read file...
+</span><span style="color:#998;font-style:italic"></span>    printf(<span style="color:#d14">&#34;Read file: %s</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, file);
 
-    P(<span style="color:#f92672">&amp;</span>mutex);
-    reader_cnt<span style="color:#f92672">--</span>;
-    <span style="color:#66d9ef">if</span> (reader_cnt <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) <span style="color:#75715e">// last reader
-</span><span style="color:#75715e"></span>      V(<span style="color:#f92672">&amp;</span>w);
-    V(<span style="color:#f92672">&amp;</span>mutex);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    reader_cnt<span style="color:#000;font-weight:bold">--</span>;
+    <span style="color:#000;font-weight:bold">if</span> (reader_cnt <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) <span style="color:#998;font-style:italic">// last reader
+</span><span style="color:#998;font-style:italic"></span>      V(<span style="color:#000;font-weight:bold">&amp;</span>w);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p>写者进程，每个写者同样模拟5次写操作：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">writer_thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">int</span> cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-  <span style="color:#66d9ef">while</span> (cnt<span style="color:#f92672">++</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">5</span>) {
-    P(<span style="color:#f92672">&amp;</span>w);
-    <span style="color:#75715e">// critical section
-</span><span style="color:#75715e"></span>    printf(<span style="color:#e6db74">&#34;Writing file</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-    strcpy(file, <span style="color:#e6db74">&#34;Hello world&#34;</span>);
-    V(<span style="color:#f92672">&amp;</span>w);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">writer_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#458;font-weight:bold">int</span> cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+  <span style="color:#000;font-weight:bold">while</span> (cnt<span style="color:#000;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">5</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>w);
+    <span style="color:#998;font-style:italic">// critical section
+</span><span style="color:#998;font-style:italic"></span>    printf(<span style="color:#d14">&#34;Writing file</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+    strcpy(file, <span style="color:#d14">&#34;Hello world&#34;</span>);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>w);
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p>运行结果：</p>
 <p><img src="/images/sem-rw.png" alt="sem-rw"></p>
 <h2 id="sleepy-barber">Sleepy barber</h2>
 <p>睡眠理发师问题：理发店里有一位理发师，一把理发椅和多把等候的椅子；如果没有顾客，理发师在理发椅上睡觉；当有顾客来时，他唤醒理发师，进行理发，此时如果有其他顾客进来，如果有空椅子，则坐下等待，否则直接离开。</p>
 <p>定义4个全局变量分别为：<code>barber_ready</code>表示等待顾客的理发师数，因为理发师只有一个，也可以看做是二元信号量，用户阻塞顾客进程；<code>cust_ready</code>表示等待理发的顾客数，用于阻塞理发师进程，初始为0；<code>mutex</code>是用于保护共享变量<code>wating</code>的互斥锁；而<code>free_seats</code>则是常量，表示等待理发的椅子数量。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t barber_ready, cust_ready;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t barber_ready, cust_ready;
 sem_t mutex;
-<span style="color:#66d9ef">int</span> free_seats, wating <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+<span style="color:#458;font-weight:bold">int</span> free_seats, wating <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
 </code></pre></div><p>理发师进程：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">barber</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-  <span style="color:#66d9ef">while</span> (<span style="color:#ae81ff">1</span>) {
-    P(<span style="color:#f92672">&amp;</span>cust_ready);  <span style="color:#75715e">// sleetp to wait customer
-</span><span style="color:#75715e"></span>    P(<span style="color:#f92672">&amp;</span>mutex);
-    wating<span style="color:#f92672">--</span>;
-    V(<span style="color:#f92672">&amp;</span>barber_ready);  <span style="color:#75715e">// ready to cut
-</span><span style="color:#75715e"></span>    V(<span style="color:#f92672">&amp;</span>mutex);
-    cnt<span style="color:#f92672">++</span>;
-    <span style="color:#66d9ef">if</span> (cnt <span style="color:#f92672">&gt;=</span> (<span style="color:#66d9ef">int</span>)arg) {
-      wating <span style="color:#f92672">=</span> free_seats <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
-      printf(<span style="color:#e6db74">&#34;close shop</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-      <span style="color:#66d9ef">return</span> NULL;  <span style="color:#75715e">// barber close shop after cut &lt;arg&gt; customers
-</span><span style="color:#75715e"></span>    }
-    <span style="color:#75715e">// cuthair
-</span><span style="color:#75715e"></span>    printf(<span style="color:#e6db74">&#34;I&#39;m cutting your hair</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">barber</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>cust_ready);  <span style="color:#998;font-style:italic">// sleetp to wait customer
+</span><span style="color:#998;font-style:italic"></span>    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    wating<span style="color:#000;font-weight:bold">--</span>;
+    V(<span style="color:#000;font-weight:bold">&amp;</span>barber_ready);  <span style="color:#998;font-style:italic">// ready to cut
+</span><span style="color:#998;font-style:italic"></span>    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    cnt<span style="color:#000;font-weight:bold">++</span>;
+    <span style="color:#000;font-weight:bold">if</span> (cnt <span style="color:#000;font-weight:bold">&gt;=</span> (<span style="color:#458;font-weight:bold">int</span>)arg) {
+      wating <span style="color:#000;font-weight:bold">=</span> free_seats <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
+      printf(<span style="color:#d14">&#34;close shop</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+      <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;  <span style="color:#998;font-style:italic">// barber close shop after cut &lt;arg&gt; customers
+</span><span style="color:#998;font-style:italic"></span>    }
+    <span style="color:#998;font-style:italic">// cuthair
+</span><span style="color:#998;font-style:italic"></span>    printf(<span style="color:#d14">&#34;I&#39;m cutting your hair</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 
 </code></pre></div><p>顾客进程：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">customer</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  P(<span style="color:#f92672">&amp;</span>mutex);
-  <span style="color:#66d9ef">if</span> (wating <span style="color:#f92672">&lt;</span> free_seats) {
-    wating<span style="color:#f92672">++</span>;
-    V(<span style="color:#f92672">&amp;</span>cust_ready);  <span style="color:#75715e">// notif barber
-</span><span style="color:#75715e"></span>    V(<span style="color:#f92672">&amp;</span>mutex);
-    P(<span style="color:#f92672">&amp;</span>barber_ready);  <span style="color:#75715e">// wait for barber
-</span><span style="color:#75715e"></span>    printf(<span style="color:#e6db74">&#34;cut customer %d&#39;s hair</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, (<span style="color:#66d9ef">int</span>)arg);
-  } <span style="color:#66d9ef">else</span> {
-    V(<span style="color:#f92672">&amp;</span>mutex);
-    printf(<span style="color:#e6db74">&#34;I&#39;m leaving without cut</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-    <span style="color:#66d9ef">return</span> NULL;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">customer</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+  <span style="color:#000;font-weight:bold">if</span> (wating <span style="color:#000;font-weight:bold">&lt;</span> free_seats) {
+    wating<span style="color:#000;font-weight:bold">++</span>;
+    V(<span style="color:#000;font-weight:bold">&amp;</span>cust_ready);  <span style="color:#998;font-style:italic">// notif barber
+</span><span style="color:#998;font-style:italic"></span>    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>barber_ready);  <span style="color:#998;font-style:italic">// wait for barber
+</span><span style="color:#998;font-style:italic"></span>    printf(<span style="color:#d14">&#34;cut customer %d&#39;s hair</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, (<span style="color:#458;font-weight:bold">int</span>)arg);
+  } <span style="color:#000;font-weight:bold">else</span> {
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    printf(<span style="color:#d14">&#34;I&#39;m leaving without cut</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+    <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p>main 函数：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span>argv[]) {
-  <span style="color:#75715e">// scanf(&#34;%d&#34;, &amp;free_seats);
-</span><span style="color:#75715e"></span>  free_seats <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>;
-  Sem_init(<span style="color:#f92672">&amp;</span>barber_ready, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>cust_ready, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>mutex, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>);
-  pthread_t b_tid, c_tids[free_seats <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>];
-  Pthread_create(<span style="color:#f92672">&amp;</span>b_tid, NULL, barber, free_seats <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>);
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> free_seats <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>; i<span style="color:#f92672">++</span>) {
-    Pthread_create(<span style="color:#f92672">&amp;</span>c_tids[i], NULL, customer, (<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)i);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  <span style="color:#998;font-style:italic">// scanf(&#34;%d&#34;, &amp;free_seats);
+</span><span style="color:#998;font-style:italic"></span>  free_seats <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">5</span>;
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>barber_ready, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>cust_ready, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
+  pthread_t b_tid, c_tids[free_seats <span style="color:#000;font-weight:bold">*</span> <span style="color:#099">2</span>];
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>b_tid, <span style="color:#0086b3">NULL</span>, barber, free_seats <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">2</span>);
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> free_seats <span style="color:#000;font-weight:bold">*</span> <span style="color:#099">2</span>; i<span style="color:#000;font-weight:bold">++</span>) {
+    Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>c_tids[i], <span style="color:#0086b3">NULL</span>, customer, (<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>)i);
   }
-  Pthread_join(b_tid, NULL);
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> free_seats <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>; i<span style="color:#f92672">++</span>) {
-    Pthread_join(c_tids[i], NULL);
+  Pthread_join(b_tid, <span style="color:#0086b3">NULL</span>);
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> free_seats <span style="color:#000;font-weight:bold">*</span> <span style="color:#099">2</span>; i<span style="color:#000;font-weight:bold">++</span>) {
+    Pthread_join(c_tids[i], <span style="color:#0086b3">NULL</span>);
   }
 
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><h2 id="cigarette-smokers">Cigarette smokers</h2>
 <p>吸烟者问题：三个抽烟者和一个供应者。每个抽烟者需要有三种材料：烟草、纸和火柴，才可吸烟。三个抽烟者分别拥有三种材料中的一种。 供应者每次随机将两种材料放到桌子上，拥有剩下那种材料的抽烟者卷一根烟并抽掉它。材料被使用后，供应者按上述原则继续提供材料。</p>
@@ -632,81 +632,81 @@ sem_t mutex;
 <blockquote>
 <p>按着上面的思路，敲得下面的代码。但是运行起来还有点问题。。。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;csapp.h&#34;</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span>
-sem_t offer1;  <span style="color:#75715e">// offer paper and matchs
-</span><span style="color:#75715e"></span>sem_t offer2;  <span style="color:#75715e">// offer tobacco and matchs
-</span><span style="color:#75715e"></span>sem_t offer3;  <span style="color:#75715e">// offer tobacco and paper
-</span><span style="color:#75715e"></span>sem_t finish;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&#34;csapp.h&#34;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
+sem_t offer1;  <span style="color:#998;font-style:italic">// offer paper and matchs
+</span><span style="color:#998;font-style:italic"></span>sem_t offer2;  <span style="color:#998;font-style:italic">// offer tobacco and matchs
+</span><span style="color:#998;font-style:italic"></span>sem_t offer3;  <span style="color:#998;font-style:italic">// offer tobacco and paper
+</span><span style="color:#998;font-style:italic"></span>sem_t finish;
 
-<span style="color:#66d9ef">int</span> times <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;  <span style="color:#75715e">// offer 10 times somke
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">agent_thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">while</span> (times<span style="color:#f92672">--</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
-    <span style="color:#66d9ef">int</span> kase <span style="color:#f92672">=</span> rand() <span style="color:#f92672">%</span> <span style="color:#ae81ff">3</span>;
-    printf(<span style="color:#e6db74">&#34;time%d: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, times, kase);
-    <span style="color:#66d9ef">if</span> (kase <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
-      V(<span style="color:#f92672">&amp;</span>offer1);
-    } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (kase <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) {
-      V(<span style="color:#f92672">&amp;</span>offer2);
-    } <span style="color:#66d9ef">else</span> {
-      V(<span style="color:#f92672">&amp;</span>offer3);
+<span style="color:#458;font-weight:bold">int</span> times <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">10</span>;  <span style="color:#998;font-style:italic">// offer 10 times somke
+</span><span style="color:#998;font-style:italic"></span>
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">agent_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">while</span> (times<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0</span>) {
+    <span style="color:#458;font-weight:bold">int</span> kase <span style="color:#000;font-weight:bold">=</span> rand() <span style="color:#000;font-weight:bold">%</span> <span style="color:#099">3</span>;
+    printf(<span style="color:#d14">&#34;time%d: %d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, times, kase);
+    <span style="color:#000;font-weight:bold">if</span> (kase <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
+      V(<span style="color:#000;font-weight:bold">&amp;</span>offer1);
+    } <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> (kase <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {
+      V(<span style="color:#000;font-weight:bold">&amp;</span>offer2);
+    } <span style="color:#000;font-weight:bold">else</span> {
+      V(<span style="color:#000;font-weight:bold">&amp;</span>offer3);
     }
-    P(<span style="color:#f92672">&amp;</span>finish);  <span style="color:#75715e">// wait somker finish
-</span><span style="color:#75715e"></span>  }
-  <span style="color:#66d9ef">return</span> NULL;
+    P(<span style="color:#000;font-weight:bold">&amp;</span>finish);  <span style="color:#998;font-style:italic">// wait somker finish
+</span><span style="color:#998;font-style:italic"></span>  }
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 
-<span style="color:#75715e">// i hava tobacco
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">somker1_thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">while</span> (times <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
-    P(<span style="color:#f92672">&amp;</span>offer1);
-    <span style="color:#75715e">// smoke
-</span><span style="color:#75715e"></span>    puts(<span style="color:#e6db74">&#34;somker1: that feeling...&#34;</span>);
-    V(<span style="color:#f92672">&amp;</span>finish);
+<span style="color:#998;font-style:italic">// i hava tobacco
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">somker1_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">while</span> (times <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>offer1);
+    <span style="color:#998;font-style:italic">// smoke
+</span><span style="color:#998;font-style:italic"></span>    puts(<span style="color:#d14">&#34;somker1: that feeling...&#34;</span>);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>finish);
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
-<span style="color:#75715e">// i have paper
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">somker2_thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">while</span> (times <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
-    P(<span style="color:#f92672">&amp;</span>offer2);
-    <span style="color:#75715e">// smoke
-</span><span style="color:#75715e"></span>    puts(<span style="color:#e6db74">&#34;somker2: that feeling...&#34;</span>);
-    V(<span style="color:#f92672">&amp;</span>finish);
+<span style="color:#998;font-style:italic">// i have paper
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">somker2_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">while</span> (times <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>offer2);
+    <span style="color:#998;font-style:italic">// smoke
+</span><span style="color:#998;font-style:italic"></span>    puts(<span style="color:#d14">&#34;somker2: that feeling...&#34;</span>);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>finish);
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
-<span style="color:#75715e">// i have matchs
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">somker3_thread</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">while</span> (times <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
-    P(<span style="color:#f92672">&amp;</span>offer3);
-    <span style="color:#75715e">// smoke
-</span><span style="color:#75715e"></span>    puts(<span style="color:#e6db74">&#34;somker3: that feeling...&#34;</span>);
-    V(<span style="color:#f92672">&amp;</span>finish);
+<span style="color:#998;font-style:italic">// i have matchs
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">somker3_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">while</span> (times <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>offer3);
+    <span style="color:#998;font-style:italic">// smoke
+</span><span style="color:#998;font-style:italic"></span>    puts(<span style="color:#d14">&#34;somker3: that feeling...&#34;</span>);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>finish);
   }
-  <span style="color:#66d9ef">return</span> NULL;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span>argv[]) {
-  srand(time(NULL));
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  srand(time(<span style="color:#0086b3">NULL</span>));
 
-  Sem_init(<span style="color:#f92672">&amp;</span>offer1, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>offer2, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>offer3, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>finish, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>offer1, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>offer2, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>offer3, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>finish, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
   pthread_t somker1, somker2, somker3;
   pthread_t agent;
-  Pthread_create(<span style="color:#f92672">&amp;</span>somker1, NULL, somker1_thread, NULL);
-  Pthread_create(<span style="color:#f92672">&amp;</span>somker2, NULL, somker1_thread, NULL);
-  Pthread_create(<span style="color:#f92672">&amp;</span>somker3, NULL, somker1_thread, NULL);
-  Pthread_create(<span style="color:#f92672">&amp;</span>agent, NULL, agent_thread, NULL);
-  Pthread_join(somker3, NULL);
-  Pthread_join(somker2, NULL);
-  Pthread_join(somker1, NULL);
-  Pthread_join(agent, NULL);
-  puts(<span style="color:#e6db74">&#34;all threads created</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>somker1, <span style="color:#0086b3">NULL</span>, somker1_thread, <span style="color:#0086b3">NULL</span>);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>somker2, <span style="color:#0086b3">NULL</span>, somker1_thread, <span style="color:#0086b3">NULL</span>);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>somker3, <span style="color:#0086b3">NULL</span>, somker1_thread, <span style="color:#0086b3">NULL</span>);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>agent, <span style="color:#0086b3">NULL</span>, agent_thread, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(somker3, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(somker2, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(somker1, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(agent, <span style="color:#0086b3">NULL</span>);
+  puts(<span style="color:#d14">&#34;all threads created</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><h2 id="和尚吃水问题">和尚吃水问题</h2>
 <p>某寺庙，有小、老和尚若干，有一水缸，有小和尚提水入缸供老和尚饮用。水缸可容 10 桶水，水取自同一井中。水井径窄，每次只能容一个桶取水。水桶总数为 3 个。每次入、取缸水仅为 1 桶，且不可同时进行。</p>
@@ -715,63 +715,63 @@ sem_t offer1;  <span style="color:#75715e">// offer paper and matchs
 <li>水井每次只能容一个桶取水，所以小和尚之前也有互斥关系</li>
 <li>信号量：<code>mutex1</code>用于小和尚之前互斥的从水井取水；<code>mutex2</code>用于互斥的从水缸倒水或取水；<code>empty</code>表示水缸还可放入的水；<code>full</code>表示水缸中已有的水；<code>pail</code>则是表示水桶的数量的信号量。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t mutex1, mutex2;
-sem_t empty;  <span style="color:#75715e">// 水缸中的空位
-</span><span style="color:#75715e"></span>sem_t full;   <span style="color:#75715e">//水缸中已经放入的水
-</span><span style="color:#75715e"></span>sem_t pail;   <span style="color:#75715e">//水桶
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">int</span> water <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;  <span style="color:#75715e">//水缸中的水量
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t mutex1, mutex2;
+sem_t empty;  <span style="color:#998;font-style:italic">// 水缸中的空位
+</span><span style="color:#998;font-style:italic"></span>sem_t full;   <span style="color:#998;font-style:italic">//水缸中已经放入的水
+</span><span style="color:#998;font-style:italic"></span>sem_t pail;   <span style="color:#998;font-style:italic">//水桶
+</span><span style="color:#998;font-style:italic"></span>
+<span style="color:#458;font-weight:bold">int</span> water <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;  <span style="color:#998;font-style:italic">//水缸中的水量
 </span></code></pre></div><p>小和尚取水：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">get_water</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">while</span> (<span style="color:#ae81ff">1</span>) {
-    P(<span style="color:#f92672">&amp;</span>empty);
-    P(<span style="color:#f92672">&amp;</span>pail);
-    P(<span style="color:#f92672">&amp;</span>mutex1);
-    <span style="color:#75715e">// 从井中取水
-</span><span style="color:#75715e"></span>    printf(<span style="color:#e6db74">&#34;little monk get water from wall</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-    V(<span style="color:#f92672">&amp;</span>mutex1);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">get_water</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>empty);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>pail);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex1);
+    <span style="color:#998;font-style:italic">// 从井中取水
+</span><span style="color:#998;font-style:italic"></span>    printf(<span style="color:#d14">&#34;little monk get water from wall</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex1);
 
-    P(<span style="color:#f92672">&amp;</span>mutex2);
-    <span style="color:#75715e">// 倒入水缸
-</span><span style="color:#75715e"></span>    printf(<span style="color:#e6db74">&#34;little monk put water to vat, water: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#f92672">++</span>water);
-    V(<span style="color:#f92672">&amp;</span>mutex2);
-    V(<span style="color:#f92672">&amp;</span>full);
-    V(<span style="color:#f92672">&amp;</span>pail);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex2);
+    <span style="color:#998;font-style:italic">// 倒入水缸
+</span><span style="color:#998;font-style:italic"></span>    printf(<span style="color:#d14">&#34;little monk put water to vat, water: %d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, <span style="color:#000;font-weight:bold">++</span>water);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex2);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>full);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>pail);
 
-    Sleep(<span style="color:#ae81ff">1</span>);  <span style="color:#75715e">// slow down...
-</span><span style="color:#75715e"></span>  }
+    Sleep(<span style="color:#099">1</span>);  <span style="color:#998;font-style:italic">// slow down...
+</span><span style="color:#998;font-style:italic"></span>  }
 }
 </code></pre></div><p>老和尚喝水：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">use_water</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">while</span> (<span style="color:#ae81ff">1</span>) {
-    P(<span style="color:#f92672">&amp;</span>full);
-    P(<span style="color:#f92672">&amp;</span>pail);
-    P(<span style="color:#f92672">&amp;</span>mutex2);
-    <span style="color:#75715e">// 从水缸取水
-</span><span style="color:#75715e"></span>    printf(<span style="color:#e6db74">&#34;old monk get water from vat, water: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#f92672">--</span>water);
-    V(<span style="color:#f92672">&amp;</span>mutex2);
-    V(<span style="color:#f92672">&amp;</span>empty);
-    <span style="color:#75715e">// 喝水
-</span><span style="color:#75715e"></span>    printf(<span style="color:#e6db74">&#34;old monk drink water</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-    V(<span style="color:#f92672">&amp;</span>pail);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">use_water</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>full);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>pail);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex2);
+    <span style="color:#998;font-style:italic">// 从水缸取水
+</span><span style="color:#998;font-style:italic"></span>    printf(<span style="color:#d14">&#34;old monk get water from vat, water: %d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, <span style="color:#000;font-weight:bold">--</span>water);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex2);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>empty);
+    <span style="color:#998;font-style:italic">// 喝水
+</span><span style="color:#998;font-style:italic"></span>    printf(<span style="color:#d14">&#34;old monk drink water</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>pail);
 
-    Sleep(<span style="color:#ae81ff">1</span>);
+    Sleep(<span style="color:#099">1</span>);
   }
 }
 </code></pre></div><p>main 函数：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span>argv[]) {
-  Sem_init(<span style="color:#f92672">&amp;</span>mutex1, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>mutex2, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>empty, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">10</span>);  <span style="color:#75715e">//水缸中最多放10桶水
-</span><span style="color:#75715e"></span>  Sem_init(<span style="color:#f92672">&amp;</span>full, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>pail, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>);  <span style="color:#75715e">//三个木桶
-</span><span style="color:#75715e"></span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex1, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex2, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>empty, <span style="color:#099">0</span>, <span style="color:#099">10</span>);  <span style="color:#998;font-style:italic">//水缸中最多放10桶水
+</span><span style="color:#998;font-style:italic"></span>  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>full, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>pail, <span style="color:#099">0</span>, <span style="color:#099">3</span>);  <span style="color:#998;font-style:italic">//三个木桶
+</span><span style="color:#998;font-style:italic"></span>
   pthread_t little_id, old_id;
-  Pthread_create(<span style="color:#f92672">&amp;</span>little_id, NULL, get_water, NULL);
-  Pthread_create(<span style="color:#f92672">&amp;</span>old_id, NULL, use_water, NULL);
-  Pthread_join(little_id, NULL);
-  Pthread_join(old_id, NULL);
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>little_id, <span style="color:#0086b3">NULL</span>, get_water, <span style="color:#0086b3">NULL</span>);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>old_id, <span style="color:#0086b3">NULL</span>, use_water, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(little_id, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(old_id, <span style="color:#0086b3">NULL</span>);
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><p>运行结果：</p>
 <p><img src="/images/sem-monk.png" alt="sem-monk"></p>
@@ -784,74 +784,74 @@ sem_t empty;  <span style="color:#75715e">// 水缸中的空位
 <li>很显然需要四个进程，表示四个人</li>
 <li>信号量：<code>empty</code>表示盘子中还可放的水果数量，<code>organge</code>表示盘子中橘子的数量，<code>apple</code>表示盘子中苹果的数量，<code>mutex</code>是二元信号量，用来互斥的放或取水果。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t empty, orange, apple;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t empty, orange, apple;
 sem_t mutex;
 
-<span style="color:#75715e">// 盘子中的苹果数和橘子数
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> apple_num <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, orange_num <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+<span style="color:#998;font-style:italic">// 盘子中的苹果数和橘子数
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> apple_num <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, orange_num <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
 </code></pre></div><p>四个进程分别如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">father</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">while</span> (<span style="color:#ae81ff">1</span>) {
-    P(<span style="color:#f92672">&amp;</span>empty);
-    P(<span style="color:#f92672">&amp;</span>mutex);
-    <span style="color:#75715e">// put an apple
-</span><span style="color:#75715e"></span>    apple_num<span style="color:#f92672">++</span>;
-    printf(<span style="color:#e6db74">&#34;Put an apple: %d apples, %d oranges</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, apple_num, orange_num);
-    V(<span style="color:#f92672">&amp;</span>mutex);
-    V(<span style="color:#f92672">&amp;</span>apple);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">father</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>empty);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    <span style="color:#998;font-style:italic">// put an apple
+</span><span style="color:#998;font-style:italic"></span>    apple_num<span style="color:#000;font-weight:bold">++</span>;
+    printf(<span style="color:#d14">&#34;Put an apple: %d apples, %d oranges</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, apple_num, orange_num);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>apple);
   }
 }
 
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mother</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">while</span> (<span style="color:#ae81ff">1</span>) {
-    P(<span style="color:#f92672">&amp;</span>empty);
-    P(<span style="color:#f92672">&amp;</span>mutex);
-    <span style="color:#75715e">// put an orange
-</span><span style="color:#75715e"></span>    orange_num<span style="color:#f92672">++</span>;
-    printf(<span style="color:#e6db74">&#34;Put an orange: %d apples, %d oranges</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, apple_num, orange_num);
-    V(<span style="color:#f92672">&amp;</span>mutex);
-    V(<span style="color:#f92672">&amp;</span>orange);
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">mother</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>empty);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    <span style="color:#998;font-style:italic">// put an orange
+</span><span style="color:#998;font-style:italic"></span>    orange_num<span style="color:#000;font-weight:bold">++</span>;
+    printf(<span style="color:#d14">&#34;Put an orange: %d apples, %d oranges</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, apple_num, orange_num);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>orange);
   }
 }
 
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">son</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  <span style="color:#66d9ef">while</span> (<span style="color:#ae81ff">1</span>) {
-    P(<span style="color:#f92672">&amp;</span>apple);
-    P(<span style="color:#f92672">&amp;</span>mutex);
-    <span style="color:#75715e">// eat apple
-</span><span style="color:#75715e"></span>    apple_num<span style="color:#f92672">--</span>;
-    printf(<span style="color:#e6db74">&#34;Eat an apple: %d apples, %d oranges</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, apple_num, orange_num);
-    V(<span style="color:#f92672">&amp;</span>mutex);
-    V(<span style="color:#f92672">&amp;</span>empty);
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">son</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
+    P(<span style="color:#000;font-weight:bold">&amp;</span>apple);
+    P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    <span style="color:#998;font-style:italic">// eat apple
+</span><span style="color:#998;font-style:italic"></span>    apple_num<span style="color:#000;font-weight:bold">--</span>;
+    printf(<span style="color:#d14">&#34;Eat an apple: %d apples, %d oranges</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, apple_num, orange_num);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+    V(<span style="color:#000;font-weight:bold">&amp;</span>empty);
   }
 }
 
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">daugther</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg) {
-  P(<span style="color:#f92672">&amp;</span>orange);
-  P(<span style="color:#f92672">&amp;</span>mutex);
-  <span style="color:#75715e">// eat an orange
-</span><span style="color:#75715e"></span>  orange_num<span style="color:#f92672">--</span>;
-  printf(<span style="color:#e6db74">&#34;Eat an orange: %d apples, %d oranges</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, apple_num, orange_num);
-  V(<span style="color:#f92672">&amp;</span>mutex);
-  V(<span style="color:#f92672">&amp;</span>empty);
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">daugther</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+  P(<span style="color:#000;font-weight:bold">&amp;</span>orange);
+  P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+  <span style="color:#998;font-style:italic">// eat an orange
+</span><span style="color:#998;font-style:italic"></span>  orange_num<span style="color:#000;font-weight:bold">--</span>;
+  printf(<span style="color:#d14">&#34;Eat an orange: %d apples, %d oranges</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, apple_num, orange_num);
+  V(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
+  V(<span style="color:#000;font-weight:bold">&amp;</span>empty);
 }
 </code></pre></div><p>main 函数：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">*</span>argv[]) {
-  Sem_init(<span style="color:#f92672">&amp;</span>empty, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>);  <span style="color:#75715e">// 盘子最多放三个水果
-</span><span style="color:#75715e"></span>  Sem_init(<span style="color:#f92672">&amp;</span>orange, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>apple, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
-  Sem_init(<span style="color:#f92672">&amp;</span>mutex, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>empty, <span style="color:#099">0</span>, <span style="color:#099">3</span>);  <span style="color:#998;font-style:italic">// 盘子最多放三个水果
+</span><span style="color:#998;font-style:italic"></span>  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>orange, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>apple, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
+  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
   pthread_t father_id, mother_id, son_id, daugther_id;
-  Pthread_create(<span style="color:#f92672">&amp;</span>father_id, NULL, father, NULL);
-  Pthread_create(<span style="color:#f92672">&amp;</span>mother_id, NULL, mother, NULL);
-  Pthread_create(<span style="color:#f92672">&amp;</span>father_id, NULL, son, NULL);
-  Pthread_create(<span style="color:#f92672">&amp;</span>daugther_id, NULL, daugther, NULL);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>father_id, <span style="color:#0086b3">NULL</span>, father, <span style="color:#0086b3">NULL</span>);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>mother_id, <span style="color:#0086b3">NULL</span>, mother, <span style="color:#0086b3">NULL</span>);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>father_id, <span style="color:#0086b3">NULL</span>, son, <span style="color:#0086b3">NULL</span>);
+  Pthread_create(<span style="color:#000;font-weight:bold">&amp;</span>daugther_id, <span style="color:#0086b3">NULL</span>, daugther, <span style="color:#0086b3">NULL</span>);
 
-  Pthread_join(father_id, NULL);
-  Pthread_join(mother_id, NULL);
-  Pthread_join(son_id, NULL);
-  Pthread_join(daugther_id, NULL);
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+  Pthread_join(father_id, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(mother_id, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(son_id, <span style="color:#0086b3">NULL</span>);
+  Pthread_join(daugther_id, <span style="color:#0086b3">NULL</span>);
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><p>运行结果：</p>
 <p><img src="/images/sem-fruit.png" alt="sem-fruit"></p>

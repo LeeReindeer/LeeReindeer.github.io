@@ -202,56 +202,56 @@
 </blockquote>
 <p>这句话反复出现在《深入理解Java虚拟机》里.我倒是没有体会到什么发展,也可以理解为这是为了跨平台而做出的牺牲,虚拟机也为此出现.当然也有直接把 Java 源代码编译成机器码的编译器( AOT 编译器).先不管这个,从 Java 源代码到字节码到底经历了什么呢?肯定要分析处理源码的语句啊,这便是词法分析和语法分析,从而把源码变成了抽象语法树(AST).接着只要遍历语法树就得到了字节码指令流.emmm,以目前的垃圾我不可能实现的.那,先从简单的开始,这篇重点就是<strong>从源码验证一下Javac的编译结果</strong>.</p>
 <h2 id="2-编写测试程序">2. 编写测试程序</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Test</span> <span style="color:#000;font-weight:bold">{</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> 200<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> 400<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">return</span>  <span style="color:#f92672">(</span>a <span style="color:#f92672">+</span> b<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> c<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#458;font-weight:bold">int</span> a <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#458;font-weight:bold">int</span> b <span style="color:#000;font-weight:bold">=</span> 200<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#458;font-weight:bold">int</span> c <span style="color:#000;font-weight:bold">=</span> 400<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span>  <span style="color:#000;font-weight:bold">(</span>a <span style="color:#000;font-weight:bold">+</span> b<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">*</span> c<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>这是个简单的测试程序,没什么好说的.接着用 Javac 编译他.然后打开这个字节码文件.</p>
 <h2 id="3-简单的javac源码">3. 简单的Javac源码</h2>
 <p>经过在Javac源码里的一番随便乱翻(划掉),找到了这个文件: <code>com.sun.tools.javac.jvm.ByteCodes</code> .这是一个接口,里面只有一些常量.像这样:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ByteCodes</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">ByteCodes</span> <span style="color:#000;font-weight:bold">{</span>
 
-    <span style="color:#75715e">/** Byte code instruction codes.
-</span><span style="color:#75715e">     */</span>
-    <span style="color:#66d9ef">int</span> illegal         <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">,</span>
-        nop             <span style="color:#f92672">=</span> 0<span style="color:#f92672">,</span>
-        aconst_null     <span style="color:#f92672">=</span> 1<span style="color:#f92672">,</span>
-        iconst_m1       <span style="color:#f92672">=</span> 2<span style="color:#f92672">,</span>
-        iconst_0        <span style="color:#f92672">=</span> 3<span style="color:#f92672">,</span>
-        iconst_1        <span style="color:#f92672">=</span> 4<span style="color:#f92672">,</span>
-        <span style="color:#f92672">......</span>
-<span style="color:#f92672">}</span>
+    <span style="color:#998;font-style:italic">/** Byte code instruction codes.
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#458;font-weight:bold">int</span> illegal         <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">,</span>
+        nop             <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">,</span>
+        aconst_null     <span style="color:#000;font-weight:bold">=</span> 1<span style="color:#000;font-weight:bold">,</span>
+        iconst_m1       <span style="color:#000;font-weight:bold">=</span> 2<span style="color:#000;font-weight:bold">,</span>
+        iconst_0        <span style="color:#000;font-weight:bold">=</span> 3<span style="color:#000;font-weight:bold">,</span>
+        iconst_1        <span style="color:#000;font-weight:bold">=</span> 4<span style="color:#000;font-weight:bold">,</span>
+        <span style="color:#000;font-weight:bold">......</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>一打开这个文件,我就觉得很熟悉.这些都是基于栈的指令集.以后(在 JVM 里执行时)都是对 Java VM stack 进行操作的指令.</p>
 <h3 id="31-javap-查看字节码指令">3.1 Javap 查看字节码指令</h3>
 <p>省略前面一些常量池里内容.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">();</span>
-    descriptor<span style="color:#f92672">:</span> <span style="color:#f92672">()</span>I
-    flags<span style="color:#f92672">:</span> ACC_PUBLIC
-    Code<span style="color:#f92672">:</span>
-      stack<span style="color:#f92672">=</span>2<span style="color:#f92672">,</span> locals<span style="color:#f92672">=</span>4<span style="color:#f92672">,</span> args_size<span style="color:#f92672">=</span>1
-         0<span style="color:#f92672">:</span> bipush        100
-         2<span style="color:#f92672">:</span> istore_1
-         3<span style="color:#f92672">:</span> sipush        200
-         6<span style="color:#f92672">:</span> istore_2
-         7<span style="color:#f92672">:</span> sipush        400
-        10<span style="color:#f92672">:</span> istore_3
-        11<span style="color:#f92672">:</span> iload_1
-        12<span style="color:#f92672">:</span> iload_2
-        13<span style="color:#f92672">:</span> iadd
-        14<span style="color:#f92672">:</span> iload_3
-        15<span style="color:#f92672">:</span> imul
-        16<span style="color:#f92672">:</span> ireturn
-      LineNumberTable<span style="color:#f92672">:</span>
-        line 16<span style="color:#f92672">:</span> 0
-        line 17<span style="color:#f92672">:</span> 3
-        line 18<span style="color:#f92672">:</span> 7
-        line 19<span style="color:#f92672">:</span> 11
-<span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">();</span>
+    descriptor<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">()</span>I
+    flags<span style="color:#000;font-weight:bold">:</span> ACC_PUBLIC
+    Code<span style="color:#000;font-weight:bold">:</span>
+      stack<span style="color:#000;font-weight:bold">=</span>2<span style="color:#000;font-weight:bold">,</span> locals<span style="color:#000;font-weight:bold">=</span>4<span style="color:#000;font-weight:bold">,</span> args_size<span style="color:#000;font-weight:bold">=</span>1
+         0<span style="color:#000;font-weight:bold">:</span> bipush        100
+         2<span style="color:#000;font-weight:bold">:</span> istore_1
+         3<span style="color:#000;font-weight:bold">:</span> sipush        200
+         6<span style="color:#000;font-weight:bold">:</span> istore_2
+         7<span style="color:#000;font-weight:bold">:</span> sipush        400
+        10<span style="color:#000;font-weight:bold">:</span> istore_3
+        11<span style="color:#000;font-weight:bold">:</span> iload_1
+        12<span style="color:#000;font-weight:bold">:</span> iload_2
+        13<span style="color:#000;font-weight:bold">:</span> iadd
+        14<span style="color:#000;font-weight:bold">:</span> iload_3
+        15<span style="color:#000;font-weight:bold">:</span> imul
+        16<span style="color:#000;font-weight:bold">:</span> ireturn
+      LineNumberTable<span style="color:#000;font-weight:bold">:</span>
+        line 16<span style="color:#000;font-weight:bold">:</span> 0
+        line 17<span style="color:#000;font-weight:bold">:</span> 3
+        line 18<span style="color:#000;font-weight:bold">:</span> 7
+        line 19<span style="color:#000;font-weight:bold">:</span> 11
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><ul>
 <li>
 <p><code>bipush</code> 和 <code>sipush</code> 都是将整型常量值推入栈顶的指令.</p>
@@ -269,18 +269,18 @@
 <h2 id="4-验证">4. 验证</h2>
 <p>我们看到的字节码文件,里面是16进制数,
 可以对照 Javac 的 Bytecodes 文件得到这些指令的十进制数.为了方便查找我做了如下的注释:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">//         dec hex
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//bioush   16, 10
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//sipush   17, 11
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//istore_1 60, 3c
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//istore_2 61, 3d
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//iload_1  27, 1b
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span> <span style="color:#75715e">//0x0064
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> 200<span style="color:#f92672">;</span> <span style="color:#75715e">//0x00c8
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> 400<span style="color:#f92672">;</span> <span style="color:#75715e">//0x0190
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span>  <span style="color:#f92672">(</span>a <span style="color:#f92672">+</span> b<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> c<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">//         dec hex
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//bioush   16, 10
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//sipush   17, 11
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//istore_1 60, 3c
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//istore_2 61, 3d
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//iload_1  27, 1b
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#458;font-weight:bold">int</span> a <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//0x0064
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#458;font-weight:bold">int</span> b <span style="color:#000;font-weight:bold">=</span> 200<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//0x00c8
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#458;font-weight:bold">int</span> c <span style="color:#000;font-weight:bold">=</span> 400<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//0x0190
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">return</span>  <span style="color:#000;font-weight:bold">(</span>a <span style="color:#000;font-weight:bold">+</span> b<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">*</span> c<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>字节码文件:</p>
 <p><em>cafe babe 0000 0034 000f 0a00 0300 0c07</em></p>
 <p>&hellip;&hellip;</p>
@@ -292,32 +292,32 @@
 <p>这样一来的话,是不是可以直接写字节码,而不是 Java 源代码了呢?当然可以,只有你熟悉各种指令(笑).不过简单的修改一下还是没问题的.我将原来的那行改成了:</p>
 <pre><code>1065 3c11 00c8 3d11 0190 3e1b 1c60
 </code></pre><p>只是改了个变量,接下来反射调用一下.代码如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        HotSwapClassLoader loader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HotSwapClassLoader<span style="color:#f92672">();</span>
-        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bytes <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-            InputStream in <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span>
-                FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/home/lee/IdeaProjects/playGround/src/xyz/leezoom/playground/underjvm/classenegine8/Test.class&#34;</span><span style="color:#f92672">);</span>
-            bytes <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>in<span style="color:#f92672">.</span><span style="color:#a6e22e">available</span><span style="color:#f92672">()];</span>
-            in<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>bytes<span style="color:#f92672">);</span>
-            in<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-            <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#75715e">//load class from bytecode
-</span><span style="color:#75715e"></span>        Class clazz <span style="color:#f92672">=</span> loader<span style="color:#f92672">.</span><span style="color:#a6e22e">loadClassFromByte</span><span style="color:#f92672">(</span>bytes<span style="color:#f92672">);</span>
-        <span style="color:#75715e">//invoke main method.
-</span><span style="color:#75715e"></span>        Method method<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-            method <span style="color:#f92672">=</span> clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">getMethod</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;main&#34;</span><span style="color:#f92672">,</span> String<span style="color:#f92672">[].</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
-            method<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">[]{</span><span style="color:#66d9ef">null</span><span style="color:#f92672">});</span>
-        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>NoSuchMethodException <span style="color:#f92672">|</span> IllegalAccessException <span style="color:#f92672">|</span> InvocationTargetException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Failed to invoke method: &#34;</span> <span style="color:#f92672">+</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">getLocalizedMessage</span><span style="color:#f92672">());</span>
-        <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        HotSwapClassLoader loader <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HotSwapClassLoader<span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#458;font-weight:bold">byte</span><span style="color:#000;font-weight:bold">[]</span> bytes <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            InputStream in <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span>
+                FileInputStream<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;/home/lee/IdeaProjects/playGround/src/xyz/leezoom/playground/underjvm/classenegine8/Test.class&#34;</span><span style="color:#000;font-weight:bold">);</span>
+            bytes <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> <span style="color:#458;font-weight:bold">byte</span><span style="color:#000;font-weight:bold">[</span>in<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">available</span><span style="color:#000;font-weight:bold">()];</span>
+            in<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">read</span><span style="color:#000;font-weight:bold">(</span>bytes<span style="color:#000;font-weight:bold">);</span>
+            in<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">close</span><span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>IOException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#998;font-style:italic">//load class from bytecode
+</span><span style="color:#998;font-style:italic"></span>        Class clazz <span style="color:#000;font-weight:bold">=</span> loader<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">loadClassFromByte</span><span style="color:#000;font-weight:bold">(</span>bytes<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#998;font-style:italic">//invoke main method.
+</span><span style="color:#998;font-style:italic"></span>        Method method<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            method <span style="color:#000;font-weight:bold">=</span> clazz<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;main&#34;</span><span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">[].</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">);</span>
+            method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">new</span> String<span style="color:#000;font-weight:bold">[]{</span><span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">});</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>NoSuchMethodException <span style="color:#000;font-weight:bold">|</span> IllegalAccessException <span style="color:#000;font-weight:bold">|</span> InvocationTargetException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+            System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Failed to invoke method: &#34;</span> <span style="color:#000;font-weight:bold">+</span> e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLocalizedMessage</span><span style="color:#000;font-weight:bold">());</span>
+        <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>修改之前:</p>
 <p><img src="/images/javac-before1.png" alt=""></p>
 <p>修改之后:</p>

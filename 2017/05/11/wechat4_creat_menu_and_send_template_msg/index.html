@@ -199,162 +199,162 @@
 <h1 id="菜单的创建">菜单的创建</h1>
 <h2 id="数据结构分析">数据结构分析</h2>
 <p>Button的类型可以分为cilck和view，分别是点击的时间推送和跳转网页．看下面开发文档中的例子</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"> {
-     <span style="color:#f92672">&#34;button&#34;</span>:[
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"> {
+     <span style="color:#000080">&#34;button&#34;</span>:[
      {
-          <span style="color:#f92672">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;click&#34;</span>,
-          <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;今日歌曲&#34;</span>,
-          <span style="color:#f92672">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;V1001_TODAY_MUSIC&#34;</span>
+          <span style="color:#000080">&#34;type&#34;</span>:<span style="color:#d14">&#34;click&#34;</span>,
+          <span style="color:#000080">&#34;name&#34;</span>:<span style="color:#d14">&#34;今日歌曲&#34;</span>,
+          <span style="color:#000080">&#34;key&#34;</span>:<span style="color:#d14">&#34;V1001_TODAY_MUSIC&#34;</span>
       },
       {
-           <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;菜单&#34;</span>,
-           <span style="color:#f92672">&#34;sub_button&#34;</span>:[
+           <span style="color:#000080">&#34;name&#34;</span>:<span style="color:#d14">&#34;菜单&#34;</span>,
+           <span style="color:#000080">&#34;sub_button&#34;</span>:[
            {
-               <span style="color:#f92672">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;view&#34;</span>,
-               <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;搜索&#34;</span>,
-               <span style="color:#f92672">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;http://www.soso.com/&#34;</span>
+               <span style="color:#000080">&#34;type&#34;</span>:<span style="color:#d14">&#34;view&#34;</span>,
+               <span style="color:#000080">&#34;name&#34;</span>:<span style="color:#d14">&#34;搜索&#34;</span>,
+               <span style="color:#000080">&#34;url&#34;</span>:<span style="color:#d14">&#34;http://www.soso.com/&#34;</span>
             },
             {
-               <span style="color:#f92672">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;view&#34;</span>,
-               <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;视频&#34;</span>,
-               <span style="color:#f92672">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;http://v.qq.com/&#34;</span>
+               <span style="color:#000080">&#34;type&#34;</span>:<span style="color:#d14">&#34;view&#34;</span>,
+               <span style="color:#000080">&#34;name&#34;</span>:<span style="color:#d14">&#34;视频&#34;</span>,
+               <span style="color:#000080">&#34;url&#34;</span>:<span style="color:#d14">&#34;http://v.qq.com/&#34;</span>
             },
             {
-               <span style="color:#f92672">&#34;type&#34;</span>:<span style="color:#e6db74">&#34;click&#34;</span>,
-               <span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;赞一下我们&#34;</span>,
-               <span style="color:#f92672">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;V1001_GOOD&#34;</span>
+               <span style="color:#000080">&#34;type&#34;</span>:<span style="color:#d14">&#34;click&#34;</span>,
+               <span style="color:#000080">&#34;name&#34;</span>:<span style="color:#d14">&#34;赞一下我们&#34;</span>,
+               <span style="color:#000080">&#34;key&#34;</span>:<span style="color:#d14">&#34;V1001_GOOD&#34;</span>
             }]
        }]
  }
 </code></pre></div><p>这是一个button数组,里面有两个按钮分别是&quot;今日歌曲&rdquo;，&ldquo;菜单&rdquo;，&ldquo;菜单&quot;按钮又有二级按钮&quot;搜索&rdquo;,&ldquo;视频&rdquo;,&ldquo;赞一下我们&rdquo;.这样分析之后，可知要创建几个实体类来封装json数据包,这里主要以viewbutton为例．</p>
 <h2 id="具体实现">具体实现</h2>
 <p>新建Button类,ClickButton类（继承Button）,VIewButton类（继承Button），和Menu类．各种参数参考开发文档.Button类代码如下．</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Button</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> String type<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">private</span> Button<span style="color:#f92672">[]</span> sub_button<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Button</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">private</span> String type<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> String name<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> Button<span style="color:#000;font-weight:bold">[]</span> sub_button<span style="color:#000;font-weight:bold">;</span>
 
 
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">getName</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
 
-        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+        <span style="color:#000;font-weight:bold">return</span> name<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setName</span><span style="color:#000;font-weight:bold">(</span>String name<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">name</span> <span style="color:#000;font-weight:bold">=</span> name<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
 
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getType</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">getType</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
 
-        <span style="color:#66d9ef">return</span> type<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+        <span style="color:#000;font-weight:bold">return</span> type<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> Button<span style="color:#f92672">[]</span> <span style="color:#a6e22e">getSub_button</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#000;font-weight:bold">public</span> Button<span style="color:#000;font-weight:bold">[]</span> <span style="color:#900;font-weight:bold">getSub_button</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
 
-        <span style="color:#66d9ef">return</span> sub_button<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+        <span style="color:#000;font-weight:bold">return</span> sub_button<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setSub_button</span><span style="color:#f92672">(</span>Button<span style="color:#f92672">[]</span> sub_button<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">sub_button</span> <span style="color:#f92672">=</span> sub_button<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setSub_button</span><span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">[]</span> sub_button<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sub_button</span> <span style="color:#000;font-weight:bold">=</span> sub_button<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setType</span><span style="color:#f92672">(</span>String type<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setType</span><span style="color:#000;font-weight:bold">(</span>String type<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
 
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">type</span> <span style="color:#f92672">=</span> type<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">type</span> <span style="color:#000;font-weight:bold">=</span> type<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>Menu类</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Menu</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> Button<span style="color:#f92672">[]</span> button<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Menu</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">private</span> Button<span style="color:#000;font-weight:bold">[]</span> button<span style="color:#000;font-weight:bold">;</span>
 
-    <span style="color:#66d9ef">public</span> Button<span style="color:#f92672">[]</span> <span style="color:#a6e22e">getButton</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> button<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> Button<span style="color:#000;font-weight:bold">[]</span> <span style="color:#900;font-weight:bold">getButton</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> button<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setButton</span><span style="color:#f92672">(</span>Button<span style="color:#f92672">[]</span> button<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">button</span> <span style="color:#f92672">=</span> button<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setButton</span><span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">[]</span> button<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">button</span> <span style="color:#000;font-weight:bold">=</span> button<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>接下来可以看到创建菜单是通过向微信服务器发送POST请求的．所以在WechatUtil类增加一个doPost()方法，同样也是返回JSONOBject对象．传入两个参数:请求地址和需要post的数据（这里是菜单的json数据).
 <code>public JSONObject doPost(String url,String outStr){}</code>
 接着继续添加代码,</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> Menu <span style="color:#a6e22e">initMenu</span><span style="color:#f92672">(){</span>
-        Menu menu<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> Menu<span style="color:#f92672">();</span>
-        ViewButton viewButton<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ViewButton<span style="color:#f92672">();</span>
-        viewButton<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://http://leezoom.xyz&#34;</span><span style="color:#f92672">);</span>
-        viewButton<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;新建通知&#34;</span><span style="color:#f92672">);</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> Menu <span style="color:#900;font-weight:bold">initMenu</span><span style="color:#000;font-weight:bold">(){</span>
+        Menu menu<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> Menu<span style="color:#000;font-weight:bold">();</span>
+        ViewButton viewButton<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> ViewButton<span style="color:#000;font-weight:bold">();</span>
+        viewButton<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setUrl</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://http://leezoom.xyz&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        viewButton<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;新建通知&#34;</span><span style="color:#000;font-weight:bold">);</span>
 
-        ViewButton viewButton1<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ViewButton<span style="color:#f92672">();</span>
-        viewButton1<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;课表&#34;</span><span style="color:#f92672">);</span>
-        viewButton1<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leezoom.xyz&#34;</span><span style="color:#f92672">);</span>
+        ViewButton viewButton1<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> ViewButton<span style="color:#000;font-weight:bold">();</span>
+        viewButton1<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;课表&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        viewButton1<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setUrl</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://leezoom.xyz&#34;</span><span style="color:#000;font-weight:bold">);</span>
 
-        <span style="color:#75715e">//子菜单
-</span><span style="color:#75715e"></span>        ViewButton viewButton2<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ViewButton<span style="color:#f92672">();</span>
-        viewButton2<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;绑定微信&#34;</span><span style="color:#f92672">);</span>
-        viewButton2<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leezoom.xyz&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#998;font-style:italic">//子菜单
+</span><span style="color:#998;font-style:italic"></span>        ViewButton viewButton2<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> ViewButton<span style="color:#000;font-weight:bold">();</span>
+        viewButton2<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;绑定微信&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        viewButton2<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setUrl</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://leezoom.xyz&#34;</span><span style="color:#000;font-weight:bold">);</span>
 
-        <span style="color:#75715e">//子菜单
-</span><span style="color:#75715e"></span>        ViewButton viewButton3<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ViewButton<span style="color:#f92672">();</span>
-        viewButton3<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;全部通知&#34;</span><span style="color:#f92672">);</span>
-        viewButton3<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leezoom.xyz&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#998;font-style:italic">//子菜单
+</span><span style="color:#998;font-style:italic"></span>        ViewButton viewButton3<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> ViewButton<span style="color:#000;font-weight:bold">();</span>
+        viewButton3<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;全部通知&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        viewButton3<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setUrl</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://leezoom.xyz&#34;</span><span style="color:#000;font-weight:bold">);</span>
 
 
-        Button button<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> Button<span style="color:#f92672">();</span>
-        button<span style="color:#f92672">.</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;我&#34;</span><span style="color:#f92672">);</span>
-        button<span style="color:#f92672">.</span><span style="color:#a6e22e">setSub_button</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Button<span style="color:#f92672">[]{</span>viewButton3<span style="color:#f92672">,</span>viewButton2<span style="color:#f92672">});</span>
+        Button button<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> Button<span style="color:#000;font-weight:bold">();</span>
+        button<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;我&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        button<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setSub_button</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Button<span style="color:#000;font-weight:bold">[]{</span>viewButton3<span style="color:#000;font-weight:bold">,</span>viewButton2<span style="color:#000;font-weight:bold">});</span>
 
-        menu<span style="color:#f92672">.</span><span style="color:#a6e22e">setButton</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Button<span style="color:#f92672">[]{</span>viewButton<span style="color:#f92672">,</span>viewButton1<span style="color:#f92672">,</span>button<span style="color:#f92672">});</span>
-        <span style="color:#66d9ef">return</span> menu<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+        menu<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setButton</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Button<span style="color:#000;font-weight:bold">[]{</span>viewButton<span style="color:#000;font-weight:bold">,</span>viewButton1<span style="color:#000;font-weight:bold">,</span>button<span style="color:#000;font-weight:bold">});</span>
+        <span style="color:#000;font-weight:bold">return</span> menu<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">creatMenu</span><span style="color:#f92672">(</span>String menu<span style="color:#f92672">,</span>String token<span style="color:#f92672">){</span>
-        <span style="color:#66d9ef">int</span> errcode<span style="color:#f92672">=</span>0<span style="color:#f92672">;</span>
-        String url<span style="color:#f92672">=</span>BUtton_URL<span style="color:#f92672">.</span><span style="color:#a6e22e">replace</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ACCESS_TOKEN&#34;</span><span style="color:#f92672">,</span>token<span style="color:#f92672">);</span>
-        JSONObject jsonObject<span style="color:#f92672">=</span>doPost<span style="color:#f92672">(</span>url<span style="color:#f92672">,</span>menu<span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>jsonObject<span style="color:#f92672">!=</span><span style="color:#66d9ef">null</span><span style="color:#f92672">){</span>
-            errcode<span style="color:#f92672">=</span>jsonObject<span style="color:#f92672">.</span><span style="color:#a6e22e">getInt</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;errcode&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#66d9ef">return</span>  errcode<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">creatMenu</span><span style="color:#000;font-weight:bold">(</span>String menu<span style="color:#000;font-weight:bold">,</span>String token<span style="color:#000;font-weight:bold">){</span>
+        <span style="color:#458;font-weight:bold">int</span> errcode<span style="color:#000;font-weight:bold">=</span>0<span style="color:#000;font-weight:bold">;</span>
+        String url<span style="color:#000;font-weight:bold">=</span>BUtton_URL<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;ACCESS_TOKEN&#34;</span><span style="color:#000;font-weight:bold">,</span>token<span style="color:#000;font-weight:bold">);</span>
+        JSONObject jsonObject<span style="color:#000;font-weight:bold">=</span>doPost<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">,</span>menu<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">!=</span><span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">){</span>
+            errcode<span style="color:#000;font-weight:bold">=</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;errcode&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span>  errcode<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>然后也在WechatInitial类中进行测试．</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String menu<span style="color:#f92672">=</span> JSONObject<span style="color:#f92672">.</span><span style="color:#a6e22e">fromObject</span><span style="color:#f92672">(</span>wechatUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">initMenu</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">();</span>
-            <span style="color:#66d9ef">int</span> errcode<span style="color:#f92672">=</span>wechatUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">creatMenu</span><span style="color:#f92672">(</span>menu<span style="color:#f92672">,</span>access_token<span style="color:#f92672">);</span>
-            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>errcode<span style="color:#f92672">==</span>0<span style="color:#f92672">){</span>
-                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;创建菜单成功&#34;</span><span style="color:#f92672">);</span>
-                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>menu<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;创建菜单失败&#34;</span><span style="color:#f92672">+</span>errcode<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String menu<span style="color:#000;font-weight:bold">=</span> JSONObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">fromObject</span><span style="color:#000;font-weight:bold">(</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">initMenu</span><span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">();</span>
+            <span style="color:#458;font-weight:bold">int</span> errcode<span style="color:#000;font-weight:bold">=</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">creatMenu</span><span style="color:#000;font-weight:bold">(</span>menu<span style="color:#000;font-weight:bold">,</span>access_token<span style="color:#000;font-weight:bold">);</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>errcode<span style="color:#000;font-weight:bold">==</span>0<span style="color:#000;font-weight:bold">){</span>
+                System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;创建菜单成功&#34;</span><span style="color:#000;font-weight:bold">);</span>
+                System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>menu<span style="color:#000;font-weight:bold">);</span>
+            <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;创建菜单失败&#34;</span><span style="color:#000;font-weight:bold">+</span>errcode<span style="color:#000;font-weight:bold">);</span>
+            <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>然后然后查看手机微信端，等一下，似乎有延迟，
 <img src="/images/wechat_test1.png" alt=""></p>
 <h1 id="模板消息的发送主动发送消息">模板消息的发送(主动发送消息)</h1>
 <h2 id="数据结果分析">数据结果分析</h2>
 <p>这个做法都差不多，先看看开发文档的例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">      {
-           <span style="color:#f92672">&#34;touser&#34;</span>:<span style="color:#e6db74">&#34;OPENID&#34;</span>,
-           <span style="color:#f92672">&#34;template_id&#34;</span>:<span style="color:#e6db74">&#34;ngqIpbwh8bUfcSsECmogfXcV14J0tQlEpBO27izEYtY&#34;</span>,
-           <span style="color:#f92672">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;http://weixin.qq.com/download&#34;</span>,
-           <span style="color:#f92672">&#34;data&#34;</span>:{
-                   <span style="color:#f92672">&#34;first&#34;</span>: {
-                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;恭喜你购买成功！&#34;</span>,
-                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">      {
+           <span style="color:#000080">&#34;touser&#34;</span>:<span style="color:#d14">&#34;OPENID&#34;</span>,
+           <span style="color:#000080">&#34;template_id&#34;</span>:<span style="color:#d14">&#34;ngqIpbwh8bUfcSsECmogfXcV14J0tQlEpBO27izEYtY&#34;</span>,
+           <span style="color:#000080">&#34;url&#34;</span>:<span style="color:#d14">&#34;http://weixin.qq.com/download&#34;</span>,
+           <span style="color:#000080">&#34;data&#34;</span>:{
+                   <span style="color:#000080">&#34;first&#34;</span>: {
+                       <span style="color:#000080">&#34;value&#34;</span>:<span style="color:#d14">&#34;恭喜你购买成功！&#34;</span>,
+                       <span style="color:#000080">&#34;color&#34;</span>:<span style="color:#d14">&#34;#173177&#34;</span>
                    },
-                   <span style="color:#f92672">&#34;keynote1&#34;</span>:{
-                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;巧克力&#34;</span>,
-                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+                   <span style="color:#000080">&#34;keynote1&#34;</span>:{
+                       <span style="color:#000080">&#34;value&#34;</span>:<span style="color:#d14">&#34;巧克力&#34;</span>,
+                       <span style="color:#000080">&#34;color&#34;</span>:<span style="color:#d14">&#34;#173177&#34;</span>
                    },
-                   <span style="color:#f92672">&#34;keynote2&#34;</span>: {
-                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;39.8元&#34;</span>,
-                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+                   <span style="color:#000080">&#34;keynote2&#34;</span>: {
+                       <span style="color:#000080">&#34;value&#34;</span>:<span style="color:#d14">&#34;39.8元&#34;</span>,
+                       <span style="color:#000080">&#34;color&#34;</span>:<span style="color:#d14">&#34;#173177&#34;</span>
                    },
-                   <span style="color:#f92672">&#34;keynote3&#34;</span>: {
-                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;2014年9月22日&#34;</span>,
-                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+                   <span style="color:#000080">&#34;keynote3&#34;</span>: {
+                       <span style="color:#000080">&#34;value&#34;</span>:<span style="color:#d14">&#34;2014年9月22日&#34;</span>,
+                       <span style="color:#000080">&#34;color&#34;</span>:<span style="color:#d14">&#34;#173177&#34;</span>
                    },
-                   <span style="color:#f92672">&#34;remark&#34;</span>:{
-                       <span style="color:#f92672">&#34;value&#34;</span>:<span style="color:#e6db74">&#34;欢迎再次购买！&#34;</span>,
-                       <span style="color:#f92672">&#34;color&#34;</span>:<span style="color:#e6db74">&#34;#173177&#34;</span>
+                   <span style="color:#000080">&#34;remark&#34;</span>:{
+                       <span style="color:#000080">&#34;value&#34;</span>:<span style="color:#d14">&#34;欢迎再次购买！&#34;</span>,
+                       <span style="color:#000080">&#34;color&#34;</span>:<span style="color:#d14">&#34;#173177&#34;</span>
                    }
            }
        }
@@ -367,46 +367,46 @@
 <h3 id="封装消息">封装消息</h3>
 <p>然后创建与之对应的实体类，我分别创建了ArrivedTime类，Content类，都继承Datas,然后用Data类封装他们，再用ModMsg封装Data类．
 继续在WechatUtil中添加代码，也同样是利用之前写的doPost方法．</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> ModMsg <span style="color:#a6e22e">initModMsg</span><span style="color:#f92672">(</span>String mcontent<span style="color:#f92672">,</span>String openid<span style="color:#f92672">){</span>
-        ModMsg modMsg<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ModMsg<span style="color:#f92672">();</span>
-        CalUtil calUtil<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> CalUtil<span style="color:#f92672">();</span>
-        modMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setTouser</span><span style="color:#f92672">(</span>openid<span style="color:#f92672">);</span><span style="color:#75715e">//用户的openid
-</span><span style="color:#75715e"></span>        modMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setUrl</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://120.24.73.230/Echoo1/sendmsg.jsp&#34;</span><span style="color:#f92672">);</span>
-        Data data<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> Data<span style="color:#f92672">();</span>
-        <span style="color:#75715e">//内容
-</span><span style="color:#75715e"></span>        Content content<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> Content<span style="color:#f92672">();</span>
-        content<span style="color:#f92672">.</span><span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span>mcontent<span style="color:#f92672">);</span>
-        content<span style="color:#f92672">.</span><span style="color:#a6e22e">setColor</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;#173177&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#75715e">//时间
-</span><span style="color:#75715e"></span>        ArrivedTime arrivedTime<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> ArrivedTime<span style="color:#f92672">();</span>
-        arrivedTime<span style="color:#f92672">.</span><span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span>calUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">getCurrentDate</span><span style="color:#f92672">());</span>
-        arrivedTime<span style="color:#f92672">.</span><span style="color:#a6e22e">setColor</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;#000000&#34;</span><span style="color:#f92672">);</span>
-        data<span style="color:#f92672">.</span><span style="color:#a6e22e">setContent</span><span style="color:#f92672">(</span>content<span style="color:#f92672">);</span>
-        data<span style="color:#f92672">.</span><span style="color:#a6e22e">setArrivedTime</span><span style="color:#f92672">(</span>arrivedTime<span style="color:#f92672">);</span>
-        modMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setData</span><span style="color:#f92672">(</span>data<span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">return</span> modMsg<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> ModMsg <span style="color:#900;font-weight:bold">initModMsg</span><span style="color:#000;font-weight:bold">(</span>String mcontent<span style="color:#000;font-weight:bold">,</span>String openid<span style="color:#000;font-weight:bold">){</span>
+        ModMsg modMsg<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> ModMsg<span style="color:#000;font-weight:bold">();</span>
+        CalUtil calUtil<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> CalUtil<span style="color:#000;font-weight:bold">();</span>
+        modMsg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setTouser</span><span style="color:#000;font-weight:bold">(</span>openid<span style="color:#000;font-weight:bold">);</span><span style="color:#998;font-style:italic">//用户的openid
+</span><span style="color:#998;font-style:italic"></span>        modMsg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setUrl</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://120.24.73.230/Echoo1/sendmsg.jsp&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        Data data<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> Data<span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#998;font-style:italic">//内容
+</span><span style="color:#998;font-style:italic"></span>        Content content<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> Content<span style="color:#000;font-weight:bold">();</span>
+        content<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setValue</span><span style="color:#000;font-weight:bold">(</span>mcontent<span style="color:#000;font-weight:bold">);</span>
+        content<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setColor</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;#173177&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#998;font-style:italic">//时间
+</span><span style="color:#998;font-style:italic"></span>        ArrivedTime arrivedTime<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> ArrivedTime<span style="color:#000;font-weight:bold">();</span>
+        arrivedTime<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setValue</span><span style="color:#000;font-weight:bold">(</span>calUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getCurrentDate</span><span style="color:#000;font-weight:bold">());</span>
+        arrivedTime<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setColor</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;#000000&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setContent</span><span style="color:#000;font-weight:bold">(</span>content<span style="color:#000;font-weight:bold">);</span>
+        data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setArrivedTime</span><span style="color:#000;font-weight:bold">(</span>arrivedTime<span style="color:#000;font-weight:bold">);</span>
+        modMsg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setData</span><span style="color:#000;font-weight:bold">(</span>data<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">return</span> modMsg<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">sendModMessage</span><span style="color:#f92672">(</span>String modmsg<span style="color:#f92672">,</span>String token<span style="color:#f92672">){</span>
-        <span style="color:#66d9ef">int</span> errcode<span style="color:#f92672">=</span>0<span style="color:#f92672">;</span>
-        String url<span style="color:#f92672">=</span>SEND_MODMSG<span style="color:#f92672">.</span><span style="color:#a6e22e">replace</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ACCESS_TOKEN&#34;</span><span style="color:#f92672">,</span>token<span style="color:#f92672">);</span>
-        JSONObject jsonObject<span style="color:#f92672">=</span>doPost<span style="color:#f92672">(</span>url<span style="color:#f92672">,</span>modmsg<span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>jsonObject<span style="color:#f92672">!=</span><span style="color:#66d9ef">null</span><span style="color:#f92672">){</span>
-            errcode<span style="color:#f92672">=</span>jsonObject<span style="color:#f92672">.</span><span style="color:#a6e22e">getInt</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;errcode&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#66d9ef">return</span>  errcode<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">sendModMessage</span><span style="color:#000;font-weight:bold">(</span>String modmsg<span style="color:#000;font-weight:bold">,</span>String token<span style="color:#000;font-weight:bold">){</span>
+        <span style="color:#458;font-weight:bold">int</span> errcode<span style="color:#000;font-weight:bold">=</span>0<span style="color:#000;font-weight:bold">;</span>
+        String url<span style="color:#000;font-weight:bold">=</span>SEND_MODMSG<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;ACCESS_TOKEN&#34;</span><span style="color:#000;font-weight:bold">,</span>token<span style="color:#000;font-weight:bold">);</span>
+        JSONObject jsonObject<span style="color:#000;font-weight:bold">=</span>doPost<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">,</span>modmsg<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">!=</span><span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">){</span>
+            errcode<span style="color:#000;font-weight:bold">=</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;errcode&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span>  errcode<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>先在WechatInitial中测试，当然最后是要在网页上发送的．这里暂时不讲这个了，有时间写一写网页的，预计会写在&lt;一个微信公众号的诞生　番外篇&gt;23333.貌似跑题了．</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String content<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;明天下午的三四两节线代课不上了&#34;</span><span style="color:#f92672">;</span>
-            String openid<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;OPENID&#34;</span><span style="color:#f92672">;</span>
-            String modmsg<span style="color:#f92672">=</span>JSONObject<span style="color:#f92672">.</span><span style="color:#a6e22e">fromObject</span><span style="color:#f92672">(</span>wechatUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">initModMsg</span><span style="color:#f92672">(</span>content<span style="color:#f92672">,</span>openid<span style="color:#f92672">)).</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">();</span>
-            <span style="color:#66d9ef">int</span> errcode1<span style="color:#f92672">=(</span>wechatUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">sendModMessage</span><span style="color:#f92672">(</span>modmsg<span style="color:#f92672">,</span>access_token<span style="color:#f92672">));</span>
-            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>errcode1<span style="color:#f92672">==</span>0<span style="color:#f92672">){</span>
-                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;发送模板信息成功&#34;</span><span style="color:#f92672">);</span>
-                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>modmsg<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;发送模板信息失败&#34;</span><span style="color:#f92672">+</span>errcode1<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String content<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;明天下午的三四两节线代课不上了&#34;</span><span style="color:#000;font-weight:bold">;</span>
+            String openid<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;OPENID&#34;</span><span style="color:#000;font-weight:bold">;</span>
+            String modmsg<span style="color:#000;font-weight:bold">=</span>JSONObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">fromObject</span><span style="color:#000;font-weight:bold">(</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">initModMsg</span><span style="color:#000;font-weight:bold">(</span>content<span style="color:#000;font-weight:bold">,</span>openid<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">();</span>
+            <span style="color:#458;font-weight:bold">int</span> errcode1<span style="color:#000;font-weight:bold">=(</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sendModMessage</span><span style="color:#000;font-weight:bold">(</span>modmsg<span style="color:#000;font-weight:bold">,</span>access_token<span style="color:#000;font-weight:bold">));</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>errcode1<span style="color:#000;font-weight:bold">==</span>0<span style="color:#000;font-weight:bold">){</span>
+                System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;发送模板信息成功&#34;</span><span style="color:#000;font-weight:bold">);</span>
+                System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>modmsg<span style="color:#000;font-weight:bold">);</span>
+            <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;发送模板信息失败&#34;</span><span style="color:#000;font-weight:bold">+</span>errcode1<span style="color:#000;font-weight:bold">);</span>
+            <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>把openid改成自己的，然后请查看手机＝＝
 <img src="wechat_test3.png" alt=""></p>
 <h3 id="群发todo">群发(todo)</h3>

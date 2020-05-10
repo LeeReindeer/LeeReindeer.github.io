@@ -199,32 +199,32 @@
 <p><img src="/images/adapter_p.png" alt=""></p>
 <h2 id="动手写一个-adapter---how-to-write-adapter">动手写一个 Adapter - How to write adapter？</h2>
 <p>就用上面那个充电器的例子，我们来写个适配器。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AC</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getVolt220</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> 220<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">DC</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getVolt5</span><span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">VoltObjAdapter</span> <span style="color:#66d9ef">implements</span> DC <span style="color:#f92672">{</span>
-  <span style="color:#75715e">//要被适配的对象
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">private</span> AC ac<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">AC</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getVolt220</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">return</span> 220<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">DC</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getVolt5</span><span style="color:#000;font-weight:bold">();</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">VoltObjAdapter</span> <span style="color:#000;font-weight:bold">implements</span> DC <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#998;font-style:italic">//要被适配的对象
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">private</span> AC ac<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">VoltObjAdapter</span><span style="color:#f92672">(</span>AC ac<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ac</span> <span style="color:#f92672">=</span> ac<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">VoltObjAdapter</span><span style="color:#000;font-weight:bold">(</span>AC ac<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ac</span> <span style="color:#000;font-weight:bold">=</span> ac<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getVolt220</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> ac<span style="color:#f92672">.</span><span style="color:#a6e22e">getVolt220</span><span style="color:#f92672">();</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getVolt220</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">return</span> ac<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getVolt220</span><span style="color:#000;font-weight:bold">();</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#75715e">//适配之后的输出
-</span><span style="color:#75715e"></span>  <span style="color:#a6e22e">@Override</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getVolt5</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> 5<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#998;font-style:italic">//适配之后的输出
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getVolt5</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">return</span> 5<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>以上代码很简单，甚至还有点罗嗦。<code>VoltObjAdapter</code> 实现了 <code>DC</code> 接口（也就是我们想要的接口），并且传入一个 <code>AC</code> 对象（也就是我们要适配的对象），最终在 <code>getVolt5</code> 实现适配。</p>
 <p>适配器模式还可以用在有很多的输入类型，但是输入的类型的是统一的。可以用 Adapter 来统一输出。比如 ListView 的 Adapter 就把用户的数据和各式各样的 View 转化为统一的 <code>ItemView</code>。</p>
 <h2 id="tree2view-中的-adapter---adapter-in-tree2view">Tree2View 中的 Adapter - Adapter in Tree2View</h2>
@@ -232,116 +232,116 @@
 <h3 id="抽象基类">抽象基类</h3>
 <p>为了实现可自定义的 <code>ItemView</code>， 需要一个抽象类，这里就是 <code>TreeAdapter</code>，她继承了 <code>ListView</code> 里的 <code>BaseAdapter</code>。以后用户需要自定义的话，只需要实现这个抽象类的方法即可，主要也就是 <code>getView()</code> 方法。</p>
 <p>那么还是看代码：TreeAdapter.java</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TreeAdapter</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> BaseAdapter <span style="color:#f92672">{</span>
-  <span style="color:#75715e">//root node
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">protected</span> DefaultTreeNode<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> mRoot<span style="color:#f92672">;</span>
-  <span style="color:#66d9ef">protected</span> Context mContext<span style="color:#f92672">;</span>
-  <span style="color:#75715e">//由DefaultTreeNode转化之后的数据
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">//也就是从树结构转化为ArrayList
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">protected</span> ArrayList<span style="color:#f92672">&lt;</span>DefaultTreeNode<span style="color:#f92672">&gt;</span> mNodesList<span style="color:#f92672">;</span>
-  <span style="color:#75715e">//需要传入的xml视图id
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> mResourceId<span style="color:#f92672">;</span>
-  <span style="color:#75715e">//ItemView 的缩进
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">//不同深度的节点的缩进为 (depth + 1) * baseIndent
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> baseIndent <span style="color:#f92672">=</span> 50<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">TreeAdapter</span><span style="color:#000;font-weight:bold">&lt;</span>T<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">extends</span> BaseAdapter <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#998;font-style:italic">//root node
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">protected</span> DefaultTreeNode<span style="color:#000;font-weight:bold">&lt;</span>T<span style="color:#000;font-weight:bold">&gt;</span> mRoot<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">protected</span> Context mContext<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#998;font-style:italic">//由DefaultTreeNode转化之后的数据
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">//也就是从树结构转化为ArrayList
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">protected</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span>DefaultTreeNode<span style="color:#000;font-weight:bold">&gt;</span> mNodesList<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#998;font-style:italic">//需要传入的xml视图id
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">int</span> mResourceId<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#998;font-style:italic">//ItemView 的缩进
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">//不同深度的节点的缩进为 (depth + 1) * baseIndent
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">int</span> baseIndent <span style="color:#000;font-weight:bold">=</span> 50<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#75715e">//省略一些方法。。。
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">TreeAdapter</span><span style="color:#f92672">(</span>Context context<span style="color:#f92672">,</span> DefaultTreeNode<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> root<span style="color:#f92672">,</span>  <span style="color:#66d9ef">int</span> resourceId<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">mRoot</span> <span style="color:#f92672">=</span> root<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">mContext</span> <span style="color:#f92672">=</span> context<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">mResourceId</span> <span style="color:#f92672">=</span> resourceId<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#998;font-style:italic">//省略一些方法。。。
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">TreeAdapter</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> DefaultTreeNode<span style="color:#000;font-weight:bold">&lt;</span>T<span style="color:#000;font-weight:bold">&gt;</span> root<span style="color:#000;font-weight:bold">,</span>  <span style="color:#458;font-weight:bold">int</span> resourceId<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mRoot</span> <span style="color:#000;font-weight:bold">=</span> root<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mContext</span> <span style="color:#000;font-weight:bold">=</span> context<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mResourceId</span> <span style="color:#000;font-weight:bold">=</span> resourceId<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#75715e">//设置缩进，你需要在 getView 里调用。
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setPadding</span><span style="color:#f92672">(</span>View v<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> depth<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> indent<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>v <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> depth <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;illegal params&#34;</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>indent <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      indent <span style="color:#f92672">=</span> baseIndent<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    v<span style="color:#f92672">.</span><span style="color:#a6e22e">setPadding</span><span style="color:#f92672">(</span>indent <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>depth <span style="color:#f92672">+</span> 1<span style="color:#f92672">),</span>
-            v<span style="color:#f92672">.</span><span style="color:#a6e22e">getPaddingTop</span><span style="color:#f92672">(),</span>
-            v<span style="color:#f92672">.</span><span style="color:#a6e22e">getPaddingRight</span><span style="color:#f92672">(),</span>
-            v<span style="color:#f92672">.</span><span style="color:#a6e22e">getPaddingBottom</span><span style="color:#f92672">());</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#998;font-style:italic">//设置缩进，你需要在 getView 里调用。
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setPadding</span><span style="color:#000;font-weight:bold">(</span>View v<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> depth<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> indent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>v <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">||</span> depth <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> IllegalArgumentException<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;illegal params&#34;</span><span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>indent <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      indent <span style="color:#000;font-weight:bold">=</span> baseIndent<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setPadding</span><span style="color:#000;font-weight:bold">(</span>indent <span style="color:#000;font-weight:bold">*</span> <span style="color:#000;font-weight:bold">(</span>depth <span style="color:#000;font-weight:bold">+</span> 1<span style="color:#000;font-weight:bold">),</span>
+            v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPaddingTop</span><span style="color:#000;font-weight:bold">(),</span>
+            v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPaddingRight</span><span style="color:#000;font-weight:bold">(),</span>
+            v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPaddingBottom</span><span style="color:#000;font-weight:bold">());</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#75715e">//Toggle your object&#39;s status
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">toggle</span><span style="color:#f92672">(</span>Object <span style="color:#f92672">...</span> objects<span style="color:#f92672">);</span>
-  <span style="color:#75715e">//省略 getter 和 setter
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+  <span style="color:#998;font-style:italic">//Toggle your object&#39;s status
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">abstract</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">toggle</span><span style="color:#000;font-weight:bold">(</span>Object <span style="color:#000;font-weight:bold">...</span> objects<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#998;font-style:italic">//省略 getter 和 setter
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>一些重要的字段和方法，我都进行了注释。现在有一个不满意的地方是 <code>setPadding()</code> 和 <code>toggle</code> 方法需要在你实现的 Adapter 里的 <code>getView()</code> 中调用。因为在这时是不知道你要设置 padding 和 toggle 的 view的。不过应该有更好的实现orz。</p>
 <h3 id="简单实现">简单实现</h3>
 <p>如上所说，``TreeAdapter<code>是一个抽象类，也也没有实现</code>getView()` 方法，所以又写了一个简单的实现，如果用户不想自定义的化也可以使用这个默认的 Adapter。</p>
 <p>SimpleTreeAdapter.java</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleTreeAdapter</span> <span style="color:#66d9ef">extends</span> TreeAdapter<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">SimpleTreeAdapter</span><span style="color:#f92672">(</span>Context context<span style="color:#f92672">,</span> DefaultTreeNode<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> root<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> resourceId<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> root<span style="color:#f92672">,</span> resourceId<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SimpleTreeAdapter</span> <span style="color:#000;font-weight:bold">extends</span> TreeAdapter<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">SimpleTreeAdapter</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> DefaultTreeNode<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> root<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> resourceId<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> root<span style="color:#000;font-weight:bold">,</span> resourceId<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#a6e22e">@Override</span>
-  <span style="color:#66d9ef">public</span> View <span style="color:#a6e22e">getView</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> position<span style="color:#f92672">,</span> View convertView<span style="color:#f92672">,</span> ViewGroup parent<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">//dfs travel when first time called
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>mNodesList <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      mNodesList <span style="color:#f92672">=</span> TreeUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">getVisibleNodesD</span><span style="color:#f92672">(</span><span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">mRoot</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-    DefaultTreeNode node <span style="color:#f92672">=</span> mNodesList<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>position<span style="color:#f92672">);</span>
-    ViewHolder holder <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">//处理缓存，来提高ListView的性能
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>convertView <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      convertView <span style="color:#f92672">=</span> LayoutInflater<span style="color:#f92672">.</span><span style="color:#a6e22e">from</span><span style="color:#f92672">(</span>mContext<span style="color:#f92672">).</span><span style="color:#a6e22e">inflate</span><span style="color:#f92672">(</span>mResourceId<span style="color:#f92672">,</span> parent<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
-      holder <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ViewHolder<span style="color:#f92672">();</span>
-      holder<span style="color:#f92672">.</span><span style="color:#a6e22e">tv</span> <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>TextView<span style="color:#f92672">)</span> convertView<span style="color:#f92672">.</span><span style="color:#a6e22e">findViewById</span><span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">id</span><span style="color:#f92672">.</span><span style="color:#a6e22e">default_tree_item</span><span style="color:#f92672">);</span>
-      convertView<span style="color:#f92672">.</span><span style="color:#a6e22e">setTag</span><span style="color:#f92672">(</span>holder<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-      holder <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>ViewHolder<span style="color:#f92672">)</span> convertView<span style="color:#f92672">.</span><span style="color:#a6e22e">getTag</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-    holder<span style="color:#f92672">.</span><span style="color:#a6e22e">tv</span><span style="color:#f92672">.</span><span style="color:#a6e22e">setText</span><span style="color:#f92672">(</span>node<span style="color:#f92672">.</span><span style="color:#a6e22e">getElement</span><span style="color:#f92672">().</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span>
-    <span style="color:#66d9ef">int</span> depth <span style="color:#f92672">=</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">getDepth</span><span style="color:#f92672">();</span>
-    <span style="color:#75715e">//set view indent
-</span><span style="color:#75715e"></span>    setPadding<span style="color:#f92672">(</span>holder<span style="color:#f92672">.</span><span style="color:#a6e22e">tv</span><span style="color:#f92672">,</span> depth<span style="color:#f92672">,</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">);</span>
-    <span style="color:#75715e">//toggle
-</span><span style="color:#75715e"></span>    toggle<span style="color:#f92672">(</span>holder<span style="color:#f92672">,</span> node<span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">return</span> convertView<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+  <span style="color:#000;font-weight:bold">public</span> View <span style="color:#900;font-weight:bold">getView</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> position<span style="color:#000;font-weight:bold">,</span> View convertView<span style="color:#000;font-weight:bold">,</span> ViewGroup parent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">//dfs travel when first time called
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mNodesList <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      mNodesList <span style="color:#000;font-weight:bold">=</span> TreeUtils<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getVisibleNodesD</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mRoot</span><span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    DefaultTreeNode node <span style="color:#000;font-weight:bold">=</span> mNodesList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>position<span style="color:#000;font-weight:bold">);</span>
+    ViewHolder holder <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#998;font-style:italic">//处理缓存，来提高ListView的性能
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>convertView <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      convertView <span style="color:#000;font-weight:bold">=</span> LayoutInflater<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">from</span><span style="color:#000;font-weight:bold">(</span>mContext<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">inflate</span><span style="color:#000;font-weight:bold">(</span>mResourceId<span style="color:#000;font-weight:bold">,</span> parent<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">);</span>
+      holder <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ViewHolder<span style="color:#000;font-weight:bold">();</span>
+      holder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">tv</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>TextView<span style="color:#000;font-weight:bold">)</span> convertView<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">findViewById</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">default_tree_item</span><span style="color:#000;font-weight:bold">);</span>
+      convertView<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setTag</span><span style="color:#000;font-weight:bold">(</span>holder<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+      holder <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ViewHolder<span style="color:#000;font-weight:bold">)</span> convertView<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getTag</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    holder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">tv</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setText</span><span style="color:#000;font-weight:bold">(</span>node<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getElement</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">());</span>
+    <span style="color:#458;font-weight:bold">int</span> depth <span style="color:#000;font-weight:bold">=</span> node<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDepth</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#998;font-style:italic">//set view indent
+</span><span style="color:#998;font-style:italic"></span>    setPadding<span style="color:#000;font-weight:bold">(</span>holder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">tv</span><span style="color:#000;font-weight:bold">,</span> depth<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#998;font-style:italic">//toggle
+</span><span style="color:#998;font-style:italic"></span>    toggle<span style="color:#000;font-weight:bold">(</span>holder<span style="color:#000;font-weight:bold">,</span> node<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">return</span> convertView<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#a6e22e">@Override</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">toggle</span><span style="color:#f92672">(</span>Object<span style="color:#f92672">...</span> objects<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-      DefaultTreeNode node <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>DefaultTreeNode<span style="color:#f92672">)</span> objects<span style="color:#f92672">[</span>0<span style="color:#f92672">];</span>
-      ViewHolder holder <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>ViewHolder<span style="color:#f92672">)</span> objects<span style="color:#f92672">[</span>1<span style="color:#f92672">];</span>
-      <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>node<span style="color:#f92672">.</span><span style="color:#a6e22e">isHasChildren</span><span style="color:#f92672">()</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>node<span style="color:#f92672">.</span><span style="color:#a6e22e">isExpanded</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">//set your icon
-</span><span style="color:#75715e"></span>      <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>node<span style="color:#f92672">.</span><span style="color:#a6e22e">isHasChildren</span><span style="color:#f92672">()</span> <span style="color:#f92672">&amp;&amp;</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">isExpanded</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">//set your icon
-</span><span style="color:#75715e"></span>      <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>ClassCastException e <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">toggle</span><span style="color:#000;font-weight:bold">(</span>Object<span style="color:#000;font-weight:bold">...</span> objects<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+      DefaultTreeNode node <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>DefaultTreeNode<span style="color:#000;font-weight:bold">)</span> objects<span style="color:#000;font-weight:bold">[</span>0<span style="color:#000;font-weight:bold">];</span>
+      ViewHolder holder <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ViewHolder<span style="color:#000;font-weight:bold">)</span> objects<span style="color:#000;font-weight:bold">[</span>1<span style="color:#000;font-weight:bold">];</span>
+      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>node<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isHasChildren</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#000;font-weight:bold">!</span>node<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isExpanded</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">//set your icon
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>node<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isHasChildren</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> node<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isExpanded</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">//set your icon
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>ClassCastException e <span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ViewHolder</span> <span style="color:#f92672">{</span>
-    TextView tv<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ViewHolder</span> <span style="color:#000;font-weight:bold">{</span>
+    TextView tv<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>SimpleTreeAdapter 显示的就是一个TextView，所以 <code>DefaultTreeNode</code> 也只需要一个 <code>String</code>，只需在继承的时候这样写 <code>extends TreeAdapter&lt;String&gt;</code>，那么你的 <code>DefaultTreeNode</code> 也必须是 <code>DefaultTreeNode&lt;String&gt;</code> 不过这个大概无关紧要，java 的泛型也只是编译器帮你进行了类型转换的语法糖。</p>
 <p>那么接下来看一下最最核心的 <code>getView()</code> 方法。这个方法申明在 <code>Adapter</code> 接口里，然后大家一层一层继承下来，但都不实现，最终到了 <code>SimpleTreeAdapter</code>。各个参数分别是 position， convertView， parent，分别是 <code>ItemView</code> 在 ViewGroup 里的位置，<code>convertView</code> 就是需要返回的 <code>ItemView</code>, <code>parent</code> 就是 ViewGroup，也就是 TreeView 本身。这里为每个 <code>ItemView</code> 设置了缩进，这也是最核心的部分，树状的树图，就是靠缩进来实现的，那么 <code>TreeView</code> 其实就是一个根据不同节点的深度为 <code>ItemView</code> 设置了不同缩进的 <code>ListView</code>。这里就是一个简单的 <code>TextView</code> 显示每个节点的 String，再在 <code>TreeView</code> 里把 <code>SimpleTreeAdapter</code> 作为默认的 Adapter。</p>
 <p>TreeView，java</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init</span><span style="color:#f92672">(</span>Context context<span style="color:#f92672">,</span> DefaultTreeNode root<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">mContext</span> <span style="color:#f92672">=</span> context<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>root <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">root</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">root</span> <span style="color:#f92672">!=</span> root<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">root</span> <span style="color:#f92672">=</span> root<span style="color:#f92672">;</span>
-      <span style="color:#75715e">//expanded root node to show it&#39;s children
-</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">root</span><span style="color:#f92672">.</span><span style="color:#a6e22e">setExpanded</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
-      adapter <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SimpleTreeAdapter<span style="color:#f92672">(</span>mContext<span style="color:#f92672">,</span> root<span style="color:#f92672">,</span> R<span style="color:#f92672">.</span><span style="color:#a6e22e">layout</span><span style="color:#f92672">.</span><span style="color:#a6e22e">layout_tree_item</span><span style="color:#f92672">);</span>
-      <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">setAdapter</span><span style="color:#f92672">(</span>adapter<span style="color:#f92672">);</span>
-      adapter<span style="color:#f92672">.</span><span style="color:#a6e22e">notifyDataSetChanged</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">setOnItemClickListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> OnTreeItemClickListener<span style="color:#f92672">());</span>
-  <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">init</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> DefaultTreeNode root<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mContext</span> <span style="color:#000;font-weight:bold">=</span> context<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>root <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">root</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">root</span> <span style="color:#000;font-weight:bold">!=</span> root<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">root</span> <span style="color:#000;font-weight:bold">=</span> root<span style="color:#000;font-weight:bold">;</span>
+      <span style="color:#998;font-style:italic">//expanded root node to show it&#39;s children
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">root</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setExpanded</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">);</span>
+      adapter <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> SimpleTreeAdapter<span style="color:#000;font-weight:bold">(</span>mContext<span style="color:#000;font-weight:bold">,</span> root<span style="color:#000;font-weight:bold">,</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout_tree_item</span><span style="color:#000;font-weight:bold">);</span>
+      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAdapter</span><span style="color:#000;font-weight:bold">(</span>adapter<span style="color:#000;font-weight:bold">);</span>
+      adapter<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">notifyDataSetChanged</span><span style="color:#000;font-weight:bold">();</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnItemClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> OnTreeItemClickListener<span style="color:#000;font-weight:bold">());</span>
+  <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h2 id="总结">总结</h2>
 <p><code>SimpleTreeAdapter</code> 为 <code>TreeView</code> 实现了一个默认的适配器，只是显示字符。当你需要自定义的时候，你也可以自己实现 Adapter，只要继承 <code>TreeAdapter</code>。得益于 ListView 自带的 Adpater 模式，TreeView 实现了高度的自定义（大雾）。</p>
 <h2 id="下集预告">下集预告？</h2>

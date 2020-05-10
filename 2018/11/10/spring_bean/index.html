@@ -232,20 +232,20 @@
 <p><strong>对于使用 XML 配置 configuration metadata 时，实例化 bean 有三种方式：构造方法，静态工厂模式，工厂模式。</strong></p>
 <p>用一个例子来说明这三种情况：</p>
 <p>首先创建 Bar 和 Foo 这两个POJO，并且 Foo 依赖于Bar，使用setter方法进行依赖注入。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">private</span> Bar dependency1<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Foo</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">private</span> Bar dependency1<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setDependency1</span><span style="color:#f92672">(</span>Bar dependency1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">dependency1</span> <span style="color:#f92672">=</span> dependency1<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Bar</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">private</span> String foobar<span style="color:#f92672">;</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setDependency1</span><span style="color:#000;font-weight:bold">(</span>Bar dependency1<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dependency1</span> <span style="color:#000;font-weight:bold">=</span> dependency1<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Bar</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">private</span> String foobar<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Bar</span><span style="color:#f92672">(</span>String foobar<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">foobar</span> <span style="color:#f92672">=</span> foobar<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Bar</span><span style="color:#000;font-weight:bold">(</span>String foobar<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">foobar</span> <span style="color:#000;font-weight:bold">=</span> foobar<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><ul>
 <li>
 <p>构造方法是最普通的一种，和其他bean的配置一样。</p>
@@ -258,82 +258,82 @@
 </li>
 </ul>
 <p>注意三种不能同时使用，要使用其中一种时，需要注释掉下面代码的另外两种即可。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;foo&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;leer.moe.springdemo.bean.Foo&#34;</span><span style="color:#f92672">&gt;</span>
-<span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;dependency1&#34;</span> <span style="color:#a6e22e">ref=</span><span style="color:#e6db74">&#34;bar&#34;</span><span style="color:#f92672">/&gt;</span>
-<span style="color:#f92672">&lt;/bean&gt;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;bean</span> <span style="color:#008080">id=</span><span style="color:#d14">&#34;foo&#34;</span> <span style="color:#008080">class=</span><span style="color:#d14">&#34;leer.moe.springdemo.bean.Foo&#34;</span><span style="color:#000080">&gt;</span>
+<span style="color:#000080">&lt;property</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;dependency1&#34;</span> <span style="color:#008080">ref=</span><span style="color:#d14">&#34;bar&#34;</span><span style="color:#000080">/&gt;</span>
+<span style="color:#000080">&lt;/bean&gt;</span>
 
-<span style="color:#75715e">&lt;!--静态工厂模式--&gt;</span>
-<span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;bar&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;leer.moe.springdemo.bean.StaticBarFactory&#34;</span> <span style="color:#a6e22e">factory-method=</span><span style="color:#e6db74">&#34;getInstance&#34;</span><span style="color:#f92672">&gt;</span>
-<span style="color:#f92672">&lt;constructor-arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;static factory&#34;</span><span style="color:#f92672">/&gt;</span>
-<span style="color:#f92672">&lt;/bean&gt;</span>
+<span style="color:#998;font-style:italic">&lt;!--静态工厂模式--&gt;</span>
+<span style="color:#000080">&lt;bean</span> <span style="color:#008080">id=</span><span style="color:#d14">&#34;bar&#34;</span> <span style="color:#008080">class=</span><span style="color:#d14">&#34;leer.moe.springdemo.bean.StaticBarFactory&#34;</span> <span style="color:#008080">factory-method=</span><span style="color:#d14">&#34;getInstance&#34;</span><span style="color:#000080">&gt;</span>
+<span style="color:#000080">&lt;constructor-arg</span> <span style="color:#008080">value=</span><span style="color:#d14">&#34;static factory&#34;</span><span style="color:#000080">/&gt;</span>
+<span style="color:#000080">&lt;/bean&gt;</span>
 
-<span style="color:#75715e">&lt;!--工厂方法模式--&gt;</span>
-<span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;barFactory&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;leer.moe.springdemo.bean.NoneStaticBarFactory&#34;</span><span style="color:#f92672">/&gt;</span>
+<span style="color:#998;font-style:italic">&lt;!--工厂方法模式--&gt;</span>
+<span style="color:#000080">&lt;bean</span> <span style="color:#008080">id=</span><span style="color:#d14">&#34;barFactory&#34;</span> <span style="color:#008080">class=</span><span style="color:#d14">&#34;leer.moe.springdemo.bean.NoneStaticBarFactory&#34;</span><span style="color:#000080">/&gt;</span>
 
-<span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;bar&#34;</span> <span style="color:#a6e22e">factory-bean=</span><span style="color:#e6db74">&#34;barFactory&#34;</span> <span style="color:#a6e22e">factory-method=</span><span style="color:#e6db74">&#34;getInstance&#34;</span><span style="color:#f92672">/&gt;</span>
-<span style="color:#75715e">&lt;!--构造方法--&gt;</span>
-<span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;bar&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;leer.moe.springdemo.bean.Bar&#34;</span><span style="color:#f92672">&gt;</span>
-<span style="color:#f92672">&lt;constructor-arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;constructor&#34;</span><span style="color:#f92672">/&gt;</span>
-<span style="color:#f92672">&lt;/bean&gt;</span>
+<span style="color:#000080">&lt;bean</span> <span style="color:#008080">id=</span><span style="color:#d14">&#34;bar&#34;</span> <span style="color:#008080">factory-bean=</span><span style="color:#d14">&#34;barFactory&#34;</span> <span style="color:#008080">factory-method=</span><span style="color:#d14">&#34;getInstance&#34;</span><span style="color:#000080">/&gt;</span>
+<span style="color:#998;font-style:italic">&lt;!--构造方法--&gt;</span>
+<span style="color:#000080">&lt;bean</span> <span style="color:#008080">id=</span><span style="color:#d14">&#34;bar&#34;</span> <span style="color:#008080">class=</span><span style="color:#d14">&#34;leer.moe.springdemo.bean.Bar&#34;</span><span style="color:#000080">&gt;</span>
+<span style="color:#000080">&lt;constructor-arg</span> <span style="color:#008080">value=</span><span style="color:#d14">&#34;constructor&#34;</span><span style="color:#000080">/&gt;</span>
+<span style="color:#000080">&lt;/bean&gt;</span>
 </code></pre></div><p>静态工厂的 Java 代码：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StaticBarFactory</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Bar <span style="color:#a6e22e">getInstance</span><span style="color:#f92672">(</span>String foobar<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span>  <span style="color:#66d9ef">new</span> Bar<span style="color:#f92672">(</span>foobar<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">StaticBarFactory</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> Bar <span style="color:#900;font-weight:bold">getInstance</span><span style="color:#000;font-weight:bold">(</span>String foobar<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">return</span>  <span style="color:#000;font-weight:bold">new</span> Bar<span style="color:#000;font-weight:bold">(</span>foobar<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>XML 中 class 属性为<code>leer.moe.springdemo.bean.StaticBarFactory</code>，factory-method 为 <code>getInstance</code>。只要这样设置就可以获得Bar的实例，而不是静态工厂的实例。</p>
 <p>工厂方法的 Java 代码：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NoneStaticBarFactory</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">public</span> Bar <span style="color:#a6e22e">getInstance</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Bar<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;none static factory&#34;</span><span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">NoneStaticBarFactory</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">public</span> Bar <span style="color:#900;font-weight:bold">getInstance</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> Bar<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;none static factory&#34;</span><span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>工厂方法不是静态的，但是对于Spring来说，他也只是一个普通的Bean可以进行实例化和依赖注入。在 XML 配置中可以看到，我们先配置了<code>barFactory</code>这个工厂的Bean。之后，在<code>bar</code>中，使用 <code>factory-bean=&quot;barFactory&quot;</code>，使用工厂实例来构建bar实例。</p>
 <h2 id="依赖注入httpsdocsspringiospringdocscurrentspring-framework-referencecorehtmlbeans-dependencies"><a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-dependencies">依赖注入</a></h2>
 <p>在完成 bean 的实例化后（也就是配置好 bean 的 configuration metadata），我们就可以把 bean 注入到需要使用的地方。依赖注入主要有两种：构造方法注入、setter方法注入和注解方式注入。可以同时使用的。</p>
 <p>使用依赖注入的优点？解耦。文档里是这样的说的：“Code is cleaner with the DI principle, and decoupling is more effective when objects are provided with their dependencies.”当然这些都是教条式的，看了一遍不会懂，即使看了很多篇也不会懂。需要不断的练习和在项目中体会。</p>
 <p>XML Configuration Metadata ：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Bean3</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">private</span> String dependency1<span style="color:#f92672">;</span>
-  <span style="color:#66d9ef">private</span> String dependency2<span style="color:#f92672">;</span>
-  <span style="color:#66d9ef">private</span> Bean2 dependency3<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Bean3</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">private</span> String dependency1<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">private</span> String dependency2<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">private</span> Bean2 dependency3<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Bean3</span><span style="color:#f92672">(</span>String dependency1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">dependency1</span> <span style="color:#f92672">=</span> dependency1<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Bean3</span><span style="color:#000;font-weight:bold">(</span>String dependency1<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dependency1</span> <span style="color:#000;font-weight:bold">=</span> dependency1<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setDependency2</span><span style="color:#f92672">(</span>String dependency2<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">dependency2</span> <span style="color:#f92672">=</span> dependency2<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setDependency2</span><span style="color:#000;font-weight:bold">(</span>String dependency2<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dependency2</span> <span style="color:#000;font-weight:bold">=</span> dependency2<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setDependency3</span><span style="color:#f92672">(</span>Bean2 dependency3<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">dependency3</span> <span style="color:#f92672">=</span> dependency3<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;bean2&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;moe.leer.springdemo.bean.Bean2&#34;</span> <span style="color:#a6e22e">scope=</span><span style="color:#e6db74">&#34;prototype&#34;</span><span style="color:#f92672">&gt;</span>
-        <span style="color:#f92672">&lt;constructor-arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;111&#34;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">/&gt;</span>
-        <span style="color:#f92672">&lt;constructor-arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;222&#34;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#34;0&#34;</span><span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;/bean&gt;</span>
-	<span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;bean3&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;moe.leer.springdemo.bean.Bean3&#34;</span> <span style="color:#a6e22e">scope=</span><span style="color:#e6db74">&#34;singleton&#34;</span><span style="color:#f92672">&gt;</span>
-        <span style="color:#f92672">&lt;constructor-arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;constructor&#34;</span><span style="color:#f92672">/&gt;</span>
-        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;dependency2&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;setter&#34;</span><span style="color:#f92672">/&gt;</span>
-        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;dependency3&#34;</span> <span style="color:#a6e22e">ref=</span><span style="color:#e6db74">&#34;bean2&#34;</span><span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;/bean&gt;</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setDependency3</span><span style="color:#000;font-weight:bold">(</span>Bean2 dependency3<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dependency3</span> <span style="color:#000;font-weight:bold">=</span> dependency3<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#000080">&lt;bean</span> <span style="color:#008080">id=</span><span style="color:#d14">&#34;bean2&#34;</span> <span style="color:#008080">class=</span><span style="color:#d14">&#34;moe.leer.springdemo.bean.Bean2&#34;</span> <span style="color:#008080">scope=</span><span style="color:#d14">&#34;prototype&#34;</span><span style="color:#000080">&gt;</span>
+        <span style="color:#000080">&lt;constructor-arg</span> <span style="color:#008080">value=</span><span style="color:#d14">&#34;111&#34;</span> <span style="color:#008080">index=</span><span style="color:#d14">&#34;1&#34;</span><span style="color:#000080">/&gt;</span>
+        <span style="color:#000080">&lt;constructor-arg</span> <span style="color:#008080">value=</span><span style="color:#d14">&#34;222&#34;</span> <span style="color:#008080">index=</span><span style="color:#d14">&#34;0&#34;</span><span style="color:#000080">/&gt;</span>
+    <span style="color:#000080">&lt;/bean&gt;</span>
+	<span style="color:#000080">&lt;bean</span> <span style="color:#008080">id=</span><span style="color:#d14">&#34;bean3&#34;</span> <span style="color:#008080">class=</span><span style="color:#d14">&#34;moe.leer.springdemo.bean.Bean3&#34;</span> <span style="color:#008080">scope=</span><span style="color:#d14">&#34;singleton&#34;</span><span style="color:#000080">&gt;</span>
+        <span style="color:#000080">&lt;constructor-arg</span> <span style="color:#008080">value=</span><span style="color:#d14">&#34;constructor&#34;</span><span style="color:#000080">/&gt;</span>
+        <span style="color:#000080">&lt;property</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;dependency2&#34;</span> <span style="color:#008080">value=</span><span style="color:#d14">&#34;setter&#34;</span><span style="color:#000080">/&gt;</span>
+        <span style="color:#000080">&lt;property</span> <span style="color:#008080">name=</span><span style="color:#d14">&#34;dependency3&#34;</span> <span style="color:#008080">ref=</span><span style="color:#d14">&#34;bean2&#34;</span><span style="color:#000080">/&gt;</span>
+    <span style="color:#000080">&lt;/bean&gt;</span>
 </code></pre></div><p>注解 <code>@AutoWired</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Bean3</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">private</span> Bean1 dependency1<span style="color:#f92672">;</span>
-  <span style="color:#66d9ef">private</span> Bean2 dependency2<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Bean3</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">private</span> Bean1 dependency1<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">private</span> Bean2 dependency2<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#a6e22e">@Autowired</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Bean3</span><span style="color:#f92672">(</span>Bean1 dependency1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">dependency1</span> <span style="color:#f92672">=</span> dependency1<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Autowired</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Bean3</span><span style="color:#000;font-weight:bold">(</span>Bean1 dependency1<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dependency1</span> <span style="color:#000;font-weight:bold">=</span> dependency1<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#a6e22e">@Autowired</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setDependency2</span><span style="color:#f92672">(</span>Bean2 dependency2<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">dependency2</span> <span style="color:#f92672">=</span> dependency2<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Autowired</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setDependency2</span><span style="color:#000;font-weight:bold">(</span>Bean2 dependency2<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dependency2</span> <span style="color:#000;font-weight:bold">=</span> dependency2<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 
 </code></pre></div>
         </div>

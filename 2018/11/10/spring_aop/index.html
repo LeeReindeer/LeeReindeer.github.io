@@ -213,114 +213,114 @@
 <p>复习一下代理模式，代理模式是常见的一种设计模式。最近在Android开发中也有遇到。我们来看UML图：</p>
 <p><img src="/images/Proxy_pattern.png" alt="pattern"></p>
 <p>从图中，我们看到不直接使用SubjectImpl而是通过SubjectProxy，这样SubjectProxy可以在其方法内对SubjectImpl进行扩展。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SubjectProxy</span> <span style="color:#66d9ef">implements</span> ISubject <span style="color:#f92672">{</span>
-<span style="color:#66d9ef">private</span> ISubject subject<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SubjectProxy</span> <span style="color:#000;font-weight:bold">implements</span> ISubject <span style="color:#000;font-weight:bold">{</span>
+<span style="color:#000;font-weight:bold">private</span> ISubject subject<span style="color:#000;font-weight:bold">;</span>
 
-<span style="color:#a6e22e">@Override</span>
-<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">request</span><span style="color:#f92672">(</span>String header<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-	<span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>header<span style="color:#f92672">.</span><span style="color:#a6e22e">startsWith</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;https&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-	<span style="color:#f92672">}</span>
-	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Proxy: &#34;</span> <span style="color:#f92672">+</span> subject<span style="color:#f92672">.</span><span style="color:#a6e22e">request</span><span style="color:#f92672">(</span>header<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
+<span style="color:#3c5d5d;font-weight:bold">@Override</span>
+<span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">request</span><span style="color:#000;font-weight:bold">(</span>String header<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(!</span>header<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">startsWith</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;https&#34;</span><span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">return</span> <span style="color:#d14">&#34;Proxy: &#34;</span> <span style="color:#000;font-weight:bold">+</span> subject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span>header<span style="color:#000;font-weight:bold">);</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setSubject</span><span style="color:#f92672">(</span>ISubject subject<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">subject</span> <span style="color:#f92672">=</span> subject<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Client</span> <span style="color:#f92672">{</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setSubject</span><span style="color:#000;font-weight:bold">(</span>ISubject subject<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subject</span> <span style="color:#000;font-weight:bold">=</span> subject<span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Client</span> <span style="color:#000;font-weight:bold">{</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    SubjectProxy subjectProxy <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SubjectProxy<span style="color:#f92672">();</span>
-    subjectProxy<span style="color:#f92672">.</span><span style="color:#a6e22e">setSubject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> SubjectImpl<span style="color:#f92672">());</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>subjectProxy<span style="color:#f92672">.</span><span style="color:#a6e22e">request</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;https://leer.moe&#34;</span><span style="color:#f92672">));</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>subjectProxy<span style="color:#f92672">.</span><span style="color:#a6e22e">request</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leer.moe&#34;</span><span style="color:#f92672">));</span>
-<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    SubjectProxy subjectProxy <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> SubjectProxy<span style="color:#000;font-weight:bold">();</span>
+    subjectProxy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setSubject</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> SubjectImpl<span style="color:#000;font-weight:bold">());</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>subjectProxy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;https://leer.moe&#34;</span><span style="color:#000;font-weight:bold">));</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>subjectProxy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://leer.moe&#34;</span><span style="color:#000;font-weight:bold">));</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>这里我们的JoinPoint是request（）方法，如果其他的接口也有这个方法，它也是我们的JoinPoint，就需要为每个接口编写代理类。为了解决这个问题，Java在JDK1.3之后提供了动态代理。</p>
 <h3 id="动态代理">动态代理</h3>
 <p>动态代理的实现主要由一个类和一个接口实现：java.lang.reflect.Proxy 和 java.lang.reflect.InvocationHandler。</p>
 <p>上面的代理模式可用动态代理实现，编写我们自己的InvocationHandler：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RequestInvocationHandler</span> <span style="color:#66d9ef">implements</span> InvocationHandler <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">private</span> Object target<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">RequestInvocationHandler</span> <span style="color:#000;font-weight:bold">implements</span> InvocationHandler <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">private</span> Object target<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">RequestInvocationHandler</span><span style="color:#f92672">(</span>Object target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">target</span> <span style="color:#f92672">=</span> target<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">RequestInvocationHandler</span><span style="color:#000;font-weight:bold">(</span>Object target<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">target</span> <span style="color:#000;font-weight:bold">=</span> target<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#a6e22e">@Override</span>
-  <span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span>Object proxy1<span style="color:#f92672">,</span> Method method<span style="color:#f92672">,</span> Object<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Throwable <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>method<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">().</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;request&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!(</span>args<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span> <span style="color:#66d9ef">instanceof</span>  String<span style="color:#f92672">)</span> <span style="color:#f92672">||</span> <span style="color:#f92672">!((</span>String<span style="color:#f92672">)</span>args<span style="color:#f92672">[</span>0<span style="color:#f92672">]).</span><span style="color:#a6e22e">startsWith</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;https&#34;</span><span style="color:#f92672">))</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-      <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Proxy: &#34;</span> <span style="color:#f92672">+</span> method<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span>target<span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+  <span style="color:#000;font-weight:bold">public</span> Object <span style="color:#900;font-weight:bold">invoke</span><span style="color:#000;font-weight:bold">(</span>Object proxy1<span style="color:#000;font-weight:bold">,</span> Method method<span style="color:#000;font-weight:bold">,</span> Object<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Throwable <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;request&#34;</span><span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(!(</span>args<span style="color:#000;font-weight:bold">[</span>0<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">instanceof</span>  String<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">!((</span>String<span style="color:#000;font-weight:bold">)</span>args<span style="color:#000;font-weight:bold">[</span>0<span style="color:#000;font-weight:bold">]).</span><span style="color:#008080">startsWith</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;https&#34;</span><span style="color:#000;font-weight:bold">))</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+      <span style="color:#000;font-weight:bold">return</span> <span style="color:#d14">&#34;Proxy: &#34;</span> <span style="color:#000;font-weight:bold">+</span> method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>target<span style="color:#000;font-weight:bold">,</span> args<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>对不同目标对象，但是都拥有request方法JoinPoint的对象（比如下面代码中的<code>SubjectImpl</code> 和 <code>RequsetableImpl</code>），我们不再需要为他们分别创建代理类了，动态代理机制会为它们动态的创建代理实例，当调用request方法时，InvocationHandler就会对相应的方法进行拦截和处理。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">dynamic</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    ISubject subject <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>ISubject<span style="color:#f92672">)</span>Proxy<span style="color:#f92672">.</span><span style="color:#a6e22e">newProxyInstance</span><span style="color:#f92672">(</span>
-        Client<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClassLoader</span><span style="color:#f92672">(),</span>
-        <span style="color:#66d9ef">new</span> Class<span style="color:#f92672">[]{</span>ISubject<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">},</span>
-        <span style="color:#66d9ef">new</span> RequestInvocationHandler<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> SubjectImpl<span style="color:#f92672">())</span>
-    <span style="color:#f92672">);</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>subject<span style="color:#f92672">.</span><span style="color:#a6e22e">request</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;https://leer.moe&#34;</span><span style="color:#f92672">));</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>subject<span style="color:#f92672">.</span><span style="color:#a6e22e">request</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leezoom.xyz&#34;</span><span style="color:#f92672">));</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">dynamic</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    ISubject subject <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ISubject<span style="color:#000;font-weight:bold">)</span>Proxy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newProxyInstance</span><span style="color:#000;font-weight:bold">(</span>
+        Client<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClassLoader</span><span style="color:#000;font-weight:bold">(),</span>
+        <span style="color:#000;font-weight:bold">new</span> Class<span style="color:#000;font-weight:bold">[]{</span>ISubject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">},</span>
+        <span style="color:#000;font-weight:bold">new</span> RequestInvocationHandler<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> SubjectImpl<span style="color:#000;font-weight:bold">())</span>
+    <span style="color:#000;font-weight:bold">);</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>subject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;https://leer.moe&#34;</span><span style="color:#000;font-weight:bold">));</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>subject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://leezoom.xyz&#34;</span><span style="color:#000;font-weight:bold">));</span>
 
-    Requestable requestable <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Requestable<span style="color:#f92672">)</span>Proxy<span style="color:#f92672">.</span><span style="color:#a6e22e">newProxyInstance</span><span style="color:#f92672">(</span>
-        Client<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClassLoader</span><span style="color:#f92672">(),</span>
-        <span style="color:#66d9ef">new</span> Class<span style="color:#f92672">[]{</span>Requestable<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">},</span>
-        <span style="color:#66d9ef">new</span> RequestInvocationHandler<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> RequsetableImpl<span style="color:#f92672">())</span>
-    <span style="color:#f92672">);</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>requestable<span style="color:#f92672">.</span><span style="color:#a6e22e">request</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;https://leer.moe&#34;</span><span style="color:#f92672">));</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>requestable<span style="color:#f92672">.</span><span style="color:#a6e22e">request</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leezoom.xyz&#34;</span><span style="color:#f92672">));</span>
-  <span style="color:#f92672">}</span>
+    Requestable requestable <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Requestable<span style="color:#000;font-weight:bold">)</span>Proxy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newProxyInstance</span><span style="color:#000;font-weight:bold">(</span>
+        Client<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClassLoader</span><span style="color:#000;font-weight:bold">(),</span>
+        <span style="color:#000;font-weight:bold">new</span> Class<span style="color:#000;font-weight:bold">[]{</span>Requestable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">},</span>
+        <span style="color:#000;font-weight:bold">new</span> RequestInvocationHandler<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> RequsetableImpl<span style="color:#000;font-weight:bold">())</span>
+    <span style="color:#000;font-weight:bold">);</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>requestable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;https://leer.moe&#34;</span><span style="color:#000;font-weight:bold">));</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>requestable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://leezoom.xyz&#34;</span><span style="color:#000;font-weight:bold">));</span>
+  <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>不过，动态代理也有无能无力的时候，如果一个类没有实现任何接口的话，就无法生成代理类了，Spring AOP 在无法使用动态代理的时候，会使用CGLIB为目标对象生成子类。</p>
 <h3 id="cglib">CGLIB</h3>
 <blockquote>
 <p>CGLIB 的使用请自己搜索</p>
 </blockquote>
 <p>为了演示CGLIB的使用，我们定义的目标对象如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Request</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">request</span><span style="color:#f92672">(</span>String headers<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;request &#34;</span> <span style="color:#f92672">+</span> headers<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RequestCallback</span> <span style="color:#66d9ef">implements</span> MethodInterceptor <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Request</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">request</span><span style="color:#000;font-weight:bold">(</span>String headers<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;request &#34;</span> <span style="color:#000;font-weight:bold">+</span> headers<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">RequestCallback</span> <span style="color:#000;font-weight:bold">implements</span> MethodInterceptor <span style="color:#000;font-weight:bold">{</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">before</span><span style="color:#f92672">(</span>Object arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;before: check https....&#34;</span><span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">return</span> arg <span style="color:#66d9ef">instanceof</span> String <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">((</span>String<span style="color:#f92672">)</span> arg<span style="color:#f92672">).</span><span style="color:#a6e22e">startsWith</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;https&#34;</span><span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">before</span><span style="color:#000;font-weight:bold">(</span>Object arg<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;before: check https....&#34;</span><span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">return</span> arg <span style="color:#000;font-weight:bold">instanceof</span> String <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#000;font-weight:bold">((</span>String<span style="color:#000;font-weight:bold">)</span> arg<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">startsWith</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;https&#34;</span><span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">after</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;after&#34;</span><span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">after</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;after&#34;</span><span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#a6e22e">@Override</span>
-  <span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">intercept</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">,</span> Method method<span style="color:#f92672">,</span> Object<span style="color:#f92672">[]</span> args<span style="color:#f92672">,</span> MethodProxy methodProxy<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Throwable <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>method<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">().</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;request&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-      <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>before<span style="color:#f92672">(</span>args<span style="color:#f92672">[</span>0<span style="color:#f92672">]))</span> <span style="color:#f92672">{</span>
-        Object result <span style="color:#f92672">=</span> methodProxy<span style="color:#f92672">.</span><span style="color:#a6e22e">invokeSuper</span><span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
-        after<span style="color:#f92672">();</span>
-        <span style="color:#66d9ef">return</span> result<span style="color:#f92672">;</span>
-      <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Check failed&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-      <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+  <span style="color:#000;font-weight:bold">public</span> Object <span style="color:#900;font-weight:bold">intercept</span><span style="color:#000;font-weight:bold">(</span>Object o<span style="color:#000;font-weight:bold">,</span> Method method<span style="color:#000;font-weight:bold">,</span> Object<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">,</span> MethodProxy methodProxy<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Throwable <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>method<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;request&#34;</span><span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>before<span style="color:#000;font-weight:bold">(</span>args<span style="color:#000;font-weight:bold">[</span>0<span style="color:#000;font-weight:bold">]))</span> <span style="color:#000;font-weight:bold">{</span>
+        Object result <span style="color:#000;font-weight:bold">=</span> methodProxy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invokeSuper</span><span style="color:#000;font-weight:bold">(</span>o<span style="color:#000;font-weight:bold">,</span> args<span style="color:#000;font-weight:bold">);</span>
+        after<span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#000;font-weight:bold">return</span> result<span style="color:#000;font-weight:bold">;</span>
+      <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Check failed&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+      <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>可以看到，我增加了before和after方法，这就类似AOP中Advice的雏形了，</p>
 <p>分别在 methodProxy.invokeSuper(o, args) 的前后调用。</p>
 <p>接下来在客户端中使用CGLIB：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">cglib</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    Request requestInstance <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Request<span style="color:#f92672">)</span> Enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>Request<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> RequestCallback<span style="color:#f92672">());</span>
-    requestInstance<span style="color:#f92672">.</span><span style="color:#a6e22e">request</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;https://leer.moe&#34;</span><span style="color:#f92672">);</span>
-    requestInstance<span style="color:#f92672">.</span><span style="color:#a6e22e">request</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://leezoom.xyz&#34;</span><span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">cglib</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    Request requestInstance <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Request<span style="color:#000;font-weight:bold">)</span> Enhancer<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">create</span><span style="color:#000;font-weight:bold">(</span>Request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">new</span> RequestCallback<span style="color:#000;font-weight:bold">());</span>
+    requestInstance<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;https://leer.moe&#34;</span><span style="color:#000;font-weight:bold">);</span>
+    requestInstance<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://leezoom.xyz&#34;</span><span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>CGLIB为 Request生成子类，并对request方法按我们的需求进行扩展。GCLIB的唯一限制是无法对final方法进行扩展。输入结果如下：</p>
 <p><img src="/images/cglib_result.png" alt="cglib"></p>
 <h2 id="小试-spring-aop">小试 Spring AOP</h2>
@@ -330,58 +330,58 @@
 <p>Spring AOP可以使用@AspectJ风格是配置也可以用XML，但是底层还是基于动态代理和CGLIB的实现，并不是使用AspectJ的专门编译器来实现的。当然Spring 也支持完全使用AspectJ，但是这已经不是Spring AOP了，而是AspectJ的内容。</p>
 </blockquote>
 <p>定义一个Aspect：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Aspect</span>
-<span style="color:#a6e22e">@Configuration</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserAccessAspect</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">private</span> Logger logger <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">());</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Aspect</span>
+<span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">UserAccessAspect</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">private</span> Logger logger <span style="color:#000;font-weight:bold">=</span> LoggerFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLogger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
 
 
-  <span style="color:#a6e22e">@Before</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;execution(* moe.leer.springdemo.aop.service.*.*(..))&#34;</span><span style="color:#f92672">)</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">before</span><span style="color:#f92672">(</span>JoinPoint joinPoint<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">//Advice
-</span><span style="color:#75715e"></span>    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Check for user access&#34;</span><span style="color:#f92672">);</span>
-    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Allowed execution for {}&#34;</span><span style="color:#f92672">,</span> joinPoint<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Before</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;execution(* moe.leer.springdemo.aop.service.*.*(..))&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">before</span><span style="color:#000;font-weight:bold">(</span>JoinPoint joinPoint<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">//Advice
+</span><span style="color:#998;font-style:italic"></span>    logger<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Check for user access&#34;</span><span style="color:#000;font-weight:bold">);</span>
+    logger<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Allowed execution for {}&#34;</span><span style="color:#000;font-weight:bold">,</span> joinPoint<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
 
-  <span style="color:#a6e22e">@After</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;execution(* moe.leer.springdemo.aop.service.*.*(..))&#34;</span><span style="color:#f92672">)</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">after</span><span style="color:#f92672">(</span>JoinPoint joinPoint<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">//Advice
-</span><span style="color:#75715e"></span>    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Execution finished {}&#34;</span><span style="color:#f92672">,</span> joinPoint<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#3c5d5d;font-weight:bold">@After</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;execution(* moe.leer.springdemo.aop.service.*.*(..))&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">after</span><span style="color:#000;font-weight:bold">(</span>JoinPoint joinPoint<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">//Advice
+</span><span style="color:#998;font-style:italic"></span>    logger<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Execution finished {}&#34;</span><span style="color:#000;font-weight:bold">,</span> joinPoint<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>PointCut的定义使用正则表达式，execution(* moe.leer.springdemo.aop.service.*.*(..)) 表示匹配service包下的所有方法。@Before 和 @After 注解的两个方法分别对应Before Advice 和After Advice，来模拟对用户的检查和在执行完成后打印。</p>
 <p>我们再来看Service包，里面就是简单测试业务：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Service</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Business1</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">private</span> Logger logger <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">());</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Service</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Business1</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">private</span> Logger logger <span style="color:#000;font-weight:bold">=</span> LoggerFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLogger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
 
-  <span style="color:#a6e22e">@Autowired</span>
-  <span style="color:#66d9ef">private</span> Dao1 dao1<span style="color:#f92672">;</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Autowired</span>
+  <span style="color:#000;font-weight:bold">private</span> Dao1 dao1<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">calculateSomething</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    String val <span style="color:#f92672">=</span> dao1<span style="color:#f92672">.</span><span style="color:#a6e22e">returnSomething</span><span style="color:#f92672">();</span>
-    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;In Business1 -{}&#34;</span><span style="color:#f92672">,</span> val<span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">return</span> val<span style="color:#f92672">;</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">calculateSomething</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    String val <span style="color:#000;font-weight:bold">=</span> dao1<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">returnSomething</span><span style="color:#000;font-weight:bold">();</span>
+    logger<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">info</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;In Business1 -{}&#34;</span><span style="color:#000;font-weight:bold">,</span> val<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">return</span> val<span style="color:#000;font-weight:bold">;</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>接着编写测试代码，对其进行测试：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RunWith</span><span style="color:#f92672">(</span>SpringRunner<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
-<span style="color:#a6e22e">@SpringBootTest</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BusinessAopTests</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">private</span> Logger logger <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">());</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@RunWith</span><span style="color:#000;font-weight:bold">(</span>SpringRunner<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#3c5d5d;font-weight:bold">@SpringBootTest</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">BusinessAopTests</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000;font-weight:bold">private</span> Logger logger <span style="color:#000;font-weight:bold">=</span> LoggerFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLogger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
 
-  <span style="color:#a6e22e">@Autowired</span>
-  <span style="color:#66d9ef">private</span> Business1 business1<span style="color:#f92672">;</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Autowired</span>
+  <span style="color:#000;font-weight:bold">private</span> Business1 business1<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#a6e22e">@Autowired</span>
-  <span style="color:#66d9ef">private</span> Business2 business2<span style="color:#f92672">;</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Autowired</span>
+  <span style="color:#000;font-weight:bold">private</span> Business2 business2<span style="color:#000;font-weight:bold">;</span>
 
-  <span style="color:#a6e22e">@Test</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">invokeAOP</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span>business1<span style="color:#f92672">.</span><span style="color:#a6e22e">calculateSomething</span><span style="color:#f92672">());</span>
-    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span>business2<span style="color:#f92672">.</span><span style="color:#a6e22e">calculateSomething</span><span style="color:#f92672">());</span>
-  <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+  <span style="color:#3c5d5d;font-weight:bold">@Test</span>
+  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">invokeAOP</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    logger<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">info</span><span style="color:#000;font-weight:bold">(</span>business1<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">calculateSomething</span><span style="color:#000;font-weight:bold">());</span>
+    logger<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">info</span><span style="color:#000;font-weight:bold">(</span>business2<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">calculateSomething</span><span style="color:#000;font-weight:bold">());</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p><img src="/images/aop_test.png" alt="aop_test"></p>
 <p>在 calculateSomething方法前后，植入了两个Advice。细心一点你可以发现，打印的Log中有“BySpringCGLIB”，很好的验证了我们之前的说法：Spring AOP 在无法使用动态代理的时候，会使用CGLIB为目标对象生成子类。</p>
         </div>

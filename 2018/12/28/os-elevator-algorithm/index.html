@@ -235,81 +235,81 @@
 </blockquote>
 <p>需要对访问的序列进行搜索，判断是否和当前所在的柱面相同，可以用二分法加快搜索速度。接下来根据它的移动方向，判断是否有比当前柱面大或这小的柱面，有的话就去处理大于当前柱面中最小的或者是小于当前柱面中最大的。这样可以一次性处理完同一个方向的请求，并且不会有重复的移动。</p>
 <p>main 函数代码：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> maxn <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>;
-<span style="color:#66d9ef">int</span> N, n;
-<span style="color:#66d9ef">int</span> order[maxn], ans[maxn];
-<span style="color:#66d9ef">int</span> cylinder[maxn] <span style="color:#f92672">=</span> {<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>};
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">int</span> maxn <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1000</span>;
+<span style="color:#458;font-weight:bold">int</span> N, n;
+<span style="color:#458;font-weight:bold">int</span> order[maxn], ans[maxn];
+<span style="color:#458;font-weight:bold">int</span> cylinder[maxn] <span style="color:#000;font-weight:bold">=</span> {<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>};
 
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
-  <span style="color:#66d9ef">int</span> cur, dir;
-  cin <span style="color:#f92672">&gt;&gt;</span> N <span style="color:#f92672">&gt;&gt;</span> cur <span style="color:#f92672">&gt;&gt;</span> dir <span style="color:#f92672">&gt;&gt;</span> n;
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
+  <span style="color:#458;font-weight:bold">int</span> cur, dir;
+  cin <span style="color:#000;font-weight:bold">&gt;&gt;</span> N <span style="color:#000;font-weight:bold">&gt;&gt;</span> cur <span style="color:#000;font-weight:bold">&gt;&gt;</span> dir <span style="color:#000;font-weight:bold">&gt;&gt;</span> n;
 
-  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) {
-    cin <span style="color:#f92672">&gt;&gt;</span> order[i];
+  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> n; i<span style="color:#000;font-weight:bold">++</span>) {
+    cin <span style="color:#000;font-weight:bold">&gt;&gt;</span> order[i];
   }
 
-  sort(order, order <span style="color:#f92672">+</span> n);
-  <span style="color:#66d9ef">int</span> sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, cur_order <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-  <span style="color:#66d9ef">while</span> (cur_order <span style="color:#f92672">&lt;</span> n) {
-    <span style="color:#66d9ef">int</span> index <span style="color:#f92672">=</span> find_same(cur);
-    <span style="color:#66d9ef">if</span> (index <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {  <span style="color:#75715e">// find same
-</span><span style="color:#75715e"></span>      cylinder[order[index]] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-      ans[cur_order<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> order[index];
-    } <span style="color:#66d9ef">else</span> {
-      index <span style="color:#f92672">=</span> find_greater_less(cur, dir);  <span style="color:#75715e">// find greater or less
-</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> (index <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
-        sum <span style="color:#f92672">+=</span> (abs(order[index] <span style="color:#f92672">-</span> cur));
-        cylinder[order[index]] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-        ans[cur_order<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> order[index];
-        cur <span style="color:#f92672">=</span> order[index];  <span style="color:#75715e">// change cur
-</span><span style="color:#75715e"></span>      } <span style="color:#66d9ef">else</span> {
-        <span style="color:#75715e">// change dir
-</span><span style="color:#75715e"></span>        dir <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>dir;
+  sort(order, order <span style="color:#000;font-weight:bold">+</span> n);
+  <span style="color:#458;font-weight:bold">int</span> sum <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, cur_order <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+  <span style="color:#000;font-weight:bold">while</span> (cur_order <span style="color:#000;font-weight:bold">&lt;</span> n) {
+    <span style="color:#458;font-weight:bold">int</span> index <span style="color:#000;font-weight:bold">=</span> find_same(cur);
+    <span style="color:#000;font-weight:bold">if</span> (index <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) {  <span style="color:#998;font-style:italic">// find same
+</span><span style="color:#998;font-style:italic"></span>      cylinder[order[index]] <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
+      ans[cur_order<span style="color:#000;font-weight:bold">++</span>] <span style="color:#000;font-weight:bold">=</span> order[index];
+    } <span style="color:#000;font-weight:bold">else</span> {
+      index <span style="color:#000;font-weight:bold">=</span> find_greater_less(cur, dir);  <span style="color:#998;font-style:italic">// find greater or less
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">if</span> (index <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) {
+        sum <span style="color:#000;font-weight:bold">+=</span> (abs(order[index] <span style="color:#000;font-weight:bold">-</span> cur));
+        cylinder[order[index]] <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
+        ans[cur_order<span style="color:#000;font-weight:bold">++</span>] <span style="color:#000;font-weight:bold">=</span> order[index];
+        cur <span style="color:#000;font-weight:bold">=</span> order[index];  <span style="color:#998;font-style:italic">// change cur
+</span><span style="color:#998;font-style:italic"></span>      } <span style="color:#000;font-weight:bold">else</span> {
+        <span style="color:#998;font-style:italic">// change dir
+</span><span style="color:#998;font-style:italic"></span>        dir <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">-</span>dir;
       }
     }
   }
 
   print_order(ans);
-  cout <span style="color:#f92672">&lt;&lt;</span> sum <span style="color:#f92672">&lt;&lt;</span> endl;
-  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+  cout <span style="color:#000;font-weight:bold">&lt;&lt;</span> sum <span style="color:#000;font-weight:bold">&lt;&lt;</span> endl;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><p>使用一个<code>cylinder</code> 数组来标记这个柱面是否已经访问过了，在二分查找时，如果这个柱面已经访问过了，就不记录。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/**
-</span><span style="color:#75715e"> * @brief  find the index of current cylinder,
-</span><span style="color:#75715e"> * if there is no same, return the
-</span><span style="color:#75715e"> */</span>
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">find_same</span>(<span style="color:#66d9ef">int</span> cur) {
-  <span style="color:#66d9ef">int</span> L <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, R <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
-  <span style="color:#66d9ef">while</span> (R <span style="color:#f92672">-</span> L <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
-    <span style="color:#66d9ef">int</span> m <span style="color:#f92672">=</span> (L <span style="color:#f92672">+</span> R) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>;
-    <span style="color:#75715e">// order[m] 没有被访问并且和当前柱面相同
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (order[m] <span style="color:#f92672">==</span> cur <span style="color:#f92672">&amp;&amp;</span> cylinder[order[m]] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>) {
-      <span style="color:#66d9ef">return</span> m;
-    } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (order[m] <span style="color:#f92672">&gt;</span> cur)
-      R <span style="color:#f92672">=</span> m <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
-    <span style="color:#66d9ef">else</span>
-      L <span style="color:#f92672">=</span> m <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic"> * @brief  find the index of current cylinder,
+</span><span style="color:#998;font-style:italic"> * if there is no same, return the
+</span><span style="color:#998;font-style:italic"> */</span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">find_same</span>(<span style="color:#458;font-weight:bold">int</span> cur) {
+  <span style="color:#458;font-weight:bold">int</span> L <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, R <span style="color:#000;font-weight:bold">=</span> n <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>;
+  <span style="color:#000;font-weight:bold">while</span> (R <span style="color:#000;font-weight:bold">-</span> L <span style="color:#000;font-weight:bold">&gt;=</span> <span style="color:#099">0</span>) {
+    <span style="color:#458;font-weight:bold">int</span> m <span style="color:#000;font-weight:bold">=</span> (L <span style="color:#000;font-weight:bold">+</span> R) <span style="color:#000;font-weight:bold">/</span> <span style="color:#099">2</span>;
+    <span style="color:#998;font-style:italic">// order[m] 没有被访问并且和当前柱面相同
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> (order[m] <span style="color:#000;font-weight:bold">==</span> cur <span style="color:#000;font-weight:bold">&amp;&amp;</span> cylinder[order[m]] <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">1</span>) {
+      <span style="color:#000;font-weight:bold">return</span> m;
+    } <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> (order[m] <span style="color:#000;font-weight:bold">&gt;</span> cur)
+      R <span style="color:#000;font-weight:bold">=</span> m <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>;
+    <span style="color:#000;font-weight:bold">else</span>
+      L <span style="color:#000;font-weight:bold">=</span> m <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
   }
-  <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
 }
 </code></pre></div><p>对于查找大于当前柱面中最小的或者是小于当前柱面中最大的，我直接使用了顺序查找，应该也可以使用二分法来查找，但我没有过多的去优化这个实现。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">find_greater_less</span>(<span style="color:#66d9ef">int</span> current, <span style="color:#66d9ef">int</span> dir) {
-  <span style="color:#66d9ef">if</span> (dir <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) {  <span style="color:#75715e">//向内,查找大于当前柱面中最小的
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 从小到大搜索
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) {
-      <span style="color:#66d9ef">if</span> (current <span style="color:#f92672">&lt;</span> order[i] <span style="color:#f92672">&amp;&amp;</span> cylinder[order[i]] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>) {
-        <span style="color:#66d9ef">return</span> i;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">find_greater_less</span>(<span style="color:#458;font-weight:bold">int</span> current, <span style="color:#458;font-weight:bold">int</span> dir) {
+  <span style="color:#000;font-weight:bold">if</span> (dir <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {  <span style="color:#998;font-style:italic">//向内,查找大于当前柱面中最小的
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 从小到大搜索
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> n; i<span style="color:#000;font-weight:bold">++</span>) {
+      <span style="color:#000;font-weight:bold">if</span> (current <span style="color:#000;font-weight:bold">&lt;</span> order[i] <span style="color:#000;font-weight:bold">&amp;&amp;</span> cylinder[order[i]] <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">1</span>) {
+        <span style="color:#000;font-weight:bold">return</span> i;
       }
     }
-  } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (dir <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {  <span style="color:#75715e">//向外，查找小于当前柱面中最大的
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 从大到小搜索
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>; i<span style="color:#f92672">--</span>) {
-      <span style="color:#66d9ef">if</span> (current <span style="color:#f92672">&gt;</span> order[i] <span style="color:#f92672">&amp;&amp;</span> cylinder[order[i]] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>) {
-        <span style="color:#66d9ef">return</span> i;
+  } <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> (dir <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) {  <span style="color:#998;font-style:italic">//向外，查找小于当前柱面中最大的
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 从大到小搜索
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> n <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>; i <span style="color:#000;font-weight:bold">&gt;=</span> <span style="color:#099">0</span>; i<span style="color:#000;font-weight:bold">--</span>) {
+      <span style="color:#000;font-weight:bold">if</span> (current <span style="color:#000;font-weight:bold">&gt;</span> order[i] <span style="color:#000;font-weight:bold">&amp;&amp;</span> cylinder[order[i]] <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">1</span>) {
+        <span style="color:#000;font-weight:bold">return</span> i;
       }
     }
   }
-  <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
 }
 </code></pre></div><p>运行结果和书上的一致：</p>
 <p><img src="/images/elevator-result.png" alt="elevator-result"></p>

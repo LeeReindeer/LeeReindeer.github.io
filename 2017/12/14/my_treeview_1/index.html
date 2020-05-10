@@ -253,50 +253,50 @@
 </code></pre><p>Then open your project in Android Studio, then Click <code>FIle</code> -&gt; <code>New</code> -&gt; <code>Import Module</code>, to import this
 module.</p>
 <p>And add dependence in your <code>build.gradle</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy"> implementation <span style="color:#a6e22e">project</span><span style="color:#f92672">(</span>path: <span style="color:#e6db74">&#39;:treeview&#39;</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy"> implementation <span style="color:#900;font-weight:bold">project</span><span style="color:#000;font-weight:bold">(</span><span style="color:#900;font-weight:bold">path:</span> <span style="color:#d14">&#39;:treeview&#39;</span><span style="color:#000;font-weight:bold">)</span>
 </code></pre></div><h2 id="使用---usage">使用 - Usage</h2>
 <p>Feel free to use it as <code>ListView</code>.</p>
 <p>XML:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#f92672">&lt;xyz.leezoom.view.treeview.TreeView</span>
-        <span style="color:#a6e22e">android:id=</span><span style="color:#e6db74">&#34;@+id/tree_view&#34;</span>
-        <span style="color:#a6e22e">android:layout_marginTop=</span><span style="color:#e6db74">&#34;16dp&#34;</span>
-        <span style="color:#a6e22e">android:layout_width=</span><span style="color:#e6db74">&#34;match_parent&#34;</span>
-        <span style="color:#a6e22e">android:layout_height=</span><span style="color:#e6db74">&#34;match_parent&#34;</span>
-        <span style="color:#a6e22e">android:divider=</span><span style="color:#e6db74">&#34;#ffffff&#34;</span>
-        <span style="color:#a6e22e">android:dividerHeight=</span><span style="color:#e6db74">&#34;1px&#34;</span><span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#000080">&lt;xyz.leezoom.view.treeview.TreeView</span>
+        <span style="color:#008080">android:id=</span><span style="color:#d14">&#34;@+id/tree_view&#34;</span>
+        <span style="color:#008080">android:layout_marginTop=</span><span style="color:#d14">&#34;16dp&#34;</span>
+        <span style="color:#008080">android:layout_width=</span><span style="color:#d14">&#34;match_parent&#34;</span>
+        <span style="color:#008080">android:layout_height=</span><span style="color:#d14">&#34;match_parent&#34;</span>
+        <span style="color:#008080">android:divider=</span><span style="color:#d14">&#34;#ffffff&#34;</span>
+        <span style="color:#008080">android:dividerHeight=</span><span style="color:#d14">&#34;1px&#34;</span><span style="color:#000080">&gt;</span>
 
-    <span style="color:#f92672">&lt;/xyz.leezoom.view.treeview.TreeView&gt;</span>
+    <span style="color:#000080">&lt;/xyz.leezoom.view.treeview.TreeView&gt;</span>
 </code></pre></div><p>Kotlin(Java is similar whit it)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#66d9ef">var</span> root :DefaultTreeNode? = DefaultTreeNode(<span style="color:#e6db74">&#34;Root&#34;</span>)
-  <span style="color:#66d9ef">val</span> treeView = TreeView(<span style="color:#66d9ef">this</span>@MainActivity, root)
-  <span style="color:#66d9ef">val</span> child1 = DefaultTreeNode(<span style="color:#e6db74">&#34;Child1&#34;</span>)
-  <span style="color:#66d9ef">val</span> child2 = DefaultTreeNode(<span style="color:#e6db74">&#34;Child2&#34;</span>)
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#000;font-weight:bold">var</span> root :DefaultTreeNode? = DefaultTreeNode(<span style="color:#d14">&#34;Root&#34;</span>)
+  <span style="color:#000;font-weight:bold">val</span> treeView = TreeView(<span style="color:#000;font-weight:bold">this</span>@MainActivity, root)
+  <span style="color:#000;font-weight:bold">val</span> child1 = DefaultTreeNode(<span style="color:#d14">&#34;Child1&#34;</span>)
+  <span style="color:#000;font-weight:bold">val</span> child2 = DefaultTreeNode(<span style="color:#d14">&#34;Child2&#34;</span>)
   root.addChild(child1)
   root.addChild(child2)
-  <span style="color:#66d9ef">val</span> child3 = DefaultTreeNode(<span style="color:#e6db74">&#34;Child3&#34;</span>)
+  <span style="color:#000;font-weight:bold">val</span> child3 = DefaultTreeNode(<span style="color:#d14">&#34;Child3&#34;</span>)
   child1.addChild(child3)
 </code></pre></div><p>If you want to use customized item view, you should implement <code>TreeAapater</code>, like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileTreeAdapter</span> <span style="color:#66d9ef">extends</span> TreeAdapter<span style="color:#f92672">&lt;</span>FileItem<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-  <span style="color:#75715e">//resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">FileTreeAdapter</span><span style="color:#f92672">(</span>Context context<span style="color:#f92672">,</span> DefaultTreeNode root<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> resourceId<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> root<span style="color:#f92672">,</span> resourceId<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">FileTreeAdapter</span> <span style="color:#000;font-weight:bold">extends</span> TreeAdapter<span style="color:#000;font-weight:bold">&lt;</span>FileItem<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#998;font-style:italic">//resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">FileTreeAdapter</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> DefaultTreeNode root<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> resourceId<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> root<span style="color:#000;font-weight:bold">,</span> resourceId<span style="color:#000;font-weight:bold">);</span>
+  <span style="color:#000;font-weight:bold">}</span>
   
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> View <span style="color:#a6e22e">getView</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> position<span style="color:#f92672">,</span> View convertView<span style="color:#f92672">,</span> ViewGroup parent<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-     <span style="color:#75715e">//your code here
-</span><span style="color:#75715e"></span>     <span style="color:#75715e">//...
-</span><span style="color:#75715e"></span>     <span style="color:#75715e">//call padding for a better UI
-</span><span style="color:#75715e"></span>     setPadding<span style="color:#f92672">(</span>holder<span style="color:#f92672">.</span><span style="color:#a6e22e">arrowIcon</span><span style="color:#f92672">,</span> depth<span style="color:#f92672">,</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">);</span>
-     <span style="color:#75715e">//toggle your view&#39;s status here
-</span><span style="color:#75715e"></span>     toggle<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> holder<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> View <span style="color:#900;font-weight:bold">getView</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> position<span style="color:#000;font-weight:bold">,</span> View convertView<span style="color:#000;font-weight:bold">,</span> ViewGroup parent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+     <span style="color:#998;font-style:italic">//your code here
+</span><span style="color:#998;font-style:italic"></span>     <span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>     <span style="color:#998;font-style:italic">//call padding for a better UI
+</span><span style="color:#998;font-style:italic"></span>     setPadding<span style="color:#000;font-weight:bold">(</span>holder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">arrowIcon</span><span style="color:#000;font-weight:bold">,</span> depth<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">);</span>
+     <span style="color:#998;font-style:italic">//toggle your view&#39;s status here
+</span><span style="color:#998;font-style:italic"></span>     toggle<span style="color:#000;font-weight:bold">(</span>node<span style="color:#000;font-weight:bold">,</span> holder<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
     
-    <span style="color:#a6e22e">@Override</span>
-     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">toggle</span><span style="color:#f92672">(</span>Object<span style="color:#f92672">...</span> objects<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-     <span style="color:#f92672">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+     <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">toggle</span><span style="color:#000;font-weight:bold">(</span>Object<span style="color:#000;font-weight:bold">...</span> objects<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>Then simply add:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#66d9ef">val</span> adapter = FileTreeAdapter(<span style="color:#66d9ef">this</span>@MainActivity, root, R.layout.layout_file_tree_item)
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#000;font-weight:bold">val</span> adapter = FileTreeAdapter(<span style="color:#000;font-weight:bold">this</span>@MainActivity, root, R.layout.layout_file_tree_item)
   treeView.treeAdapter = adapter
 </code></pre></div><h2 id="后记---what">后记 - What？</h2>
 <p>虽然是数据结构的课程设计，但是设计模式好像也挺重要的。其实，实现起来很简单，但是不知道为什么自己拖拖拉拉写了那么久。为什么叫 <code>Tree2View</code> 呢？因为我一个月之前，写个一个半成品叫 <code>TreeView</code>，所以这次就叫 <code>Tree2View</code>，本意并不是 <code>Tree to View</code> 的意思，但是这样解释也不错啊。</p>

@@ -217,87 +217,87 @@
 </table>
 <h2 id="具体实现">具体实现</h2>
 <p>首先当然是写一个acess_token的实体类</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AccessToken</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> String access_token<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> expires_in<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">AccessToken</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">private</span> String access_token<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> expires_in<span style="color:#000;font-weight:bold">;</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getExpires_in</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> expires_in<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getExpires_in</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> expires_in<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setExpires_in</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> expires_in<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">expires_in</span> <span style="color:#f92672">=</span> expires_in<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setExpires_in</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> expires_in<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">expires_in</span> <span style="color:#000;font-weight:bold">=</span> expires_in<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getAccess_token</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">getAccess_token</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
 
-        <span style="color:#66d9ef">return</span> access_token<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+        <span style="color:#000;font-weight:bold">return</span> access_token<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAccess_token</span><span style="color:#f92672">(</span>String access_token<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">access_token</span> <span style="color:#f92672">=</span> access_token<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setAccess_token</span><span style="color:#000;font-weight:bold">(</span>String access_token<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">access_token</span> <span style="color:#000;font-weight:bold">=</span> access_token<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>接着新建一个WechatUtil类（主要用来和微信服务器交互）,上面说过，获取access_token的http的请求方式为get．写一个doGet()方法．</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> JSONObject <span style="color:#a6e22e">doGet</span><span style="color:#f92672">(</span>String url<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        HttpURLConnection connection <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-        BufferedReader reader <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-        JSONObject jsonObject <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> JSONObject <span style="color:#900;font-weight:bold">doGet</span><span style="color:#000;font-weight:bold">(</span>String url<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        HttpURLConnection connection <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+        BufferedReader reader <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+        JSONObject jsonObject <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
 
-            URL url1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> URL<span style="color:#f92672">(</span>url<span style="color:#f92672">);</span>
-            connection <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>HttpURLConnection<span style="color:#f92672">)</span> url1<span style="color:#f92672">.</span><span style="color:#a6e22e">openConnection</span><span style="color:#f92672">();</span>
-            connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setRequestMethod</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;GET&#34;</span><span style="color:#f92672">);</span>
-            connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setConnectTimeout</span><span style="color:#f92672">(</span>8000<span style="color:#f92672">);</span>
-            connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setReadTimeout</span><span style="color:#f92672">(</span>8000<span style="color:#f92672">);</span>
-            InputStream in <span style="color:#f92672">=</span> connection<span style="color:#f92672">.</span><span style="color:#a6e22e">getInputStream</span><span style="color:#f92672">();</span>
-            <span style="color:#75715e">//读取输入流
-</span><span style="color:#75715e"></span>            reader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> InputStreamReader<span style="color:#f92672">(</span>in<span style="color:#f92672">));</span>
-            StringBuilder response <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StringBuilder<span style="color:#f92672">();</span>
-            String line<span style="color:#f92672">;</span>
-            <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>line <span style="color:#f92672">=</span> reader<span style="color:#f92672">.</span><span style="color:#a6e22e">readLine</span><span style="color:#f92672">())</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                response<span style="color:#f92672">.</span><span style="color:#a6e22e">append</span><span style="color:#f92672">(</span>line<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span>
-            jsonObject <span style="color:#f92672">=</span> JSONObject<span style="color:#f92672">.</span><span style="color:#a6e22e">fromObject</span><span style="color:#f92672">(</span>response<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span>
-        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>reader <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-                    reader<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
-                <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                    e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-                <span style="color:#f92672">}</span>
-            <span style="color:#f92672">}</span>
-            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>connection <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">disconnect</span><span style="color:#f92672">();</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#66d9ef">return</span> jsonObject<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+            URL url1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> URL<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">);</span>
+            connection <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>HttpURLConnection<span style="color:#000;font-weight:bold">)</span> url1<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">openConnection</span><span style="color:#000;font-weight:bold">();</span>
+            connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setRequestMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;GET&#34;</span><span style="color:#000;font-weight:bold">);</span>
+            connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setConnectTimeout</span><span style="color:#000;font-weight:bold">(</span>8000<span style="color:#000;font-weight:bold">);</span>
+            connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setReadTimeout</span><span style="color:#000;font-weight:bold">(</span>8000<span style="color:#000;font-weight:bold">);</span>
+            InputStream in <span style="color:#000;font-weight:bold">=</span> connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInputStream</span><span style="color:#000;font-weight:bold">();</span>
+            <span style="color:#998;font-style:italic">//读取输入流
+</span><span style="color:#998;font-style:italic"></span>            reader <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> BufferedReader<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> InputStreamReader<span style="color:#000;font-weight:bold">(</span>in<span style="color:#000;font-weight:bold">));</span>
+            StringBuilder response <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> StringBuilder<span style="color:#000;font-weight:bold">();</span>
+            String line<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">((</span>line <span style="color:#000;font-weight:bold">=</span> reader<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readLine</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                response<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">append</span><span style="color:#000;font-weight:bold">(</span>line<span style="color:#000;font-weight:bold">);</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            jsonObject <span style="color:#000;font-weight:bold">=</span> JSONObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">fromObject</span><span style="color:#000;font-weight:bold">(</span>response<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">());</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>Exception e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">finally</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>reader <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                    reader<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">close</span><span style="color:#000;font-weight:bold">();</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>IOException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>connection <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">disconnect</span><span style="color:#000;font-weight:bold">();</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> jsonObject<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>可以看到这是一个很简单的发送HTTP请求代码，然后返回的是一个jsonObject.接着只要处理这个jsonObject就可以了．继续修改WechatUtil的代码：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> AccessToken <span style="color:#a6e22e">getAcessToken</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        AccessToken token <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AccessToken<span style="color:#f92672">();</span>
-        String url <span style="color:#f92672">=</span> ACCESS_TOKEN_URL<span style="color:#f92672">.</span><span style="color:#a6e22e">replace</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;APPID&#34;</span><span style="color:#f92672">,</span> APPID<span style="color:#f92672">).</span><span style="color:#a6e22e">replace</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;APPSECRET&#34;</span><span style="color:#f92672">,</span> APPSECRET<span style="color:#f92672">);</span>
-        JSONObject jsonObject <span style="color:#f92672">=</span> doGet<span style="color:#f92672">(</span>url<span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>jsonObject <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            token<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccess_token</span><span style="color:#f92672">(</span>jsonObject<span style="color:#f92672">.</span><span style="color:#a6e22e">getString</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;access_token&#34;</span><span style="color:#f92672">));</span>
-            token<span style="color:#f92672">.</span><span style="color:#a6e22e">setExpires_in</span><span style="color:#f92672">(</span>jsonObject<span style="color:#f92672">.</span><span style="color:#a6e22e">getInt</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;expires_in&#34;</span><span style="color:#f92672">));</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#66d9ef">return</span> token<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> AccessToken <span style="color:#900;font-weight:bold">getAcessToken</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        AccessToken token <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> AccessToken<span style="color:#000;font-weight:bold">();</span>
+        String url <span style="color:#000;font-weight:bold">=</span> ACCESS_TOKEN_URL<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;APPID&#34;</span><span style="color:#000;font-weight:bold">,</span> APPID<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;APPSECRET&#34;</span><span style="color:#000;font-weight:bold">,</span> APPSECRET<span style="color:#000;font-weight:bold">);</span>
+        JSONObject jsonObject <span style="color:#000;font-weight:bold">=</span> doGet<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>jsonObject <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            token<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAccess_token</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;access_token&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            token<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setExpires_in</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;expires_in&#34;</span><span style="color:#000;font-weight:bold">));</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> token<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>getAcessToken()方法调用了doGet()方法，并把含有appid和appsercet的URL传入，最终得到access_token.新建一个测试类，WechatInitial.代码如下</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">){</span>
-        <span style="color:#66d9ef">try</span><span style="color:#f92672">{</span>
-            WechatUtil wechatUtil<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> WechatUtil<span style="color:#f92672">();</span>
-            AccessToken token<span style="color:#f92672">=</span>wechatUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">getAcessToken</span><span style="color:#f92672">();</span>
-            String access_token<span style="color:#f92672">=</span>token<span style="color:#f92672">.</span><span style="color:#a6e22e">getAccess_token</span><span style="color:#f92672">();</span>
-            <span style="color:#66d9ef">int</span> expires_in<span style="color:#f92672">=</span>token<span style="color:#f92672">.</span><span style="color:#a6e22e">getExpires_in</span><span style="color:#f92672">();</span>
-            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Access_token:&#34;</span><span style="color:#f92672">+</span>access_token<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span><span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">){</span>
-            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">){</span>
+        <span style="color:#000;font-weight:bold">try</span><span style="color:#000;font-weight:bold">{</span>
+            WechatUtil wechatUtil<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> WechatUtil<span style="color:#000;font-weight:bold">();</span>
+            AccessToken token<span style="color:#000;font-weight:bold">=</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAcessToken</span><span style="color:#000;font-weight:bold">();</span>
+            String access_token<span style="color:#000;font-weight:bold">=</span>token<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAccess_token</span><span style="color:#000;font-weight:bold">();</span>
+            <span style="color:#458;font-weight:bold">int</span> expires_in<span style="color:#000;font-weight:bold">=</span>token<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getExpires_in</span><span style="color:#000;font-weight:bold">();</span>
+            System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Access_token:&#34;</span><span style="color:#000;font-weight:bold">+</span>access_token<span style="color:#000;font-weight:bold">);</span>
+            <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>Exception e<span style="color:#000;font-weight:bold">){</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>结果如图：
 <img src="/images/access_token.png" alt=""></p>
 <h2 id="本地持久化todo">本地持久化(todo)</h2>
