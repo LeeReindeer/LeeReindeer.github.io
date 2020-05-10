@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>AbstractQueuedSynchronizer | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="AbstractQueuedSynchronizer - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-04-25T19:31:21&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-04-25T19:31:21&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="AbstractQueuedSynchronizer">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2019/04/25/java-concurrent-aqs/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#设计要求">设计要求</a></li>
+    <li><a href="#实现">实现</a>
+      <ul>
+        <li><a href="#synchronization-state">Synchronization state</a></li>
+        <li><a href="#blocking">Blocking</a></li>
+        <li><a href="#queue">Queue</a></li>
+      </ul>
+    </li>
+    <li><a href="#使用">使用</a>
+      <ul>
+        <li><a href="#例子">例子</a></li>
+      </ul>
+    </li>
+    <li><a href="#aqs-在-synchronizers-中的具体实现">AQS 在 Synchronizers 中的具体实现</a>
+      <ul>
+        <li><a href="#reentrantlock">ReentrantLock</a></li>
+        <li><a href="#reentrantreadwritelock">ReentrantReadWriteLock</a></li>
+        <li><a href="#semaphore">Semaphore</a></li>
+        <li><a href="#countdownlatch">CountDownLatch</a></li>
+        <li><a href="#futuretask">FutureTask</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">AbstractQueuedSynchronizer</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年4月25日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
+<p>AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*<a href="http://gee.cs.oswego.edu/dl/papers/aqs.pdf">The java.util.concurrent Synchronizer Framework</a>* 和 JDK 1.8 的文档。</p>
+<p><a href="/2019/01/06/java-concurrent-toc/">Java并发-目录</a></p>
+</blockquote>
+<h2 id="设计要求">设计要求</h2>
+<p>同步（维持变量在各个线程间状态的一致性）至少需要两种操作：</p>
+<ul>
+<li>acquire：阻塞线程直到*同步状态（synchronization state）*允许线程运行</li>
+<li>release：改变<em>同步状态</em>，并且 unblock 一个或多个阻塞的线程</li>
+</ul>
+<p>同时支持两种模式：</p>
+<ul>
+<li>exclusive mode：一次只允许一个线程改变同步状态</li>
+<li>shared mode：多个线程同时改变同步状态<strong>可能</strong>成功；一次同时唤醒多个线程</li>
+</ul>
+<p>同时框架需要一些高级功能：</p>
+<ul>
+<li>非阻塞和阻塞地改变同步状态（如<code>tryLock</code>和<code>lock</code>）</li>
+<li>可选的超时功能，超时即放弃尝试</li>
+<li>可以响应线程中断</li>
+</ul>
+<h2 id="实现">实现</h2>
+<p>同步器的基本思想很直接简洁，用伪代码表示如下：</p>
+<p>acquire</p>
+<pre><code>while (syncronization state does not allow acquire) {
+  enqueue current thread if not already queued;
+  possiblly block current thread;
+}
+</code></pre><p>release</p>
+<pre><code>update synchronization state;
+if (state may premit a blocked thread acuire) {
+  unblock one or more queued thread;
+}
+</code></pre><p>要实现这两个操作，需要三个基本模块的配合：</p>
+<ul>
+<li>以原子操作管理<em>同步状态</em></li>
+<li>block 和 unblock 线程</li>
+<li>维护 FIFO 队列</li>
+</ul>
+<h3 id="synchronization-state">Synchronization state</h3>
+<p>AQS 使用一个 32 位整数（int）来代表共享资源，也就是同步状态。</p>
+<blockquote>
+<p>该整数可以表现任何状态。比如， <code>Semaphore</code> 用它来表现剩余的许可数，<code>ReentrantLock</code> 用它来表现拥有它的线程已经请求了多少次锁；<code>FutureTask</code> 用它来表现任务的状态 (尚未开始、运行、完成和取消)</p>
+</blockquote>
+<h3 id="blocking">Blocking</h3>
+<p>AQS 使用 JUC 包下<code>LockSupport</code>中的<code>pack()</code>和<code>unpack()</code>方法来阻塞和唤醒进程。最终会调用<code>Unsafe.park()</code>和<code>Unsafe.unpack()</code>两个 native 方法，最终的阻塞线程和唤醒线程具体实现还是由操作系统来实现的。</p>
+<h3 id="queue">Queue</h3>
+<p>维护一个 FIFO 的队列，来管理阻塞的线程，<strong>可以实现公平性（但也可以不公平）</strong>，也就是同时支持公平锁和非公平锁两种模式。内部使用 CLH Lock，但是做了很多优化，比如<strong>CLH 锁不是自旋的而是阻塞的。</strong></p>
+<p>AQS 中的 CLH lock 和原汁原味的 CLH lock 相比，主要有两点不同：</p>
+<ul>
+<li>节点有显式的后继节点<code>next</code>，原来的 CLH lock 不需要显式的链表因为当前一个节点为释放锁时，因为后一个节点在一直轮询，所以它能够拿到锁。而 AQS 是阻塞的，所以需要在释放锁的时候，需要调用<code>unpack(Thread)</code>来唤醒特定的线程，所以需要知道它的后继节点。</li>
+<li>不使用自旋锁而是阻塞锁，调用<code>pack()</code>和<code>unpack()</code>实现。</li>
+</ul>
+<blockquote>
+<p>同时还设置了一个<code>signal bit</code>来避免不必要的<code>pack()</code>和<code>unpack()</code>调用。在调用它们之前，首先设置<code>signal bit</code>然后再次检查节点状态，如果还不能拿到锁，就阻塞线程。</p>
+</blockquote>
+<p>这样我可以用更加详细的伪代码来描述<code>acquire</code>和<code>release</code>，这里只考虑exclusive mode，不可中断的、没有超时功能的情况：</p>
+<p>acquire：</p>
+<pre><code>if (!tryAcquire(arg)) {
+  node = create and enqueue new node;
+  pred = node's effective predecessor;
+  while (pred is not head node || !tryAcquire(arg)) {
+    if (pred's signal bit is set)
+    	park();
+    else
+    	compareAndSet pred's signal bit to ture
+    pred = node's effective predecessor;
+  }
+  head = node;
+}
+</code></pre><p>release:</p>
+<pre><code>if (tryRelease(arg) &amp;&amp; head node's signal bit is set) {
+  compareAndSet head's signal bit to false;
+  unpack head's successor, if one exists
+}s
+</code></pre><h2 id="使用">使用</h2>
+<p>实现一个同步器需要实现下面的方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">tryAcquire<span style="color:#f92672">()</span>
+tryRelease<span style="color:#f92672">()</span>
+tryAcquireShared<span style="color:#f92672">()</span>
+tryReleaseShared<span style="color:#f92672">()</span>
+isHeldExclusively<span style="color:#f92672">()</span>
+</code></pre></div><p>以上方法不需要全部实现，根据获取的锁的种类可以选择实现不同的方法.</p>
+<ul>
+<li>支持独占 (排他) 获取锁的同步器应该实现<code>tryAcquire</code>、 <code>tryRelease</code>、<code>isHeldExclusively</code></li>
+<li>支持共享获取的同步器应该实现<code>tryAcquireShared</code>、<code>tryReleaseShared</code>、<code>isHeldExclusively</code></li>
+<li>当然也可以同时支持  exclusive 模式和 shared 模式，比如<code>ReentrantReadWriteLock</code></li>
+</ul>
+<blockquote>
+<p>实现一个同步器最好的设计模式是把功能委托给一个AQS的私有内部子类，而不是直接继承 AQS 来实现（这样会破坏同步器的简洁性，调用者可能会调用 AQS 的其他方法破坏同步状态）。</p>
+</blockquote>
+<h3 id="例子">例子</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">import</span> java.util.concurrent.locks.AbstractQueuedSynchronizer<span style="color:#f92672">;</span>
+
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * @author leer
+</span><span style="color:#75715e"> * Created at 4/25/19 6:24 PM
+</span><span style="color:#75715e"> * 一个不可重入的互斥锁
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Mutex</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Sync</span> <span style="color:#66d9ef">extends</span> AbstractQueuedSynchronizer <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryAcquire</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> ignore<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">return</span> compareAndSetState<span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> 1<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryRelease</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> ignore<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      setState<span style="color:#f92672">(</span>0<span style="color:#f92672">);</span>
+      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+  <span style="color:#f92672">}</span>
+  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Sync sync <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Sync<span style="color:#f92672">();</span>
+
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">acquire</span><span style="color:#f92672">(</span>0<span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">release</span><span style="color:#f92672">(</span>0<span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h2 id="aqs-在-synchronizers-中的具体实现">AQS 在 Synchronizers 中的具体实现</h2>
+<h3 id="reentrantlock">ReentrantLock</h3>
+<ul>
+<li>ReentrantLock 是可重入的：所以需要记录当前线程获取原子状态的次数，如果次数为零，那么就说明这个线程放弃了锁（也有可能其他线程占据着锁从而需要等待），如果次数大于 1，也就是获得了重进入的效果，而其他线程只能被 park 住，直到这个线程重进入锁次数变成 0 而释放原子状态</li>
+<li>ReentrantLock 有公平锁和非公平锁两种模式：对应的， ReentrantLock 内部有两个 AQS 的子类。（the fair one disabling barging）</li>
+</ul>
+<p>非公平锁的<code>tryAcquire</code>实现：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">       <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">nonfairTryAcquire</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">final</span> Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> acquires<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+                    setExclusiveOwnerThread<span style="color:#f92672">(</span>current<span style="color:#f92672">);</span>
+                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>current <span style="color:#f92672">==</span> getExclusiveOwnerThread<span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> c <span style="color:#f92672">+</span> acquires<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nextc <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#75715e">// overflow
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum lock count exceeded&#34;</span><span style="color:#f92672">);</span>
+                setState<span style="color:#f92672">(</span>nextc<span style="color:#f92672">);</span>
+                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+</code></pre></div><h3 id="reentrantreadwritelock">ReentrantReadWriteLock</h3>
+<p>ReentrantReadWriteLock 使用 同步状态的 16 位来存放读锁计数，另外的 16 位存放写锁计数。</p>
+<ul>
+<li>写锁和<code>ReentrantLock</code>类似</li>
+<li>读锁使用 shared 模式的 AQS来支持多个读者同时读</li>
+</ul>
+<h3 id="semaphore">Semaphore</h3>
+<p><code>Semaphore</code>使用同步状态来保存当前可用许可数量。它重写<code>tryAcquireShared</code>来减少计数来模拟获取资源，如果计数小于 0 则会阻塞线程；重写<code>tryReleaseShared</code>来模拟释放资源。同时它也有公平模式和非公平模式。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">nonfairTryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">int</span> available <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+                <span style="color:#66d9ef">int</span> remaining <span style="color:#f92672">=</span> available <span style="color:#f92672">-</span> acquires<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>remaining <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">||</span>
+                    compareAndSetState<span style="color:#f92672">(</span>available<span style="color:#f92672">,</span> remaining<span style="color:#f92672">))</span>
+                    <span style="color:#66d9ef">return</span> remaining<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> releases<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">int</span> current <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+                <span style="color:#66d9ef">int</span> next <span style="color:#f92672">=</span> current <span style="color:#f92672">+</span> releases<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>next <span style="color:#f92672">&lt;</span> current<span style="color:#f92672">)</span> <span style="color:#75715e">// overflow
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum permit count exceeded&#34;</span><span style="color:#f92672">);</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>current<span style="color:#f92672">,</span> next<span style="color:#f92672">))</span>
+                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+</code></pre></div><h3 id="countdownlatch">CountDownLatch</h3>
+<p>和<code>Semaphore</code>类似，同步状态保存当前的计数值。<code>countDown()</code>调用<code>releaseShared()</code>，<code>await()</code>方法调用<code>acquireShared()</code>，等待计数器到零。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>getState<span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> releases<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// Decrement count; signal when transition to zero
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> c<span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> nextc<span style="color:#f92672">))</span>
+                    <span style="color:#66d9ef">return</span> nextc <span style="color:#f92672">==</span> 0<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+</code></pre></div><h3 id="futuretask">FutureTask</h3>
+<blockquote>
+<p>Only when JDK version &lt; JDK1.7</p>
+</blockquote>
+<p><code>FutureTask</code>使用同步状态保存<code>Future</code>任务的状态（initial、running、cancelled、done）。</p>
+<p>设置和取消一个任务将调用<code>release()</code>，调用<code>Future.get()</code>等待结果将会调用<code>acquire()</code>。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li>Doug Lea 的论文 <a href="http://gee.cs.oswego.edu/dl/papers/aqs.pdf">The java.util.concurrent Synchronizer Framework</a></li>
+<li>《Java并发编程实战》第14章</li>
+<li><a href="https://bigbully.github.io/FutureTask">新版FutureTask</a></li>
+</ul>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2019/03/11/concurrentmodificationexception/">单线程和多线程下的ConcurrentModificationException</a></li>
+        
+        <li><a href="/2019/01/07/java-concurrent-synchronized-reentrantlock/">Java并发-Synchronized和Reentrantlock</a></li>
+        
+        <li><a href="/2019/01/06/java-concurrent-toc/">Java并发-目录</a></li>
+        
+        <li><a href="/2019/03/18/binary-tree/">数据结构-二叉树</a></li>
+        
+        <li><a href="/2018/12/20/java-fun-pass-by-value/">Java基础-Pass by value</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/java'>Java</a></li>
+                
+                <li><a href='https://leer.moe/tags/java%E5%B9%B6%E5%8F%91'>Java并发</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/crime_and_punishment/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/minesweeper/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/install_manjaro/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/ros/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/java-concurrent-aqs/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

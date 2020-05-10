@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>一个微信公众号的诞生（一）开发环境的搭建 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="一个微信公众号的诞生（一）开发环境的搭建 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2017-04-20T20:25:34&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2017-04-20T20:25:34&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="一个微信公众号的诞生（一）开发环境的搭建">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2017/04/20/wechat1_development_of_the_environment/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#jdk配置">JDK配置</a></li>
+    <li><a href="#tomcat下载">Tomcat下载</a></li>
+    <li><a href="#mysql下载">MySQL下载</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#tomcat">Tomcat</a></li>
+    <li><a href="#mysql">MySQL</a></li>
+    <li><a href="#intellij-idea">IntelliJ IDEA</a></li>
+    <li><a href="#微信测试号">微信测试号</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#maven">maven</a></li>
+    <li><a href="#jsp页面">JSP页面</a></li>
+    <li><a href="#servlet测试">Servlet测试</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">一个微信公众号的诞生（一）开发环境的搭建</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年4月20日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <h1 id="写在前面">写在前面</h1>
+<p>最近参加一个服务外包的比赛，然后就开始了征途，试过py,之后我还是决定用熟悉一点的java.以下内容，我都是在ubuntu 16.04LTS上进行，不保证其他系统适用．(ps:我是在完成了全部功能之后写的这一系列文章，也不能算是教程了，只能算是自己对开发过程的记录)</p>
+<p>过程中可以说是体会到了黔驴技穷之感,革命尚未成功，同志还需努力啊．</p>
+<h1 id="下载">下载</h1>
+<h2 id="jdk配置">JDK配置</h2>
+<ul>
+<li>jdk 是java开发必不可少的，不多说．
+<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">下载地址</a></li>
+<li>Java环境变量配置</li>
+<li>修改/etc/profile文件
+<code>vim /etc/profile</code>
+在profile文件末尾加入：</li>
+</ul>
+<pre><code>export JAVA_HOME=/usr/local/jdk1.8.0_121                      //jdk安装目录
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+</code></pre><ul>
+<li>验证
+shell输入<code>java -version</code>
+出现下面的提示</li>
+</ul>
+<pre><code>java version &quot;1.8.0_121&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_121-b13)
+Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
+</code></pre><h2 id="tomcat下载">Tomcat下载</h2>
+<blockquote>
+<p>汤姆猫和杰瑞＝＝</p>
+</blockquote>
+<p>tomcat感觉就像是一个容器,里面装着servlet，jsp,也可以是静态网页．
+<a href="http://tomcat.apache.org/">下载地址</a></p>
+<h2 id="mysql下载">MySQL下载</h2>
+<p>数据库小白还是老老实实用MySQL好了，听说巨坑??
+安装<code>sudo apt-get install mysql-server</code>就那么简单．然后安装过程中要设置一下root用户的登录密码．</p>
+<h1 id="配置">配置</h1>
+<h2 id="tomcat">Tomcat</h2>
+<p>先来看一下安装以后的目录，
+<img src="/images/tomcat_fir.png" alt="">
+主要说一下：bin目录下是一些可执行脚本．conf目录下是tomcat的配置文件．webapps里就是放我们的java web 应用的，里面还有一大堆examples.</p>
+<ul>
+<li>启动服务.进入bin目录,执行<code>startup.sh</code>.接下来访问<code>http://localhost:8081/</code>,出现下面的界面就说明成功了．</li>
+<li>修改端口.进入conf目录，打开<code>server.xml</code>.修改Connector port后的参数，如下，默认8080d端口，我把它改成了8081.</li>
+</ul>
+<pre><code> &lt;Connector port=&quot;8081&quot; protocol=&quot;HTTP/1.1&quot;
+               connectionTimeout=&quot;20000&quot;
+               redirectPort=&quot;8443&quot; /&gt;
+</code></pre><ul>
+<li>Tomcat Manager配置
+<code>vim /usr/local/tomcat/conf/tomcat-users.xml</code>
+增加</li>
+</ul>
+<pre><code>  &lt;role rolename=&quot;tomcat&quot;/&gt;
+  &lt;role rolename=&quot;role1&quot;/&gt;
+  &lt;role rolename=&quot;manager&quot;/&gt;
+  &lt;user username=&quot;tomcat&quot; password=&quot;yourpassword&quot; roles=&quot;tomcat,manager&quot;/&gt;
+  &lt;user username=&quot;role1&quot; password=&quot;yourpassword&quot; roles=&quot;role1&quot;/&gt;
+  &lt;user username=&quot;both&quot; password=&quot;yourpassword&quot; roles=&quot;tomcat,role1&quot;/&gt;
+</code></pre><ul>
+<li>常见坑．启动时报错<code>Tomcat Neither the JAVA_HOME nor the JRE_HOME environment variable is defined</code>.应该是java环境变量的问题，但是系统环境的变量已经配置好了．于是又在tomcat/bin/catalina.sh
+添加</li>
+</ul>
+<pre><code>export JAVA_HOME=/usr/local/jdk1.8.0_121
+export JRE_HOME=/usr/local/jdk1.8.0_121 /jre
+</code></pre><h2 id="mysql">MySQL</h2>
+<p>查看MySQL进程</p>
+<pre><code>ps -aux|grep mysql
+mysql     1379  0.0  1.9 1236388 155188 ?      Ssl  17:42   0:01 /usr/sbin/mysqld
+lee      13163  0.0  0.0  15964   960 pts/7    S+   19:04   0:00 grep --color=auto mysql
+</code></pre><p>检查MySQL监听端口</p>
+<pre><code>netstat -nlt|grep 3306
+tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
+</code></pre><p>访问MySQL</p>
+<pre><code>msql -u root -p
+</code></pre><p>输入安装时设置的密码．
+<img src="/images/mysqllogin.png" alt="">
+修改字符编码为utf-8
+试几个简单的命令
+<img src="/images/mysqlshow.png" alt="">
+接下来输入<code>show variables like '%char%';</code>查看字符编码；
+默认不是utf-8,打开MySQL服务器的配置文件my.cnf,添加</p>
+<pre><code>[client]
+default-character-set=utf8
+[mysqld]
+character-set-server=utf8
+collation-server=utf8_general_ci
+</code></pre><p>重启MySQL<code>sudo /etc/init.d/mysql restart</code>,再次查看字符编码看是否生效了．</p>
+<h2 id="intellij-idea">IntelliJ IDEA</h2>
+<h2 id="微信测试号">微信测试号</h2>
+<p><a href="https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login">测试号申请</a>,个人公众号的话，不开放很多接口，很不方便．开发阶段用测试号应该不错．而且网页回调域名也支持用ip地址.</p>
+<h1 id="初试java-web">初试Java web</h1>
+<h2 id="maven">maven</h2>
+<p>maven是一个类似gradle的东西(笑).
+项目目录，resources目录下为资源文件，webapp下是网页的配置和jsp文件．pom.xml(Project Object Model),可以说是项目的配置文件吧，依赖管理也在这．然后创建并设置java目录为source folders.
+<img src="/images/mavenD.png" alt=""></p>
+<h2 id="jsp页面">JSP页面</h2>
+<p>接下来看webapp下的引人注目的index.jsp．
+<img src="/images/indexjsp.png" alt="">
+嗯．还可以和javascript混合编程．感觉好强大．maven导出war包
+<img src="/images/war.png" alt="">
+然后放到tomcat/webapps下或者直接在Tomcat Manager里部署．
+打开网页．一个简单java web 应用差不多这样．．
+<img src="/images/hellojsp.png" alt=""></p>
+<h2 id="servlet测试">Servlet测试</h2>
+<p>Servlet是最重要的一个环节，也就是响应请求和发送网页请求的．
+创建一个TestServlet继承HttpServlet，重写doGet和doPost方法．这两个方法在以后微信公众号开发中要用到多次(反正是涉及网页请求的：微信的Token验证，网页授权回调，获取用户信息．)
+<img src="/images/webxml.png" alt="">
+在web.xml里配置servlet．</p>
+<pre><code> &lt;servlet&gt;
+    &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;Servlet.TestServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/test1&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+</code></pre><p>也可以在TestServlet里用注释方法配置<code>@WebServlet(name = &quot;TestServlet&quot;,urlPatterns={&quot;/test1&quot;})</code>
+<img src="/images/helloservlet.png" alt=""></p>
+<h1 id="未完待续">未完待续．．．</h1>
+        </div>
+
+        
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/%E6%8A%80%E6%9C%AF'>技术</a></li>
+                
+                <li><a href='https://leer.moe/tags/web'>Web</a></li>
+                
+                <li><a href='https://leer.moe/tags/%E5%BE%AE%E4%BF%A1'>微信</a></li>
+                
+                <li><a href='https://leer.moe/tags/java'>Java</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/crime_and_punishment/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/minesweeper/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/install_manjaro/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/ros/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/java-concurrent-aqs/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

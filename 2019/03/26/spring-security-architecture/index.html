@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Spring Security 架构 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="Spring Security 架构 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-03-26T20:31:21&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-03-26T20:31:21&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Spring Security 架构">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2019/03/26/spring-security-architecture/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#认证和访问控制">认证和访问控制</a>
+      <ul>
+        <li><a href="#认证authentication">认证（Authentication）</a></li>
+        <li><a href="#授权authorization">授权（Authorization）</a></li>
+      </ul>
+    </li>
+    <li><a href="#web-安全">Web 安全</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#method-安全">Method 安全</a></li>
+    <li><a href="#spring-security-和线程">Spring Security 和线程</a>
+      <ul>
+        <li><a href="#异步执行安全方法">异步执行安全方法</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Spring Security 架构</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年3月26日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
+<p>原文：<a href="https://spring.io/guides/topicals/spring-security-architecture/">Spring Security Architecture</a></p>
+<p>译者：<a href="https://github.com/LeeReindeer">LeeR</a></p>
+</blockquote>
+<p>本文是 Spring Security 的入门指南，深入解析了 Spring Security 框架的设计和基础模块。我们仅涉及程序安全性的基础知识，但是这可以帮助使用 Spring Security 的开发者解开一些疑惑。为此，我们如何使用 filter 和方法注解来实践 web 应用的安全。如果你想在更高层次上理解如何保障应用安全性，或者想要定制应用安全，又或者你只是想了解设计应用安全的思路，那么本指南就很适合你。</p>
+<p>本指南不是解决最基本问题之外的用户手册（这样文章已经有很多了），但是本文对初学者和高手都有一定的帮助。Spring Boot 在本文中经常被提及，因为它为 Spring Security 提供了一些默认配置并且这有助于理解 Spring Security 是如何适应整个架构的。而所有这些原则对不使用 Spring Boot 的应用同样适用。</p>
+<h2 id="认证和访问控制">认证和访问控制</h2>
+<p>应用安全总结起来就是两大问题：认证（authentication，你是谁？）和授权（authorization，允许你做什么？）有时候也会用访问控制（access control）这个名词来代替授权，这会让我们一些困惑，但以这种方式思考可能会有帮助：“授权”在其他地方已经实现了。Spring Security 的架构旨在将认证从授权中分离出来，并也有适用于两者的策略和可扩展的设计。</p>
+<h3 id="认证authentication">认证（Authentication）</h3>
+<p>用于认证的主要接口是<code>AuthenticationManager</code>，它只有一个方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AuthenticationManager</span> <span style="color:#f92672">{</span>
+  Authentication <span style="color:#a6e22e">authenticate</span><span style="color:#f92672">(</span>Authentication authentication<span style="color:#f92672">)</span>
+    <span style="color:#66d9ef">throws</span> AuthenticationException<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>一个 <code>AuthenticationManager</code> 的<code>authenticate()</code>方法中有三种情况：</p>
+<ol>
+<li>返回 <code>Authentication</code> (<code>authenticated=true</code>），如果验证输入是合法的<code>Principal</code>）。</li>
+<li>抛出<code>AuthenticationException</code>异常，如果输入不合法。</li>
+<li>如果无法判断，则返回<code>null</code>。</li>
+</ol>
+<p><code>AuthenticationException</code>是一个运行时异常，通常被应用程序以常规的方式的处理，这取决于应用的母的和代码风格。换句话说，代码中一般不会捕捉和处理这个异常。比如，可以使得网页显示认证失败，后端返回 401 HTTP 状态码，响应头中的<code>WWW-Authenticate</code> 有无视情况而定。</p>
+<p><code>AuthenticationManager</code>最普遍的实现是<code>ProviderManager</code>，<code>ProviderManager</code>将认证委托给一系列的<code>AuthenticationProvider</code>实例 。<code>AuthenticationProvider</code> 和 <code>AuthenticationManager</code> 很类似，但是它有一个额外的方法允许查询它支持的<code>Authentication</code>方式：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AuthenticationProvider</span> <span style="color:#f92672">{</span>
+	Authentication <span style="color:#a6e22e">authenticate</span><span style="color:#f92672">(</span>Authentication authentication<span style="color:#f92672">)</span>
+			<span style="color:#66d9ef">throws</span> AuthenticationException<span style="color:#f92672">;</span>
+
+	<span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">supports</span><span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> authentication<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p><code>supports</code>方法的<code>Class&lt;?&gt; authentication </code>参数其实是<code>Class&lt;? extends Authentication&gt;</code>类型的。一个<code>ProviderManager</code>在一个应用中能支持多种不同的认证机制，通过将认证委托给一系列的<code>AuthenticationProvider</code>。<code>ProviderManager</code>没有识别出的认证类型，将会被忽略。</p>
+<p>每个<code>ProviderManager</code>可以有一个父类，如果所有<code>AuthenticationProvider</code>都返回<code>null</code>，那么就交给父类去认证。如果父类也不可用，则抛出<code>AuthenticationException</code>异常。</p>
+<p>有时应用的资源会有逻辑分组（比如所有网站资源都匹配URL<code>/api/**</code>），并且每个组都有自己的<code>AuthenticationManager</code>，通常是一个<code>ProviderManager</code>，它们之间有共同的父类认证器。那么父类就是一种全局资源，充当所有认证器的 fallback。</p>
+<p><img src="/images/spring-security-authentication.png" alt=""></p>
+<blockquote>
+<p>图1 ProviderManager 的继承关系</p>
+</blockquote>
+<h4 id="自定义authenticationmanager">自定义<code>AuthenticationManager</code></h4>
+<p>Spring Security 提供了一些配置方式帮助你快速的配置通用的<code>AuthenticationManager</code>。最常见的是<code>AuthenticationManagerBuilder</code>，它可以使用内存方式（in-memory）、JDBC 或 LDAP、或自定义的<code>UserDetailService</code>来认证用户。下面是设置全局认证器的例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ApplicationSecurity</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter <span style="color:#f92672">{</span>
+
+   <span style="color:#f92672">...</span> <span style="color:#75715e">// web stuff here
+</span><span style="color:#75715e"></span>
+  <span style="color:#a6e22e">@Autowired</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">initialize</span><span style="color:#f92672">(</span>AuthenticationManagerBuilder builder<span style="color:#f92672">,</span> DataSource dataSource<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    builder<span style="color:#f92672">.</span><span style="color:#a6e22e">jdbcAuthentication</span><span style="color:#f92672">().</span><span style="color:#a6e22e">dataSource</span><span style="color:#f92672">(</span>dataSource<span style="color:#f92672">).</span><span style="color:#a6e22e">withUser</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;dave&#34;</span><span style="color:#f92672">)</span>
+      <span style="color:#f92672">.</span><span style="color:#a6e22e">password</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;secret&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">roles</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;USER&#34;</span><span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>虽然这个例子仅仅设计一个 web 应用，但是<code>AuthenticationManagerBuilder</code>的用处大为广阔（详细情况请看[Web 安全](#Web 安全)是如何实现的）。请注意<code>AuthenticationManagerBuilder</code>是通过<code>@AutoWired</code>注入到被<code>@Bean</code>注解的一个方法中的，这使得它成为一个全局<code>AuthenticationManager</code>。相反的，如果我们这样写：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ApplicationSecurity</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter <span style="color:#f92672">{</span>
+
+  <span style="color:#a6e22e">@Autowired</span>
+  DataSource dataSource<span style="color:#f92672">;</span>
+
+   <span style="color:#f92672">...</span> <span style="color:#75715e">// web stuff here
+</span><span style="color:#75715e"></span>
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">configure</span><span style="color:#f92672">(</span>AuthenticationManagerBuilder builder<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    builder<span style="color:#f92672">.</span><span style="color:#a6e22e">jdbcAuthentication</span><span style="color:#f92672">().</span><span style="color:#a6e22e">dataSource</span><span style="color:#f92672">(</span>dataSource<span style="color:#f92672">).</span><span style="color:#a6e22e">withUser</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;dave&#34;</span><span style="color:#f92672">)</span>
+      <span style="color:#f92672">.</span><span style="color:#a6e22e">password</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;secret&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">roles</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;USER&#34;</span><span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>重写<code>configure(AuthenticationManagerBuilder builder)</code>方法，那么<code>AuthenticationManagerBuilder</code>仅会构造一个“本地”的<code>AuthenticationManager</code>，只是全局认证器的一个子实现。在 Spring Boot 应用中你可以使用<code>@Autowired</code>注入全局的<code>AuthenticationManager</code>，但是你不能注入“本地”的，除非你自己公开暴露它。</p>
+<p>Spring Boot 提供默认的全局<code>AuthenticationManager</code>，除非你提供自己的全局<code>AuthenticationManager</code>。不用担心，默认的已经足够安全了，除非你真的需要一个自定义的全局<code>AuthenticationManager</code>。一般的，你只需只用“本地”的<code>AuthenticationManagerBuilder</code>来配置，而不需要担心全局的。</p>
+<h3 id="授权authorization">授权（Authorization）</h3>
+<p>一旦认证成功，我们就可以进行授权了，它核心的策略就是<code>AccessDecisionManager</code>。它提供三个方法并且全部委托给<code>AccessDecisionVoter</code>，这有点像<code>ProviderManager</code>将认证委托给<code>AuthenticationProvider</code>。</p>
+<p>一个<code>AccessDecisionVoter</code>考虑一个<code>Authentication</code>（代表一个<code>Principal</code>）和一个被<code>ConfigAttributes</code>装饰的安全对象：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">supports</span><span style="color:#f92672">(</span>ConfigAttribute attribute<span style="color:#f92672">);</span>
+
+<span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">supports</span><span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> clazz<span style="color:#f92672">);</span>
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">vote</span><span style="color:#f92672">(</span>Authentication authentication<span style="color:#f92672">,</span> S object<span style="color:#f92672">,</span>
+        Collection<span style="color:#f92672">&lt;</span>ConfigAttribute<span style="color:#f92672">&gt;</span> attributes<span style="color:#f92672">);</span>
+</code></pre></div><p><code>AccessDecisionVoter</code>和``AccessDecisionManager<code>方法中的</code>object<code>参数是完全泛型化的，它代表任何用户想要访问（web 资源或 Java 方法是最常见的两种情况）。</code>ConfigAttributes<code>也是相当泛型化的，它表示一个被装饰的安全对象并带有访问权限级别的元数据。</code>ConfigAttributes<code>是一个接口，仅有一个返回</code>String<code>的方法，返回的字符串中包含资源所有者，解释了访问资源的规则。常见的</code>ConfigAttributes<code>是用户的角色（比如</code>ROLE_ADMIN<code>和</code>ROLE_AUDIT<code>），它们通常有一定的格式（比如以</code>ROLE_`作为前缀）或者是可计算的表达式。</p>
+<p>大部分人使用默认的<code>AccessDecisionManager</code>，即<code>AffirmativeBased</code>（如果没有 voters 返回那么该访问将被授权）。任何自定义的行为最好放在 voter 中，不乱世添加一个新的 voter 还是修改已有的 voter。</p>
+<p>使用 Spring Expression Language（SpEL）表达式的<code>ConfigAttributes</code>是很常见的，比如<code>isFullyAuthenticated() &amp;&amp; hasRole('FOO')</code>。解析表达式和加载表达式由<code>AccessDecisionVoter</code>实现。要扩展可处理的表达式的范围，需要自定义<code>SecurityExpressionRoot</code>，优势也需要<code>SecurityExpressionHandler</code>。</p>
+<h2 id="web-安全">Web 安全</h2>
+<p>Web 层中的 Spring Security 基于 Servlet 的<code>Filter</code>。所以先来看下<code>Filter</code>在 web 安全中所扮演的角色。下图展示了处理单个 HTTP 请求的经典分层结构。</p>
+<p><img src="/images/servlet-filters.png" alt=""></p>
+<p>客户端向应用发送请求，然后容器根据 URI 来决定哪个 filter（过滤器） 和哪个 Servlet 适用于它。一个 servlet 最多处理一个请求，过滤器是链式的，它们是有顺序的。事实上一个过滤器可以否决接下来的过滤器，如果它想独自处理这个请求的话。一个过滤器也可以对下流的过滤器和 servlet 修改响应和请求。所以过滤器的顺序十分重要，Spring Boot 提供管理过滤器的两种机制：一个是被<code>@Bean</code>注解的<code>Filter</code>可以用<code>@Order</code>注解或实现<code>Ordered</code>接口；另一个是过滤器是<code>FilterRegistrationBean</code>的一部分，它本身就有一个顺序。一些现有的过滤器定义了自己的常量来表示顺序，以帮助表明他们相对于彼此的顺序（比如 Spring Session 中的<code>SessionRepositoryFilter</code>的<code>DEFAULT_ORDER</code>的值为<code>Integer.MIN_VALUE + 50</code>，它表示这个过滤器相对的在过滤链的前端，但是也不排斥在它之前的过滤器，前面还剩下50个位置）。</p>
+<p>Spring Security 在过滤链中表现为一个<code>Filter</code>，其类型是<code>FilterChainProxy</code>，原因你很快就会知道。在一个 Spring Boot 应用中安全过滤器是<code>ApplicationContext</code>中的一个<code>Bean</code>，并且它是默认配置的，所以在每次请求中都会存在。而它在过滤链中的位置由<code>SecurityProperties.DEFAULT_FILTER_ORDER</code>决定，而该位置又由<code>FilterRegistrationBean.REQUEST_WRAPPER_FILTER_MAX_ORDER</code>（值为0，是 Spring Boot 中改变请求行为的过滤器的顺序的最大值）锚定。（译者注：<code>Order</code>的值越小，越在过滤链的前端）。除此之外，从容器的角度来看 Spring Security 是一个单独的过滤器，但是其中包含了额外过滤器，每个过滤器都发挥特殊的作用，如下图所示：</p>
+<p><img src="/images/security-filters.png" alt=""></p>
+<blockquote>
+<p>图2 Spring Security 是一个单独的物理过滤器，但是它将请求委托一系列的内部过滤器</p>
+</blockquote>
+<p>事实上内部的安全过滤器不止一个层次结构：它们通常是<code>DelegatingFilterProxy</code>，不需要是一个 Spring <code>Bean</code>。代理委托给<code>FilterChainProxy</code>，而它是一个<code>Bean</code>，bean 的名字通常是<code>springSecurityFilterChain</code>。<code>FilterChainProxy</code>包含了所有内部安全过滤器，并且以一定顺序排列成过滤链。其中所有的过滤器都有相同的 API（它们都实现了Servlet规范的<code>Filter</code>接口），它们都有机会否决过滤链的下流部分。</p>
+<p>Spring Security 可以在同一顶层<code>FilterChainProxy</code>中管理多个过滤器链，并且对容器来说都是未知的。Spring Security Filter 包含了一系列的过滤链，并且向这些链分发匹配它们的请求。下图展示了根据请求路径来分发（<code>/foo/**</code>在<code>/**</code>之前匹配）。这是一种常见但不是唯一的分发方式。最重要的特征是，分发过程中，只有一条过滤链只处理该请求。</p>
+<p><img src="/images/security-filters-dispatch.png" alt=""></p>
+<blockquote>
+<p>图3 Spring Security <code>FilterChainProxy</code> 分发请求给首先匹配的过滤链。</p>
+</blockquote>
+<p>一个纯净的（没有自定义安全配置的） Spring Boot 应用通常有 n 条过滤链，n = 6。第一条链（n-1）是忽略静态资源的，比如<code>/css/**</code>和<code>/images/**</code>，和错误页面<code>/error</code>(这些路径可以在<code>SecurityProperties</code>中的<code>security.ignored</code>里配置)。最后一条链匹配所有路径<code>/**</code>，并且包含认证逻辑、授权、异常处理、session 处理，响应头处理等。这条过滤链中默认一共有 11 个过滤器，我们一般不关心使用哪个过滤器以及在何时使用他们。</p>
+<blockquote>
+<p><strong>注意：<strong>意识到 Spring Security 的内部过滤器对容器是透明的这是很重要的，所有的<code>Filter</code>都以<code>@Bean</code>的方式自动注册到容器中。所以如果你想在安全过滤链中添加过滤器，你</strong>不需要</strong>使用<code>@Bean</code>注解或将其包裹在显示禁用容器注册的<code>FilterRegistrationBean</code>中。</p>
+</blockquote>
+<h4 id="创建和自定义过滤链">创建和自定义过滤链</h4>
+<p>Spring Boot 中默认的 fallback 过滤链（使用<code>/**</code>匹配的过滤链）有一个预定义的顺序<code>SecurityProperties.BASIC_AUTH_ORDER</code>。你可以使用<code>security.base.enabled=false</code>关闭它，或者你可以定义一个更低的顺序值（译者注：越低的值表示顺序更前，所以它的顺序在默认的 fallback 之前）。只要添加一个<code>WebSecurityConfigurerAdapter</code>或<code>WebSecurityConfigurer</code>的 Bean 然后用<code>@Order</code>注解。比如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<span style="color:#a6e22e">@Order</span><span style="color:#f92672">(</span>SecurityProperties<span style="color:#f92672">.</span><span style="color:#a6e22e">BASIC_AUTH_ORDER</span> <span style="color:#f92672">-</span> 10<span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ApplicationConfigurerAdapter</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter <span style="color:#f92672">{</span>
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span><span style="color:#f92672">(</span>HttpSecurity http<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+    http<span style="color:#f92672">.</span><span style="color:#a6e22e">antMatcher</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/foo/**&#34;</span><span style="color:#f92672">)</span>
+     <span style="color:#f92672">...;</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>这个 Bean 将导致 Spring Security 在默认的 fallback 之前添加一个过滤链。</p>
+<p>许多应用中对一组资源的和另一组资源的访问规则可能大不相同。比如一个有前端页面和后端 API 的应用支持基于 cookie 的认证将用户重定向到登录界面，同时也支持基于 token 的认证，认证失败将返回 401 响应码。每组资源有它自己的<code>WebSecurityConfigurerAdapter</code>，并且有这唯一的顺序和他自己的请求匹配规则。如果匹配规则重叠，则匹配顺序最前的过滤链。</p>
+<h4 id="请求匹配分发和授权">请求匹配分发和授权</h4>
+<p>一条安全过滤链（等价的 ，就是一个<code>WebSecurityConfigurerAdapter</code>）拥有一个请求匹配规则用来匹配 HTTP 请求。一旦有应用了一条过滤链，则其他过滤链就不会使用。但在一条过滤链中，你可以通过<code>HttpSecurity</code>在<strong>更细的粒度</strong>上配置匹配规则。比如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<span style="color:#a6e22e">@Order</span><span style="color:#f92672">(</span>SecurityProperties<span style="color:#f92672">.</span><span style="color:#a6e22e">BASIC_AUTH_ORDER</span> <span style="color:#f92672">-</span> 10<span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ApplicationConfigurerAdapter</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter <span style="color:#f92672">{</span>
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span><span style="color:#f92672">(</span>HttpSecurity http<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+    http<span style="color:#f92672">.</span><span style="color:#a6e22e">antMatcher</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/foo/**&#34;</span><span style="color:#f92672">)</span>
+      <span style="color:#f92672">.</span><span style="color:#a6e22e">authorizeRequests</span><span style="color:#f92672">()</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">antMatchers</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/foo/bar&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">hasRole</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;BAR&#34;</span><span style="color:#f92672">)</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">antMatchers</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/foo/spam&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">hasRole</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;SPAM&#34;</span><span style="color:#f92672">)</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">anyRequest</span><span style="color:#f92672">().</span><span style="color:#a6e22e">isAuthenticated</span><span style="color:#f92672">();</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>配置 Spring Security 最容易犯的一个错误就是忘记匹配规则可以应用在不同的范围中，一个是整条过滤链，另一个是应用于过滤链匹配规则中的规则。</p>
+<h4 id="将应用安全规则与actuator-规则结合">将应用安全规则与Actuator 规则结合</h4>
+<p>略</p>
+<h2 id="method-安全">Method 安全</h2>
+<p>Spring Security 在支持 web 安全的同时，也提供了对 Java 方法执行的访问规则。对于 Spring Security 来说，方法只是一种不同类型的“资源”而已。对用户来说，访问规则在<code>ConfigAttribute</code>中有相同的格式（比如 角色 或者 表达式），但在代码中有不同的配置。第一步就是启用方法安全，比如你可以在应用的启动类上进行配置：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@SpringBootApplication</span>
+<span style="color:#a6e22e">@EnableGlobalMethodSecurity</span><span style="color:#f92672">(</span>securedEnabled <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SampleSecureApplication</span> <span style="color:#f92672">{</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>之后，便可以在方法上直接使用注解：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Service</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyService</span> <span style="color:#f92672">{</span>
+
+  <span style="color:#a6e22e">@Secured</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ROLE_USER&#34;</span><span style="color:#f92672">)</span>
+  <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">secure</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Hello Security&#34;</span><span style="color:#f92672">;</span>
+  <span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>这个例子是一个有<em>安全方法</em>的服务。如果 Spring 创建了<code>MyService</code> Bean，那么它将被代理，调用者必须在方法调用之前通过一个安全拦截器。如果访问被拒绝，调用者会抛出一个<code>AccessDeniedException</code>而不是执行这个方法的结果。</p>
+<p>还有其他可用于强制执行安全约束的方法注解，特别是<code>@PreAuthorize</code> 和 <code>@PostAuthorize</code>, 它们允许你在其中写 SpEL 表达式并可以引用方法的参数和返回值。</p>
+<blockquote>
+<p>**提示：**把 web 安全和方法安全放在一起并不突兀。过滤链提供了用户体验特性，比如认证和重定向到登录界面。而方法安全在更细粒度级别上提供了保护。</p>
+</blockquote>
+<h2 id="spring-security-和线程">Spring Security 和线程</h2>
+<p>Spring Security是线程绑定的，因为它需要保证当前的已认证的用户（authenticated principal）对下流的消费者可用。基本构建块是<code>SecurityContext</code>，它可能包含<code>Authentication</code>（当一个用户登陆后，<code>authenticated</code>肯定是 <code>true</code>）。你总是可以从<code>SecurityContextHolder</code>中的静态方法得到<code>SecurityContext</code>，它内部使用了<code>ThreadLocal</code>进行管理。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">SecurityContext context <span style="color:#f92672">=</span> SecurityContextHolder<span style="color:#f92672">.</span><span style="color:#a6e22e">getContext</span><span style="color:#f92672">();</span>
+Authentication authentication <span style="color:#f92672">=</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">getAuthentication</span><span style="color:#f92672">();</span>
+<span style="color:#66d9ef">assert</span><span style="color:#f92672">(</span>authentication<span style="color:#f92672">.</span><span style="color:#a6e22e">isAuthenticated</span><span style="color:#f92672">);</span>
+</code></pre></div><p>这种操作并不常见，但是它可能对你有帮助。比如，你需要写一个自定义的认证过滤器（尽管如此，Spring Security 中还有一些基类可用于避免使用<code>SecurityContextHolder</code>的地方）。</p>
+<p>如果需要访问 web endpoint（译者注：对应响应的 URL） 中经过身份验证的用户，则可以在<code>@RequestMapping</code>中使用方法参数注解。例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/foo&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">foo</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@AuthenticationPrincipal</span> User user<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#f92672">...</span> <span style="color:#75715e">// do stuff with user
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><p>这个注解相当于从<code>SecurityContext</code>中获得当前<code>Authentication</code>，并调用<code>getPrincipal()</code>方法赋值给方法参数。<code>Authentication</code>中的<code>Principal</code>取决与用来认证的<code>AuthenticationManager</code>，所以这对于获得对用户数据类型的安全引用来说是一个有用的小技巧。</p>
+<p>如果使用了 Spring Security，那么在<code>HttpServletRequest</code>中的<code>Principal</code>将是<code>Authentication</code>类型，因此你也可以直接使用它：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/foo&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">foo</span><span style="color:#f92672">(</span>Principal principal<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  Authentication authentication <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Authentication<span style="color:#f92672">)</span> principal<span style="color:#f92672">;</span>
+  User <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>User<span style="color:#f92672">)</span> authentication<span style="color:#f92672">.</span><span style="color:#a6e22e">getPrincipal</span><span style="color:#f92672">();</span>
+  <span style="color:#f92672">...</span> <span style="color:#75715e">// do stuff with user
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><p>如果你需要编写在没有使用 Spring Security 的情况下的代码，那么这会很有用（你需要在加载<code>Authentication</code>类时更加谨慎）。</p>
+<h3 id="异步执行安全方法">异步执行安全方法</h3>
+<p>因为<code>SecurityContext</code>是线程绑定的，所以如果你想在后台执行安全方法，比如使用<code>@Async</code>，你需要确保上下文的传递。这总结起来就是将<code>SecurityContext</code>用<code>Runnable</code>、<code>Callable</code>等包裹起来在后台执行。Spring Security 提供了一些帮助使之变得简单，比如<code>Runnable</code>和<code>Callable</code>的包装器。 要将 <code>SecurityContext</code> 传递到<code>@Async</code>注解的方法，你需要编写 <code>AsyncConfigurer</code> 并确保 <code>Executor</code> 的正确性：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ApplicationConfiguration</span> <span style="color:#66d9ef">extends</span> AsyncConfigurerSupport <span style="color:#f92672">{</span>
+
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">public</span> Executor <span style="color:#a6e22e">getAsyncExecutor</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> DelegatingSecurityContextExecutorService<span style="color:#f92672">(</span>Executors<span style="color:#f92672">.</span><span style="color:#a6e22e">newFixedThreadPool</span><span style="color:#f92672">(</span>5<span style="color:#f92672">));</span>
+  <span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2019/03/09/jpa-hibernate-spring-data-jpa/">JPA、Hibernate、Spring Data JPA 傻傻分不清？</a></li>
+        
+        <li><a href="/2018/11/10/spring_aop/">【Spring 揭秘（二）】Spring AOP</a></li>
+        
+        <li><a href="/2018/11/10/spring_bean/">【Spring 揭秘（一）】Spring Bean DI and Instantiating</a></li>
+        
+        <li><a href="/2017/11/29/android-kotlin-style-guides/">Android Kotlin 代码规范</a></li>
+        
+        <li><a href="/2017/09/18/google-java-style-guide/">Google Java 代码规范</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/spring'>Spring</a></li>
+                
+                <li><a href='https://leer.moe/tags/%E7%BF%BB%E8%AF%91'>翻译</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/crime_and_punishment/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/minesweeper/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/install_manjaro/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/ros/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/java-concurrent-aqs/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

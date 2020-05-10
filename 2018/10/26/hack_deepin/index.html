@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>【瞎折腾】Hack Deepin Desktop Environment | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="【瞎折腾】Hack Deepin Desktop Environment - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-10-26T14:31:21&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-10-26T14:31:21&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="【瞎折腾】Hack Deepin Desktop Environment">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2018/10/26/hack_deepin/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#我想要什么">我想要什么？</a>
+      <ul>
+        <li><a href="#开发环境">开发环境</a></li>
+      </ul>
+    </li>
+    <li><a href="#继续折腾">继续折腾</a></li>
+    <li><a href="#触控板横向滑动">触控板横向滑动</a></li>
+    <li><a href="#ｏ口ｏ">Ｏ(≧口≦)Ｏ</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">【瞎折腾】Hack Deepin Desktop Environment</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年10月26日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4'>实验室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <h2 id="我想要什么">我想要什么？</h2>
+<p>初来乍到 Deepin，界面不可谓不美观。试用不久就发现一个不爽的地方，键盘快捷方式太少了，特别是没有控制窗口停靠贴标的快捷方式，根本就没有这个选项。</p>
+<p>在官方论坛里搜索一番，<code>deepin-wm</code>的 commit message 中有一条 <code>:feat: support interactive tiling</code>，这个新功能在<a href="https://bbs.deepin.org/forum.php?mod=viewthread&amp;tid=155171">官方论坛</a>中也有介绍：</p>
+<blockquote>
+<p>1、当一个窗口拖到边界分屏的时候；
+2、剩下的应用窗口会全部平铺展示；
+3、这时候点击剩下的应用窗口，会自动放置在另一半屏幕，方便左右对比；</p>
+</blockquote>
+<p>于是，我就安装了这个版本的deepin-wm，并找到了<a href="https://github.com/LeeReindeer/deepin-wm/blob/master/src/Deepin/DeepinTileSelector.vala#L133">这段代码的位置</a></p>
+<p>这个拖动的过程大概可以分成：</p>
+<ul>
+<li>鼠标移动到 window title 部分，触控板按下不放</li>
+<li>开始移动</li>
+<li>移动到特定的触发区域（屏幕边界），显示 window preview</li>
+<li>放开触控板，窗口改变位置至屏幕的一侧，大小为屏幕宽度的一半。</li>
+<li>显示 <code>TileSelector</code>，来选择另一个需要平铺的窗口。</li>
+</ul>
+<h3 id="开发环境">开发环境</h3>
+<ul>
+<li>
+<p>各种依赖（官方文档里有具体的）</p>
+</li>
+<li>
+<p><a href="https://github.com/linuxdeepin/deepin-wm/issues/33">deepin-mutter 3.20.30</a></p>
+</li>
+<li>
+<p>deepin-wm (<code>git reset ce50 --hard</code>)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">  ./autogen.sh --prefix<span style="color:#f92672">=</span>/usr <span style="color:#f92672">&amp;&amp;</span> make
+  sudo make install
+</code></pre></div></li>
+</ul>
+<p>但是都不是我想要的，没有快捷方式！！不想用鼠标来拖动啊！！</p>
+<h2 id="继续折腾">继续折腾</h2>
+<p>意外的在<code>vi /usr/share/dde-daemon/gesture.json</code>发现下面的配置：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">	 {
+		  <span style="color:#f92672">&#34;Name&#34;</span>: <span style="color:#e6db74">&#34;swipe&#34;</span>,
+          <span style="color:#f92672">&#34;Direction&#34;</span>: <span style="color:#e6db74">&#34;left&#34;</span>,
+          <span style="color:#f92672">&#34;Fingers&#34;</span>: <span style="color:#ae81ff">3</span>,
+          <span style="color:#f92672">&#34;Action&#34;</span>: {
+              <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;built-in&#34;</span>,
+              <span style="color:#f92672">&#34;Action&#34;</span>: <span style="color:#e6db74">&#34;SplitWindowLeft&#34;</span>
+          }
+      }<span style="color:#960050;background-color:#1e0010">,</span>
+      {
+          <span style="color:#f92672">&#34;Name&#34;</span>: <span style="color:#e6db74">&#34;swipe&#34;</span>,
+          <span style="color:#f92672">&#34;Direction&#34;</span>: <span style="color:#e6db74">&#34;right&#34;</span>,
+          <span style="color:#f92672">&#34;Fingers&#34;</span>: <span style="color:#ae81ff">3</span>,
+          <span style="color:#f92672">&#34;Action&#34;</span>: {
+              <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;built-in&#34;</span>,
+              <span style="color:#f92672">&#34;Action&#34;</span>: <span style="color:#e6db74">&#34;SplitWindowRight&#34;</span>
+          }
+      }
+
+</code></pre></div><p>这也算是一个意外的收获，毕竟不需要拖动窗口了，只需要用三根手指滑动。但是想想这姿势，就有点尴尬。。。</p>
+<p>于是找到<code>dde-daemon</code>这个项目，发现时用 go 写的，还行。在 <code>gesture</code>包下的 <a href="https://github.com/linuxdeepin/dde-daemon/blob/master/gesture/built-in.go">built-in.go</a>即是这个配置文件中 action 的实现。但是其实只有对<code>wm</code>方法的调用：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> (
+	<span style="color:#a6e22e">wmTileDirectionLeft</span> <span style="color:#66d9ef">uint32</span> = <span style="color:#66d9ef">iota</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+	<span style="color:#a6e22e">wmTileDirectionRight</span>
+)
+<span style="color:#75715e">//...
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Manager</span>) <span style="color:#a6e22e">doTileActiveWindowLeft</span>() <span style="color:#66d9ef">error</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">wm</span>.<span style="color:#a6e22e">TileActiveWindow</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">wmTileDirectionLeft</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Manager</span>) <span style="color:#a6e22e">doTileActiveWindowRight</span>() <span style="color:#66d9ef">error</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">wm</span>.<span style="color:#a6e22e">TileActiveWindow</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">wmTileDirectionRight</span>)
+</code></pre></div><p>其中<code>wmTileDirectionLeft</code>为 1，<code>wmTileDirectionRight</code>为 2。使用到的 <code>wm</code>是在<code>go-debug-factory</code>下的<code>com.deepin.wm/auto.go</code>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">v</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">wm</span>) <span style="color:#a6e22e">GetObject_</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">proxy</span>.<span style="color:#a6e22e">Object</span> {
+	<span style="color:#66d9ef">return</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">proxy</span>.<span style="color:#a6e22e">Object</span>)(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#a6e22e">v</span>))
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">wm</span>) <span style="color:#a6e22e">GetInterfaceName_</span>() <span style="color:#66d9ef">string</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;com.deepin.wm&#34;</span>
+}
+<span style="color:#75715e">//...
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">v</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">wm</span>) <span style="color:#a6e22e">GoTileActiveWindow</span>(<span style="color:#a6e22e">flags</span> <span style="color:#a6e22e">dbus</span>.<span style="color:#a6e22e">Flags</span>, <span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">dbus</span>.<span style="color:#a6e22e">Call</span>, <span style="color:#a6e22e">side</span> <span style="color:#66d9ef">uint32</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">dbus</span>.<span style="color:#a6e22e">Call</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">GetObject_</span>().<span style="color:#a6e22e">Go_</span>(<span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">GetInterfaceName_</span>()<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;.TileActiveWindow&#34;</span>, <span style="color:#a6e22e">flags</span>, <span style="color:#a6e22e">ch</span>, <span style="color:#a6e22e">side</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">v</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">wm</span>) <span style="color:#a6e22e">TileActiveWindow</span>(<span style="color:#a6e22e">flags</span> <span style="color:#a6e22e">dbus</span>.<span style="color:#a6e22e">Flags</span>, <span style="color:#a6e22e">side</span> <span style="color:#66d9ef">uint32</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#66d9ef">return</span> (<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">GoTileActiveWindow</span>(<span style="color:#a6e22e">flags</span>, make(<span style="color:#66d9ef">chan</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">dbus</span>.<span style="color:#a6e22e">Call</span>, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">side</span>).<span style="color:#a6e22e">Done</span>).<span style="color:#a6e22e">Err</span>
+}
+</code></pre></div><p>最终是用 dbus 调用 <code>com.deepin.wm.TileActiveWindow 1</code>, 1 代表左边，2 代表右边。</p>
+<p>所以，可以新建两个快捷方式：</p>
+<ul>
+<li><code>qdbus com.deepin.wm.TileActiveWindow 1</code></li>
+<li><code>qdbus com.deepin.wm.TileActiveWindow 2</code></li>
+</ul>
+<p><img src="/images/deepin_custom_shortcut.png" alt="image1"></p>
+<h2 id="触控板横向滑动">触控板横向滑动</h2>
+<p>Deepin 默认没有开启触控板的左右滑动，需要在终端执行：</p>
+<p>在<a href="https://bbs.deepin.org/forum.php?mod=viewthread&amp;tid=145314">官方论坛</a>里找到的解决方案：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">gsettings set com.deepin.dde.touchpad horiz-scroll-enabled true
+</code></pre></div><h2 id="ｏ口ｏ">Ｏ(≧口≦)Ｏ</h2>
+<p>一波折腾，重启电脑，开不了机了，大概卡在了启动桌面环境？又出现和上次一样的迷之错误，（今年三月份的时候也遇到过，记得当时也是换了桌面环境之后遇到的，结果重装了系统）<code>CTRL + ALT + F2</code>之类也进不去终端。</p>
+<p><img src="/images/usb_error.jpg" alt="image2"></p>
+<p>似乎是预感到会开不了机，在关机之前，我做了一个<code>Ubuntu16.04</code>启动盘。使用启动盘的<code>Try ubuntu</code> 功能，进入新系统备份了一些重要的资料。这已经是在为重装系统做准备了吧。。。</p>
+<p>最后试了试<code>recovery</code>模式进入原来的系统，可以使用<code>CTRL + ALT + F2</code>进去终端，只要可以进去就有解决的方法了。于是我卸载了 <code>dde</code>和 <code>deepin-wm</code>，切换 <code>DM</code>为 <code>lightdm</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt purge remove dde* deepin-*
+sudo dpkg-reconfigure lightdm
+</code></pre></div><p>退出<code>recovery</code>模式，进入原来的系统，终于不在出现那个迷之错误了，但是还是只能进入终端，没有图形界面。可以用这个命令启动图形界面：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo systemctl start graphical.target
+</code></pre></div><p>终于，一道光闪过，进入了 unity 桌面。</p>
+<p>不过我不甘心啊，又重新装了 <code>dde</code> ，总觉得是<code>gdm3</code>的问题，这次使用 <code>lightdm</code>进入 deepin 桌面，没什么大问题（就是不能开启 windows effect）。重启后还是一切正常。接着我把<code>DM</code>换成<code>gdm3</code>，又进不去了。。还是稳稳的用<code>lightdm</code>吧。</p>
+<p>真香！</p>
+<p><img src="/images/deepin_desktop.png" alt=""></p>
+        </div>
+
+        
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/deepin'>Deepin</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/crime_and_punishment/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/minesweeper/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/install_manjaro/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/ros/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/java-concurrent-aqs/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

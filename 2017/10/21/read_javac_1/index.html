@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Read source code of Javac-1 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="Read source code of Javac-1 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2017-10-21T18:46:18&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2017-10-21T18:46:18&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Read source code of Javac-1">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2017/10/21/read_javac_1/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-说在前面">1. 说在前面</a></li>
+    <li><a href="#2-编写测试程序">2. 编写测试程序</a></li>
+    <li><a href="#3-简单的javac源码">3. 简单的Javac源码</a>
+      <ul>
+        <li><a href="#31-javap-查看字节码指令">3.1 Javap 查看字节码指令</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-验证">4. 验证</a>
+      <ul>
+        <li><a href="#41-直接修改字节码">4.1 直接修改字节码</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Read source code of Javac-1</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年10月21日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
+<p>最近发生太多不愉快的事, 还是看看源码压压惊(.这篇大概有很多错误.</p>
+</blockquote>
+<h2 id="1-说在前面">1. 说在前面</h2>
+<p>Javac 大家(只是习惯用大家)应该用的很熟悉了.想我第一次接触 java 就是从 Javac 编译第一个程序的.到了今天,我时不时也会想这到底是怎么实现的?这个想法一直挥之不去.咦,跑题了(.</p>
+<blockquote>
+<p>&ldquo;代码编译的结果是从本地机器码转变成字节码,是存储格式发展的一小步,却是编程语言发展的一大步.&rdquo;</p>
+</blockquote>
+<p>这句话反复出现在《深入理解Java虚拟机》里.我倒是没有体会到什么发展,也可以理解为这是为了跨平台而做出的牺牲,虚拟机也为此出现.当然也有直接把 Java 源代码编译成机器码的编译器( AOT 编译器).先不管这个,从 Java 源代码到字节码到底经历了什么呢?肯定要分析处理源码的语句啊,这便是词法分析和语法分析,从而把源码变成了抽象语法树(AST).接着只要遍历语法树就得到了字节码指令流.emmm,以目前的垃圾我不可能实现的.那,先从简单的开始,这篇重点就是<strong>从源码验证一下Javac的编译结果</strong>.</p>
+<h2 id="2-编写测试程序">2. 编写测试程序</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> 200<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> 400<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">return</span>  <span style="color:#f92672">(</span>a <span style="color:#f92672">+</span> b<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> c<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>这是个简单的测试程序,没什么好说的.接着用 Javac 编译他.然后打开这个字节码文件.</p>
+<h2 id="3-简单的javac源码">3. 简单的Javac源码</h2>
+<p>经过在Javac源码里的一番随便乱翻(划掉),找到了这个文件: <code>com.sun.tools.javac.jvm.ByteCodes</code> .这是一个接口,里面只有一些常量.像这样:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ByteCodes</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#75715e">/** Byte code instruction codes.
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">int</span> illegal         <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">,</span>
+        nop             <span style="color:#f92672">=</span> 0<span style="color:#f92672">,</span>
+        aconst_null     <span style="color:#f92672">=</span> 1<span style="color:#f92672">,</span>
+        iconst_m1       <span style="color:#f92672">=</span> 2<span style="color:#f92672">,</span>
+        iconst_0        <span style="color:#f92672">=</span> 3<span style="color:#f92672">,</span>
+        iconst_1        <span style="color:#f92672">=</span> 4<span style="color:#f92672">,</span>
+        <span style="color:#f92672">......</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>一打开这个文件,我就觉得很熟悉.这些都是基于栈的指令集.以后(在 JVM 里执行时)都是对 Java VM stack 进行操作的指令.</p>
+<h3 id="31-javap-查看字节码指令">3.1 Javap 查看字节码指令</h3>
+<p>省略前面一些常量池里内容.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">();</span>
+    descriptor<span style="color:#f92672">:</span> <span style="color:#f92672">()</span>I
+    flags<span style="color:#f92672">:</span> ACC_PUBLIC
+    Code<span style="color:#f92672">:</span>
+      stack<span style="color:#f92672">=</span>2<span style="color:#f92672">,</span> locals<span style="color:#f92672">=</span>4<span style="color:#f92672">,</span> args_size<span style="color:#f92672">=</span>1
+         0<span style="color:#f92672">:</span> bipush        100
+         2<span style="color:#f92672">:</span> istore_1
+         3<span style="color:#f92672">:</span> sipush        200
+         6<span style="color:#f92672">:</span> istore_2
+         7<span style="color:#f92672">:</span> sipush        400
+        10<span style="color:#f92672">:</span> istore_3
+        11<span style="color:#f92672">:</span> iload_1
+        12<span style="color:#f92672">:</span> iload_2
+        13<span style="color:#f92672">:</span> iadd
+        14<span style="color:#f92672">:</span> iload_3
+        15<span style="color:#f92672">:</span> imul
+        16<span style="color:#f92672">:</span> ireturn
+      LineNumberTable<span style="color:#f92672">:</span>
+        line 16<span style="color:#f92672">:</span> 0
+        line 17<span style="color:#f92672">:</span> 3
+        line 18<span style="color:#f92672">:</span> 7
+        line 19<span style="color:#f92672">:</span> 11
+<span style="color:#f92672">}</span>
+</code></pre></div><ul>
+<li>
+<p><code>bipush</code> 和 <code>sipush</code> 都是将整型常量值推入栈顶的指令.</p>
+</li>
+<li>
+<p><code>istore_1</code> 是将栈顶的数出栈,并存入局部变量表的第一个位置.其他类似.</p>
+</li>
+<li>
+<p><code>iload_1</code> 则是将局部变量表的第一个位置的数推入栈顶.</p>
+</li>
+<li>
+<p><code>iadd</code> 将位于栈的前两位的数岀栈,相加,返回的结果推入栈顶. <code>imul</code> 类似,是乘法.</p>
+</li>
+</ul>
+<h2 id="4-验证">4. 验证</h2>
+<p>我们看到的字节码文件,里面是16进制数,
+可以对照 Javac 的 Bytecodes 文件得到这些指令的十进制数.为了方便查找我做了如下的注释:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">//         dec hex
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//bioush   16, 10
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//sipush   17, 11
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//istore_1 60, 3c
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//istore_2 61, 3d
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//iload_1  27, 1b
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 100<span style="color:#f92672">;</span> <span style="color:#75715e">//0x0064
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> 200<span style="color:#f92672">;</span> <span style="color:#75715e">//0x00c8
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> 400<span style="color:#f92672">;</span> <span style="color:#75715e">//0x0190
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span>  <span style="color:#f92672">(</span>a <span style="color:#f92672">+</span> b<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> c<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p>字节码文件:</p>
+<p><em>cafe babe 0000 0034 000f 0a00 0300 0c07</em></p>
+<p>&hellip;&hellip;</p>
+<p><em>0011</em> <strong>1064 3c11 00c8 3d11 0190 3e1b 1c60</strong></p>
+<p><em>1d68 ac00 0000 0100 0700 0000 1200 0400</em></p>
+<p>&hellip;&hellip;</p>
+<p>可以很明显的看出字节码文件里的16进制数和 Bytecodes.java 里的指令常量是一一对应的,跟用 Javap 查看的反编译结果也对应.</p>
+<h3 id="41-直接修改字节码">4.1 直接修改字节码</h3>
+<p>这样一来的话,是不是可以直接写字节码,而不是 Java 源代码了呢?当然可以,只有你熟悉各种指令(笑).不过简单的修改一下还是没问题的.我将原来的那行改成了:</p>
+<pre><code>1065 3c11 00c8 3d11 0190 3e1b 1c60
+</code></pre><p>只是改了个变量,接下来反射调用一下.代码如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        HotSwapClassLoader loader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HotSwapClassLoader<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bytes <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            InputStream in <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span>
+                FileInputStream<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/home/lee/IdeaProjects/playGround/src/xyz/leezoom/playground/underjvm/classenegine8/Test.class&#34;</span><span style="color:#f92672">);</span>
+            bytes <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>in<span style="color:#f92672">.</span><span style="color:#a6e22e">available</span><span style="color:#f92672">()];</span>
+            in<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>bytes<span style="color:#f92672">);</span>
+            in<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">//load class from bytecode
+</span><span style="color:#75715e"></span>        Class clazz <span style="color:#f92672">=</span> loader<span style="color:#f92672">.</span><span style="color:#a6e22e">loadClassFromByte</span><span style="color:#f92672">(</span>bytes<span style="color:#f92672">);</span>
+        <span style="color:#75715e">//invoke main method.
+</span><span style="color:#75715e"></span>        Method method<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            method <span style="color:#f92672">=</span> clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">getMethod</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;main&#34;</span><span style="color:#f92672">,</span> String<span style="color:#f92672">[].</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+            method<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">[]{</span><span style="color:#66d9ef">null</span><span style="color:#f92672">});</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>NoSuchMethodException <span style="color:#f92672">|</span> IllegalAccessException <span style="color:#f92672">|</span> InvocationTargetException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Failed to invoke method: &#34;</span> <span style="color:#f92672">+</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">getLocalizedMessage</span><span style="color:#f92672">());</span>
+        <span style="color:#f92672">}</span>
+
+    <span style="color:#f92672">}</span>
+</code></pre></div><p>修改之前:</p>
+<p><img src="/images/javac-before1.png" alt=""></p>
+<p>修改之后:</p>
+<p><img src="/images/javac-after.png" alt=""></p>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2017/09/24/gc/">Java垃圾收集器与内存分配策略</a></li>
+        
+        <li><a href="/2017/09/18/google-java-style-guide/">Google Java 代码规范</a></li>
+        
+        <li><a href="/2017/05/14/wechat5_web_auth_to_obtain_user_info/">一个微信公众号的诞生（五）网页授权获取用户基本信息</a></li>
+        
+        <li><a href="/2017/05/11/wechat4_creat_menu_and_send_template_msg/">一个微信公众号的诞生（四）菜单的创建和模板消息的发送</a></li>
+        
+        <li><a href="/2017/05/10/wechat3_access_token/">一个微信公众号的诞生（三）Access Token的获取</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/java'>Java</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/crime_and_punishment/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/minesweeper/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/install_manjaro/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/ros/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/java-concurrent-aqs/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>一个微信公众号的诞生（二）公众号对接和消息的接收发送 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="一个微信公众号的诞生（二）公众号对接和消息的接收发送 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2017-05-04T12:16:48&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2017-05-04T12:16:48&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="一个微信公众号的诞生（二）公众号对接和消息的接收发送">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="https://leer.moe/2017/05/04/wecaht2_docking_receipt_and_send/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#接收消息">接收消息</a>
+      <ul>
+        <li><a href="#解析xml">解析xml</a></li>
+      </ul>
+    </li>
+    <li><a href="#被动发送消息">被动发送消息</a>
+      <ul>
+        <li><a href="#打包xml">打包xml</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">一个微信公众号的诞生（二）公众号对接和消息的接收发送</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年5月4日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
+<p>上次已经搭建好了开发环境,接着可以和微信公众号进行对接．</p>
+</blockquote>
+<h1 id="总体思路">总体思路</h1>
+<ul>
+<li>服务器的验证
+Servlet 用于和微信服务器通信．根据<a href="https://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html#.E7.AC.AC.E4.B8.89.E6.AD.A5.EF.BC.9A.E4.BE.9D.E6.8D.AE.E6.8E.A5.E5.8F.A3.E6.96.87.E6.A1.A3.E5.AE.9E.E7.8E.B0.E4.B8.9A.E5.8A.A1.E9.80.BB.E8.BE.91">微信公众号开发者文档</a>，微信服务器会发送GET请求给我们所填的URL的服务器．同时带有四个参数：signature，timestamp、nonce，echostr，需要将timestamp、nonce和自己设置的Token排序并进行sha1加密,再与其携带的signature参数比较．如果相等，则该请求来自微信服务器，并返回echostr．</li>
+<li>消息的接受和发送</li>
+</ul>
+<blockquote>
+<p>当普通微信用户向公众账号发消息时，微信服务器将POST消息的XML数据包到开发者填写的URL上。</p>
+</blockquote>
+<p>开发文档这样写的．所以要从用户发送的消息里提取信息的话，就要先解析xml数据．发送信息个用户也一样，需要将先数据打包成xml再post.</p>
+<h1 id="服务器的验证">服务器的验证</h1>
+<p>既然微信服务器发送的是GET请求，新建一个WechatServlet类继承HttpServlet，可以重写Servlet的doGet方法，从请求里得到四个参数，再进行验证．</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        String signature<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span><span style="color:#a6e22e">getParameter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;signature&#34;</span><span style="color:#f92672">);</span>
+        String timestamp<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span><span style="color:#a6e22e">getParameter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;timestamp&#34;</span><span style="color:#f92672">);</span>
+        String nonce<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span><span style="color:#a6e22e">getParameter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;nonce&#34;</span><span style="color:#f92672">);</span>
+        String echostr<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span><span style="color:#a6e22e">getParameter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;echostr&#34;</span><span style="color:#f92672">);</span>
+</code></pre></div><p>然后就是验证的工作了．
+排序：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        String array<span style="color:#f92672">[]=</span><span style="color:#66d9ef">new</span> String<span style="color:#f92672">[]{</span>token<span style="color:#f92672">,</span>timestamp<span style="color:#f92672">,</span>nonce<span style="color:#f92672">};</span>
+        <span style="color:#75715e">//将token、timestamp、nonce三个参数进行字典序排序
+</span><span style="color:#75715e"></span>        Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">sort</span><span style="color:#f92672">(</span>array<span style="color:#f92672">);</span>
+        <span style="color:#75715e">//重组字符串
+</span><span style="color:#75715e"></span>        StringBuilder builder<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> StringBuilder<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>0<span style="color:#f92672">;</span>i<span style="color:#f92672">&lt;</span>array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>i<span style="color:#f92672">++){</span>
+            builder<span style="color:#f92672">.</span><span style="color:#a6e22e">append</span><span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>i<span style="color:#f92672">]);</span>
+        <span style="color:#f92672">}</span>
+</code></pre></div><p>加密:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        MessageDigest md <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        String tmpStr <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            md <span style="color:#f92672">=</span> MessageDigest<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;SHA-1&#34;</span><span style="color:#f92672">);</span>
+            <span style="color:#75715e">// 将三个参数字符串拼接成一个字符串进行sha1加密
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> digest <span style="color:#f92672">=</span> md<span style="color:#f92672">.</span><span style="color:#a6e22e">digest</span><span style="color:#f92672">(</span>builder<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">());</span>
+            tmpStr <span style="color:#f92672">=</span> byteToStr<span style="color:#f92672">(</span>digest<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>NoSuchAlgorithmException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+        builder<span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tmpStr<span style="color:#f92672">!=</span><span style="color:#66d9ef">null</span><span style="color:#f92672">&amp;</span>tmpStr<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>signature<span style="color:#f92672">.</span><span style="color:#a6e22e">toUpperCase</span><span style="color:#f92672">())){</span>
+            isTrue<span style="color:#f92672">=</span><span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">return</span> isTrue<span style="color:#f92672">;</span>
+</code></pre></div><p>整体代码，看下图
+<img src="/images/signUtil.png" alt="代码图">
+<img src="/images/webservlet1.png" alt=""></p>
+<h1 id="填写token和url">填写Token和URL</h1>
+<p>在微信公众号里填写Token和URL，首先要在web.xml里配置Servlet.要填写的URL就是<code>http://你的域名(或ip)/应用名/Servlet地址.</code>Token
+就是自己在验证是设定的值．如果一切都没问题的话，
+<img src="/images/rightsign.png" alt="">.</p>
+<h1 id="消息的接受和被动回复">消息的接受和被动回复</h1>
+<ul>
+<li>用到两个开源项目，分别是<a href="https://github.com/x-stream/xstream">xStream</a>和<a href="https://github.com/dom4j/dom4j">dom4j</a>.都是用来处理xml的．</li>
+<li>新建一个MsgUtil类用来处理消息(解析xml,把对象打包成xml格式).</li>
+<li>接受消息，以文本消息为例，xml的参数如下
+<img src="/images/recivmsg.png" alt="">
+xml的数据结构是这样的</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"> <span style="color:#f92672">&lt;xml&gt;</span>
+ <span style="color:#f92672">&lt;ToUserName&gt;</span><span style="color:#75715e">&lt;![CDATA[toUser]]&gt;</span><span style="color:#f92672">&lt;/ToUserName&gt;</span>
+ <span style="color:#f92672">&lt;FromUserName&gt;</span><span style="color:#75715e">&lt;![CDATA[fromUser]]&gt;</span><span style="color:#f92672">&lt;/FromUserName&gt;</span>
+ <span style="color:#f92672">&lt;CreateTime&gt;</span>1348831860<span style="color:#f92672">&lt;/CreateTime&gt;</span>
+ <span style="color:#f92672">&lt;MsgType&gt;</span><span style="color:#75715e">&lt;![CDATA[text]]&gt;</span><span style="color:#f92672">&lt;/MsgType&gt;</span>
+ <span style="color:#f92672">&lt;Content&gt;</span><span style="color:#75715e">&lt;![CDATA[this is a test]]&gt;</span><span style="color:#f92672">&lt;/Content&gt;</span>
+ <span style="color:#f92672">&lt;MsgId&gt;</span>1234567890123456<span style="color:#f92672">&lt;/MsgId&gt;</span>
+ <span style="color:#f92672">&lt;/xml&gt;</span>
+</code></pre></div><ul>
+<li>可以把这些数据都封装成一个TextMsg对象，如果考虑到其他类型的消息，那么可以有一个BaseMsg类,让TextMsg,ImageMsg等等去继承他．</li>
+<li>发送消息的xml结果也一样，少了MsgId这个参数而已．</li>
+<li>嗯，每个参数值都有<code>![CDATA[]]标记</code>.待会在发送消息的时候也需要加上标记</li>
+</ul>
+<h2 id="接收消息">接收消息</h2>
+<h3 id="解析xml">解析xml</h3>
+<p><img src="/images/httpread_xml.png" alt="">
+重写doPost方法,把解析出来的数据放入一个Map.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doPost</span><span style="color:#f92672">(</span>HttpServletRequest request<span style="color:#f92672">,</span> HttpServletResponse response<span style="color:#f92672">)</span>
+        <span style="color:#66d9ef">throws</span> ServletException<span style="color:#f92672">,</span>IOException<span style="color:#f92672">{</span>
+        request<span style="color:#f92672">.</span><span style="color:#a6e22e">setCharacterEncoding</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;UTF-8&#34;</span><span style="color:#f92672">);</span>
+        response<span style="color:#f92672">.</span><span style="color:#a6e22e">setCharacterEncoding</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;UTF-8&#34;</span><span style="color:#f92672">);</span>
+        PrintWriter writer<span style="color:#f92672">=</span>response<span style="color:#f92672">.</span><span style="color:#a6e22e">getWriter</span><span style="color:#f92672">();</span>
+        MsgUtil msgUtil<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> MsgUtil<span style="color:#f92672">();</span>
+        String sendMsg<span style="color:#f92672">=</span><span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">//解析xml
+</span><span style="color:#75715e"></span>            Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span>String<span style="color:#f92672">&gt;</span> map<span style="color:#f92672">=</span>msgUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">parseXml</span><span style="color:#f92672">(</span>request<span style="color:#f92672">);</span>
+            String ToUserName<span style="color:#f92672">=</span>map<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ToUserName&#34;</span><span style="color:#f92672">);</span>
+            String FromUserName<span style="color:#f92672">=</span>map<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;FromUserName&#34;</span><span style="color:#f92672">);</span>
+            Long CreateTime<span style="color:#f92672">=</span> Long<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>map<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;CreateTime&#34;</span><span style="color:#f92672">)));</span>
+            String Content<span style="color:#f92672">=</span>map<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Content&#34;</span><span style="color:#f92672">);</span>
+            String MsgType<span style="color:#f92672">=</span>map<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;MsgType&#34;</span><span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span><span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">){</span>
+            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+            <span style="color:#f92672">}</span><span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>writer<span style="color:#f92672">!=</span><span style="color:#66d9ef">null</span><span style="color:#f92672">){</span>
+                writer<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+</code></pre></div><h2 id="被动发送消息">被动发送消息</h2>
+<p>上面已经从用户发送过来的消息里得到了用户的openid(FromUserName).需要注意的是发送消息时，FromUserName就变成了公众号的Appid,ToUserName才是用户的openid.MsgUtil里添加一个方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">initalMessage</span><span style="color:#f92672">(</span>String ToUserName<span style="color:#f92672">,</span>String FromUserName<span style="color:#f92672">,</span>String Content<span style="color:#f92672">){</span>
+        TextMsg textMsg<span style="color:#f92672">=</span><span style="color:#66d9ef">new</span> TextMsg<span style="color:#f92672">();</span>
+        textMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setContent</span><span style="color:#f92672">(</span>Content<span style="color:#f92672">);</span>
+        textMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setFromUserName</span><span style="color:#f92672">(</span>ToUserName<span style="color:#f92672">);</span>
+        textMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setToUserName</span><span style="color:#f92672">(</span>FromUserName<span style="color:#f92672">);</span>
+        textMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setMsgType</span><span style="color:#f92672">(</span>MESSAGE_TEXT<span style="color:#f92672">);</span>
+        textMsg<span style="color:#f92672">.</span><span style="color:#a6e22e">setCreateTime</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Date<span style="color:#f92672">().</span><span style="color:#a6e22e">getTime</span><span style="color:#f92672">());</span>
+        <span style="color:#75715e">//打包成xml格式
+</span><span style="color:#75715e"></span>        String xmlmsg<span style="color:#f92672">=</span>messageToXml<span style="color:#f92672">(</span>textMsg<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">return</span> xmlmsg<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p>然后在WechatServlet里调用，</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>msgUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">MESSAGE_TEXT</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>MsgType<span style="color:#f92672">)){</span>
+                sendMsg<span style="color:#f92672">=</span>msgUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">initalMessage</span><span style="color:#f92672">(</span>ToUserName<span style="color:#f92672">,</span>FromUserName<span style="color:#f92672">,</span><span style="color:#e6db74">&#34;Hello &#34;</span><span style="color:#f92672">+</span>Content<span style="color:#f92672">);</span>
+             <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Content<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;view&#34;</span><span style="color:#f92672">)){</span>
+                    <span style="color:#75715e">//Todo
+</span><span style="color:#75715e"></span>             <span style="color:#f92672">}</span>
+   <span style="color:#f92672">}</span>
+</code></pre></div><h3 id="打包xml">打包xml</h3>
+<p><img src="/images/page_xml.png" alt=""></p>
+<h1 id="思考">思考</h1>
+<p>完成了基本的消息接收和被动的回复．个人感觉处理Json数据比xml数据更加方便，java有封装好的直接处理json的类．微信后台API是不是也应该适配一下,方便开发者？那么下次更新的是Access Token的获取和菜单的创建．＝＝．</p>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2017/04/20/wechat1_development_of_the_environment/">一个微信公众号的诞生（一）开发环境的搭建</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/%E6%8A%80%E6%9C%AF'>技术</a></li>
+                
+                <li><a href='https://leer.moe/tags/web'>Web</a></li>
+                
+                <li><a href='https://leer.moe/tags/%E5%BE%AE%E4%BF%A1'>微信</a></li>
+                
+                <li><a href='https://leer.moe/tags/java'>Java</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://leer.moe/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2020/05/10/crime_and_punishment/" title="罪与罚">罪与罚</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/07/13/minesweeper/" title="扫雷游戏中的算法：Union Find 和 Flood Fill">扫雷游戏中的算法：Union Find 和 Flood Fill</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/06/25/install_manjaro/" title="Manjaro安装小记&amp;使用体验">Manjaro安装小记&amp;使用体验</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/05/12/ros/" title="RTOS设计与实现">RTOS设计与实现</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2019/04/25/java-concurrent-aqs/" title="AbstractQueuedSynchronizer">AbstractQueuedSynchronizer</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (19)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (35)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://leer.moe/tags/6.828/">6.828</a>
+    
+    <a href="https://leer.moe/tags/android/">Android</a>
+    
+    <a href="https://leer.moe/tags/aop/">AOP</a>
+    
+    <a href="https://leer.moe/tags/c/">C</a>
+    
+    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
+    
+    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
+    
+    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
+    
+    <a href="https://leer.moe/tags/deepin/">Deepin</a>
+    
+    <a href="https://leer.moe/tags/editor/">Editor</a>
+    
+    <a href="https://leer.moe/tags/firewall/">firewall</a>
+    
+    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
+    
+    <a href="https://leer.moe/tags/git/">git</a>
+    
+    <a href="https://leer.moe/tags/github/">GitHub</a>
+    
+    <a href="https://leer.moe/tags/grain/">Grain</a>
+    
+    <a href="https://leer.moe/tags/hexo/">Hexo</a>
+    
+    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
+    
+    <a href="https://leer.moe/tags/https/">Https</a>
+    
+    <a href="https://leer.moe/tags/java/">Java</a>
+    
+    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
+    
+    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+    
+    <a href="https://leer.moe/tags/jvm/">JVM</a>
+    
+    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
+    
+    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
+    
+    <a href="https://leer.moe/tags/music/">Music</a>
+    
+    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
+    
+    <a href="https://leer.moe/tags/os/">OS</a>
+    
+    <a href="https://leer.moe/tags/rtos/">RTOS</a>
+    
+    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
+    
+    <a href="https://leer.moe/tags/shell/">Shell</a>
+    
+    <a href="https://leer.moe/tags/spring/">Spring</a>
+    
+    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
+    
+    <a href="https://leer.moe/tags/telegram/">Telegram</a>
+    
+    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
+    
+    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
+    
+    <a href="https://leer.moe/tags/vip/">VIP</a>
+    
+    <a href="https://leer.moe/tags/web/">Web</a>
+    
+    <a href="https://leer.moe/tags/wps/">WPS</a>
+    
+    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
+    
+    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
+    
+    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+    
+    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
+    
+    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
+    
+    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="https://leer.moe/">LeeReindeer&#39;s blog By </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+
+</body>
+
+</html>
