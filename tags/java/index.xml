@@ -52,15 +52,7 @@ n0 = n2+1
       <pubDate>Mon, 11 Mar 2019 22:31:21 +0000</pubDate>
       
       <guid>https://leer.moe/2019/03/11/concurrentmodificationexception/</guid>
-      <description>这个寒假看的《Java并发编程实战》终于派上了用场，今天搬砖过程中遇到了ConcurrentModificationException，结果还是不会。之后晚上回去恶补一波，写此文章。
-JCP -&amp;gt; 《Java并发编程实战》
-Java并发-目录
- Single Thread  JCP 第五章：在单线程代码中也可能抛出ConcurrentModificationException。当对象直接从容器中删除而不是通过Iterator.remove来删除时，就会抛出这个异常。
- 虽然ConcurrentModificationException这个异常听上去是多线程环境下出现的。但是如上面的引用，单线程里如果使用不当也会出现。
-private final ArrayList&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;(); private void iterateAndRemove() { for (Integer i : list) { if (i % 4 == 0) { list.remove(i); } } } 在使用for-each遍历列表时，实际上就是用Iterator遍历，但在删除的时候使用了list.remove()，这就造成了ArrayList中的modCount和Iterator中的modCount不相同，从而抛出异常。
-解决办法也很简单，只要使用Iterator.remove就不会有异常。所以即使在单线程中也不能混用Iterator和容器中的方法。
-Multi Thread 多线程的情况下，情况变得更加复杂。我们来看下面的实例代码：
-public class ConcurrentModificationExceptionTest { private final ExecutorService executor = Executors.newFixedThreadPool(10); private final ArrayList&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;(); // works  private final Runnable iteratorRunnable = () -&amp;gt; { Iterator&amp;lt;Integer&amp;gt; it = list.</description>
+      <description>这个寒假看的《Java并发编程实战》终于派上了用场，今天搬砖过程中遇到了ConcurrentModificationException，结果</description>
     </item>
     
     <item>
@@ -81,8 +73,7 @@ public class ConcurrentModificationExceptionTest { private final ExecutorService
       <pubDate>Sun, 06 Jan 2019 18:31:21 +0000</pubDate>
       
       <guid>https://leer.moe/2019/01/06/java-concurrent-toc/</guid>
-      <description> Java 并发编程笔记目录
-  synchronized 和 ReentrantLock AQS volatile 关键字 单线程和多线程下的ConcurrentModificationExceptio &amp;hellip;  </description>
+      <description>Java 并发编程笔记目录 synchronized 和 ReentrantLock AQS volatile 关键字 单线程和多线程下的ConcurrentModificationExceptio &amp;hellip;</description>
     </item>
     
     <item>
@@ -150,9 +141,7 @@ public class ConcurrentModificationExceptionTest { private final ExecutorService
       <pubDate>Wed, 12 Dec 2018 18:31:21 +0000</pubDate>
       
       <guid>https://leer.moe/2018/12/12/java-fun-toc/</guid>
-      <description> 接下来应该会写一系列Java基础的笔记吧，之前虽觉得自己已经熟悉Java，但都没有系统的做笔记和整理，而且Java也是自学的，很多知识都没有巩固和涉及，所以会顺着这个技能图谱瞎写下去，可以在这个**tag**下找到这些笔记。为了准备春招，加油啊（
- 从下面这几个方面复习和整理Java的知识。不求全面，但求深入。
- Java 根类 Object 的11个方法 Java Collection Framework  HashMap TreeMap ArrayList 和 LinkedList   Java 泛型 Java 异常 Java 注解 Java 反射  反射的基础使用 反射和Java动态代理 反射和注解的应用   Java IO Java NIO Java 的按值传递  </description>
+      <description>接下来应该会写一系列Java基础的笔记吧，之前虽觉得自己已经熟悉Java，但都没有系统的做笔记和整理，而且Java也是自学的，很多知识都没有</description>
     </item>
     
     <item>
@@ -202,9 +191,7 @@ public class ConcurrentModificationExceptionTest { private final ExecutorService
       <pubDate>Wed, 07 Nov 2018 10:31:21 +0000</pubDate>
       
       <guid>https://leer.moe/2018/11/07/mybatis_datetime/</guid>
-      <description>问题 最近在用 Spring Boot 重写 LightBlog，查询到的博客的 Date 属性的日期正常，但是时间始终为 00:00:00。
-resultMap 映射如下：
-&amp;lt;resultMap id=&amp;#34;blogMap&amp;#34; type=&amp;#34;Blog&amp;#34;&amp;gt; &amp;lt;id property=&amp;#34;blogId&amp;#34; column=&amp;#34;blog_id&amp;#34;/&amp;gt; &amp;lt;result property=&amp;#34;blogUid&amp;#34; column=&amp;#34;blog_uid&amp;#34;/&amp;gt; &amp;lt;result property=&amp;#34;blogTagId&amp;#34; column=&amp;#34;blog_tag_id&amp;#34;/&amp;gt; &amp;lt;result property=&amp;#34;blogContent&amp;#34; column=&amp;#34;blog_content&amp;#34;/&amp;gt; &amp;lt;result property=&amp;#34;blogTime&amp;#34; column=&amp;#34;blog_time&amp;#34; javaType=&amp;#34;Date&amp;#34; jdbcType=&amp;#34;DATE&amp;#34;/&amp;gt; &amp;lt;result property=&amp;#34;blogLike&amp;#34; column=&amp;#34;blog_like&amp;#34;/&amp;gt; &amp;lt;result property=&amp;#34;blogUnLike&amp;#34; column=&amp;#34;blog_unlike&amp;#34;/&amp;gt; &amp;lt;result property=&amp;#34;blogComment&amp;#34; column=&amp;#34;blog_comment&amp;#34;/&amp;gt; &amp;lt;/resultMap&amp;gt; public class Blog { // only provide getter  private Long blogId; private Long blogUid; private Long blogTagId; public String blogContent; public Date blogTime; public Integer blogLike; public Integer blogUnLike; public Integer blogComment; } 既然日期是正常的，那么mapper映射应该是正常的。问题应该出在映射blogTime的语句：</description>
+      <description>问题 最近在用 Spring Boot 重写 LightBlog，查询到的博客的 Date 属性的日期正常，但是时间始终为 00:00:00。 resultMap 映射如下： &amp;lt;resultMap id=&amp;#34;blogMap&amp;#34; type=&amp;#34;Blog&amp;#34;&amp;gt; &amp;lt;id property=&amp;#34;blogId&amp;#34; column=&amp;#34;blog_id&amp;#34;/&amp;gt; &amp;lt;result property=&amp;#34;blogUid&amp;#34; column=&amp;#34;blog_uid&amp;#34;/&amp;gt; &amp;lt;result property=&amp;#34;blogTagId&amp;#34; column=&amp;#34;blog_tag_id&amp;#34;/&amp;gt;</description>
     </item>
     
     <item>

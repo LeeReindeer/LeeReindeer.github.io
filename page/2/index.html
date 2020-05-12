@@ -7,10 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>LeeReindeer&#39;s blog | </title>
-    <meta property="og:title" content="LeeReindeer&#39;s blog | ">
+    <title>LeeReindeer&#39;s blog | Dive in</title>
+    <meta property="og:title" content="LeeReindeer&#39;s blog | Dive in">
     <meta property="og:type" content="website">
-    <meta name="Keywords" content="">
+    <meta name="Keywords" content="Java, Android">
     <meta name="description" content="">
     <meta property="og:url" content="https://leer.moe/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -40,13 +40,15 @@
                         </a>
                     </h1>
                 
-                
+                <p class="description">Dive in</p>
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
                     <a class="current" href="https://leer.moe/">首页</a>
                     
                     <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://leer.moe/about/" title="关于">关于</a>
                     
                 </nav>
             </div>
@@ -201,15 +203,7 @@ n0 = n2+1
         </div>
         
         <div class="post-content">
-            这个寒假看的《Java并发编程实战》终于派上了用场，今天搬砖过程中遇到了ConcurrentModificationException，结果还是不会。之后晚上回去恶补一波，写此文章。
-JCP -&gt; 《Java并发编程实战》
-Java并发-目录
- Single Thread  JCP 第五章：在单线程代码中也可能抛出ConcurrentModificationException。当对象直接从容器中删除而不是通过Iterator.remove来删除时，就会抛出这个异常。
- 虽然ConcurrentModificationException这个异常听上去是多线程环境下出现的。但是如上面的引用，单线程里如果使用不当也会出现。
-private final ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;(); private void iterateAndRemove() { for (Integer i : list) { if (i % 4 == 0) { list.remove(i); } } } 在使用for-each遍历列表时，实际上就是用Iterator遍历，但在删除的时候使用了list.remove()，这就造成了ArrayList中的modCount和Iterator中的modCount不相同，从而抛出异常。
-解决办法也很简单，只要使用Iterator.remove就不会有异常。所以即使在单线程中也不能混用Iterator和容器中的方法。
-Multi Thread 多线程的情况下，情况变得更加复杂。我们来看下面的实例代码：
-public class ConcurrentModificationExceptionTest { private final ExecutorService executor = Executors.newFixedThreadPool(10); private final ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;(); // works  private final Runnable iteratorRunnable = () -&gt; { Iterator&lt;Integer&gt; it = list.
+            这个寒假看的《Java并发编程实战》终于派上了用场，今天搬砖过程中遇到了ConcurrentModificationException，结果
         </div>
         <p class="readmore"><a href="https://leer.moe/2019/03/11/concurrentmodificationexception/">阅读全文</a></p>
     </article>
@@ -232,9 +226,7 @@ public class ConcurrentModificationExceptionTest { private final ExecutorService
         </div>
         
         <div class="post-content">
-            JPA、Hibernate、Spring Data JPA 三者的联系和不同: Hibernate is a JPA implementation, while Spring Data JPA is a JPA Data Access Abstraction. With Spring Data, you may use Hibernate, Eclipse Link or any other JPA provider.
- 上面这张关系图展示了这三者的关系。
- JPA（Java Persistence API）是规范，它指明了持久化、读取和管理 Java 对象映射到数据库表时的规范。 Hibernate 则是一个 ORM 框架，它实现了 Java 对象到数据库表的映射。也就是说，Hibernate 提供了 JPA 的一种实现。 Spring Data JPA 是 Spring Framework 的一部分。它不是 JPA 的实现，而是在 JPA 之上提供更高层次的抽象，可以减少很多模板代码。而 Spring Data JAP 的默认实现是 Hibernate，当然也可以其他的 JPA Provider。  参考  Stackoverflow What Is the Difference Between Hibernate and Spring Data JPA?
+            JPA、Hibernate、Spring Data JPA 三者的联系和不同: Hibernate is a JPA implementation, while Spring Data JPA is a JPA Data Access Abstraction. With Spring Data, you may use Hibernate, Eclipse Link or any other JPA provider. 上面这张关系图展示了
         </div>
         <p class="readmore"><a href="https://leer.moe/2019/03/09/jpa-hibernate-spring-data-jpa/">阅读全文</a></p>
     </article>
@@ -336,8 +328,7 @@ public class ConcurrentModificationExceptionTest { private final ExecutorService
         </div>
         
         <div class="post-content">
-             Java 并发编程笔记目录
-  synchronized 和 ReentrantLock AQS volatile 关键字 单线程和多线程下的ConcurrentModificationExceptio &hellip;  
+            Java 并发编程笔记目录 synchronized 和 ReentrantLock AQS volatile 关键字 单线程和多线程下的ConcurrentModificationExceptio &hellip;
         </div>
         <p class="readmore"><a href="https://leer.moe/2019/01/06/java-concurrent-toc/">阅读全文</a></p>
     </article>

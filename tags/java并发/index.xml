@@ -29,15 +29,7 @@
       <pubDate>Mon, 11 Mar 2019 22:31:21 +0000</pubDate>
       
       <guid>https://leer.moe/2019/03/11/concurrentmodificationexception/</guid>
-      <description>这个寒假看的《Java并发编程实战》终于派上了用场，今天搬砖过程中遇到了ConcurrentModificationException，结果还是不会。之后晚上回去恶补一波，写此文章。
-JCP -&amp;gt; 《Java并发编程实战》
-Java并发-目录
- Single Thread  JCP 第五章：在单线程代码中也可能抛出ConcurrentModificationException。当对象直接从容器中删除而不是通过Iterator.remove来删除时，就会抛出这个异常。
- 虽然ConcurrentModificationException这个异常听上去是多线程环境下出现的。但是如上面的引用，单线程里如果使用不当也会出现。
-private final ArrayList&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;(); private void iterateAndRemove() { for (Integer i : list) { if (i % 4 == 0) { list.remove(i); } } } 在使用for-each遍历列表时，实际上就是用Iterator遍历，但在删除的时候使用了list.remove()，这就造成了ArrayList中的modCount和Iterator中的modCount不相同，从而抛出异常。
-解决办法也很简单，只要使用Iterator.remove就不会有异常。所以即使在单线程中也不能混用Iterator和容器中的方法。
-Multi Thread 多线程的情况下，情况变得更加复杂。我们来看下面的实例代码：
-public class ConcurrentModificationExceptionTest { private final ExecutorService executor = Executors.newFixedThreadPool(10); private final ArrayList&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;(); // works  private final Runnable iteratorRunnable = () -&amp;gt; { Iterator&amp;lt;Integer&amp;gt; it = list.</description>
+      <description>这个寒假看的《Java并发编程实战》终于派上了用场，今天搬砖过程中遇到了ConcurrentModificationException，结果</description>
     </item>
     
     <item>
@@ -58,8 +50,7 @@ public class ConcurrentModificationExceptionTest { private final ExecutorService
       <pubDate>Sun, 06 Jan 2019 18:31:21 +0000</pubDate>
       
       <guid>https://leer.moe/2019/01/06/java-concurrent-toc/</guid>
-      <description> Java 并发编程笔记目录
-  synchronized 和 ReentrantLock AQS volatile 关键字 单线程和多线程下的ConcurrentModificationExceptio &amp;hellip;  </description>
+      <description>Java 并发编程笔记目录 synchronized 和 ReentrantLock AQS volatile 关键字 单线程和多线程下的ConcurrentModificationExceptio &amp;hellip;</description>
     </item>
     
   </channel>
