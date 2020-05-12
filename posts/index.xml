@@ -734,44 +734,34 @@ n0 = n2+1
       
       <guid>https://leer.moe/2018/03/28/pointer_in_c/</guid>
       <description>&lt;h2 id=&#34;一重指针&#34;&gt;一重指针&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;简单使用&lt;/li&gt;
-&lt;/ul&gt;
+&lt;h3 id=&#34;简单使用&#34;&gt;简单使用&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; a &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;;
 &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;amp;&lt;/span&gt;a; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//defines an pointer to a, the address where a store.
 &lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, a);
 printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//here * is poiner operator, get the value of address = a.
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;数组指针&lt;/p&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;数组指针&#34;&gt;数组指针&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;数组名代表数组的&lt;strong&gt;首地址&lt;/strong&gt;，二维数组名则是&lt;strong&gt;行地址&lt;/strong&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;一维数组&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; a[&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;};
-&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p1 &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; a;
-printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, a[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;]); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//2
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*++&lt;/span&gt;p1)); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//2
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt; &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; a[&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;};
+ &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p1 &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; a;
+ printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, a[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;]); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//2
+&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*++&lt;/span&gt;p1)); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//2
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;二维（多维）数组&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; b[&lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; {{&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;3&lt;/span&gt; ,&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;},{&lt;span style=&#34;color:#099&#34;&gt;5.&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;6&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;7&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;8&lt;/span&gt;}};
-&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p2)[&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; b; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//**A pointer** to a array of 4 integers,行地址
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p3)[&lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;amp;&lt;/span&gt;b; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//**A pointer** to 2d array
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;b[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;];&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;((&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p2 &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5,(*p + 1) == 一维数组b[1]的首地址
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;p2[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;]; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;(&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p2)[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;]; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt; &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; b[&lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; {{&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;3&lt;/span&gt; ,&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;},{&lt;span style=&#34;color:#099&#34;&gt;5.&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;6&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;7&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;8&lt;/span&gt;}};
+ &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p2)[&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; b; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//**A pointer** to a array of 4 integers,行地址
+&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p3)[&lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;amp;&lt;/span&gt;b; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//**A pointer** to 2d array
+&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; b[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;];&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5
+&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;((&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p2 &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5,(*p + 1) == 一维数组b[1]的首地址
+&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; p2[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;]; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5
+&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p2)[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;]; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5
 &lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     
