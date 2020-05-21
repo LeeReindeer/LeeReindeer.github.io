@@ -181,7 +181,7 @@
         
         <div class="post-meta">
             <span>|</span>
-            <span class="meta-category">1969 words</span>
+            <span class="meta-category">1659 words</span>
         </div>
         
         
@@ -191,7 +191,9 @@
 <p>由于后期需要在微信里跳转网页将用户的openid以及其他信息和学工号绑定，所以需要在通过<a href="https://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html#.E7.AC.AC.E5.9B.9B.E6.AD.A5.EF.BC.9A.E6.8B.89.E5.8F.96.E7.94.A8.E6.88.B7.E4.BF.A1.E6.81.AF.28.E9.9C.80scope.E4.B8.BA_snsapi_userinfo.29">网页授权来获取用户的基本信息</a>．还有<a href="https://mp.weixin.qq.com/wiki/1/8a5ce6257f1d3b2afb20f83e72b72ce9.html">另一种</a>获取用户信息的接口是直接获取的，就无法和业务进行对接了.</p>
 </blockquote>
 <h1 id="获取code">获取code</h1>
-<p>获取code的网址为<code>https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect</code>这里的redirect_uri的就是自己的业务页面．在用户主动同意授权后，页面将跳转至 redirect_uri/?code=CODE&amp;state=STATE．这个state参数貌似有点意思，我曾经想过用这个参数来传递学工号来着，然后在跳转后的页面绑定．但是后来又改成了先用学工号登录自己的网站，把学工号存在cookie里，在跳转后读取cookie然后绑定．这样顺便也利用cookie实现了一下自动登录之类的功能．
+<p>获取code的网址为</p>
+<pre><code>https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect
+</code></pre><p>这里的redirect_uri的就是自己的业务页面．在用户主动同意授权后，页面将跳转至 redirect_uri/?code=CODE&amp;state=STATE．这个state参数貌似有点意思，我曾经想过用这个参数来传递学工号来着，然后在跳转后的页面绑定．但是后来又改成了先用学工号登录自己的网站，把学工号存在cookie里，在跳转后读取cookie然后绑定．这样顺便也利用cookie实现了一下自动登录之类的功能．
 好了，接下来新建一个OAuth2Servlet类，来处理网页的参数和跳转自己的页面．</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
     <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">doGet</span><span style="color:#000;font-weight:bold">(</span>HttpServletRequest request<span style="color:#000;font-weight:bold">,</span> HttpServletResponse <span style="color:#900;font-weight:bold">respons</span><span style="color:#000;font-weight:bold">(</span>
@@ -204,7 +206,9 @@
 </code></pre></div><p>所以可以向而知了，这个OAuth2Servlet就是我们的redirect_uri，需要在测试号里设置一下网址(测试号可以用ip)，以确保可以访问.
 <img src="/images/wechat_redirect.png" alt=""></p>
 <h1 id="用code-获取access_token">用code 获取access_token</h1>
-<p>这里也要用到之前写的doGet()方法，请求的Http地址为<code>https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&amp;secret=SECRET&amp;code=CODE&amp;grant_type=authorization_code</code>.这里将处理网页的实现，放在一个新的WebUtil类中继承WechatUtil，便可以直接用父类的doGet(),doPost()和一些字段了.具体代码如下:</p>
+<p>这里也要用到之前写的doGet()方法，请求的Http地址为</p>
+<pre><code>https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&amp;secret=SECRET&amp;code=CODE&amp;grant_type=authorization_code
+</code></pre><p>这里将处理网页的实现，放在一个新的WebUtil类中继承WechatUtil，便可以直接用父类的doGet(),doPost()和一些字段了.具体代码如下:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> OAuth2AccessToken <span style="color:#900;font-weight:bold">getOAuth2AccessToken</span><span style="color:#000;font-weight:bold">(</span>String code<span style="color:#000;font-weight:bold">){</span>
         OAuth2AccessToken oAuth2AccessToken<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> OAuth2AccessToken<span style="color:#000;font-weight:bold">();</span>
         String url <span style="color:#000;font-weight:bold">=</span> WEB_ACCESS_TOKEN_URL<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;APPID&#34;</span><span style="color:#000;font-weight:bold">,</span> getAPPID<span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;SECRET&#34;</span><span style="color:#000;font-weight:bold">,</span> getAPPSECRET<span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;CODE&#34;</span><span style="color:#000;font-weight:bold">,</span>code<span style="color:#000;font-weight:bold">);</span>
@@ -310,8 +314,7 @@
 	%&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-</code></pre><p>主要是判断了一下用户是否授权，如果没有就显示＂用户不同意授权,未获取到用户信息！＂．这样基本的获取用户信息和跳转自己的页面就实现了．上传war包到服务器测试一下,效果如图：
-<img src="/images/wechat_bind.png" alt=""></p>
+</code></pre><p>主要是判断了一下用户是否授权，如果没有就显示＂用户不同意授权,未获取到用户信息！＂。这样基本的获取用户信息和跳转自己的页面就实现了。</p>
 <h1 id="最后">最后</h1>
 <p>到现在终于写完了五篇，不能每个个细节都说的详细，但我也是看着开发文档和一些博客/视频，一步一步做出来的，虽然写的是垃圾代码，到目前为止也没有实现什么核心的业务逻辑，但是整个过程&hellip;..开心就好😂&hellip;..</p>
         </div>
