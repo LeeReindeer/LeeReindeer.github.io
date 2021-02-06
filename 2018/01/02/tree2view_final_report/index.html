@@ -230,7 +230,7 @@
         <div class="post-meta">
             <span>|</span>
             
-            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            <span class="meta-category"><a href='https://leer.moe/categories/%E4%BA%A7%E5%93%81%E9%9B%86'>产品集</a></span>
             
         </div>
         
@@ -333,7 +333,7 @@
 <p><img src="/images/Tree2ViewUML.png" alt="UML"></p>
 <h3 id="31-树结构-tree-data-structure">3.1 树结构-Tree-Data-structure</h3>
 <p>树由节点和边组成，并且不能有环（为了简单，我就暂时这样想）。因为链表插入和删除时间复杂度都是 <code>O(1)</code>,而这里又是要频繁的进行节点的插入和删除的，所以我用了链表来保存一个节点的孩子们。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">DefaultTreeNode</span><span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">implements</span> 
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">DefaultTreeNode</span><span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">implements</span>
     TreeNode<span style="color:#000;font-weight:bold">,</span> Serializable<span style="color:#000;font-weight:bold">,</span> Cloneabl<span style="color:#000;font-weight:bold">{</span>
   <span style="color:#998;font-style:italic">//max = 1 &lt;&lt; 31
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> id<span style="color:#000;font-weight:bold">;</span>
@@ -418,7 +418,7 @@
 <p>Tree2View 实现了一个默认的 SimpleTreeAdapter 只能显示文字。</p>
 <p>SimpleTreeAdapter 显示的就是一个 TextView，所以 DefaultTreeNode 也只需要一个 String，只需在继承的时候这样写 <code>extends TreeAdapter&lt;String&gt;</code>，那么你的 DefaultTreeNode 也必须是 <code>DefaultTreeNode&lt;String&gt;</code> 不过这个大概无关紧要，java 的泛型也只是编译器帮你进行了类型转换的语法糖。</p>
 <p>那么接下来看一下最最核心的 getView() 方法。这个方法申明在 Adapter 接口里，然后大家一层一层继承下来，但都不实现，最终到了 SimpleTreeAdapter。各个参数分别是 position， convertView， parent，分别是 ItemView 在 ViewGroup 里的位置，<code>convertView</code> 就是需要返回的 ItemView, parent 就是 ViewGroup，也就是 TreeView 本身。这里为每个 ItemView 设置了缩进，这也是最核心的部分，树状的树图，就是靠缩进来实现的，那么 TreeView 其实就是一个根据不同节点的深度为 ItemView 设置了不同缩进的 ListView。这里就是一个简单的 TextView 显示每个节点的 String，再在 TreeView 里把 <code>SimpleTreeAdapter</code> 作为默认的 Adapter。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SimpleTreeAdapter</span> 
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SimpleTreeAdapter</span>
   <span style="color:#000;font-weight:bold">extends</span> TreeAdapter<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
 
   <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">SimpleTreeAdapter</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span>
@@ -502,7 +502,7 @@
           <span style="color:#099">0</span> -&gt; {
             selector(<span style="color:#d14">&#34;File operations&#34;</span>, fileOps, { dialogInterface, i -&gt;
               run {
-                lastSelectedNode = node 
+                lastSelectedNode = node
                     <span style="color:#000;font-weight:bold">as</span> DefaultTreeNode&lt;FileItem&gt;?
                 <span style="color:#000;font-weight:bold">when</span> (i) {
                   <span style="color:#099">0</span> -&gt; {
@@ -533,11 +533,11 @@
               }
             })
           }
-        
+
           <span style="color:#099">1</span> -&gt; {
             <span style="color:#998;font-style:italic">//select copy dest dir，省略代码
 </span><span style="color:#998;font-style:italic"></span>          }
-        
+
           <span style="color:#099">2</span> -&gt; {
             <span style="color:#998;font-style:italic">//select cut dest dir，省略代码
 </span><span style="color:#998;font-style:italic"></span>          }
@@ -586,7 +586,7 @@
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">FileTreeAdapter</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> DefaultTreeNode root<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> resourceId<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> root<span style="color:#000;font-weight:bold">,</span> resourceId<span style="color:#000;font-weight:bold">);</span>
   <span style="color:#000;font-weight:bold">}</span>
-  
+
     <span style="color:#3c5d5d;font-weight:bold">@Override</span>
     <span style="color:#000;font-weight:bold">public</span> View <span style="color:#900;font-weight:bold">getView</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> position<span style="color:#000;font-weight:bold">,</span> View convertView<span style="color:#000;font-weight:bold">,</span> ViewGroup parent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
      <span style="color:#998;font-style:italic">//your code here
@@ -596,7 +596,7 @@
      <span style="color:#998;font-style:italic">//toggle your view&#39;s status here
 </span><span style="color:#998;font-style:italic"></span>     toggle<span style="color:#000;font-weight:bold">(</span>node<span style="color:#000;font-weight:bold">,</span> holder<span style="color:#000;font-weight:bold">);</span>
     <span style="color:#000;font-weight:bold">}</span>
-    
+
     <span style="color:#3c5d5d;font-weight:bold">@Override</span>
      <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">toggle</span><span style="color:#000;font-weight:bold">(</span>Object<span style="color:#000;font-weight:bold">...</span> objects<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
      <span style="color:#000;font-weight:bold">}</span>
@@ -610,13 +610,13 @@
 </ul>
 <h2 id="6-liscense">6. Liscense</h2>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">  Copyright 2017 LeeReindeer &lt;reindeerlee.work@gmail.com&gt;
- 
+
   Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
   http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -696,7 +696,11 @@
     </li>
     
     <li>
-        <a href="https://leer.moe/2020/08/17/doublethink/" title="1984 读后感">1984 读后感</a>
+        <a href="https://leer.moe/2020/10/31/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/2020/08/17/doublethink/" title="「1984」读后感">「1984」读后感</a>
     </li>
     
     <li>
@@ -723,10 +727,6 @@
         <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
     </li>
     
-    <li>
-        <a href="https://leer.moe/2019/09/03/not-afraid/" title="Not Afraid">Not Afraid</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -738,23 +738,23 @@
     
     
     
-    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (18)</a></li>
+    <li><a href="https://leer.moe/categories/%E4%BA%A7%E5%93%81%E9%9B%86/">产品集 (16)</a></li>
     
     
     <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
     
     
-    <li><a href="https://leer.moe/categories/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念 (8)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (4)</a></li>
+    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (5)</a></li>
     
     
     <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
     
     
+    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (11)</a></li>
+    
+    
     <li><a href="#">未分类
-            (3)</a>
+            (2)</a>
     </li>
     
 </ul>
@@ -849,8 +849,6 @@
     <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a>
     
     <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
-    
-    <a href="https://leer.moe/tags/%E5%8F%8D%E4%B9%8C%E6%89%98%E9%82%A6/">反乌托邦</a>
     
     <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
     
