@@ -30,14 +30,16 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
-
+    
+           <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
 
     
     
 </head>
 
 <body>
-    <header id="header" class="clearfix">
+  <header id="header" class="clearfix">
     <div class="container">
         <div class="col-group">
             <div class="site-name ">
@@ -62,32 +64,35 @@
     </div>
 </header>
 
-    <div id="body">
-        
-        <div class="container">
-            <div class="col-group">
+  <div id="body">
+    
+    <div class="container">
+      <div class="col-group">
 
-                <div class="col-8" id="main">
-                    
+        <div class="col-8" id="main">
+          
 <div class="res-cons">
     <style type="text/css">
     .post-toc {
         position: fixed;
-        width: 200px;
-        margin-left: -210px;
+        width: 260px;
+        margin-top: 1%;
+        right: 8.5%;
+         
+        margin-right: 1%;
         padding: 5px 10px;
-        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
         font-size: 12px;
-        border: 1px solid rgba(0, 0, 0, .07);
+         
         border-radius: 5px;
         background-color: rgba(255, 255, 255, 0.98);
-        background-clip: padding-box;
-        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+         
+         
+         
         word-wrap: break-word;
-        white-space: nowrap;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
+        line-height: 1.5;
+         
+         
+         
         z-index: 999;
         cursor: pointer;
         max-height: 70%;
@@ -98,10 +103,11 @@
     .post-toc .post-toc-title {
         width: 100%;
         margin: 0 auto;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 400;
         text-transform: uppercase;
         text-align: center;
+        color: #ba3925;
     }
 
     .post-toc .post-toc-content {
@@ -132,7 +138,7 @@
     }
 </style>
 <div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">文章目录</h2>
+    <h2 class="post-toc-title">Spring Security 架构</h2>
     <div class="post-toc-content">
         <nav id="TableOfContents">
   <ol>
@@ -161,10 +167,10 @@
     $(document).ready(function () {
         var postToc = $(".post-toc");
         if (postToc.length) {
-            var leftPos = $("#main").offset().left;
-            if (leftPos < 220) {
-                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
-            }
+            
+            
+            
+            
 
             var t = postToc.offset().top - 20,
                 a = {
@@ -238,7 +244,13 @@
 </code></pre></div><p><code>supports</code>方法的<code>Class&lt;?&gt; authentication </code>参数其实是<code>Class&lt;? extends Authentication&gt;</code>类型的。一个<code>ProviderManager</code>在一个应用中能支持多种不同的认证机制，通过将认证委托给一系列的<code>AuthenticationProvider</code>。<code>ProviderManager</code>没有识别出的认证类型，将会被忽略。</p>
 <p>每个<code>ProviderManager</code>可以有一个父类，如果所有<code>AuthenticationProvider</code>都返回<code>null</code>，那么就交给父类去认证。如果父类也不可用，则抛出<code>AuthenticationException</code>异常。</p>
 <p>有时应用的资源会有逻辑分组（比如所有网站资源都匹配URL<code>/api/**</code>），并且每个组都有自己的<code>AuthenticationManager</code>，通常是一个<code>ProviderManager</code>，它们之间有共同的父类认证器。那么父类就是一种全局资源，充当所有认证器的 fallback。</p>
-<p><img src="/images/spring-security-authentication.png" alt=""></p>
+<p>
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/spring-security-authentication.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/spring-security-authentication.png" />
+</a>
+</p>
 <blockquote>
 <p>图1 ProviderManager 的继承关系</p>
 </blockquote>
@@ -288,16 +300,34 @@
 <p>使用 Spring Expression Language（SpEL）表达式的<code>ConfigAttributes</code>是很常见的，比如<code>isFullyAuthenticated() &amp;&amp; hasRole('FOO')</code>。解析表达式和加载表达式由<code>AccessDecisionVoter</code>实现。要扩展可处理的表达式的范围，需要自定义<code>SecurityExpressionRoot</code>，优势也需要<code>SecurityExpressionHandler</code>。</p>
 <h2 id="web-安全">Web 安全</h2>
 <p>Web 层中的 Spring Security 基于 Servlet 的<code>Filter</code>。所以先来看下<code>Filter</code>在 web 安全中所扮演的角色。下图展示了处理单个 HTTP 请求的经典分层结构。</p>
-<p><img src="/images/servlet-filters.png" alt=""></p>
+<p>
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/servlet-filters.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/servlet-filters.png" />
+</a>
+</p>
 <p>客户端向应用发送请求，然后容器根据 URI 来决定哪个 filter（过滤器） 和哪个 Servlet 适用于它。一个 servlet 最多处理一个请求，过滤器是链式的，它们是有顺序的。事实上一个过滤器可以否决接下来的过滤器，如果它想独自处理这个请求的话。一个过滤器也可以对下流的过滤器和 servlet 修改响应和请求。所以过滤器的顺序十分重要，Spring Boot 提供管理过滤器的两种机制：一个是被<code>@Bean</code>注解的<code>Filter</code>可以用<code>@Order</code>注解或实现<code>Ordered</code>接口；另一个是过滤器是<code>FilterRegistrationBean</code>的一部分，它本身就有一个顺序。一些现有的过滤器定义了自己的常量来表示顺序，以帮助表明他们相对于彼此的顺序（比如 Spring Session 中的<code>SessionRepositoryFilter</code>的<code>DEFAULT_ORDER</code>的值为<code>Integer.MIN_VALUE + 50</code>，它表示这个过滤器相对的在过滤链的前端，但是也不排斥在它之前的过滤器，前面还剩下50个位置）。</p>
 <p>Spring Security 在过滤链中表现为一个<code>Filter</code>，其类型是<code>FilterChainProxy</code>，原因你很快就会知道。在一个 Spring Boot 应用中安全过滤器是<code>ApplicationContext</code>中的一个<code>Bean</code>，并且它是默认配置的，所以在每次请求中都会存在。而它在过滤链中的位置由<code>SecurityProperties.DEFAULT_FILTER_ORDER</code>决定，而该位置又由<code>FilterRegistrationBean.REQUEST_WRAPPER_FILTER_MAX_ORDER</code>（值为0，是 Spring Boot 中改变请求行为的过滤器的顺序的最大值）锚定。（译者注：<code>Order</code>的值越小，越在过滤链的前端）。除此之外，从容器的角度来看 Spring Security 是一个单独的过滤器，但是其中包含了额外过滤器，每个过滤器都发挥特殊的作用，如下图所示：</p>
-<p><img src="/images/security-filters.png" alt=""></p>
+<p>
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/security-filters.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/security-filters.png" />
+</a>
+</p>
 <blockquote>
 <p>图2 Spring Security 是一个单独的物理过滤器，但是它将请求委托一系列的内部过滤器</p>
 </blockquote>
 <p>事实上内部的安全过滤器不止一个层次结构：它们通常是<code>DelegatingFilterProxy</code>，不需要是一个 Spring <code>Bean</code>。代理委托给<code>FilterChainProxy</code>，而它是一个<code>Bean</code>，bean 的名字通常是<code>springSecurityFilterChain</code>。<code>FilterChainProxy</code>包含了所有内部安全过滤器，并且以一定顺序排列成过滤链。其中所有的过滤器都有相同的 API（它们都实现了Servlet规范的<code>Filter</code>接口），它们都有机会否决过滤链的下流部分。</p>
 <p>Spring Security 可以在同一顶层<code>FilterChainProxy</code>中管理多个过滤器链，并且对容器来说都是未知的。Spring Security Filter 包含了一系列的过滤链，并且向这些链分发匹配它们的请求。下图展示了根据请求路径来分发（<code>/foo/**</code>在<code>/**</code>之前匹配）。这是一种常见但不是唯一的分发方式。最重要的特征是，分发过程中，只有一条过滤链只处理该请求。</p>
-<p><img src="/images/security-filters-dispatch.png" alt=""></p>
+<p>
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/security-filters-dispatch.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/security-filters-dispatch.png" />
+</a>
+</p>
 <blockquote>
 <p>图3 Spring Security <code>FilterChainProxy</code> 分发请求给首先匹配的过滤链。</p>
 </blockquote>
@@ -442,233 +472,13 @@ Authentication authentication <span style="color:#000;font-weight:bold">=</span>
     
 </div>
 
-                </div>
-
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://leer.moe/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://leer.moe/2021/01/31/pattern_of_distribeted_system/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/12/16/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/10/31/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/08/17/doublethink/" title="「1984」读后感">「1984」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/05/19/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/05/10/crime_and_punishment/" title="「罪与罚」读后感">「罪与罚」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/categories">分类</a></h3>
-<ul class="widget-list">
-    
-    
-    
-    <li><a href="https://leer.moe/categories/%E4%BA%A7%E5%93%81%E9%9B%86/">产品集 (16)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (5)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (11)</a></li>
-    
-    
-    <li><a href="#">未分类
-            (2)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/tags">标签</a></h3>
-<div class="tagcloud">
-    
-    <a href="https://leer.moe/tags/6.824/">6.824</a>
-    
-    <a href="https://leer.moe/tags/6.828/">6.828</a>
-    
-    <a href="https://leer.moe/tags/android/">Android</a>
-    
-    <a href="https://leer.moe/tags/aop/">AOP</a>
-    
-    <a href="https://leer.moe/tags/c/">C</a>
-    
-    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
-    
-    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
-    
-    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
-    
-    <a href="https://leer.moe/tags/deepin/">Deepin</a>
-    
-    <a href="https://leer.moe/tags/editor/">Editor</a>
-    
-    <a href="https://leer.moe/tags/firewall/">firewall</a>
-    
-    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
-    
-    <a href="https://leer.moe/tags/git/">git</a>
-    
-    <a href="https://leer.moe/tags/github/">GitHub</a>
-    
-    <a href="https://leer.moe/tags/grain/">Grain</a>
-    
-    <a href="https://leer.moe/tags/hexo/">Hexo</a>
-    
-    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
-    
-    <a href="https://leer.moe/tags/https/">Https</a>
-    
-    <a href="https://leer.moe/tags/java/">Java</a>
-    
-    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
-    
-    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
-    
-    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
-    
-    <a href="https://leer.moe/tags/jvm/">JVM</a>
-    
-    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
-    
-    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
-    
-    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
-    
-    <a href="https://leer.moe/tags/music/">Music</a>
-    
-    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
-    
-    <a href="https://leer.moe/tags/os/">OS</a>
-    
-    <a href="https://leer.moe/tags/rtos/">RTOS</a>
-    
-    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
-    
-    <a href="https://leer.moe/tags/shell/">Shell</a>
-    
-    <a href="https://leer.moe/tags/spring/">Spring</a>
-    
-    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
-    
-    <a href="https://leer.moe/tags/telegram/">Telegram</a>
-    
-    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
-    
-    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
-    
-    <a href="https://leer.moe/tags/vip/">VIP</a>
-    
-    <a href="https://leer.moe/tags/web/">Web</a>
-    
-    <a href="https://leer.moe/tags/wps/">WPS</a>
-    
-    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
-    
-    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a>
-    
-    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
-    
-    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
-    
-    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
-    
-    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
-    
-    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
-    
-    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
-    
-    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
-    
-    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
-    
-    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
-    
-    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
-    
-    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
-    
-    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
-    
-    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
-    
-    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
-    
-    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
-    
-    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
-    
-    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
-            </div>
         </div>
+        
+        
+      </div>
     </div>
-    <footer id="footer">
+  </div>
+  <footer id="footer">
     <div class="container">
         &copy; 2021 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
         Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
@@ -683,7 +493,8 @@ Authentication authentication <span style="color:#000;font-weight:bold">=</span>
 
 
 
-
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 
 <a id="rocket" href="#top"></a>
 <script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>

@@ -31,14 +31,16 @@ GitHub 地址
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
-
+    
+           <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
 
     
     
 </head>
 
 <body>
-    <header id="header" class="clearfix">
+  <header id="header" class="clearfix">
     <div class="container">
         <div class="col-group">
             <div class="site-name ">
@@ -63,32 +65,35 @@ GitHub 地址
     </div>
 </header>
 
-    <div id="body">
-        
-        <div class="container">
-            <div class="col-group">
+  <div id="body">
+    
+    <div class="container">
+      <div class="col-group">
 
-                <div class="col-8" id="main">
-                    
+        <div class="col-8" id="main">
+          
 <div class="res-cons">
     <style type="text/css">
     .post-toc {
         position: fixed;
-        width: 200px;
-        margin-left: -210px;
+        width: 260px;
+        margin-top: 1%;
+        right: 8.5%;
+         
+        margin-right: 1%;
         padding: 5px 10px;
-        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
         font-size: 12px;
-        border: 1px solid rgba(0, 0, 0, .07);
+         
         border-radius: 5px;
         background-color: rgba(255, 255, 255, 0.98);
-        background-clip: padding-box;
-        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+         
+         
+         
         word-wrap: break-word;
-        white-space: nowrap;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
+        line-height: 1.5;
+         
+         
+         
         z-index: 999;
         cursor: pointer;
         max-height: 70%;
@@ -99,10 +104,11 @@ GitHub 地址
     .post-toc .post-toc-title {
         width: 100%;
         margin: 0 auto;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 400;
         text-transform: uppercase;
         text-align: center;
+        color: #ba3925;
     }
 
     .post-toc .post-toc-content {
@@ -133,7 +139,7 @@ GitHub 地址
     }
 </style>
 <div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">文章目录</h2>
+    <h2 class="post-toc-title">RTOS设计与实现</h2>
     <div class="post-toc-content">
         <nav id="TableOfContents">
   <ol>
@@ -176,10 +182,10 @@ GitHub 地址
     $(document).ready(function () {
         var postToc = $(".post-toc");
         if (postToc.length) {
-            var leftPos = $("#main").offset().left;
-            if (leftPos < 220) {
-                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
-            }
+            
+            
+            
+            
 
             var t = postToc.offset().top - 20,
                 a = {
@@ -321,7 +327,13 @@ uint8_t priority; <span style="color:#998;font-style:italic">// 0~255
 <span style="color:#000;font-weight:bold">struct</span> ros_tcb <span style="color:#000;font-weight:bold">*</span>next_tcb;
 } ROS_TCB;
 </code></pre></div><p>代码中定义了三种任务状态：READY、BLOCKED 和 TERMINATED。如图 2所示，其实还有一种 RUNNING 状态，这种状态存在，但是不需要显式的表明，因为我们会用 current_tcb 来存储当前运行的任务，所以我在编码的后期删除了 RUNNING 状态。</p>
-<p><img src="/images/task-status.png" alt="图2 task status"></p>
+<p>
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/task-status.png">
+  <img class="mx-auto" alt="图2 task status" src="%3cnil%3e/images/task-status.png" />
+</a>
+</p>
 <p>任务的优先级为0～255，规定0为优先级最高，255为优先级最低。所以越小的数字，表示优先级越高。</p>
 <p>sp 保存任务的栈指针，我们为每个任务都分配一个单独的栈。我们把 sp 放在结构体的首位也是别有用意的，因为在 3.3.4上下文切换 时，我们需要改变系统的栈指针，将系统栈指针指向一个 ROS_TCB 结构体，也就指向了该任务的栈指针。</p>
 <p>next_tcb 指针保存下一个任务，和FreeRTOS和AtomThreads等RTOS不同，ROS的就绪列表是一个单链表。使用双向链表的优势在这里不明显，并且会增加一个指针的内存使用。使用单链表使得链表的操作简单，不容易出错。</p>
@@ -402,7 +414,13 @@ uint32_t ticks;
 <p>如果我们要打断一个函数的运行，而去运行另一个函数（将系统栈指针指向另一个函数的入口）。因为另一个函数也要使用寄存器，所以我们需要在栈上保存寄存器中的值。</p>
 <h3 id="初始化上下文">初始化上下文</h3>
 <p>栈空间由用户分配和定义，栈就是一片连续的内存空间，所以可以用数组来存储。函数在栈中运行，PUSH 和 POP 指令也作用于栈。如图 3所示，因为在系统中栈是从内存地址高的位置增长到内存地址低的位置，也就是说 PUSH 指令将递减栈指针，POP指令则递增栈指针。所以在初始化栈的时候，我们传入的是<strong>数组末端的地址</strong>，这样在 PUSH 和 POP 的时候才不会越界。</p>
-<p><img src="/images/stack-1558505496131.png" alt="图3 栈和数组"></p>
+<p>
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/stack-1558505496131.png">
+  <img class="mx-auto" alt="图3 栈和数组" src="%3cnil%3e/images/stack-1558505496131.png" />
+</a>
+</p>
 <p>需要保存的寄存器也是有讲究的，因为我们用 C 写代码，所以这和 C 编译器有关，不同的编译器规则也不同。ROS 主要针对 AVR 平台，使用avr-gcc作为 C 编译器。</p>
 <p>avr-gcc 的 <a href="https://gcc.gnu.org/wiki/avr-gcc#Call-Used_Registers">wiki</a> 中有一些规则：</p>
 <p>R18-R27，R30，R31，R0，SREG 状态寄存器的T-Flag 都是 Called-Used Register。所谓Called-Used Register在调用函数进入和结束的时候，GCC会生成保存和恢复这些寄存器的指令（PUSH 和POP）。<strong>对于ISR，在进入和退出时会保存和恢复这些寄存器。</strong></p>
@@ -672,7 +690,13 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 <p>获取和更新系统栈指针（ _SFR_IO_ADDR(SPL) 和 _SFR_IO_ADDR(SPH)）时，同样的，因为栈指针有16位，所以需要两个寄存器来保存它的值。又因系统栈指针在IO地址空间内，所以要用in和out指令来获取和更新。</p>
 <p>st指令用来把数据从寄存器存回内存，ld则是把内存地址上的数据加载到寄存器。因为我们的old_tcb和new_tcb都是指针（即内存地址），所以要用st和ld指令来读写任务的栈指针。</p>
 <p>图 4为从 task1 切换到 task2 的栈示意图：</p>
-<p><img src="/images/switch-context.png" alt="图4 switch context"></p>
+<p>
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/switch-context.png">
+  <img class="mx-auto" alt="图4 switch context" src="%3cnil%3e/images/switch-context.png" />
+</a>
+</p>
 <h2 id="ros_delay">ros_delay</h2>
 <p>到此，我们已经完成了scheduler的核心功能，ROS已经具备运行多任务的能力，但是现在还不能运行多个任务。如果一个高优先级的任务存在，那么其他低优先级的任务永远不会运行，这种行为对于抢占式调度器是正确的。如图 2ROS的任务四态模型 所示，如果一个方法让高优先级的任务阻塞，那么低优先级的任务才可能调入。</p>
 <p>阻塞和唤醒任务的思路如下：</p>
@@ -856,7 +880,13 @@ uint8_t task2_stack[ROS_DEFAULT_STACK_SIZE];
 <p>在两个方面和FreeRTOS进行比较：比较ROS和FreeRTOS的代码量（不包括注释）；使用FreeRTOS写出和以上示例相同功能的代码，比较它们二进制文件的大小。</p>
 <p>对于内存有限的嵌入式系统来说，二进制文件的大小也是一个重要的考虑因素。如 图表 2 所示。FreeRTOS在编译时不包含semaphores、queues、mutexs，只包含了设计任务调度的代码，并且两者编译时使用相同的编译器参数。ROS和FreeRTOS的二进制文件，在数据存储空间相差不大；在程序存储空间ROS占用3484字节，占总空间的10.6%，而FreeRTOS占用8424字节，占总空间的25.7%。</p>
 <p>两者在代码量上的比较，FreeRTOS为4722行，ROS为677行。FreeRTOS的代码量是ROS的7倍，这是因为FreeRTOS有很多的功能和为通用性考虑的代码。ROS显得更加简洁，适合小型项目和个人学习。</p>
-<p><img src="/images/ros-compare-with-freertos.png" alt="ros-compare-with-freertos"></p>
+<p>
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/ros-compare-with-freertos.png">
+  <img class="mx-auto" alt="ros-compare-with-freertos" src="%3cnil%3e/images/ros-compare-with-freertos.png" />
+</a>
+</p>
 <h2 id="总结">总结</h2>
 <p>ROS拥有一个抢占式的任务调度器，对于优先级相同的任务，使用 round-robin算法。</p>
 <p>在实现系统时，架构往往比写代码更加重要，如果一开始的程序设计和思路是错误的，那么接下来做的都是徒劳。架构是为了理清思路，而不去纠结细节。ROS的架构和FreeRTOS类似：利用 timer 产生周期性中断，在ISR中调用 scheduler，选择优先级最高的任务（对于相同优先级的任务，使用 round-robin），之后进行上下文切换。同时任务可以主动让出 CPU，让其他低优先级的任务切入。</p>
@@ -925,233 +955,13 @@ uint8_t task2_stack[ROS_DEFAULT_STACK_SIZE];
     
 </div>
 
-                </div>
-
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://leer.moe/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://leer.moe/2021/01/31/pattern_of_distribeted_system/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/12/16/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/10/31/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/08/17/doublethink/" title="「1984」读后感">「1984」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/05/19/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/05/10/crime_and_punishment/" title="「罪与罚」读后感">「罪与罚」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/categories">分类</a></h3>
-<ul class="widget-list">
-    
-    
-    
-    <li><a href="https://leer.moe/categories/%E4%BA%A7%E5%93%81%E9%9B%86/">产品集 (16)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (5)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (11)</a></li>
-    
-    
-    <li><a href="#">未分类
-            (2)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/tags">标签</a></h3>
-<div class="tagcloud">
-    
-    <a href="https://leer.moe/tags/6.824/">6.824</a>
-    
-    <a href="https://leer.moe/tags/6.828/">6.828</a>
-    
-    <a href="https://leer.moe/tags/android/">Android</a>
-    
-    <a href="https://leer.moe/tags/aop/">AOP</a>
-    
-    <a href="https://leer.moe/tags/c/">C</a>
-    
-    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
-    
-    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
-    
-    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
-    
-    <a href="https://leer.moe/tags/deepin/">Deepin</a>
-    
-    <a href="https://leer.moe/tags/editor/">Editor</a>
-    
-    <a href="https://leer.moe/tags/firewall/">firewall</a>
-    
-    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
-    
-    <a href="https://leer.moe/tags/git/">git</a>
-    
-    <a href="https://leer.moe/tags/github/">GitHub</a>
-    
-    <a href="https://leer.moe/tags/grain/">Grain</a>
-    
-    <a href="https://leer.moe/tags/hexo/">Hexo</a>
-    
-    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
-    
-    <a href="https://leer.moe/tags/https/">Https</a>
-    
-    <a href="https://leer.moe/tags/java/">Java</a>
-    
-    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
-    
-    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
-    
-    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
-    
-    <a href="https://leer.moe/tags/jvm/">JVM</a>
-    
-    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
-    
-    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
-    
-    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
-    
-    <a href="https://leer.moe/tags/music/">Music</a>
-    
-    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
-    
-    <a href="https://leer.moe/tags/os/">OS</a>
-    
-    <a href="https://leer.moe/tags/rtos/">RTOS</a>
-    
-    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
-    
-    <a href="https://leer.moe/tags/shell/">Shell</a>
-    
-    <a href="https://leer.moe/tags/spring/">Spring</a>
-    
-    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
-    
-    <a href="https://leer.moe/tags/telegram/">Telegram</a>
-    
-    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
-    
-    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
-    
-    <a href="https://leer.moe/tags/vip/">VIP</a>
-    
-    <a href="https://leer.moe/tags/web/">Web</a>
-    
-    <a href="https://leer.moe/tags/wps/">WPS</a>
-    
-    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
-    
-    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a>
-    
-    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
-    
-    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
-    
-    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
-    
-    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
-    
-    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
-    
-    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
-    
-    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
-    
-    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
-    
-    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
-    
-    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
-    
-    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
-    
-    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
-    
-    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
-    
-    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
-    
-    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
-    
-    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
-    
-    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
-            </div>
         </div>
+        
+        
+      </div>
     </div>
-    <footer id="footer">
+  </div>
+  <footer id="footer">
     <div class="container">
         &copy; 2021 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
         Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
@@ -1166,7 +976,8 @@ uint8_t task2_stack[ROS_DEFAULT_STACK_SIZE];
 
 
 
-
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 
 <a id="rocket" href="#top"></a>
 <script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>

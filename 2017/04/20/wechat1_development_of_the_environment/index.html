@@ -29,14 +29,16 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
-
+    
+           <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
 
     
     
 </head>
 
 <body>
-    <header id="header" class="clearfix">
+  <header id="header" class="clearfix">
     <div class="container">
         <div class="col-group">
             <div class="site-name ">
@@ -61,32 +63,35 @@
     </div>
 </header>
 
-    <div id="body">
-        
-        <div class="container">
-            <div class="col-group">
+  <div id="body">
+    
+    <div class="container">
+      <div class="col-group">
 
-                <div class="col-8" id="main">
-                    
+        <div class="col-8" id="main">
+          
 <div class="res-cons">
     <style type="text/css">
     .post-toc {
         position: fixed;
-        width: 200px;
-        margin-left: -210px;
+        width: 260px;
+        margin-top: 1%;
+        right: 8.5%;
+         
+        margin-right: 1%;
         padding: 5px 10px;
-        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
         font-size: 12px;
-        border: 1px solid rgba(0, 0, 0, .07);
+         
         border-radius: 5px;
         background-color: rgba(255, 255, 255, 0.98);
-        background-clip: padding-box;
-        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+         
+         
+         
         word-wrap: break-word;
-        white-space: nowrap;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
+        line-height: 1.5;
+         
+         
+         
         z-index: 999;
         cursor: pointer;
         max-height: 70%;
@@ -97,10 +102,11 @@
     .post-toc .post-toc-title {
         width: 100%;
         margin: 0 auto;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 400;
         text-transform: uppercase;
         text-align: center;
+        color: #ba3925;
     }
 
     .post-toc .post-toc-content {
@@ -131,7 +137,7 @@
     }
 </style>
 <div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">文章目录</h2>
+    <h2 class="post-toc-title">一个微信公众号的诞生（一）开发环境的搭建</h2>
     <div class="post-toc-content">
         <nav id="TableOfContents">
   <ol>
@@ -159,10 +165,10 @@
     $(document).ready(function () {
         var postToc = $(".post-toc");
         if (postToc.length) {
-            var leftPos = $("#main").offset().left;
-            if (leftPos < 220) {
-                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
-            }
+            
+            
+            
+            
 
             var t = postToc.offset().top - 20,
                 a = {
@@ -242,7 +248,13 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 <h1 id="配置">配置</h1>
 <h2 id="tomcat">Tomcat</h2>
 <p>先来看一下安装以后的目录，
-<img src="/images/tomcat_fir.png" alt="">
+
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/tomcat_fir.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/tomcat_fir.png" />
+</a>
+
 主要说一下：bin目录下是一些可执行脚本．conf目录下是tomcat的配置文件．webapps里就是放我们的java web 应用的，里面还有一大堆examples.</p>
 <ul>
 <li>启动服务.进入bin目录,执行<code>startup.sh</code>.接下来访问<code>http://localhost:8081/</code>,出现下面的界面就说明成功了．</li>
@@ -279,10 +291,22 @@ tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
 </code></pre><p>访问MySQL</p>
 <pre><code>msql -u root -p
 </code></pre><p>输入安装时设置的密码．
-<img src="/images/mysqllogin.png" alt="">
+
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/mysqllogin.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/mysqllogin.png" />
+</a>
+
 修改字符编码为utf-8
 试几个简单的命令
-<img src="/images/mysqlshow.png" alt="">
+
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/mysqlshow.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/mysqlshow.png" />
+</a>
+
 接下来输入<code>show variables like '%char%';</code>查看字符编码；
 默认不是utf-8,打开MySQL服务器的配置文件my.cnf,添加</p>
 <pre><code>[client]
@@ -298,19 +322,49 @@ collation-server=utf8_general_ci
 <h2 id="maven">maven</h2>
 <p>maven是一个类似gradle的东西(笑).
 项目目录，resources目录下为资源文件，webapp下是网页的配置和jsp文件．pom.xml(Project Object Model),可以说是项目的配置文件吧，依赖管理也在这．然后创建并设置java目录为source folders.
-<img src="/images/mavenD.png" alt=""></p>
+
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/mavenD.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/mavenD.png" />
+</a>
+</p>
 <h2 id="jsp页面">JSP页面</h2>
 <p>接下来看webapp下的引人注目的index.jsp．
-<img src="/images/indexjsp.png" alt="">
+
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/indexjsp.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/indexjsp.png" />
+</a>
+
 嗯．还可以和javascript混合编程．感觉好强大．maven导出war包
-<img src="/images/war.png" alt="">
+
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/war.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/war.png" />
+</a>
+
 然后放到tomcat/webapps下或者直接在Tomcat Manager里部署．
 打开网页．一个简单java web 应用差不多这样．．
-<img src="/images/hellojsp.png" alt=""></p>
+
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/hellojsp.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/hellojsp.png" />
+</a>
+</p>
 <h2 id="servlet测试">Servlet测试</h2>
 <p>Servlet是最重要的一个环节，也就是响应请求和发送网页请求的．
 创建一个TestServlet继承HttpServlet，重写doGet和doPost方法．这两个方法在以后微信公众号开发中要用到多次(反正是涉及网页请求的：微信的Token验证，网页授权回调，获取用户信息．)
-<img src="/images/webxml.png" alt="">
+
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/webxml.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/webxml.png" />
+</a>
+
 在web.xml里配置servlet．</p>
 <pre><code> &lt;servlet&gt;
     &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
@@ -322,7 +376,13 @@ collation-server=utf8_general_ci
     &lt;url-pattern&gt;/test1&lt;/url-pattern&gt;
   &lt;/servlet-mapping&gt;
 </code></pre><p>也可以在TestServlet里用注释方法配置<code>@WebServlet(name = &quot;TestServlet&quot;,urlPatterns={&quot;/test1&quot;})</code>
-<img src="/images/helloservlet.png" alt=""></p>
+
+
+
+<a data-fancybox="gallery" href="%3cnil%3e/images/helloservlet.png">
+  <img class="mx-auto" alt="" src="%3cnil%3e/images/helloservlet.png" />
+</a>
+</p>
 <h1 id="未完待续">未完待续．．．</h1>
         </div>
 
@@ -365,233 +425,13 @@ collation-server=utf8_general_ci
     
 </div>
 
-                </div>
-
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://leer.moe/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://leer.moe/2021/01/31/pattern_of_distribeted_system/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/12/16/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/10/31/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/08/17/doublethink/" title="「1984」读后感">「1984」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/05/19/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/05/10/crime_and_punishment/" title="「罪与罚」读后感">「罪与罚」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/categories">分类</a></h3>
-<ul class="widget-list">
-    
-    
-    
-    <li><a href="https://leer.moe/categories/%E4%BA%A7%E5%93%81%E9%9B%86/">产品集 (16)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (10)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (5)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (11)</a></li>
-    
-    
-    <li><a href="#">未分类
-            (2)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/tags">标签</a></h3>
-<div class="tagcloud">
-    
-    <a href="https://leer.moe/tags/6.824/">6.824</a>
-    
-    <a href="https://leer.moe/tags/6.828/">6.828</a>
-    
-    <a href="https://leer.moe/tags/android/">Android</a>
-    
-    <a href="https://leer.moe/tags/aop/">AOP</a>
-    
-    <a href="https://leer.moe/tags/c/">C</a>
-    
-    <a href="https://leer.moe/tags/codelab/">CodeLab</a>
-    
-    <a href="https://leer.moe/tags/concurrent/">Concurrent</a>
-    
-    <a href="https://leer.moe/tags/csapp/">CSAPP</a>
-    
-    <a href="https://leer.moe/tags/deepin/">Deepin</a>
-    
-    <a href="https://leer.moe/tags/editor/">Editor</a>
-    
-    <a href="https://leer.moe/tags/firewall/">firewall</a>
-    
-    <a href="https://leer.moe/tags/flowchart/">Flowchart</a>
-    
-    <a href="https://leer.moe/tags/git/">git</a>
-    
-    <a href="https://leer.moe/tags/github/">GitHub</a>
-    
-    <a href="https://leer.moe/tags/grain/">Grain</a>
-    
-    <a href="https://leer.moe/tags/hexo/">Hexo</a>
-    
-    <a href="https://leer.moe/tags/hibernate/">Hibernate</a>
-    
-    <a href="https://leer.moe/tags/https/">Https</a>
-    
-    <a href="https://leer.moe/tags/java/">Java</a>
-    
-    <a href="https://leer.moe/tags/javafx/">JavaFX</a>
-    
-    <a href="https://leer.moe/tags/java%E5%9F%BA%E7%A1%80/">Java基础</a>
-    
-    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
-    
-    <a href="https://leer.moe/tags/jvm/">JVM</a>
-    
-    <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
-    
-    <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
-    
-    <a href="https://leer.moe/tags/minecraft/">Minecraft</a>
-    
-    <a href="https://leer.moe/tags/music/">Music</a>
-    
-    <a href="https://leer.moe/tags/mybatis/">MyBatis</a>
-    
-    <a href="https://leer.moe/tags/os/">OS</a>
-    
-    <a href="https://leer.moe/tags/rtos/">RTOS</a>
-    
-    <a href="https://leer.moe/tags/semaphore/">Semaphore</a>
-    
-    <a href="https://leer.moe/tags/shell/">Shell</a>
-    
-    <a href="https://leer.moe/tags/spring/">Spring</a>
-    
-    <a href="https://leer.moe/tags/spring-boot/">Spring Boot</a>
-    
-    <a href="https://leer.moe/tags/telegram/">Telegram</a>
-    
-    <a href="https://leer.moe/tags/ubuntu/">Ubuntu</a>
-    
-    <a href="https://leer.moe/tags/v2ray/">V2ray</a>
-    
-    <a href="https://leer.moe/tags/vip/">VIP</a>
-    
-    <a href="https://leer.moe/tags/web/">Web</a>
-    
-    <a href="https://leer.moe/tags/wps/">WPS</a>
-    
-    <a href="https://leer.moe/tags/%E5%86%99%E4%BD%9C/">写作</a>
-    
-    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a>
-    
-    <a href="https://leer.moe/tags/%E5%8D%9A%E5%AE%A2%E4%BA%8B%E8%AE%B0/">博客事记</a>
-    
-    <a href="https://leer.moe/tags/%E5%90%90%E6%A7%BD/">吐槽</a>
-    
-    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">年终总结</a>
-    
-    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
-    
-    <a href="https://leer.moe/tags/%E6%8A%80%E6%9C%AF/">技术</a>
-    
-    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
-    
-    <a href="https://leer.moe/tags/%E6%97%A5%E5%B8%B8/">日常</a>
-    
-    <a href="https://leer.moe/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
-    
-    <a href="https://leer.moe/tags/%E6%B5%81%E7%A8%8B%E5%9B%BE/">流程图</a>
-    
-    <a href="https://leer.moe/tags/%E7%9B%B8%E5%86%8C/">相册</a>
-    
-    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/">算法</a>
-    
-    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
-    
-    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
-    
-    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
-    
-    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
-    
-    <a href="https://leer.moe/tags/%E9%9A%8F%E8%AE%B0/">随记</a>
-    
-    <a href="https://leer.moe/tags/%E9%A5%A5%E8%8D%92/">饥荒</a>
-    
-</div>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
-</div>
-            </div>
         </div>
+        
+        
+      </div>
     </div>
-    <footer id="footer">
+  </div>
+  <footer id="footer">
     <div class="container">
         &copy; 2021 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
         Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
@@ -606,7 +446,8 @@ collation-server=utf8_general_ci
 
 
 
-
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 
 <a id="rocket" href="#top"></a>
 <script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
