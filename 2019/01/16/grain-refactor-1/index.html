@@ -265,20 +265,16 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 <p>大概最难搞定的就是登录了，通过 Chrome 抓包来看是使用 cookie + session 的方式来校验用户的。</p>
 <h3 id="分析">分析</h3>
 <p>
-
-
-<a data-fancybox="gallery" href="%3cnil%3e/images/grain-login-post.png">
-  <img class="mx-auto" alt="grain-login-post" src="%3cnil%3e/images/grain-login-post.png" />
+<a data-fancybox="gallery" href="/images/grain-login-post.png">
+  <img class="mx-auto" alt="grain-login-post" src="/images/grain-login-post.png" />
 </a>
 </p>
 <p>登录是一个POST请求，表单的内容也很一般，唯一需要注意的是<code>excution</code>字段，一开始还以为是一个固定的字段，结果发现它是会“递增”的。当前是<code>e1s1</code>，下次再使用这个<code>session id</code> 登录会变成<code>e2s1</code>，以此类推。</p>
 <p><code>execution</code>是一个隐藏的字段，所以可以先<code>GET</code> 这个网页，拿到隐藏字段之后再发起<code>POST</code>请求登录。相等于模拟在浏览器上登录一样。（不过，如果使用某些 User-agent 会触发验证码的样子，而使用其他的就不会，所以当然选择不触发验证码的User-agent。。。）</p>
 <p>当密码或者学号错误的时候，会返回登录界面，并且有错误提示，在id为<code>status</code>的 div 中，所以可以根据有无错误提示来判断是否登录成功。</p>
 <p>
-
-
-<a data-fancybox="gallery" href="%3cnil%3e/images/grain-login-error.png">
-  <img class="mx-auto" alt="grain-login-error" src="%3cnil%3e/images/grain-login-error.png" />
+<a data-fancybox="gallery" href="/images/grain-login-error.png">
+  <img class="mx-auto" alt="grain-login-error" src="/images/grain-login-error.png" />
 </a>
 </p>
 <p>登出就比较简单，只需要访问</p>
@@ -389,10 +385,8 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </blockquote>
 <h2 id="校园卡">校园卡</h2>
 <p>
-
-
-<a data-fancybox="gallery" href="%3cnil%3e/images/ecard-request.png">
-  <img class="mx-auto" alt="ecard-request" src="%3cnil%3e/images/ecard-request.png" />
+<a data-fancybox="gallery" href="/images/ecard-request.png">
+  <img class="mx-auto" alt="ecard-request" src="/images/ecard-request.png" />
 </a>
 </p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#998;font-style:italic">/**
@@ -504,10 +498,8 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </code></pre></div><h2 id="用户信息">用户信息</h2>
 <p>网站的主页包含一些用户的信息：班级，学号，校园卡余额，图书借阅情况，同样可以用 Jsoup 对其进行提取，在 app 中展示。</p>
 <p>
-
-
-<a data-fancybox="gallery" href="%3cnil%3e/images/book-request.png">
-  <img class="mx-auto" alt="book-request" src="%3cnil%3e/images/book-request.png" />
+<a data-fancybox="gallery" href="/images/book-request.png">
+  <img class="mx-auto" alt="book-request" src="/images/book-request.png" />
 </a>
 </p>
 <p>唯一需要注意的是：一个标签的第0项是它和它所以子标签内容的合集。所以这里取第一项：<code>val nameText = div[1].text()</code>。</p>
