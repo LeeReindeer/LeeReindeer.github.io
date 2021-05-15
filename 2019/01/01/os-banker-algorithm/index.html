@@ -18,7 +18,7 @@
     <meta name="Keywords" content="">
     <meta name="description"
         content="
-这篇笔记主要介绍死锁避免中的银行家算法的实现。同样是参考书上的例子和使用C&#43;&#43;实现的。作为新年的第一篇文章:tada:，我也尝试了一些新鲜的东西，比如Markdown中数学公式，同时为算法找了两个测试用例进行测试。
+这篇笔记主要介绍死锁避免中的银行家算法的实现。同样是参考书上的例子和使用C&#43;&#43;实现的。作为新年的第一篇文章🎉，我也尝试了一些新鲜的东西，比如Markdown中数学公式，同时为算法找了两个测试用例进行测试。
 写文章耗时：1 hour
 编码：1 hour
 ">
@@ -203,14 +203,14 @@
         
         <div class="post-meta">
             <span>|</span>
-            <span class="meta-category">2388 words</span>
+            <span class="meta-category">2375 words</span>
         </div>
         
         
         
         <div class="post-content">
             <blockquote>
-<p>这篇笔记主要介绍<strong>死锁避免中的银行家算法</strong>的实现。同样是参考书上的例子和使用<a href="https://gist.github.com/LeeReindeer/a0a78d29d2940dd5a958da67f0db30e8">C++实现</a>的。作为新年的第一篇文章:tada:，我也尝试了一些新鲜的东西，比如Markdown中数学公式，同时为算法找了两个测试用例进行测试。</p>
+<p>这篇笔记主要介绍<strong>死锁避免中的银行家算法</strong>的实现。同样是参考书上的例子和使用<a href="https://gist.github.com/LeeReindeer/a0a78d29d2940dd5a958da67f0db30e8">C++实现</a>的。作为新年的第一篇文章🎉，我也尝试了一些新鲜的东西，比如Markdown中数学公式，同时为算法找了两个测试用例进行测试。</p>
 <p>写文章耗时：1 hour</p>
 <p>编码：1 hour</p>
 </blockquote>
@@ -220,7 +220,7 @@
 <p>只要客户遵守上述约束条件，银行家将保证做到：若一个客户所要的最大资金量不超过∑，银行一定会接纳此客户并满足其资金需求；银行在收到一个客户的资金申请时，可能会因资金不足而让客户等待，但保证在有限时间内让客户获得资金。</p>
 <p>在银行家算法中，客户可看做进程，资金可看做资源，银行家可看做操作系统。银行家算法虽然能避免死锁，但是在操作系统中实际应用时却很难实现，因为要求所涉及的进程不相交，即不能有同步要求，而且要知道进程的总数和每个进程请求的最大资源数，这些都很难办到。</p>
 <blockquote>
-<p>既然很难实际应用，那么这个算法的意义何在？当然它现在对我来说最重要的意义就是应付考试:joy:；等到考试过去之后，我可能会说它的思想很重要，即使不能实际应用。</p>
+<p>既然很难实际应用，那么这个算法的意义何在？当然它现在对我来说最重要的意义就是应付考试😂；等到考试过去之后，我可能会说它的思想很重要，即使不能实际应用。</p>
 </blockquote>
 <h2 id="数据结构">数据结构</h2>
 <p>对于一个拥有 n 个进程和 m 种不同资源的系统，定义以下的向量和矩阵：</p>
@@ -239,7 +239,7 @@
 <span style="color:#458;font-weight:bold">int</span> allocation[THREAD_NUM][MAX_RESOURCE];
 <span style="color:#458;font-weight:bold">int</span> claim[THREAD_NUM][MAX_RESOURCE], need[THREAD_NUM][MAX_RESOURCE];
 </code></pre></div><h2 id="算法实现">算法实现</h2>
-<p>当前系统状态是安全的，当且仅当存在一个进程序列 <code>P0，P2，…，Pn-1</code>，对进程 <code>P(k=0, 2, …，n - 1)</code>满足公式（第一次尝试在 Markdown 里写数学公式 :cat:）：</p>
+<p>当前系统状态是安全的，当且仅当存在一个进程序列 <code>P0，P2，…，Pn-1</code>，对进程 <code>P(k=0, 2, …，n - 1)</code>满足公式（第一次尝试在 Markdown 里写数学公式 🐱）：</p>
 <p>$$Need[k, i] ≤  Available[i] +\sum_{j=0}^{k-1}Allocation[j, i] (i = 0,&hellip;,m-1;k=1,&hellip;, n-1)$$</p>
 <p>这个序列就称为安全序列。其中，公式左边表示进程P尚缺少的资源，$Available[i]$ 即 $V_i$ 是系统尚可用于分配且为P所想要的那类资源数，$Alocation[j, i]$ 表示排在进程 $P_k$ 之前的所有进程所占用的P所需要的资源总数。显然，进程P所需资源若不能立即被满足，那么在所有 $P_{j=0, 1,…,k-1}$ 运行完成后可以满足，然后 P 也能获得资源以完成任务；当 $P_k$ 释放全部资源后，$P_{k+1}$ 也能获得资源以完成任务。如此下去，直到最后一个进程完成任务，从该状态起按照这个进程序列运行的系统是安全的，所以不会产生死锁。</p>
 <h3 id="自然语言描述">自然语言描述</h3>

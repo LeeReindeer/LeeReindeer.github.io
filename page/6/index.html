@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-cn">
 <head>
-	<meta name="generator" content="Hugo 0.74.3" />
+	<meta name="generator" content="Hugo 0.80.0" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -65,6 +65,47 @@
                 <div class="col-8" id="main">
                     
 <div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/08/02/javafx_main_kotlin/" title="JavaFX与Kotlin的Main函数">JavaFX与Kotlin的Main函数</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年8月2日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <p>晚上想做个小应用，不想用 丑陋的<code>swing</code>（确信）。于是试了试<code>JavaFX</code>。MVC 模式，XML 和 <code>Scene Builder</code>  设计 UI，设计出的 UI 颜值还高。这样一看还是比较熟悉的嘛，好像和 Android 的套路差不多。</p>
+<p>当然还是要用<code>Kotlin</code>。不过在写<code>Main</code>函数的时候就遇到问题了，简直气炸（</p>
+<h2 id="三次尝试">三次尝试</h2>
+<h3 id="一">一</h3>
+<p>首先，在 Java 里的代码应该是这样的：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> <span style="color:#000;font-weight:bold">extends</span> Application <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        launch<span style="color:#000;font-weight:bold">(</span>args<span style="color:#000;font-weight:bold">);</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>没有任何问题。</p>
+<p>那么在 Kotlin 中，我首先想到的是 <code>Top level</code> 的 Main 函数：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) = Application.launch(*args)
+
+<span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {
+	<span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>}
+</code></pre></div>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/08/02/javafx_main_kotlin/">阅读全文</a></p>
+    </article>
     
     <article class="post">
         <header>
@@ -347,33 +388,6 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
         <p class="readmore"><a href="https://leer.moe/2018/01/02/tree2view_final_report/">阅读全文</a></p>
     </article>
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://leer.moe/2017/12/25/my_treeview_2_adapder/" title="Android Tree2View 2-Adapter in Tree2View">Android Tree2View 2-Adapter in Tree2View</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年12月25日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
-            
-        </div>
-        
-        <div class="post-content">
-            <h2 id="适配什么---adapt-what">适配什么？ - Adapt what？</h2>
-<blockquote>
-<p>首先有必要（？）讲一下 Adapter 模式，也就是适配器模式。</p>
-</blockquote>
-<p>Adapter 模式适配的是什么呢？打个很恰当的比喻（逃），电源适配器大家应该都知道，什么，其实就是充电器嘛。手机的充电器把 220v 的交流电转化成比如说 5v 的电压。所以才可以愉快的充电。适配器模式就是把本来不匹配的接口（这样用二插三插转化器做比喻是不是好点），转化为你想要的接口，Adapter 就相当于充电器了。</p>
-        </div>
-        <p class="readmore"><a href="https://leer.moe/2017/12/25/my_treeview_2_adapder/">阅读全文</a></p>
-    </article>
-    
     
 
 
@@ -418,6 +432,10 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
         <a href="https://leer.moe/page/8/">8</a>
     </li>
     
+    <li >
+        <a href="https://leer.moe/page/9/">9</a>
+    </li>
+    
 
     
     <li class="next">
@@ -445,6 +463,10 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2021/02/19/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
+    </li>
     
     <li>
         <a href="https://leer.moe/2021/01/31/pattern_of_distribeted_system/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
@@ -482,10 +504,6 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
         <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
     </li>
     
-    <li>
-        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -513,7 +531,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     
     
     <li><a href="#">未分类
-            (2)</a>
+            (3)</a>
     </li>
     
 </ul>
@@ -570,6 +588,8 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <a href="https://leer.moe/tags/jvm/">JVM</a>
     
     <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/macos/">macOS</a>
     
     <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
     

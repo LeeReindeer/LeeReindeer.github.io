@@ -506,53 +506,53 @@
 <h3 id="34-文件管理器-fileexplorer">3.4 文件管理器-FileExplorer</h3>
 <p>Android 的文件管理器作为 <code>Tree2View</code> 的一个例子，而不是重点。直接用 java 的 <code>File</code> Api。</p>
 <p>我用了 <code>Kotlin</code> 而不是 <code>Java</code>，我们直接看<a href="https://github.com/LeeReindeer/Tree2View/blob/master/app/src/main/java/xyz/leezoom/tree2/activity/MainActivity.kt">代码</a>，省略了一些代码，需要看可以点击上面的链接。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Kotlin" data-lang="Kotlin">    tree_view.setTreeItemSelectedListener { _, node, pos -&gt;
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Kotlin" data-lang="Kotlin">    tree_view.setTreeItemSelectedListener { _, node, pos <span style="color:#000;font-weight:bold">-&gt;</span>
       <span style="color:#000;font-weight:bold">val</span> list = TreeUtils.getVisibleNodesD(root)
       <span style="color:#000;font-weight:bold">val</span> fileItem: FileItem = list[pos].element <span style="color:#000;font-weight:bold">as</span> FileItem
       <span style="color:#000;font-weight:bold">val</span> file = File(fileItem.absName)
       toast(<span style="color:#d14">&#34;You selected &#34;</span> + fileItem.name)
       <span style="color:#000;font-weight:bold">if</span> (node.isSelectable) {
         <span style="color:#000;font-weight:bold">when</span> (selectedMod) {
-          <span style="color:#099">0</span> -&gt; {
-            selector(<span style="color:#d14">&#34;File operations&#34;</span>, fileOps, { dialogInterface, i -&gt;
+          <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">-&gt;</span> {
+            selector(<span style="color:#d14">&#34;File operations&#34;</span>, fileOps, { dialogInterface, i <span style="color:#000;font-weight:bold">-&gt;</span>
               run {
                 lastSelectedNode = node
                     <span style="color:#000;font-weight:bold">as</span> DefaultTreeNode&lt;FileItem&gt;?
                 <span style="color:#000;font-weight:bold">when</span> (i) {
-                  <span style="color:#099">0</span> -&gt; {
+                  <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">-&gt;</span> {
                     <span style="color:#998;font-style:italic">//复制文件
 </span><span style="color:#998;font-style:italic"></span>                    Log.d(TAG, <span style="color:#d14">&#34;Copy&#34;</span>)
                     toast(<span style="color:#d14">&#34;Selected a folder to copy to.&#34;</span>)
                     selectedMod = <span style="color:#099">1</span>
                     lastClickedFileName = fileItem.absName
                   }
-                  <span style="color:#099">1</span> -&gt; {
+                  <span style="color:#099">1</span> <span style="color:#000;font-weight:bold">-&gt;</span> {
                     <span style="color:#998;font-style:italic">//剪贴文件
 </span><span style="color:#998;font-style:italic"></span>                    Log.d(TAG, <span style="color:#d14">&#34;Cut&#34;</span>)
                     toast(<span style="color:#d14">&#34;Selected a folder to move to.&#34;</span>)
                     selectedMod = <span style="color:#099">2</span>
                     lastClickedFileName = fileItem.absName
                   }
-                  <span style="color:#099">2</span> -&gt; {
+                  <span style="color:#099">2</span> <span style="color:#000;font-weight:bold">-&gt;</span> {
                     <span style="color:#998;font-style:italic">//重命名文件，省略代码
 </span><span style="color:#998;font-style:italic"></span>                    Log.d(TAG, <span style="color:#d14">&#34;Rename&#34;</span>)
                   }
-                  <span style="color:#099">3</span> -&gt; {
+                  <span style="color:#099">3</span> <span style="color:#000;font-weight:bold">-&gt;</span> {
                     <span style="color:#998;font-style:italic">//删除文件，省略代码
 </span><span style="color:#998;font-style:italic"></span>                    Log.d(TAG, <span style="color:#d14">&#34;Delete&#34;</span>)
                   }
-                  <span style="color:#000;font-weight:bold">else</span> -&gt; {
+                  <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">-&gt;</span> {
                   }
                 }
               }
             })
           }
 
-          <span style="color:#099">1</span> -&gt; {
+          <span style="color:#099">1</span> <span style="color:#000;font-weight:bold">-&gt;</span> {
             <span style="color:#998;font-style:italic">//select copy dest dir，省略代码
 </span><span style="color:#998;font-style:italic"></span>          }
 
-          <span style="color:#099">2</span> -&gt; {
+          <span style="color:#099">2</span> <span style="color:#000;font-weight:bold">-&gt;</span> {
             <span style="color:#998;font-style:italic">//select cut dest dir，省略代码
 </span><span style="color:#998;font-style:italic"></span>          }
         }
@@ -584,7 +584,7 @@
 </code></pre></div><p>Kotlin(Java is similar whit it):</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">
   <span style="color:#000;font-weight:bold">var</span> root :DefaultTreeNode? = DefaultTreeNode(<span style="color:#d14">&#34;Root&#34;</span>)
-  <span style="color:#000;font-weight:bold">val</span> treeView = TreeView(<span style="color:#000;font-weight:bold">this</span>@MainActivity, root)
+  <span style="color:#000;font-weight:bold">val</span> treeView = TreeView(<span style="color:#000;font-weight:bold">this</span><span style="color:#3c5d5d;font-weight:bold">@MainActivity</span>, root)
   <span style="color:#000;font-weight:bold">val</span> child1 = DefaultTreeNode(<span style="color:#d14">&#34;Child1&#34;</span>)
   <span style="color:#000;font-weight:bold">val</span> child2 = DefaultTreeNode(<span style="color:#d14">&#34;Child2&#34;</span>)
   root.addChild(child1)
@@ -615,7 +615,7 @@
      <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">toggle</span><span style="color:#000;font-weight:bold">(</span>Object<span style="color:#000;font-weight:bold">...</span> objects<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
      <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>Then simply add:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#000;font-weight:bold">val</span> adapter = FileTreeAdapter(<span style="color:#000;font-weight:bold">this</span>@MainActivity, root, R.layout.layout_file_tree_item)
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#000;font-weight:bold">val</span> adapter = FileTreeAdapter(<span style="color:#000;font-weight:bold">this</span><span style="color:#3c5d5d;font-weight:bold">@MainActivity</span>, root, R.layout.layout_file_tree_item)
   treeView.treeAdapter = adapter
 </code></pre></div><h2 id="5-open-source">5. Open-Source</h2>
 <ul>

@@ -335,11 +335,11 @@ startActivity(intent)
 }
 
 <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onActivityResult</span>(requestCode: Int, resultCode: Int, <span style="color:#000;font-weight:bold">data</span>: Intent?) {
-    <span style="color:#000;font-weight:bold">if</span> (requestCode == <span style="color:#099">1</span>) {
-      <span style="color:#000;font-weight:bold">if</span> (resultCode == Activity.RESULT_OK) {
+    <span style="color:#000;font-weight:bold">if</span> (requestCode <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {
+      <span style="color:#000;font-weight:bold">if</span> (resultCode <span style="color:#000;font-weight:bold">==</span> Activity.RESULT_OK) {
         <span style="color:#000;font-weight:bold">val</span> decrypted = <span style="color:#000;font-weight:bold">data</span>.getStringExtra(<span style="color:#d14">&#34;fromSecond&#34;</span>)
-        toast(<span style="color:#d14">&#34;from SecondActivity: $decrypted&#34;</span>)
-        Log.d(TAG, <span style="color:#d14">&#34;onActivityResult: from SecondActivity: $decrypted&#34;</span>)
+        toast(<span style="color:#d14">&#34;from SecondActivity: </span><span style="color:#d14">$decrypted</span><span style="color:#d14">&#34;</span>)
+        Log.d(TAG, <span style="color:#d14">&#34;onActivityResult: from SecondActivity: </span><span style="color:#d14">$decrypted</span><span style="color:#d14">&#34;</span>)
       } <span style="color:#000;font-weight:bold">else</span> {
         toast(<span style="color:#d14">&#34;onActivityResult: no data from SecondActivity&#34;</span>)
       }
@@ -359,7 +359,7 @@ startActivity(intent)
     <span style="color:#000;font-weight:bold">super</span>.onCreate(savedInstanceState)
     setContentView(R.layout.activity_first)
 
-    <span style="color:#000;font-weight:bold">if</span> (savedInstanceState != <span style="color:#000;font-weight:bold">null</span>) {
+    <span style="color:#000;font-weight:bold">if</span> (savedInstanceState <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span>) {
       first_edit.setText(savedInstanceState.getString(<span style="color:#d14">&#34;edit&#34;</span>) <span style="color:#000;font-weight:bold">?:</span> <span style="color:#d14">&#34;&#34;</span>)
     }
     initView()
@@ -410,7 +410,7 @@ startActivity(intent)
     }
 
     <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">countUp</span>(view: View) {
-        thisCount++
+        thisCount<span style="color:#000;font-weight:bold">++</span>
         show_count.text = thisCount.toString()
     }
 }

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-cn">
 <head>
-	<meta name="generator" content="Hugo 0.74.3" />
+	<meta name="generator" content="Hugo 0.80.0" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -65,6 +65,55 @@
                 <div class="col-8" id="main">
                     
 <div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/11/26/csapp_data_lab/" title="CSAPP Data Lab 思路和笔记">CSAPP Data Lab 思路和笔记</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年11月26日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <p><a href="http://csapp.cs.cmu.edu/3e/labs.html">Data Lab</a><em>[Updated 11/2/18]</em></p>
+<blockquote>
+<p>11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。</p>
+<p>肝了两天还是没有全部做出来，之前很以为很简单呢（</p>
+<p>最近也终于买了 CS:APP3e 英文版，配合 CMU 的<a href="https://www.bilibili.com/video/av20304787">课程视频</a>食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（</p>
+<p>解题的思路一般会写在注释里的。</p>
+</blockquote>
+<h2 id="bitxor">bitXor</h2>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*s
+</span><span style="color:#998;font-style:italic"> * bitXor - x^y using only ~ and &amp;
+</span><span style="color:#998;font-style:italic"> *   Example: bitXor(4, 5) = 1
+</span><span style="color:#998;font-style:italic"> *   Legal ops: ~ &amp;
+</span><span style="color:#998;font-style:italic"> *   Max ops: 14
+</span><span style="color:#998;font-style:italic"> *   Rating: 1
+</span><span style="color:#998;font-style:italic"> */</span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">bitXor</span>(<span style="color:#458;font-weight:bold">int</span> x, <span style="color:#458;font-weight:bold">int</span> y) {
+  <span style="color:#998;font-style:italic">// 德摩根定律
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// a xor b = (~a | ~b) &amp; (a | b)
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// = ~(a &amp; b) &amp; ~(~a &amp; ~b)
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">~</span>(<span style="color:#000;font-weight:bold">~</span>x <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">~</span>y) <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">~</span>(x <span style="color:#000;font-weight:bold">&amp;</span> y);
+}
+</code></pre></div><p>虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。</p>
+<p>利用的性质主要是：</p>
+<ul>
+<li>a ^ b = (~a | ~b) &amp; (a | b)</li>
+<li>(~a | ~b) = ~(a &amp; b)</li>
+</ul>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/11/26/csapp_data_lab/">阅读全文</a></p>
+    </article>
     
     <article class="post">
         <header>
@@ -373,47 +422,6 @@
         <p class="readmore"><a href="https://leer.moe/2018/09/29/6.828_hw2_shell/">阅读全文</a></p>
     </article>
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://leer.moe/2018/08/02/javafx_main_kotlin/" title="JavaFX与Kotlin的Main函数">JavaFX与Kotlin的Main函数</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年8月2日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        <div class="post-content">
-            <p>晚上想做个小应用，不想用 丑陋的<code>swing</code>（确信）。于是试了试<code>JavaFX</code>。MVC 模式，XML 和 <code>Scene Builder</code>  设计 UI，设计出的 UI 颜值还高。这样一看还是比较熟悉的嘛，好像和 Android 的套路差不多。</p>
-<p>当然还是要用<code>Kotlin</code>。不过在写<code>Main</code>函数的时候就遇到问题了，简直气炸（</p>
-<h2 id="三次尝试">三次尝试</h2>
-<h3 id="一">一</h3>
-<p>首先，在 Java 里的代码应该是这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> <span style="color:#000;font-weight:bold">extends</span> Application <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">//...
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        launch<span style="color:#000;font-weight:bold">(</span>args<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>没有任何问题。</p>
-<p>那么在 Kotlin 中，我首先想到的是 <code>Top level</code> 的 Main 函数：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) = Application.launch(*args)
-
-<span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {
-	<span style="color:#998;font-style:italic">//...
-</span><span style="color:#998;font-style:italic"></span>}
-</code></pre></div>
-        </div>
-        <p class="readmore"><a href="https://leer.moe/2018/08/02/javafx_main_kotlin/">阅读全文</a></p>
-    </article>
-    
     
 
 
@@ -458,6 +466,10 @@
         <a href="https://leer.moe/page/8/">8</a>
     </li>
     
+    <li >
+        <a href="https://leer.moe/page/9/">9</a>
+    </li>
+    
 
     
     <li class="next">
@@ -485,6 +497,10 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/2021/02/19/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
+    </li>
     
     <li>
         <a href="https://leer.moe/2021/01/31/pattern_of_distribeted_system/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
@@ -522,10 +538,6 @@
         <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
     </li>
     
-    <li>
-        <a href="https://leer.moe/2019/10/26/reclone/" title="强（墙）国下 GitHub 之龟速 git clone">强（墙）国下 GitHub 之龟速 git clone</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -553,7 +565,7 @@
     
     
     <li><a href="#">未分类
-            (2)</a>
+            (3)</a>
     </li>
     
 </ul>
@@ -610,6 +622,8 @@
     <a href="https://leer.moe/tags/jvm/">JVM</a>
     
     <a href="https://leer.moe/tags/kotlin/">Kotlin</a>
+    
+    <a href="https://leer.moe/tags/macos/">macOS</a>
     
     <a href="https://leer.moe/tags/manjaro/">Manjaro</a>
     

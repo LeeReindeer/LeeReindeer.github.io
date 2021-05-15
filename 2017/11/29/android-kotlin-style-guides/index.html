@@ -294,8 +294,8 @@ Android Kotlin 代码规范
 <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">Runnable</span>.toBar(): Bar = <span style="color:#998;font-style:italic">// …
 </span><span style="color:#998;font-style:italic"></span>
 <span style="color:#998;font-style:italic">// Map.kt
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;T, O&gt; <span style="color:#900;font-weight:bold">Set</span>&lt;T&gt;.map(func: (T) -&gt; O): List&lt;O&gt; = <span style="color:#998;font-style:italic">// …
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;T, O&gt; <span style="color:#900;font-weight:bold">List</span>&lt;T&gt;.map(func: (T) -&gt; O): List&lt;O&gt; = <span style="color:#998;font-style:italic">// …
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;<span style="color:#458;font-weight:bold">T</span>, <span style="color:#458;font-weight:bold">O</span>&gt; <span style="color:#900;font-weight:bold">Set</span>&lt;T&gt;.map(func: (T) <span style="color:#000;font-weight:bold">-&gt;</span> O): List&lt;O&gt; = <span style="color:#998;font-style:italic">// …
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;<span style="color:#458;font-weight:bold">T</span>, <span style="color:#458;font-weight:bold">O</span>&gt; <span style="color:#900;font-weight:bold">List</span>&lt;T&gt;.map(func: (T) <span style="color:#000;font-weight:bold">-&gt;</span> O): List&lt;O&gt; = <span style="color:#998;font-style:italic">// …
 </span></code></pre></div><h4 id="111-特殊字符">1.1.1 特殊字符</h4>
 <h4 id="1111-空白字符">1.1.1.1 空白字符</h4>
 <p>除了终止序列外，ASCII horizontal space character (0x20) 是源文件里唯一可以出现的空白字符。也就是说：</p>
@@ -392,7 +392,7 @@ Android Kotlin 代码规范
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">if</span> (string.isEmpty()) <span style="color:#000;font-weight:bold">return</span>
 
 <span style="color:#000;font-weight:bold">when</span> (value) {
-    <span style="color:#099">0</span> -&gt; <span style="color:#000;font-weight:bold">return</span>
+    <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000;font-weight:bold">return</span>
     <span style="color:#998;font-style:italic">// …
 </span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div><p>除此之外，对于任何的 <code>if</code>，<code>for</code>，<code>when</code>，<code>do</code>，<code>while</code> 大括号都是必须的，即使是空语句。</p>
@@ -507,7 +507,7 @@ Android Kotlin 代码规范
 <p>当有多个连续的行时,缩进可能不止8个空格.通常,当且仅当它们是语法上的并行元素时,才采用相同的缩进级别.</p>
 <h4 id="243-函数">2.4.3 函数</h4>
 <p>当一个函数的 signature 不能很好的写在一行时，可以把每个参数分成一行写。每行的参数缩进++8;。右括号<code>)</code>和 <code>return</code> 语句都放在一行里，并且不加缩进。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> &lt;T&gt; <span style="color:#900;font-weight:bold">Iterable</span>&lt;T&gt;.joinToString(
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> &lt;<span style="color:#458;font-weight:bold">T</span>&gt; <span style="color:#900;font-weight:bold">Iterable</span>&lt;T&gt;.joinToString(
         separator: CharSequence = <span style="color:#d14">&#34;, &#34;</span>,
         prefix: CharSequence = <span style="color:#d14">&#34;&#34;</span>,
         postfix: CharSequence = <span style="color:#d14">&#34;&#34;</span>
@@ -524,7 +524,7 @@ Android Kotlin 代码规范
 <h4 id="244-属性">2.4.4 属性</h4>
 <p>当一个属性（译者的理解：相当于 Java 里的字段/变量/对象）初始化的时候，不能在一行里写下，可以在 <code>=</code> 后面换行，使用块缩进（+2）。</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">val</span> defaultCharset: Charset? =
-        EncodingRegistry.getInstance().getDefaultCharsetForPropertiesFiles(file)
+        EncodingRegistry.getInstance().getDefaultCharsetForPropertiesFiles(<span style="color:#000;font-weight:bold">file</span>)
 </code></pre></div><p>属性声明 <code>get</code> 和 <code>set</code> 时，采用块缩进，像函数一样。</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">var</span> directory: File? = <span style="color:#000;font-weight:bold">null</span>
     <span style="color:#000;font-weight:bold">set</span>(value) {
@@ -626,11 +626,11 @@ Android Kotlin 代码规范
 <ul>
 <li>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#998;font-style:italic">// 错误!
-</span><span style="color:#998;font-style:italic"></span>ints.map { value-&gt;value.toString() }
+</span><span style="color:#998;font-style:italic"></span>ints.map { value<span style="color:#000;font-weight:bold">-&gt;</span>value.toString() }
 </code></pre></div></li>
 <li>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#998;font-style:italic">// 正确
-</span><span style="color:#998;font-style:italic"></span>ints.map { value -&gt; value.toString() }
+</span><span style="color:#998;font-style:italic"></span>ints.map { value <span style="color:#000;font-weight:bold">-&gt;</span> value.toString() }
 </code></pre></div></li>
 </ul>
 </li>
@@ -655,11 +655,11 @@ Android Kotlin 代码规范
 <ul>
 <li>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#998;font-style:italic">// 错误
-</span><span style="color:#998;font-style:italic"></span>it . toString()
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">it</span> . toString()
 </code></pre></div></li>
 <li>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#998;font-style:italic">// 正确
-</span><span style="color:#998;font-style:italic"></span>it.toString()
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">it</span>.toString()
 </code></pre></div></li>
 </ul>
 </li>
@@ -678,19 +678,19 @@ Android Kotlin 代码规范
 </code></pre></div></li>
 <li>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#998;font-style:italic">// 错误
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;T: Comparable&gt; <span style="color:#900;font-weight:bold">max</span>(a: T, b: T)
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;<span style="color:#458;font-weight:bold">T</span>: <span style="color:#458;font-weight:bold">Comparable</span>&gt; <span style="color:#900;font-weight:bold">max</span>(a: T, b: T)
 </code></pre></div></li>
 <li>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#998;font-style:italic">// 正确
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;T : Comparable&gt; <span style="color:#900;font-weight:bold">max</span>(a: T, b: T)
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;<span style="color:#458;font-weight:bold">T</span> : <span style="color:#458;font-weight:bold">Comparable</span>&gt; <span style="color:#900;font-weight:bold">max</span>(a: T, b: T)
 </code></pre></div></li>
 <li>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#998;font-style:italic">// 错误
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;T&gt; <span style="color:#900;font-weight:bold">max</span>(a: T, b: T) <span style="color:#000;font-weight:bold">where</span> T: Comparable&lt;T&gt;
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;<span style="color:#458;font-weight:bold">T</span>&gt; <span style="color:#900;font-weight:bold">max</span>(a: T, b: T) <span style="color:#000;font-weight:bold">where</span> T: Comparable&lt;T&gt;
 </code></pre></div></li>
 <li>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#998;font-style:italic">// 正确
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;T&gt; <span style="color:#900;font-weight:bold">max</span>(a: T, b: T) <span style="color:#000;font-weight:bold">where</span> T : Comparable&lt;T&gt;
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">fun</span> &lt;<span style="color:#458;font-weight:bold">T</span>&gt; <span style="color:#900;font-weight:bold">max</span>(a: T, b: T) <span style="color:#000;font-weight:bold">where</span> T : Comparable&lt;T&gt;
 </code></pre></div></li>
 </ul>
 <ol start="6">
@@ -744,16 +744,16 @@ Android Kotlin 代码规范
 </code></pre></div><p>枚举类也是类，所以累的其他格式化规范也适用。</p>
 <h4 id="262-注解">2.6.2 注解</h4>
 <p>成员和类型注释放在被注解的结构的前面，并分行。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">@Retention(SOURCE)
-@Target(FUNCTION, PROPERTY_SETTER, FIELD)
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#3c5d5d;font-weight:bold">@Retention</span>(SOURCE)
+<span style="color:#3c5d5d;font-weight:bold">@Target</span>(FUNCTION, PROPERTY_SETTER, FIELD)
 <span style="color:#000;font-weight:bold">annotation</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Global</span>
 </code></pre></div><p>没有参数的注解可以放在同一行。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">@JvmField @Volatile
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#3c5d5d;font-weight:bold">@JvmField</span> <span style="color:#3c5d5d;font-weight:bold">@Volatile</span>
 <span style="color:#000;font-weight:bold">var</span> disposable: Disposable? = <span style="color:#000;font-weight:bold">null</span>
 </code></pre></div><p>当只有一个没有参数的注解的时候，可以和声明放在同一行。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">@Volatile <span style="color:#000;font-weight:bold">var</span> disposable: Disposable? = <span style="color:#000;font-weight:bold">null</span>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#3c5d5d;font-weight:bold">@Volatile</span> <span style="color:#000;font-weight:bold">var</span> disposable: Disposable? = <span style="color:#000;font-weight:bold">null</span>
 
-@Test <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">selectAll</span>() {
+<span style="color:#3c5d5d;font-weight:bold">@Test</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">selectAll</span>() {
     <span style="color:#998;font-style:italic">// …
 </span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div><h4 id="263-隐式的-return-和-参数类型">2.6.3 隐式的 return 和 参数类型</h4>

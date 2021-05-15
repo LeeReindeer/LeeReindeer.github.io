@@ -223,12 +223,24 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 </p>
 <h2 id="execution-overview">Execution Overview</h2>
 <ol>
-<li>Split input data into a set of M splits</li>
-<li>Master assigned task to work</li>
-<li>Worker call map function and produces intermediate files</li>
-<li>Partitioning the intermediate key into R pieces using partitioning function(like <code>hash*(key) mode R</code>). <strong>Map阶段将key分成R份，由R个reduce task来处理，一共有M个map task。map阶段完成后，一共有M*R个文件。</strong></li>
-<li>Reduce worker collects the same intermediate keys(one of the R pieces partition)</li>
-<li>Worker call reduce, produces the final outputs.</li>
+<li>
+<p>Split input data into a set of M splits</p>
+</li>
+<li>
+<p>Master assigned task to work</p>
+</li>
+<li>
+<p>Worker call map function and produces intermediate files</p>
+</li>
+<li>
+<p>Partitioning the intermediate key into R pieces using partitioning function(like <code>hash*(key) mode R</code>). <strong>Map阶段将key分成R份，由R个reduce task来处理，一共有M个map task。map阶段完成后，一共有M*R个文件。</strong></p>
+</li>
+<li>
+<p>Reduce worker collects the same intermediate keys(one of the R pieces partition)</p>
+</li>
+<li>
+<p>Worker call reduce, produces the final outputs.</p>
+</li>
 </ol>
 <h2 id="master-data-structure">Master Data Structure</h2>
 <ul>
@@ -239,8 +251,12 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 <h3 id="worker-failure">Worker Failure</h3>
 <p>The master ping every worker periodically.</p>
 <ol>
-<li>If <strong>no response</strong> is received from a worker <strong>in a certain amount of time</strong>, the master marks the worker as failed.</li>
-<li>The task is reset to idle state and rescheduling to other workers.</li>
+<li>
+<p>If <strong>no response</strong> is received from a worker <strong>in a certain amount of time</strong>, the master marks the worker as failed.</p>
+</li>
+<li>
+<p>The task is reset to idle state and rescheduling to other workers.</p>
+</li>
 </ol>
 <h3 id="master-failure">Master Failure</h3>
 <p><strong>Aborts</strong> the MapReduce computation if the master fails.</p>

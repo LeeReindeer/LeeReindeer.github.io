@@ -229,10 +229,10 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 <li>authType &ldquo;0&rdquo;</li>
 <li>username &ldquo;your id&rdquo;</li>
 <li>password &ldquo;your password&rdquo;</li>
-<li>lt &quot;&rdquo;</li>
+<li>lt &quot;&quot;</li>
 <li>execution &ldquo;execution&rdquo;</li>
 <li>_eventId  &ldquo;submit&rdquo;</li>
-<li>randomStr &quot;&rdquo;</li>
+<li>randomStr &quot;&quot;</li>
 </ul>
 </li>
 </ul>
@@ -294,7 +294,7 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
                 <span style="color:#000;font-weight:bold">val</span> selected = doc.select(<span style="color:#d14">&#34;input[type=hidden]&#34;</span>)
                 <span style="color:#000;font-weight:bold">val</span> executionNode = selected[<span style="color:#099">1</span>]
                 <span style="color:#000;font-weight:bold">val</span> executionStr = executionNode.attr(<span style="color:#d14">&#34;value&#34;</span>)
-                Log.d(TAG, <span style="color:#d14">&#34;onResponse: execution: $executionStr&#34;</span>)
+                Log.d(TAG, <span style="color:#d14">&#34;onResponse: execution: </span><span style="color:#d14">$executionStr</span><span style="color:#d14">&#34;</span>)
                 executionStr
             }
         }
@@ -331,11 +331,11 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 
         <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
             <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(loginRequest).execute()
-            Log.d(TAG, <span style="color:#d14">&#34;login: respose code: ${response.code()}&#34;</span>)
+            Log.d(TAG, <span style="color:#d14">&#34;login: respose code: </span><span style="color:#d14">${response.code()}</span><span style="color:#d14">&#34;</span>)
             <span style="color:#000;font-weight:bold">val</span> doc = Jsoup.parse(response.body()<span style="color:#000;font-weight:bold">?.</span>string())
             <span style="color:#998;font-style:italic">// password or ID error
 </span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">val</span> statusDiv = doc.getElementById(<span style="color:#d14">&#34;status&#34;</span>)
-            <span style="color:#000;font-weight:bold">if</span> (statusDiv != <span style="color:#000;font-weight:bold">null</span>) {
+            <span style="color:#000;font-weight:bold">if</span> (statusDiv <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span>) {
                 LOGIN_ID_PASS_ERROR
             } <span style="color:#000;font-weight:bold">else</span> { <span style="color:#998;font-style:italic">// login succeed, redirect to home page
 </span><span style="color:#998;font-style:italic"></span>                LOGIN_SUCCESS
@@ -365,10 +365,10 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getTranscript</span>(): Observable&lt;MutableList&lt;Transcript&gt;?&gt; {
         <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
             <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(transcriptRequest).execute()
-            Log.d(TAG, <span style="color:#d14">&#34;onResponse: code: ${response.code()}&#34;</span>)
+            Log.d(TAG, <span style="color:#d14">&#34;onResponse: code: </span><span style="color:#d14">${response.code()}</span><span style="color:#d14">&#34;</span>)
             <span style="color:#000;font-weight:bold">val</span> resp = response.body()<span style="color:#000;font-weight:bold">?.</span>string()
-            <span style="color:#000;font-weight:bold">if</span> (resp<span style="color:#000;font-weight:bold">?.</span>startsWith(<span style="color:#d14">&#34;{&#34;</span>) == <span style="color:#000;font-weight:bold">true</span>) {
-                Log.d(TAG, <span style="color:#d14">&#34;onResponse: $resp&#34;</span>)
+            <span style="color:#000;font-weight:bold">if</span> (resp<span style="color:#000;font-weight:bold">?.</span>startsWith(<span style="color:#d14">&#34;{&#34;</span>) <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">true</span>) {
+                Log.d(TAG, <span style="color:#d14">&#34;onResponse: </span><span style="color:#d14">$resp</span><span style="color:#d14">&#34;</span>)
                 <span style="color:#000;font-weight:bold">val</span> transcriptResponse = Gson().parseJson&lt;TranscriptResponse&gt;(resp)
                 transcriptResponse<span style="color:#000;font-weight:bold">?.</span>transcriptList
             } <span style="color:#000;font-weight:bold">else</span> {
@@ -405,7 +405,7 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 
         <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
             <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(request).execute()
-            <span style="color:#000;font-weight:bold">if</span> (!response.isSuccessful || response.body() == <span style="color:#000;font-weight:bold">null</span>) {
+            <span style="color:#000;font-weight:bold">if</span> (!response.isSuccessful <span style="color:#000;font-weight:bold">||</span> response.body() <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span>) {
                 ArrayList()
             } <span style="color:#000;font-weight:bold">else</span> {
                 parseCardTable(response.body()<span style="color:#000;font-weight:bold">!!</span>.string())
@@ -472,12 +472,12 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
             } <span style="color:#000;font-weight:bold">catch</span> (ignore: NumberFormatException) {
                 <span style="color:#000;font-weight:bold">continue</span>
             }
-            <span style="color:#000;font-weight:bold">if</span> (money != <span style="color:#099">0.0</span>) {
+            <span style="color:#000;font-weight:bold">if</span> (money <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0.0</span>) {
                 <span style="color:#000;font-weight:bold">val</span> name = prettyName(cols[<span style="color:#099">3</span>].text())
                 <span style="color:#000;font-weight:bold">var</span> item: ECard? = <span style="color:#000;font-weight:bold">null</span>
                 <span style="color:#000;font-weight:bold">try</span> {
                     <span style="color:#000;font-weight:bold">val</span> date = Util.getTimeDate(cols[<span style="color:#099">2</span>].text())
-                    <span style="color:#000;font-weight:bold">if</span> (date == <span style="color:#000;font-weight:bold">null</span>) <span style="color:#000;font-weight:bold">continue</span>
+                    <span style="color:#000;font-weight:bold">if</span> (date <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span>) <span style="color:#000;font-weight:bold">continue</span>
                     item = ECard(cols[<span style="color:#099">1</span>].text().toLong(), name, date, money)
                 } <span style="color:#000;font-weight:bold">catch</span> (e: ArrayIndexOutOfBoundsException) {
                     e.printStackTrace()
@@ -521,30 +521,30 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
                 <span style="color:#000;font-weight:bold">try</span> {
                     div = doc.getElementsByClass(<span style="color:#d14">&#34;user_info&#34;</span>)[<span style="color:#099">0</span>].allElements
                 } <span style="color:#000;font-weight:bold">catch</span> (ignore: Exception) {
-                    <span style="color:#000;font-weight:bold">return</span>@fromCallable user
+                    <span style="color:#000;font-weight:bold">return</span><span style="color:#3c5d5d;font-weight:bold">@fromCallable</span> user
                 }
 
                 <span style="color:#998;font-style:italic">// index 0 is all content text in the div
-</span><span style="color:#998;font-style:italic"></span>                Log.d(TAG, <span style="color:#d14">&#34;nameText: ${div!![1].text()}&#34;</span>)
-                <span style="color:#000;font-weight:bold">val</span> nameText = div[<span style="color:#099">1</span>].text().let { str -&gt;
-                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { it == <span style="color:#d14">&#39;，&#39;</span> }
+</span><span style="color:#998;font-style:italic"></span>                Log.d(TAG, <span style="color:#d14">&#34;nameText: </span><span style="color:#d14">${div!![1].text()}</span><span style="color:#d14">&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> nameText = div[<span style="color:#099">1</span>].text().let { str <span style="color:#000;font-weight:bold">-&gt;</span>
+                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { <span style="color:#000;font-weight:bold">it</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;，&#39;</span> }
                     str.substring(<span style="color:#099">0</span>, index)
                 }
-                Log.d(TAG, <span style="color:#d14">&#34;name: $nameText&#34;</span>)
+                Log.d(TAG, <span style="color:#d14">&#34;name: </span><span style="color:#d14">$nameText</span><span style="color:#d14">&#34;</span>)
 
-                Log.d(TAG, <span style="color:#d14">&#34;idText: ${div[2].text()}&#34;</span>)
-                <span style="color:#000;font-weight:bold">val</span> idText = div[<span style="color:#099">2</span>].text().let { str -&gt;
-                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { it == <span style="color:#d14">&#39;：&#39;</span> }
+                Log.d(TAG, <span style="color:#d14">&#34;idText: </span><span style="color:#d14">${div[2].text()}</span><span style="color:#d14">&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> idText = div[<span style="color:#099">2</span>].text().let { str <span style="color:#000;font-weight:bold">-&gt;</span>
+                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { <span style="color:#000;font-weight:bold">it</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;：&#39;</span> }
                     str.substring(index + <span style="color:#099">1</span>, str.length)
                 }
-                Log.d(TAG, <span style="color:#d14">&#34;id: $idText&#34;</span>)
+                Log.d(TAG, <span style="color:#d14">&#34;id: </span><span style="color:#d14">$idText</span><span style="color:#d14">&#34;</span>)
 
-                Log.d(TAG, <span style="color:#d14">&#34;classText: ${div[3].text()}&#34;</span>)
-                <span style="color:#000;font-weight:bold">val</span> classText = div[<span style="color:#099">3</span>].text().let { str -&gt;
-                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { it == <span style="color:#d14">&#39;：&#39;</span> }
+                Log.d(TAG, <span style="color:#d14">&#34;classText: </span><span style="color:#d14">${div[3].text()}</span><span style="color:#d14">&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> classText = div[<span style="color:#099">3</span>].text().let { str <span style="color:#000;font-weight:bold">-&gt;</span>
+                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { <span style="color:#000;font-weight:bold">it</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;：&#39;</span> }
                     str.substring(index + <span style="color:#099">1</span>, str.length)
                 }
-                Log.d(TAG, <span style="color:#d14">&#34;class: $classText&#34;</span>)
+                Log.d(TAG, <span style="color:#d14">&#34;class: </span><span style="color:#d14">$classText</span><span style="color:#d14">&#34;</span>)
 
                 <span style="color:#000;font-weight:bold">val</span> cardLi = doc.getElementsByClass(<span style="color:#d14">&#34;ykt&#34;</span>)
                 <span style="color:#000;font-weight:bold">val</span> libraryLi = doc.getElementsByClass(<span style="color:#d14">&#34;tsg&#34;</span>)
@@ -554,9 +554,9 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
                 <span style="color:#000;font-weight:bold">var</span> bookRentNum = <span style="color:#099">0</span>
                 <span style="color:#000;font-weight:bold">var</span> bookRentOutDateNum = <span style="color:#099">0</span>
                 <span style="color:#000;font-weight:bold">try</span> {
-                    moneyRem = cardLi[<span style="color:#099">0</span>].allElements[<span style="color:#099">0</span>].text().filter { it.isDigit() || it == <span style="color:#d14">&#39;.&#39;</span> }.toDouble()
+                    moneyRem = cardLi[<span style="color:#099">0</span>].allElements[<span style="color:#099">0</span>].text().filter { <span style="color:#000;font-weight:bold">it</span>.isDigit() <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">it</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;.&#39;</span> }.toDouble()
                     bookRentNum = bookRentTexts[<span style="color:#099">1</span>].toInt()
-                    bookRentOutDateNum = bookRentTexts[<span style="color:#099">2</span>].filter { it.isDigit() }.toInt()
+                    bookRentOutDateNum = bookRentTexts[<span style="color:#099">2</span>].filter { <span style="color:#000;font-weight:bold">it</span>.isDigit() }.toInt()
                 } <span style="color:#000;font-weight:bold">catch</span> (ignore: NumberFormatException) {
                 }
 
