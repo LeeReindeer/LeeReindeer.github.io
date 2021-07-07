@@ -32,7 +32,7 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 
     
     
-           <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     
 
     
@@ -271,27 +271,27 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 <li>
 <p>Master存储任务和其状态</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">type</span> WorkerTask <span style="color:#000;font-weight:bold">struct</span> {
-  filename <span style="color:#458;font-weight:bold">string</span> <span style="color:#998;font-style:italic">// for map tasks
-</span><span style="color:#998;font-style:italic"></span>  state    TaskState
-  id       <span style="color:#458;font-weight:bold">int</span> <span style="color:#998;font-style:italic">// for non-idle tasks
+	filename <span style="color:#458;font-weight:bold">string</span> <span style="color:#998;font-style:italic">// for map tasks
+</span><span style="color:#998;font-style:italic"></span>	state    TaskState
+	id       <span style="color:#458;font-weight:bold">int</span> <span style="color:#998;font-style:italic">// for non-idle tasks
 </span><span style="color:#998;font-style:italic"></span>}
 
 <span style="color:#000;font-weight:bold">type</span> Master <span style="color:#000;font-weight:bold">struct</span> {
-  allMapTaksDone    <span style="color:#458;font-weight:bold">bool</span>
-  allReduceTaksDone <span style="color:#458;font-weight:bold">bool</span>
-  mapTask    []WorkerTask
-  reduceTask []WorkerTask
-  nReduce    <span style="color:#458;font-weight:bold">int</span>
-  nFiles     <span style="color:#458;font-weight:bold">int</span>
+	allMapTaksDone    <span style="color:#458;font-weight:bold">bool</span>
+	allReduceTaksDone <span style="color:#458;font-weight:bold">bool</span>
+	mapTask    []WorkerTask
+	reduceTask []WorkerTask
+	nReduce    <span style="color:#458;font-weight:bold">int</span>
+	nFiles     <span style="color:#458;font-weight:bold">int</span>
 
-  sync.Mutex
+	sync.Mutex
 }
 </code></pre></div></li>
 <li>
 <p>worker函数死循环获取任务</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">Worker</span>(mapf <span style="color:#000;font-weight:bold">func</span>(<span style="color:#458;font-weight:bold">string</span>, <span style="color:#458;font-weight:bold">string</span>) []KeyValue,
-  reducef <span style="color:#000;font-weight:bold">func</span>(<span style="color:#458;font-weight:bold">string</span>, []<span style="color:#458;font-weight:bold">string</span>) <span style="color:#458;font-weight:bold">string</span>) {
-  <span style="color:#000;font-weight:bold">for</span> {
+	reducef <span style="color:#000;font-weight:bold">func</span>(<span style="color:#458;font-weight:bold">string</span>, []<span style="color:#458;font-weight:bold">string</span>) <span style="color:#458;font-weight:bold">string</span>) {
+	<span style="color:#000;font-weight:bold">for</span> {
       time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second)
       reply <span style="color:#000;font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">askTask</span>()
 
@@ -300,27 +300,27 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
       } <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> reply.Phase <span style="color:#000;font-weight:bold">==</span> ReducePhase {
           <span style="color:#000;font-weight:bold">go</span> <span style="color:#900;font-weight:bold">doReduceTask</span>(reducef, reply.Id, reply.NumForOtherPhase)
       }
-  }
+	}
 }
 </code></pre></div></li>
 <li>
 <p><code>AssignTask</code>：给worker分配任务，</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">type</span> TaskReply <span style="color:#000;font-weight:bold">struct</span> {
-  File  <span style="color:#458;font-weight:bold">string</span> <span style="color:#998;font-style:italic">// only for map phase
-</span><span style="color:#998;font-style:italic"></span>  Phase JobPhase
-  Id    <span style="color:#458;font-weight:bold">int</span> <span style="color:#998;font-style:italic">//task index
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// for map, it&#39;s nReduce to naming the intermediate file,
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// for reduce, it&#39;s nFile to collect intermediate files
-</span><span style="color:#998;font-style:italic"></span>  NumForOtherPhase <span style="color:#458;font-weight:bold">int</span>
-  Kill             <span style="color:#458;font-weight:bold">bool</span> <span style="color:#998;font-style:italic">// all task done, kill the worker
+	File  <span style="color:#458;font-weight:bold">string</span> <span style="color:#998;font-style:italic">// only for map phase
+</span><span style="color:#998;font-style:italic"></span>	Phase JobPhase
+	Id    <span style="color:#458;font-weight:bold">int</span> <span style="color:#998;font-style:italic">//task index
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// for map, it&#39;s nReduce to naming the intermediate file,
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// for reduce, it&#39;s nFile to collect intermediate files
+</span><span style="color:#998;font-style:italic"></span>	NumForOtherPhase <span style="color:#458;font-weight:bold">int</span>
+	Kill             <span style="color:#458;font-weight:bold">bool</span> <span style="color:#998;font-style:italic">// all task done, kill the worker
 </span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div></li>
 <li>
 <p><code>DoneTask</code>：任务完成，包含完成任务的id和阶段</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">type</span> TaskDoneArgs <span style="color:#000;font-weight:bold">struct</span> {
-  Id    <span style="color:#458;font-weight:bold">int</span> <span style="color:#998;font-style:italic">// done task id
-</span><span style="color:#998;font-style:italic"></span>  Phase JobPhase
-  <span style="color:#998;font-style:italic">// TempFiles *[]os.File
+	Id    <span style="color:#458;font-weight:bold">int</span> <span style="color:#998;font-style:italic">// done task id
+</span><span style="color:#998;font-style:italic"></span>	Phase JobPhase
+	<span style="color:#998;font-style:italic">// TempFiles *[]os.File
 </span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div></li>
 </ul>

@@ -32,7 +32,7 @@ GitHub 地址
 
     
     
-           <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     
 
     
@@ -223,7 +223,7 @@ GitHub 地址
         
         <div class="post-meta">
             <span>|</span>
-            <span class="meta-category">9310 words</span>
+            <span class="meta-category">9347 words</span>
         </div>
         
         
@@ -239,10 +239,10 @@ GitHub 地址
 <p>所以我的RTOS应该是这样（实际上也确实是这样）：</p>
 <ol>
 <li>轻量：实现  preemtive priority scheduler、semaphore，即任务调度和任务通信</li>
-<li>简单：基于优先队列的 scheduler。使用排序链表实现，实现简单。插入O(N)，取出最高优先级元素O(1)。</li>
+<li>简单：基于优先队列的<strong>非抢占式</strong>的协程调度器。使用排序链表实现，实现简单。插入O(N)，取出最高优先级元素O(1)。</li>
 </ol>
 <h2 id="需求分析">需求分析</h2>
-<p>嵌入式系统上真的需要操作系统吗？或者说使用操作系统有什么优点？</p>
+<p>嵌入式系统上真的需要操作系统吗？或者说任务调度有什么优点？</p>
 <p>回答这个问题之前，我们先回想一下日常使用的手机，是不是都搭载了一个系统（比如 Android 或者 iOS），有了操作系统我们可以一边听歌一边聊天，也就是 Multitasking。</p>
 <p>如果需要实现的业务比较简单，那么不使用操作系统也可以轻松的完成；对于复杂的逻辑和业务，也有几个解决方法：使用有限状态机或者使用操作系统。</p>
 <p>相比于有限状态机的方法，或者采用普通的方式编程，使用操作系统有下面这些优势：</p>
@@ -567,7 +567,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 <p>如果当前的任务已经结束（run to compeletion）或者被阻塞（任务主动让出 CPU），则无条件调进下一个优先级最高的任务。</p>
 <p>否则，从链表中dequeue 一个 new_tcb，如果任务已经终结，则删除任务继续dequeue，直到一个任务符合要求或者为NULL。</p>
 <p>如果new_tcb不为 NULL， enqueue当前的任务，调用switch_context。</p>
-<p>Scheduler依赖于两个队列操作，操作队列时需要关中断。一个基于优先级的抢占式调度器基本实现，同时还支持删除 run to complete 的任务。详细的代码和逻辑描述如下：</p>
+<p>Scheduler依赖于两个队列操作，操作队列时需要关中断。一个基于优先级的非抢占式调度器基本实现，同时还支持删除 run to complete 的任务。详细的代码和逻辑描述如下：</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_schedule</span>() {
   <span style="color:#998;font-style:italic">// no schedule and context switch util the very end of ISR
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">if</span> (ros_int_cnt <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">!</span>ROS_STARTED) <span style="color:#000;font-weight:bold">return</span>;
@@ -692,7 +692,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 </a>
 </p>
 <h2 id="ros_delay">ros_delay</h2>
-<p>到此，我们已经完成了scheduler的核心功能，ROS已经具备运行多任务的能力，但是现在还不能运行多个任务。如果一个高优先级的任务存在，那么其他低优先级的任务永远不会运行，这种行为对于抢占式调度器是正确的。如图 2ROS的任务四态模型 所示，如果一个方法让高优先级的任务阻塞，那么低优先级的任务才可能调入。</p>
+<p>到此，我们已经完成了scheduler的核心功能，ROS已经具备运行多任务的能力，但是现在还不能运行多个任务。如果一个高优先级的任务存在，那么其他低优先级的任务永远不会运行，这种行为对于非抢占式调度器是正确的。通过定时中断进行任务调度，而因为任务是有优先级的，如图 2ROS的任务四态模型 所示，只有将高优先级的任务设置为不可调度的状态<code>Blocked</code>，那么低优先级的任务才能调入。</p>
 <p>阻塞和唤醒任务的思路如下：</p>
 <p>ROS 默认 system tick 为每 10 ms 一次，所以可以 delay 的精度也只能精确到 10。<code>ros_delay()</code>的原理就是利用<code>timer</code>产生的周期性中断。</p>
 <ol>
@@ -880,7 +880,7 @@ uint8_t task2_stack[ROS_DEFAULT_STACK_SIZE];
 </a>
 </p>
 <h2 id="总结">总结</h2>
-<p>ROS拥有一个抢占式的任务调度器，对于优先级相同的任务，使用 round-robin算法。</p>
+<p>ROS拥有一个非抢占式的任务调度器，对于优先级相同的任务，使用 round-robin算法。</p>
 <p>在实现系统时，架构往往比写代码更加重要，如果一开始的程序设计和思路是错误的，那么接下来做的都是徒劳。架构是为了理清思路，而不去纠结细节。ROS的架构和FreeRTOS类似：利用 timer 产生周期性中断，在ISR中调用 scheduler，选择优先级最高的任务（对于相同优先级的任务，使用 round-robin），之后进行上下文切换。同时任务可以主动让出 CPU，让其他低优先级的任务切入。</p>
 <p>而花在架构和写代码上的时间也印证了这一点，我用了两星期的时间学习和阅读RTOS的实现思路和代码和其他工具的使用，而写代码用了一个星期的时间。</p>
 <p>关于汇编：在写汇编代码的时候，需要时刻保持谨慎。因为写错了真的很难 debug。</p>
