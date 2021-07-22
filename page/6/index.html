@@ -70,6 +70,53 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="https://leer.moe/2018/09/29/6.828_hw2_shell/" title="6.828 Homework 2:Shell">6.828 Homework 2:Shell</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年9月29日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <p>这次的作业是实现一个简单的 shell。通过阅读 <a href="https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf">xv6 book</a> 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。</p>
+<p>题目提供的<code>sh.c</code>已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成<code>runcmd</code>函数中缺少的代码即可。</p>
+<h2 id="流程">流程</h2>
+<p>先从 <code>main</code> 函数看起：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">void</span>) {
+  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">char</span> buf[<span style="color:#099">100</span>];
+  <span style="color:#458;font-weight:bold">int</span> fd, r;
+
+  <span style="color:#998;font-style:italic">// Read and run input commands.
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">while</span> (getcmd(buf, <span style="color:#000;font-weight:bold">sizeof</span>(buf)) <span style="color:#000;font-weight:bold">&gt;=</span> <span style="color:#099">0</span>) {
+    <span style="color:#000;font-weight:bold">if</span> (buf[<span style="color:#099">0</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;c&#39;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> buf[<span style="color:#099">1</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;d&#39;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> buf[<span style="color:#099">2</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39; &#39;</span>) {
+      <span style="color:#998;font-style:italic">// Clumsy but will have to do for now.
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#998;font-style:italic">// Chdir has no effect on the parent if run in the child.
+</span><span style="color:#998;font-style:italic"></span>      buf[strlen(buf) <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>] <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; <span style="color:#998;font-style:italic">// chop \n
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">if</span> (chdir(buf <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">3</span>) <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">0</span>)
+        fprintf(stderr, <span style="color:#d14">&#34;cannot cd %s</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, buf <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">3</span>);
+      <span style="color:#000;font-weight:bold">continue</span>;
+    }
+    <span style="color:#000;font-weight:bold">if</span> (fork1() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>)
+      runcmd(parsecmd(buf));
+    wait(<span style="color:#000;font-weight:bold">&amp;</span>r);
+  }
+  exit(<span style="color:#099">0</span>);
+}
+</code></pre></div><p><code>main</code> 函数循环调用 <code>getcmd</code>从 console 读取命令，对 <code>cd </code>命令做了特别处理。之后<code>fork</code>创建子进程，调用<code>parsecmd</code>解析命令，再调用<code>runcmd</code>执行得到的命令。最后调用<code>wait</code>等待子进程结束。<code>main</code> 的基本流程就这样。</p>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/09/29/6.828_hw2_shell/">阅读全文</a></p>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="https://leer.moe/2018/08/02/javafx_main_kotlin/" title="JavaFX与Kotlin的Main函数">JavaFX与Kotlin的Main函数</a>
             </h1>
         </header>
@@ -336,59 +383,6 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
         <p class="readmore"><a href="https://leer.moe/2018/01/30/start_learn_japanese/">阅读全文</a></p>
     </article>
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://leer.moe/2018/01/02/tree2view_final_report/" title="Android Tree2View 3-Core Alogrithm">Android Tree2View 3-Core Alogrithm</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年1月2日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
-            
-        </div>
-        
-        <div class="post-content">
-            <!-- # 数据结构课程设计报告 -->
-<h2 id="目录-content">目录-Content</h2>
-<ul>
-<li><a href="#%E7%9B%AE%E5%BD%95-content">目录-Content</a></li>
-<li><a href="#1-%E4%BB%8B%E7%BB%8D-introduction">1. 介绍-Introduction</a></li>
-<li><a href="#2-%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD-features">2. 主要功能-Features</a>
-<ul>
-<li><a href="#21-%E5%8A%9F%E8%83%BD%E5%B1%95%E7%A4%BA-preview">2.1 功能展示-Preview</a></li>
-</ul>
-</li>
-<li><a href="#3-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-source-code">3. 源码分析-Source-code</a>
-<ul>
-<li><a href="#31-%E6%A0%91%E7%BB%93%E6%9E%84-tree-data-structure">3.1 树结构-Tree-Data-structure</a></li>
-<li><a href="#32-%E4%B8%BB%E8%A6%81%E7%AE%97%E6%B3%95-alogrithm-in-tree2view">3.2 主要算法-Alogrithm-in-Tree2View</a></li>
-<li><a href="#33-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F-adapter-pattern-in-tree2view">3.3 适配器模式-Adapter-pattern-in-Tree2View</a></li>
-<li><a href="#34-%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8-fileexplorer">3.4 文件管理器-FileExplorer</a></li>
-</ul>
-</li>
-<li><a href="#4%E4%BD%BF%E7%94%A8-usage">4.使用-Usage</a>
-<ul>
-<li><a href="#41-%E4%B8%8B%E8%BD%BD">4.1 下载</a></li>
-<li><a href="#42-%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8">4.2 简单使用</a></li>
-<li><a href="#43-%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8">4.3 进阶使用</a></li>
-</ul>
-</li>
-<li><a href="#5-open-source">5. Open-Source</a></li>
-<li><a href="#6-liscense">6. Liscense</a></li>
-</ul>
-<h2 id="1-介绍-introduction">1. 介绍-Introduction</h2>
-<p>我本来是打算就做一个 Android 的文件管理器的，但是文件的结构本身就是树结构。所以才写了 <code>Tree2View</code> 这个自定义 View。而文件管理器只是作为用这个项目实现的例子。</p>
-<p>还有另外一个原因是：在 <code>javax.swing.JTree</code> 里是一个树状的 swing 组件，但是 <code>Android</code> 里却没有一个内置的树状组件，所以就决定造一个。那么 talking is cheap, show me the code.开始吧。</p>
-        </div>
-        <p class="readmore"><a href="https://leer.moe/2018/01/02/tree2view_final_report/">阅读全文</a></p>
-    </article>
-    
     
 
 
@@ -466,11 +460,15 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 <ul class="widget-list">
     
     <li>
+        <a href="https://leer.moe/2021/05/26/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
+    </li>
+    
+    <li>
         <a href="https://leer.moe/2021/02/19/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/2021/01/31/pattern_of_distribeted_system/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
+        <a href="https://leer.moe/2021/01/31/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
     </li>
     
     <li>
@@ -501,10 +499,6 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
         <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
     </li>
     
-    <li>
-        <a href="https://leer.moe/2019/11/29/how2getknowledge/" title="谈谈知识的获取（上）">谈谈知识的获取（上）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -522,7 +516,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
     
     
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (5)</a></li>
+    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
     
     
     <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
@@ -687,7 +681,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     
     
     
-    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:0.8rem">分布式系统</a>
+    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
     
     
     
@@ -735,7 +729,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     
     
     
-    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.1554180524031636rem">设计模式</a>
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
     
     
     
