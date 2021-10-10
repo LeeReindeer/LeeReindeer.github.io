@@ -226,14 +226,14 @@
 <li>和<code>Vector</code>类似，但<code>ArrayList</code><strong>不是</strong>线程安全的</li>
 </ul>
 <h3 id="add方法">add方法</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">add</span><span style="color:#000;font-weight:bold">(</span>E e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">add</span><span style="color:#000;font-weight:bold">(</span>E e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     ensureCapacityInternal<span style="color:#000;font-weight:bold">(</span>size <span style="color:#000;font-weight:bold">+</span> 1<span style="color:#000;font-weight:bold">);</span>  <span style="color:#998;font-style:italic">// Increments modCount!!
 </span><span style="color:#998;font-style:italic"></span>    elementData<span style="color:#000;font-weight:bold">[</span>size<span style="color:#000;font-weight:bold">++]</span> <span style="color:#000;font-weight:bold">=</span> e<span style="color:#000;font-weight:bold">;</span>
     <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>可以看到<code>add</code>方法直接将元素放到数组的最后，如果<code>size + 1</code>超过了数组的长度，会进行扩容。下面来看一下核心的扩容机制。</p>
 <h3 id="扩容机制">扩容机制</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ensureCapacityInternal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> minCapacity<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ensureCapacityInternal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> minCapacity<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>elementData <span style="color:#000;font-weight:bold">==</span> DEFAULTCAPACITY_EMPTY_ELEMENTDATA<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
         minCapacity <span style="color:#000;font-weight:bold">=</span> Math<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">max</span><span style="color:#000;font-weight:bold">(</span>DEFAULT_CAPACITY<span style="color:#000;font-weight:bold">,</span> minCapacity<span style="color:#000;font-weight:bold">);</span>
     <span style="color:#000;font-weight:bold">}</span>
@@ -261,7 +261,7 @@
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>当添加数据的时候，如果ArrayList的大小已经不满足需求时，<strong>那么就将数组变为原长度的1.5倍，如果还是不能满足直接扩容为需要的容量（主要是对于<code>addAll</code>函数）</strong>。之后的操作就是把老的数组拷到新的数组里面。例如，默认的数组大小是10，也就是说当我们<code>add</code>10个元素之后，再进行一次add时，就会发生自动扩容，数组长度由10变为了15。</p>
 <p>测试用例如下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * @author leer
 </span><span style="color:#998;font-style:italic"> * Created at 12/17/18 11:51 AM
 </span><span style="color:#998;font-style:italic"> */</span>
@@ -338,7 +338,7 @@ the beginning or the end, whichever is closer to the specified index.</p>
 <h3 id="get方法">get方法</h3>
 <p>我们知道链表的头部或尾部插入，删除数据的时间复杂度为O(1)，同时也不需要扩容。而如果我们想要按下标遍历链表，时间复杂性度就变成了O(N)。</p>
 <p><code>LinkedList</code>采用双链表，可使按下标访问的时间复杂度变为<strong>O(N/2)</strong>。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> E <span style="color:#900;font-weight:bold">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> index<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> E <span style="color:#900;font-weight:bold">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> index<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     checkElementIndex<span style="color:#000;font-weight:bold">(</span>index<span style="color:#000;font-weight:bold">);</span>
     <span style="color:#000;font-weight:bold">return</span> node<span style="color:#000;font-weight:bold">(</span>index<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">item</span><span style="color:#000;font-weight:bold">;</span>
 <span style="color:#000;font-weight:bold">}</span>

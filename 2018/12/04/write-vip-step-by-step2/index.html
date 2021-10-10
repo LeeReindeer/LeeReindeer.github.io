@@ -227,7 +227,7 @@
 <p>这一步里，主要完成的功能有读取键盘的输入，键位映射和移动光标。</p>
 <h2 id="重构输入函数">重构输入函数</h2>
 <p>为了处理更多更复杂的按键，我们需要写一个函数来专门读取键盘输入。将  step1 的代码作如下修改：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#define CTRL_KEY(k) ((k)&amp;0x1f)
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#define CTRL_KEY(k) ((k)&amp;0x1f)
 </span><span style="color:#999;font-weight:bold;font-style:italic"></span>
 <span style="color:#458;font-weight:bold">char</span> <span style="color:#900;font-weight:bold">ed_read_Key</span>() {
   <span style="color:#458;font-weight:bold">int</span> nread;
@@ -270,7 +270,7 @@
 <h2 id="刷新屏幕">刷新屏幕</h2>
 <p>我们在用户按下按键之后渲染我们想要的内容。先从清空屏幕开始。</p>
 <h3 id="清空屏幕">清空屏幕</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_clear</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_clear</span>() {
   <span style="color:#998;font-style:italic">// clear screen
 </span><span style="color:#998;font-style:italic"></span>  write(STDOUT_FILENO, <span style="color:#d14">&#34;</span><span style="color:#d14">\x1b</span><span style="color:#d14">[2J&#34;</span>, <span style="color:#099">4</span>);
   <span style="color:#998;font-style:italic">// reposition cursor
@@ -288,7 +288,7 @@
 <p><code>\x1b[H</code>这个转义序列很有用，我们以后还会用到它。它可以移动光标的位置，这里我们把个光标移动到第一行第一列的位置。比如，你有一个 80(row)×40(col) 大小的终端，如果你想居中光标，你可以使用<code>\x1b[12;40H</code>这个转义序列。注意它的下标从 1 开始。</p>
 <p>如果我们想支持不同的终端，我们可以使用<code>ncurses</code>库，它使用terminfo数据库来计算终端的功能以及用于该特定终端的转义序列。</p>
 <h3 id="退出时清空屏幕">退出时清空屏幕</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">die</span>(<span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>msg) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">die</span>(<span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>msg) {
   ed_clear();
   perror(msg);
   exit(<span style="color:#099">1</span>);
@@ -306,7 +306,7 @@
   }
 }
 </code></pre></div><h2 id="获取窗口大小">获取窗口大小</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#458;font-weight:bold">unsigned</span> <span style="color:#458;font-weight:bold">short</span> win_size_t; <span style="color:#998;font-style:italic">// in vip.h
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#458;font-weight:bold">unsigned</span> <span style="color:#458;font-weight:bold">short</span> win_size_t; <span style="color:#998;font-style:italic">// in vip.h
 </span><span style="color:#998;font-style:italic"></span>
 <span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> editor_config {
   <span style="color:#000;font-weight:bold">struct</span> termios origin_termios;
@@ -353,7 +353,7 @@
 <p><strong>和其他类型的数据进行计算的时候需要注意，比如和<code>int</code>类型一同运算，可以把 <code>win_size_t</code> 强制转为<code>int</code>再进行运算，否则C默认会把<code>int</code>转化为<code>unsigned short</code>，有可能造成 unsigned 溢出。</strong></p>
 </blockquote>
 <h2 id="获取光标位置">获取光标位置</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * @brief send \x1b[6n to get cursor reply like \x1b[24;80R,
 </span><span style="color:#998;font-style:italic"> * then parse the reply.
 </span><span style="color:#998;font-style:italic"> */</span>
@@ -378,7 +378,7 @@
 <h2 id="再次获取窗口大小">再次获取窗口大小</h2>
 <p><code>ioctl()</code>不能保证能够在所有系统上都能正常返回窗口大小，因此我们将提供获取窗口大小的 fallback 方法。</p>
 <p>我们可以将光标移动到右下角，然后获取光标的位置来作为窗口大小。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">get_winsize</span>(win_size_t <span style="color:#000;font-weight:bold">*</span>rows, win_size_t <span style="color:#000;font-weight:bold">*</span>cols) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">get_winsize</span>(win_size_t <span style="color:#000;font-weight:bold">*</span>rows, win_size_t <span style="color:#000;font-weight:bold">*</span>cols) {
   <span style="color:#000;font-weight:bold">struct</span> winsize ws;
   <span style="color:#000;font-weight:bold">if</span> (ioctl(STDOUT_FILENO, TIOCGWINSZ, <span style="color:#000;font-weight:bold">&amp;</span>ws) <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span> <span style="color:#000;font-weight:bold">||</span> ws.ws_col <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
     <span style="color:#998;font-style:italic">// move cursor to right 999 and move down to 999
@@ -394,11 +394,11 @@
 }
 </code></pre></div><p>主要的解释都写在注释里了，当<code>ioctl()</code>方法失败的时候，我们把光标移动到右下角，获取光标的位置作为窗口大小。不用担心光标的位置会出现在右下角，因为进入主循环后首先会刷新屏幕。</p>
 <p>可以使用一个小技巧来测试这种情况，把第 3 行代码修改为：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#000;font-weight:bold">if</span> (<span style="color:#099">1</span> <span style="color:#000;font-weight:bold">||</span> ioctl(STDOUT_FILENO, TIOCGWINSZ, <span style="color:#000;font-weight:bold">&amp;</span>ws) <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span> <span style="color:#000;font-weight:bold">||</span> ws.ws_col <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>)
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#000;font-weight:bold">if</span> (<span style="color:#099">1</span> <span style="color:#000;font-weight:bold">||</span> ioctl(STDOUT_FILENO, TIOCGWINSZ, <span style="color:#000;font-weight:bold">&amp;</span>ws) <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span> <span style="color:#000;font-weight:bold">||</span> ws.ws_col <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>)
 </code></pre></div><p>测试完，记得改回来（</p>
 <h2 id="append-buffer">Append buffer</h2>
 <p>为了避免多次调用<code>write()</code>来输出一小段的字符，我们可以用一个可变的字符串来拼接我们想要输出的字符，最后调用一次<code>write()</code>来输入。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// in vip.h
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// in vip.h
 </span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">struct</span> abuf {
   <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>b;
   <span style="color:#458;font-weight:bold">int</span> len;
@@ -421,7 +421,7 @@
 
 <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ab_free</span>(<span style="color:#000;font-weight:bold">struct</span> abuf <span style="color:#000;font-weight:bold">*</span>ab) { free(ab<span style="color:#000;font-weight:bold">-&gt;</span>b); }
 </code></pre></div><p>将<code>ed_refresh()</code>中的<code>write()</code>用<code>ab_append()</code>代替：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_refresh</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_refresh</span>() {
   <span style="color:#000;font-weight:bold">struct</span> abuf ab <span style="color:#000;font-weight:bold">=</span> ABUF_INIT;
 
   ab_append(<span style="color:#000;font-weight:bold">&amp;</span>ab, <span style="color:#d14">&#34;</span><span style="color:#d14">\x1b</span><span style="color:#d14">[2J&#34;</span>, <span style="color:#099">4</span>);  <span style="color:#998;font-style:italic">// clear entire screen`;
@@ -440,7 +440,7 @@
 </a>
 </p>
 <h3 id="波浪号">波浪号</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_draw_rows</span>(<span style="color:#000;font-weight:bold">struct</span> abuf <span style="color:#000;font-weight:bold">*</span>ab) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_draw_rows</span>(<span style="color:#000;font-weight:bold">struct</span> abuf <span style="color:#000;font-weight:bold">*</span>ab) {
   <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> y <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; y <span style="color:#000;font-weight:bold">&lt;</span> editor.winrows; y<span style="color:#000;font-weight:bold">++</span>) {
     ab_append(ab, <span style="color:#d14">&#34;~&#34;</span>, <span style="color:#099">1</span>);
     <span style="color:#000;font-weight:bold">if</span> (y <span style="color:#000;font-weight:bold">&lt;</span> editor.winrows <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>) ab_append(ab, <span style="color:#d14">&#34;</span><span style="color:#d14">\r\n</span><span style="color:#d14">&#34;</span>, <span style="color:#099">2</span>);
@@ -448,7 +448,7 @@
 }
 </code></pre></div><p>注意最后一行不需要打印<code>\r\n</code>，如果打印的话，光标会移动到下一行，那么就会多处一行，多出的一行会导致终端滚动，这样我们的第一行被滚上去了（这不是我们想要的。</p>
 <h3 id="欢迎信息">欢迎信息</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// center a line, appand spaces in front of it
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// center a line, appand spaces in front of it
 </span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">inline</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_draw_center</span>(<span style="color:#000;font-weight:bold">struct</span> abuf <span style="color:#000;font-weight:bold">*</span>ab, <span style="color:#458;font-weight:bold">int</span> line_size) {
   <span style="color:#458;font-weight:bold">int</span> margin <span style="color:#000;font-weight:bold">=</span> (editor.wincols <span style="color:#000;font-weight:bold">-</span> line_size) <span style="color:#000;font-weight:bold">/</span> <span style="color:#099">2</span>;
   <span style="color:#000;font-weight:bold">while</span> (margin<span style="color:#000;font-weight:bold">--</span>) {
@@ -485,7 +485,7 @@
 </a>
 </p>
 <h3 id="渲染时隐藏光标">渲染时隐藏光标</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_refresh</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_refresh</span>() {
   <span style="color:#000;font-weight:bold">struct</span> abuf ab <span style="color:#000;font-weight:bold">=</span> ABUF_INIT;
   <span style="color:#998;font-style:italic">// hide cursor
 </span><span style="color:#998;font-style:italic"></span>  abAppend(<span style="color:#000;font-weight:bold">&amp;</span>ab, <span style="color:#d14">&#34;</span><span style="color:#d14">\x1b</span><span style="color:#d14">[?25l&#34;</span>, <span style="color:#099">6</span>);
@@ -503,7 +503,7 @@
   abFree(<span style="color:#000;font-weight:bold">&amp;</span>ab);
 }
 </code></pre></div><h3 id="逐行清空">逐行清空</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_draw_rows</span>(<span style="color:#000;font-weight:bold">struct</span> abuf <span style="color:#000;font-weight:bold">*</span>ab) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_draw_rows</span>(<span style="color:#000;font-weight:bold">struct</span> abuf <span style="color:#000;font-weight:bold">*</span>ab) {
   <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> y <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; y <span style="color:#000;font-weight:bold">&lt;</span> editor.winrows; y<span style="color:#000;font-weight:bold">++</span>) {
     ab_append(ab, <span style="color:#d14">&#34;~&#34;</span>, <span style="color:#099">1</span>);
     <span style="color:#000;font-weight:bold">if</span> (y <span style="color:#000;font-weight:bold">==</span> editor.winrows <span style="color:#000;font-weight:bold">/</span> <span style="color:#099">3</span>) {
@@ -547,7 +547,7 @@
 <h2 id="移动光标">移动光标</h2>
 <p>在 Vim 里，可以使用<code>h,j,k,l</code>和方向键来移动光标。VIP 里的键位和 Vim 基本一致，功能也尽量的模仿 Vim 。</p>
 <p>使用两个全局变量（cx，cy）来保存光标的坐标：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> editor_config {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> editor_config {
   win_size_t cx, cy;
 
   win_size_t winrows;
@@ -557,7 +557,7 @@
 } Editor;
 </code></pre></div><h3 id="模仿vi的键位">模仿Vi的键位</h3>
 <p>定义键位的<code>enum</code>：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">enum</span> EditorKey {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">enum</span> EditorKey {
   ARROW_LEFT <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1000</span>,
   ARROW_RIGHT <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1001</span>,
   ARROW_UP <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1002</span>,
@@ -573,7 +573,7 @@
 </code></pre></div><p>和 Vim 一样，不止可以使用<code>hjkl</code>来移动，同时还可以使用方向键来移动。由于方向键映射多个 ASCII 码。这里使用大于<code>127</code>的数字来表示它们（这样就不会和 ASCII 码冲突了）。</p>
 <p><code>LINE_START</code>和<code>LINE_END</code>在这里只是简单的跳到屏幕起始和屏幕末尾处。</p>
 <h3 id="模式初步">模式初步</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">enum</span> EditorMode { NORMAL_MODE <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, INSERT_MODE };
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">enum</span> EditorMode { NORMAL_MODE <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, INSERT_MODE };
 <span style="color:#000;font-weight:bold">enum</span> EditorKey {
  	<span style="color:#998;font-style:italic">//...
 </span><span style="color:#998;font-style:italic"></span>  INSERT_MODE_KEY <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;i&#39;</span>,
@@ -581,7 +581,7 @@
 };
 </code></pre></div><p>Vim 里有<a href="https://en.wikibooks.org/wiki/Learning_the_vi_Editor/Vim/Modes">六个模式</a>？目前先简单的定义两个模式：NORMAL 和 INSERT。</p>
 <p>在 NORMAL 下可以同时使用<code>hjkl</code>和方向键来移动光标，在 INSERT 模式下当然只能使用方向键来移动光标。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_process_keypress</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_process_keypress</span>() {
   <span style="color:#458;font-weight:bold">int</span> key <span style="color:#000;font-weight:bold">=</span> ed_read_key();
   <span style="color:#000;font-weight:bold">if</span> (editor.mode <span style="color:#000;font-weight:bold">==</span> INSERT_MODE) {
     ed_insert_process(key);
@@ -590,7 +590,7 @@
   }
 }
 </code></pre></div><p>以上代码根据不同的模式来处理按键。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_normal_process</span>(<span style="color:#458;font-weight:bold">int</span> c) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_normal_process</span>(<span style="color:#458;font-weight:bold">int</span> c) {
   <span style="color:#000;font-weight:bold">switch</span> (c) {
     <span style="color:#000;font-weight:bold">case</span> <span style="color:#900;font-weight:bold">INSERT_MODE_KEY</span>:
       editor.mode <span style="color:#000;font-weight:bold">=</span> INSERT_MODE;
@@ -618,7 +618,7 @@
   }
 }
 </code></pre></div><p>在 NORMAL 模式下，按下<code>i</code>可以变成 INSERT 模式。这里把方向键和<code>hjkl</code>的还有其他移动光标的键委托给<code>ed_process_move()</code>函数来处理。同样的，在 INSERT 模式下，按下<code>Esc</code>可以变成 NORMAL 模式，对与移动光标的按键也委托给<code>ed_process_move()</code>。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">
 <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ed_insert_process</span>(<span style="color:#458;font-weight:bold">int</span> c) {
   <span style="color:#000;font-weight:bold">switch</span> (c) {
     <span style="color:#000;font-weight:bold">case</span> <span style="color:#900;font-weight:bold">NORMAL_MODE_KEY</span>:

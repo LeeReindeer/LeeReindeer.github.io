@@ -217,7 +217,7 @@
 <p>雷的生成要保证随机，游戏体验才会好。游戏刚开始的阶段，也可以快速标记雷的位置。</p>
 <h3 id="替换法">替换法</h3>
 <p>替换法也就是把一个方块随机替换为雷，知道所有雷都放置完成。但是实际玩耍起来，体验不是很好，根本看不出哪个是雷，全靠盲猜。这样肯定要怀疑这个算法（特指下面实现方法）的随机性的，也不知道是不是<code>Random</code>的锅。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">genRandomMines</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> mineSize<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">genRandomMines</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> mineSize<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     Random random <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Random<span style="color:#000;font-weight:bold">(</span>System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">());</span>
     <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span>mines<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">!=</span> mineSize<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
       <span style="color:#998;font-style:italic">// [0, 63]
@@ -231,7 +231,7 @@
   <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h3 id="洗牌法">洗牌法</h3>
 <p>然后一年过去，在知乎上偶然看到关于雷生成的算法，里面提到了洗牌法（<strong>shuffle</strong>）。使用的是 <strong>Knuth shuffle</strong> ，简单的说就是遍历数组，随机交换两个元素：</p>
-<pre><code>for i from 0 to n−2 do
+<pre tabindex="0"><code>for i from 0 to n−2 do
      j ← random integer such that i ≤ j &lt; n
      exchange a[i] and a[j]
 </code></pre><p>洗牌法分为两步：</p>
@@ -240,7 +240,7 @@
 <li>再使用 Knuth shuffle 打乱顺序</li>
 </ul>
 <p>为了更好的游戏体验，下面算法可以实现第一次点击时，不会碰到雷。不过这也意味着雷的生成要推迟到第一次点击时。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#998;font-style:italic">// ensure excludePoint is not mine
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#998;font-style:italic">// ensure excludePoint is not mine
 </span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">genRandomMinesEnsured</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> mineSize<span style="color:#000;font-weight:bold">,</span> Point excludePoint<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#998;font-style:italic">// fill mines
 </span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">int</span> minesCnt <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
@@ -279,14 +279,14 @@
 <h4 id="union-find-api">Union Find API</h4>
 <blockquote>
 <p>初始化，每个节点各自成一个连通块：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> n<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> n<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
 	parent<span style="color:#000;font-weight:bold">[</span>i<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> i<span style="color:#000;font-weight:bold">;</span>
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div></blockquote>
 <ul>
 <li><code>union</code>：连接两个连通块。将两个节点设置为同一个<code>root</code>。</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">union</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> p<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> q<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">union</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> p<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> q<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
         <span style="color:#458;font-weight:bold">int</span> rootP <span style="color:#000;font-weight:bold">=</span> find<span style="color:#000;font-weight:bold">(</span>p<span style="color:#000;font-weight:bold">);</span>
         <span style="color:#458;font-weight:bold">int</span> rootQ <span style="color:#000;font-weight:bold">=</span> find<span style="color:#000;font-weight:bold">(</span>q<span style="color:#000;font-weight:bold">);</span>
         <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>rootP <span style="color:#000;font-weight:bold">==</span> rootQ<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
@@ -296,7 +296,7 @@
 </code></pre></div><ul>
 <li><code>connected</code>：判断两个连通块是否相连。相同<code>root</code>的两个连通块就是连通的。</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">find</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> p<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">find</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> p<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
         validate<span style="color:#000;font-weight:bold">(</span>p<span style="color:#000;font-weight:bold">);</span>
         <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span>p <span style="color:#000;font-weight:bold">!=</span> parent<span style="color:#000;font-weight:bold">[</span>p<span style="color:#000;font-weight:bold">])</span>
             p <span style="color:#000;font-weight:bold">=</span> parent<span style="color:#000;font-weight:bold">[</span>p<span style="color:#000;font-weight:bold">];</span>
@@ -308,7 +308,7 @@
 </code></pre></div><h4 id="应用到扫雷游戏">应用到扫雷游戏</h4>
 <p>我们可以利用<code>union</code>操作将全部空白方块合成一个连通块，到我们点击到一个空白方块时，遍历游戏地图，将与其连通的空白方块都显示出来。因为游戏地图为二维数组，需要将二维坐标转化为一维坐标。</p>
 <p>联合所有空白方块：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">unionAllBlankBlock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">unionAllBlankBlock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#998;font-style:italic">//as known, [i, j] is already a blank.
 </span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> row <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> row <span style="color:#000;font-weight:bold">&lt;</span> size<span style="color:#000;font-weight:bold">;</span> row<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
       <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> col <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> col <span style="color:#000;font-weight:bold">&lt;</span> size<span style="color:#000;font-weight:bold">;</span> col<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
@@ -335,7 +335,7 @@
     <span style="color:#000;font-weight:bold">}</span>
   <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>显示和当前空白方块相连的空白方块：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">showUnionBlankBlock</span><span style="color:#000;font-weight:bold">(</span>Point point<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">showUnionBlankBlock</span><span style="color:#000;font-weight:bold">(</span>Point point<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>isFirstTimeBlankClick<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
       unionAllBlankBlock<span style="color:#000;font-weight:bold">();</span>
       isFirstTimeBlankClick <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
@@ -365,7 +365,7 @@
 </p>
 <p>当我们点击坐标<code>(5, 4)</code>时，可以连带出5个空白方块组成的连通块（下方的T型）。</p>
 <p>这个游戏地图用二维数组表示，把雷用“9”表示，因为一个方块周围最多有8个雷；已经展示的空白方块用“10”表示，防止重复遍历。</p>
-<pre><code>    int[][] board = new int[][]{
+<pre tabindex="0"><code>    int[][] board = new int[][]{
         {0, 0, 1, 1, 2, 9, 1, 0},
         {1, 1, 2, 9, 3, 2, 2, 0},
         {1, 9, 3, 2, 3, 9, 2, 1},
@@ -375,7 +375,7 @@
         {1, 2, 2, 1, 0, 1, 2, 2},
         {0, 1, 9, 1, 0, 1, 9, 1}
     };
-</code></pre><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">floodFill</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">[][]</span> board<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> x<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> y<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">floodFill</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">[][]</span> board<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> x<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> y<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>x <span style="color:#000;font-weight:bold">&lt;</span> 0 <span style="color:#000;font-weight:bold">||</span> x <span style="color:#000;font-weight:bold">&gt;=</span> rows <span style="color:#000;font-weight:bold">||</span> y <span style="color:#000;font-weight:bold">&lt;</span> 0 <span style="color:#000;font-weight:bold">||</span> y <span style="color:#000;font-weight:bold">&gt;=</span> cols<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
     <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>board<span style="color:#000;font-weight:bold">[</span>x<span style="color:#000;font-weight:bold">][</span>y<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">!=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
     <span style="color:#998;font-style:italic">// show blank box
@@ -389,7 +389,7 @@
     floodFill<span style="color:#000;font-weight:bold">(</span>board<span style="color:#000;font-weight:bold">,</span> x<span style="color:#000;font-weight:bold">,</span> y <span style="color:#000;font-weight:bold">-</span> 1<span style="color:#000;font-weight:bold">);</span>
   <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>输出如下：</p>
-<pre><code>show blank: (5, 4)
+<pre tabindex="0"><code>show blank: (5, 4)
 show blank: (6, 4)
 show blank: (7, 4)
 show blank: (5, 5)

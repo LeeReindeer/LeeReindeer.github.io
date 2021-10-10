@@ -260,7 +260,7 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </li>
 </ul>
 <p>可以新建一个 Activity 基类来显示每个子类的生命周期：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">BaseActivity</span> : AppCompatActivity() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">BaseActivity</span> : AppCompatActivity() {
   <span style="color:#000;font-weight:bold">val</span> TAG = javaClass.simpleName
 
   <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onCreate</span>(savedInstanceState: Bundle?) {
@@ -311,11 +311,11 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 <ul>
 <li>
 <p>显式启动</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">startActivity(Intent(<span style="color:#000;font-weight:bold">this</span>, SecondActivity<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java)
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">startActivity(Intent(<span style="color:#000;font-weight:bold">this</span>, SecondActivity<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java)
 </code></pre></div></li>
 <li>
 <p>隐式启动</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">val</span> intent = Intent(Intent.ACTION_SEND).apply {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">val</span> intent = Intent(Intent.ACTION_SEND).apply {
     putExtra(Intent.EXTRA_EMAIL, recipientArray)
 }
 startActivity(intent)
@@ -323,7 +323,7 @@ startActivity(intent)
 </ul>
 <h3 id="startactivityforresult">startActivityForResult</h3>
 <p>以 <code>startActivityForResult()</code> 方式启动 Activity，可以让这个 Activity 返回结果数据给上一个应用。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">initView</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">initView</span>() {
     first_button.setOnClickListener {
     startActivityForResult(Intent(<span style="color:#000;font-weight:bold">this</span>, SecondActivity<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java).apply {
         <span style="color:#000;font-weight:bold">val</span> text = first_edit.text.toString()
@@ -355,7 +355,7 @@ startActivity(intent)
 <p>不过，当系统为了恢复内存而销毁某项 Activity 时（只有当内存极度不足时才会发生），<code>Activity</code> 对象也会被销毁，因此系统在继续 Activity 时根本无法让其状态保持完好，而是必须在用户返回 Activity 时重建 <code>Activity</code> 对象。但用户并不知道系统销毁 Activity 后又对其进行了重建，因此他们很可能认为 Activity 状态毫无变化。 在这种情况下，您可以实现另一个回调方法对有关 Activity 状态的信息进行保存，以确保有关 Activity 状态的重要信息得到保留：<code>onSaveInstanceState()</code>。</p>
 </blockquote>
 <p>使用 <code>Bundle</code> 来暂时保存数据，但是因为系统不保证会调用 ``onSaveInstanceState()<code>，最好不要在这里保存重要的数据，而应该在</code>onPause() 里<code>。向 </code>Bundle<code>里传数据和</code>Intent` 类似。借此，可以恢复一些 UI 的信息（比如在 EditView 里输入的文字）。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onCreate</span>(savedInstanceState: Bundle?) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onCreate</span>(savedInstanceState: Bundle?) {
     <span style="color:#000;font-weight:bold">super</span>.onCreate(savedInstanceState)
     setContentView(R.layout.activity_first)
 
@@ -370,7 +370,7 @@ startActivity(intent)
   }
 </code></pre></div><p>即使不实现 <code>onSaveInstanceState()</code> ,系统也会默认实现：为每个布局恢复状态，比如，<code>EditText</code> 小部件保存用户输入的任何文本，<code>CheckBox</code> 小部件保存复选框的选中或未选中状态。<strong>只需为想要保存其状态的每个小部件提供一个唯一的 ID（通过 <a href="https://developer.android.com/guide/topics/resources/layout-resource.html#idvalue"><code>android:id</code></a> 属性）。如果小部件没有 ID，则系统无法保存其状态。</strong></p>
 <p>这里使用 CheckBox 作为例子，只需要旋转一下屏幕就可以让 Activity 销毁并重建，可以发现有 ID 的 checkbox1 恢复了之前的选中状态，而第二个 CheckBox 则没有。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#000080">&lt;CheckBox</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#000080">&lt;CheckBox</span>
         <span style="color:#008080">android:id=</span><span style="color:#d14">&#34;@+id/checkbox1&#34;</span>
         <span style="color:#008080">android:hint=</span><span style="color:#d14">&#34;check1&#34;</span>
         <span style="color:#008080">android:layout_width=</span><span style="color:#d14">&#34;wrap_content&#34;</span>
@@ -399,7 +399,7 @@ startActivity(intent)
 </p>
 <h4 id="textview-的状态恢复">TextView 的状态恢复</h4>
 <p>由于 <code>onSaveInstanceState()</code> 不一定会被调用，TextView里的文本会在屏幕旋转之后初始化，比如下面的代码：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">MainActivity</span> : AppCompatActivity() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">MainActivity</span> : AppCompatActivity() {
     <span style="color:#000;font-weight:bold">companion</span> <span style="color:#000;font-weight:bold">object</span> {
         <span style="color:#000;font-weight:bold">var</span> thisCount = <span style="color:#099">0</span>;
     }
@@ -415,7 +415,7 @@ startActivity(intent)
     }
 }
 </code></pre></div><p>在屏幕旋转后，<code>show_count</code>显示0，但是<code>count</code>的值仍然为之前的值。要让 TextView 保存之前的状态，可以参考 <a href="https://stackoverflow.com/questions/5179686/restoring-state-of-textview-after-screen-rotation%3E">stackoverflow</a>上的解答：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;TextView</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;TextView</span>
      <span style="color:#a61717;background-color:#e3d2d2">...</span>
      <span style="color:#008080">android:freezesText=</span><span style="color:#d14">&#34;true&#34;</span> <span style="color:#000080">/&gt;</span>
 </code></pre></div><h2 id="任务和返回栈httpsdeveloperandroidcomguidecomponentsactivitiestasks-and-back-stack"><a href="https://developer.android.com/guide/components/activities/tasks-and-back-stack">任务和返回栈</a></h2>
@@ -460,7 +460,7 @@ startActivity(intent)
 <p>与 <code>singleTask</code> 相同，但系统不会将任何其他活动发送到持有该实例的任务中。该活动始终是其任务中唯一且唯一的成员;任何一次模式启动的活动都将在单独的任务中打开。</p>
 <h4 id="使用-intent-flag">使用 Intent flag</h4>
 <p>在向 <code>startActivity()</code>传递树立 FLAG 的 intent。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">startActivity(Intent(<span style="color:#000;font-weight:bold">this</span>, FirstActivity<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java).apply {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">startActivity(Intent(<span style="color:#000;font-weight:bold">this</span>, FirstActivity<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java).apply {
     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 })
 </code></pre></div><ul>

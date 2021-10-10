@@ -223,7 +223,7 @@
 <p>应用安全总结起来就是两大问题：认证（authentication，你是谁？）和授权（authorization，允许你做什么？）有时候也会用访问控制（access control）这个名词来代替授权，这会让我们一些困惑，但以这种方式思考可能会有帮助：“授权”在其他地方已经实现了。Spring Security 的架构旨在将认证从授权中分离出来，并也有适用于两者的策略和可扩展的设计。</p>
 <h3 id="认证authentication">认证（Authentication）</h3>
 <p>用于认证的主要接口是<code>AuthenticationManager</code>，它只有一个方法：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">AuthenticationManager</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">AuthenticationManager</span> <span style="color:#000;font-weight:bold">{</span>
   Authentication <span style="color:#900;font-weight:bold">authenticate</span><span style="color:#000;font-weight:bold">(</span>Authentication authentication<span style="color:#000;font-weight:bold">)</span>
     <span style="color:#000;font-weight:bold">throws</span> AuthenticationException<span style="color:#000;font-weight:bold">;</span>
 <span style="color:#000;font-weight:bold">}</span>
@@ -235,7 +235,7 @@
 </ol>
 <p><code>AuthenticationException</code>是一个运行时异常，通常被应用程序以常规的方式的处理，这取决于应用的母的和代码风格。换句话说，代码中一般不会捕捉和处理这个异常。比如，可以使得网页显示认证失败，后端返回 401 HTTP 状态码，响应头中的<code>WWW-Authenticate</code> 有无视情况而定。</p>
 <p><code>AuthenticationManager</code>最普遍的实现是<code>ProviderManager</code>，<code>ProviderManager</code>将认证委托给一系列的<code>AuthenticationProvider</code>实例 。<code>AuthenticationProvider</code> 和 <code>AuthenticationManager</code> 很类似，但是它有一个额外的方法允许查询它支持的<code>Authentication</code>方式：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">AuthenticationProvider</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">AuthenticationProvider</span> <span style="color:#000;font-weight:bold">{</span>
 	Authentication <span style="color:#900;font-weight:bold">authenticate</span><span style="color:#000;font-weight:bold">(</span>Authentication authentication<span style="color:#000;font-weight:bold">)</span>
 			<span style="color:#000;font-weight:bold">throws</span> AuthenticationException<span style="color:#000;font-weight:bold">;</span>
 
@@ -254,7 +254,7 @@
 </blockquote>
 <h4 id="自定义authenticationmanager">自定义<code>AuthenticationManager</code></h4>
 <p>Spring Security 提供了一些配置方式帮助你快速的配置通用的<code>AuthenticationManager</code>。最常见的是<code>AuthenticationManagerBuilder</code>，它可以使用内存方式（in-memory）、JDBC 或 LDAP、或自定义的<code>UserDetailService</code>来认证用户。下面是设置全局认证器的例子：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ApplicationSecurity</span> <span style="color:#000;font-weight:bold">extends</span> WebSecurityConfigurerAdapter <span style="color:#000;font-weight:bold">{</span>
 
    <span style="color:#000;font-weight:bold">...</span> <span style="color:#998;font-style:italic">// web stuff here
@@ -267,7 +267,7 @@
 
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>虽然这个例子仅仅设计一个 web 应用，但是<code>AuthenticationManagerBuilder</code>的用处大为广阔（详细情况请看[Web 安全](#Web 安全)是如何实现的）。请注意<code>AuthenticationManagerBuilder</code>是通过<code>@AutoWired</code>注入到被<code>@Bean</code>注解的一个方法中的，这使得它成为一个全局<code>AuthenticationManager</code>。相反的，如果我们这样写：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ApplicationSecurity</span> <span style="color:#000;font-weight:bold">extends</span> WebSecurityConfigurerAdapter <span style="color:#000;font-weight:bold">{</span>
 
   <span style="color:#3c5d5d;font-weight:bold">@Autowired</span>
@@ -287,7 +287,7 @@
 <h3 id="授权authorization">授权（Authorization）</h3>
 <p>一旦认证成功，我们就可以进行授权了，它核心的策略就是<code>AccessDecisionManager</code>。它提供三个方法并且全部委托给<code>AccessDecisionVoter</code>，这有点像<code>ProviderManager</code>将认证委托给<code>AuthenticationProvider</code>。</p>
 <p>一个<code>AccessDecisionVoter</code>考虑一个<code>Authentication</code>（代表一个<code>Principal</code>）和一个被<code>ConfigAttributes</code>装饰的安全对象：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">supports</span><span style="color:#000;font-weight:bold">(</span>ConfigAttribute attribute<span style="color:#000;font-weight:bold">);</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">supports</span><span style="color:#000;font-weight:bold">(</span>ConfigAttribute attribute<span style="color:#000;font-weight:bold">);</span>
 
 <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">supports</span><span style="color:#000;font-weight:bold">(</span>Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> clazz<span style="color:#000;font-weight:bold">);</span>
 
@@ -329,7 +329,7 @@
 </blockquote>
 <h4 id="创建和自定义过滤链">创建和自定义过滤链</h4>
 <p>Spring Boot 中默认的 fallback 过滤链（使用<code>/**</code>匹配的过滤链）有一个预定义的顺序<code>SecurityProperties.BASIC_AUTH_ORDER</code>。你可以使用<code>security.base.enabled=false</code>关闭它，或者你可以定义一个更低的顺序值（译者注：越低的值表示顺序更前，所以它的顺序在默认的 fallback 之前）。只要添加一个<code>WebSecurityConfigurerAdapter</code>或<code>WebSecurityConfigurer</code>的 Bean 然后用<code>@Order</code>注解。比如：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
 <span style="color:#3c5d5d;font-weight:bold">@Order</span><span style="color:#000;font-weight:bold">(</span>SecurityProperties<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BASIC_AUTH_ORDER</span> <span style="color:#000;font-weight:bold">-</span> 10<span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ApplicationConfigurerAdapter</span> <span style="color:#000;font-weight:bold">extends</span> WebSecurityConfigurerAdapter <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#3c5d5d;font-weight:bold">@Override</span>
@@ -342,7 +342,7 @@
 <p>许多应用中对一组资源的和另一组资源的访问规则可能大不相同。比如一个有前端页面和后端 API 的应用支持基于 cookie 的认证将用户重定向到登录界面，同时也支持基于 token 的认证，认证失败将返回 401 响应码。每组资源有它自己的<code>WebSecurityConfigurerAdapter</code>，并且有这唯一的顺序和他自己的请求匹配规则。如果匹配规则重叠，则匹配顺序最前的过滤链。</p>
 <h4 id="请求匹配分发和授权">请求匹配分发和授权</h4>
 <p>一条安全过滤链（等价的 ，就是一个<code>WebSecurityConfigurerAdapter</code>）拥有一个请求匹配规则用来匹配 HTTP 请求。一旦有应用了一条过滤链，则其他过滤链就不会使用。但在一条过滤链中，你可以通过<code>HttpSecurity</code>在<strong>更细的粒度</strong>上配置匹配规则。比如：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
 <span style="color:#3c5d5d;font-weight:bold">@Order</span><span style="color:#000;font-weight:bold">(</span>SecurityProperties<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BASIC_AUTH_ORDER</span> <span style="color:#000;font-weight:bold">-</span> 10<span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ApplicationConfigurerAdapter</span> <span style="color:#000;font-weight:bold">extends</span> WebSecurityConfigurerAdapter <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#3c5d5d;font-weight:bold">@Override</span>
@@ -359,12 +359,12 @@
 <p>略</p>
 <h2 id="method-安全">Method 安全</h2>
 <p>Spring Security 在支持 web 安全的同时，也提供了对 Java 方法执行的访问规则。对于 Spring Security 来说，方法只是一种不同类型的“资源”而已。对用户来说，访问规则在<code>ConfigAttribute</code>中有相同的格式（比如 角色 或者 表达式），但在代码中有不同的配置。第一步就是启用方法安全，比如你可以在应用的启动类上进行配置：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@SpringBootApplication</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@SpringBootApplication</span>
 <span style="color:#3c5d5d;font-weight:bold">@EnableGlobalMethodSecurity</span><span style="color:#000;font-weight:bold">(</span>securedEnabled <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SampleSecureApplication</span> <span style="color:#000;font-weight:bold">{</span>
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>之后，便可以在方法上直接使用注解：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Service</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Service</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">MyService</span> <span style="color:#000;font-weight:bold">{</span>
 
   <span style="color:#3c5d5d;font-weight:bold">@Secured</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;ROLE_USER&#34;</span><span style="color:#000;font-weight:bold">)</span>
@@ -380,18 +380,18 @@
 </blockquote>
 <h2 id="spring-security-和线程">Spring Security 和线程</h2>
 <p>Spring Security是线程绑定的，因为它需要保证当前的已认证的用户（authenticated principal）对下流的消费者可用。基本构建块是<code>SecurityContext</code>，它可能包含<code>Authentication</code>（当一个用户登陆后，<code>authenticated</code>肯定是 <code>true</code>）。你总是可以从<code>SecurityContextHolder</code>中的静态方法得到<code>SecurityContext</code>，它内部使用了<code>ThreadLocal</code>进行管理。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">SecurityContext context <span style="color:#000;font-weight:bold">=</span> SecurityContextHolder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getContext</span><span style="color:#000;font-weight:bold">();</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">SecurityContext context <span style="color:#000;font-weight:bold">=</span> SecurityContextHolder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getContext</span><span style="color:#000;font-weight:bold">();</span>
 Authentication authentication <span style="color:#000;font-weight:bold">=</span> context<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAuthentication</span><span style="color:#000;font-weight:bold">();</span>
 <span style="color:#000;font-weight:bold">assert</span><span style="color:#000;font-weight:bold">(</span>authentication<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isAuthenticated</span><span style="color:#000;font-weight:bold">);</span>
 </code></pre></div><p>这种操作并不常见，但是它可能对你有帮助。比如，你需要写一个自定义的认证过滤器（尽管如此，Spring Security 中还有一些基类可用于避免使用<code>SecurityContextHolder</code>的地方）。</p>
 <p>如果需要访问 web endpoint（译者注：对应响应的 URL） 中经过身份验证的用户，则可以在<code>@RequestMapping</code>中使用方法参数注解。例如：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@RequestMapping</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;/foo&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@RequestMapping</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;/foo&#34;</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">foo</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3c5d5d;font-weight:bold">@AuthenticationPrincipal</span> User user<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#000;font-weight:bold">...</span> <span style="color:#998;font-style:italic">// do stuff with user
 </span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>这个注解相当于从<code>SecurityContext</code>中获得当前<code>Authentication</code>，并调用<code>getPrincipal()</code>方法赋值给方法参数。<code>Authentication</code>中的<code>Principal</code>取决与用来认证的<code>AuthenticationManager</code>，所以这对于获得对用户数据类型的安全引用来说是一个有用的小技巧。</p>
 <p>如果使用了 Spring Security，那么在<code>HttpServletRequest</code>中的<code>Principal</code>将是<code>Authentication</code>类型，因此你也可以直接使用它：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@RequestMapping</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;/foo&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@RequestMapping</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;/foo&#34;</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">foo</span><span style="color:#000;font-weight:bold">(</span>Principal principal<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
   Authentication authentication <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Authentication<span style="color:#000;font-weight:bold">)</span> principal<span style="color:#000;font-weight:bold">;</span>
   User <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>User<span style="color:#000;font-weight:bold">)</span> authentication<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPrincipal</span><span style="color:#000;font-weight:bold">();</span>
@@ -400,7 +400,7 @@ Authentication authentication <span style="color:#000;font-weight:bold">=</span>
 </code></pre></div><p>如果你需要编写在没有使用 Spring Security 的情况下的代码，那么这会很有用（你需要在加载<code>Authentication</code>类时更加谨慎）。</p>
 <h3 id="异步执行安全方法">异步执行安全方法</h3>
 <p>因为<code>SecurityContext</code>是线程绑定的，所以如果你想在后台执行安全方法，比如使用<code>@Async</code>，你需要确保上下文的传递。这总结起来就是将<code>SecurityContext</code>用<code>Runnable</code>、<code>Callable</code>等包裹起来在后台执行。Spring Security 提供了一些帮助使之变得简单，比如<code>Runnable</code>和<code>Callable</code>的包装器。 要将 <code>SecurityContext</code> 传递到<code>@Async</code>注解的方法，你需要编写 <code>AsyncConfigurer</code> 并确保 <code>Executor</code> 的正确性：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ApplicationConfiguration</span> <span style="color:#000;font-weight:bold">extends</span> AsyncConfigurerSupport <span style="color:#000;font-weight:bold">{</span>
 
   <span style="color:#3c5d5d;font-weight:bold">@Override</span>

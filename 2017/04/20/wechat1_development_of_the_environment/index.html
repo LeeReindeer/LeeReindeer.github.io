@@ -225,7 +225,7 @@
 <code>vim /etc/profile</code>
 在profile文件末尾加入：</li>
 </ul>
-<pre><code>export JAVA_HOME=/usr/local/jdk1.8.0_121                      //jdk安装目录
+<pre tabindex="0"><code>export JAVA_HOME=/usr/local/jdk1.8.0_121                      //jdk安装目录
 export PATH=$JAVA_HOME/bin:$PATH
 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 </code></pre><ul>
@@ -233,7 +233,7 @@ export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 shell输入<code>java -version</code>
 出现下面的提示</li>
 </ul>
-<pre><code>java version &quot;1.8.0_121&quot;
+<pre tabindex="0"><code>java version &quot;1.8.0_121&quot;
 Java(TM) SE Runtime Environment (build 1.8.0_121-b13)
 Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 </code></pre><h2 id="tomcat下载">Tomcat下载</h2>
@@ -258,7 +258,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 <li>启动服务.进入bin目录,执行<code>startup.sh</code>.接下来访问<code>http://localhost:8081/</code>,出现下面的界面就说明成功了．</li>
 <li>修改端口.进入conf目录，打开<code>server.xml</code>.修改Connector port后的参数，如下，默认8080d端口，我把它改成了8081.</li>
 </ul>
-<pre><code> &lt;Connector port=&quot;8081&quot; protocol=&quot;HTTP/1.1&quot;
+<pre tabindex="0"><code> &lt;Connector port=&quot;8081&quot; protocol=&quot;HTTP/1.1&quot;
                connectionTimeout=&quot;20000&quot;
                redirectPort=&quot;8443&quot; /&gt;
 </code></pre><ul>
@@ -266,7 +266,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 <code>vim /usr/local/tomcat/conf/tomcat-users.xml</code>
 增加</li>
 </ul>
-<pre><code>  &lt;role rolename=&quot;tomcat&quot;/&gt;
+<pre tabindex="0"><code>  &lt;role rolename=&quot;tomcat&quot;/&gt;
   &lt;role rolename=&quot;role1&quot;/&gt;
   &lt;role rolename=&quot;manager&quot;/&gt;
   &lt;user username=&quot;tomcat&quot; password=&quot;yourpassword&quot; roles=&quot;tomcat,manager&quot;/&gt;
@@ -276,18 +276,18 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 <li>常见坑．启动时报错<code>Tomcat Neither the JAVA_HOME nor the JRE_HOME environment variable is defined</code>.应该是java环境变量的问题，但是系统环境的变量已经配置好了．于是又在tomcat/bin/catalina.sh
 添加</li>
 </ul>
-<pre><code>export JAVA_HOME=/usr/local/jdk1.8.0_121
+<pre tabindex="0"><code>export JAVA_HOME=/usr/local/jdk1.8.0_121
 export JRE_HOME=/usr/local/jdk1.8.0_121 /jre
 </code></pre><h2 id="mysql">MySQL</h2>
 <p>查看MySQL进程</p>
-<pre><code>ps -aux|grep mysql
+<pre tabindex="0"><code>ps -aux|grep mysql
 mysql     1379  0.0  1.9 1236388 155188 ?      Ssl  17:42   0:01 /usr/sbin/mysqld
 lee      13163  0.0  0.0  15964   960 pts/7    S+   19:04   0:00 grep --color=auto mysql
 </code></pre><p>检查MySQL监听端口</p>
-<pre><code>netstat -nlt|grep 3306
+<pre tabindex="0"><code>netstat -nlt|grep 3306
 tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
 </code></pre><p>访问MySQL</p>
-<pre><code>msql -u root -p
+<pre tabindex="0"><code>msql -u root -p
 </code></pre><p>输入安装时设置的密码．
 
 <a data-fancybox="gallery" href="/images/mysqllogin.png">
@@ -303,7 +303,7 @@ tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
 
 接下来输入<code>show variables like '%char%';</code>查看字符编码；
 默认不是utf-8,打开MySQL服务器的配置文件my.cnf,添加</p>
-<pre><code>[client]
+<pre tabindex="0"><code>[client]
 default-character-set=utf8
 [mysqld]
 character-set-server=utf8
@@ -350,7 +350,7 @@ collation-server=utf8_general_ci
 </a>
 
 在web.xml里配置servlet．</p>
-<pre><code> &lt;servlet&gt;
+<pre tabindex="0"><code> &lt;servlet&gt;
     &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
     &lt;servlet-class&gt;Servlet.TestServlet&lt;/servlet-class&gt;
   &lt;/servlet&gt;

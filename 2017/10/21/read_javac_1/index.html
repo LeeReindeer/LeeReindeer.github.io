@@ -225,7 +225,7 @@ Javac 大家(只是习惯用大家)应该用的很熟悉了.想我第一次接�
 </blockquote>
 <p>这句话反复出现在《深入理解Java虚拟机》里.我倒是没有体会到什么发展,也可以理解为这是为了跨平台而做出的牺牲,虚拟机也为此出现.当然也有直接把 Java 源代码编译成机器码的编译器( AOT 编译器).先不管这个,从 Java 源代码到字节码到底经历了什么呢?肯定要分析处理源码的语句啊,这便是词法分析和语法分析,从而把源码变成了抽象语法树(AST).接着只要遍历语法树就得到了字节码指令流.emmm,以目前的垃圾我不可能实现的.那,先从简单的开始,这篇重点就是<strong>从源码验证一下Javac的编译结果</strong>.</p>
 <h2 id="2-编写测试程序">2. 编写测试程序</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Test</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Test</span> <span style="color:#000;font-weight:bold">{</span>
 
     <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
         <span style="color:#458;font-weight:bold">int</span> a <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
@@ -237,7 +237,7 @@ Javac 大家(只是习惯用大家)应该用的很熟悉了.想我第一次接�
 </code></pre></div><p>这是个简单的测试程序,没什么好说的.接着用 Javac 编译他.然后打开这个字节码文件.</p>
 <h2 id="3-简单的javac源码">3. 简单的Javac源码</h2>
 <p>经过在Javac源码里的一番随便乱翻(划掉),找到了这个文件: <code>com.sun.tools.javac.jvm.ByteCodes</code> .这是一个接口,里面只有一些常量.像这样:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">ByteCodes</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">ByteCodes</span> <span style="color:#000;font-weight:bold">{</span>
 
     <span style="color:#998;font-style:italic">/** Byte code instruction codes.
 </span><span style="color:#998;font-style:italic">     */</span>
@@ -252,7 +252,7 @@ Javac 大家(只是习惯用大家)应该用的很熟悉了.想我第一次接�
 </code></pre></div><p>一打开这个文件,我就觉得很熟悉.这些都是基于栈的指令集.以后(在 JVM 里执行时)都是对 Java VM stack 进行操作的指令.</p>
 <h3 id="31-javap-查看字节码指令">3.1 Javap 查看字节码指令</h3>
 <p>省略前面一些常量池里内容.</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">();</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">();</span>
     descriptor<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">()</span>I
     flags<span style="color:#000;font-weight:bold">:</span> ACC_PUBLIC
     Code<span style="color:#000;font-weight:bold">:</span>
@@ -292,7 +292,7 @@ Javac 大家(只是习惯用大家)应该用的很熟悉了.想我第一次接�
 <h2 id="4-验证">4. 验证</h2>
 <p>我们看到的字节码文件,里面是16进制数,
 可以对照 Javac 的 Bytecodes 文件得到这些指令的十进制数.为了方便查找我做了如下的注释:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
         <span style="color:#998;font-style:italic">//         dec hex
 </span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//bioush   16, 10
 </span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//sipush   17, 11
@@ -313,9 +313,9 @@ Javac 大家(只是习惯用大家)应该用的很熟悉了.想我第一次接�
 <p>可以很明显的看出字节码文件里的16进制数和 Bytecodes.java 里的指令常量是一一对应的,跟用 Javap 查看的反编译结果也对应.</p>
 <h3 id="41-直接修改字节码">4.1 直接修改字节码</h3>
 <p>这样一来的话,是不是可以直接写字节码,而不是 Java 源代码了呢?当然可以,只有你熟悉各种指令(笑).不过简单的修改一下还是没问题的.我将原来的那行改成了:</p>
-<pre><code>1065 3c11 00c8 3d11 0190 3e1b 1c60
+<pre tabindex="0"><code>1065 3c11 00c8 3d11 0190 3e1b 1c60
 </code></pre><p>只是改了个变量,接下来反射调用一下.代码如下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
         HotSwapClassLoader loader <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HotSwapClassLoader<span style="color:#000;font-weight:bold">();</span>
         <span style="color:#458;font-weight:bold">byte</span><span style="color:#000;font-weight:bold">[]</span> bytes <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
         <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>

@@ -248,7 +248,7 @@ Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。
 </a>
 </p>
 <p>从图中，我们看到不直接使用SubjectImpl而是通过SubjectProxy，这样SubjectProxy可以在其方法内对SubjectImpl进行扩展。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SubjectProxy</span> <span style="color:#000;font-weight:bold">implements</span> ISubject <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">SubjectProxy</span> <span style="color:#000;font-weight:bold">implements</span> ISubject <span style="color:#000;font-weight:bold">{</span>
 <span style="color:#000;font-weight:bold">private</span> ISubject subject<span style="color:#000;font-weight:bold">;</span>
 
 <span style="color:#3c5d5d;font-weight:bold">@Override</span>
@@ -263,7 +263,7 @@ Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。
     <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subject</span> <span style="color:#000;font-weight:bold">=</span> subject<span style="color:#000;font-weight:bold">;</span>
 <span style="color:#000;font-weight:bold">}</span>
 <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Client</span> <span style="color:#000;font-weight:bold">{</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Client</span> <span style="color:#000;font-weight:bold">{</span>
 
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     SubjectProxy subjectProxy <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> SubjectProxy<span style="color:#000;font-weight:bold">();</span>
@@ -276,7 +276,7 @@ Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。
 <h3 id="动态代理">动态代理</h3>
 <p>动态代理的实现主要由一个类和一个接口实现：java.lang.reflect.Proxy 和 java.lang.reflect.InvocationHandler。</p>
 <p>上面的代理模式可用动态代理实现，编写我们自己的InvocationHandler：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">RequestInvocationHandler</span> <span style="color:#000;font-weight:bold">implements</span> InvocationHandler <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">RequestInvocationHandler</span> <span style="color:#000;font-weight:bold">implements</span> InvocationHandler <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#000;font-weight:bold">private</span> Object target<span style="color:#000;font-weight:bold">;</span>
 
   <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">RequestInvocationHandler</span><span style="color:#000;font-weight:bold">(</span>Object target<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
@@ -294,7 +294,7 @@ Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。
   <span style="color:#000;font-weight:bold">}</span>
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>对不同目标对象，但是都拥有request方法JoinPoint的对象（比如下面代码中的<code>SubjectImpl</code> 和 <code>RequsetableImpl</code>），我们不再需要为他们分别创建代理类了，动态代理机制会为它们动态的创建代理实例，当调用request方法时，InvocationHandler就会对相应的方法进行拦截和处理。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">dynamic</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">dynamic</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
     ISubject subject <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ISubject<span style="color:#000;font-weight:bold">)</span>Proxy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newProxyInstance</span><span style="color:#000;font-weight:bold">(</span>
         Client<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClassLoader</span><span style="color:#000;font-weight:bold">(),</span>
         <span style="color:#000;font-weight:bold">new</span> Class<span style="color:#000;font-weight:bold">[]{</span>ISubject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">},</span>
@@ -317,12 +317,12 @@ Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。
 <p>CGLIB 的使用请自己搜索</p>
 </blockquote>
 <p>为了演示CGLIB的使用，我们定义的目标对象如下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Request</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Request</span> <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">request</span><span style="color:#000;font-weight:bold">(</span>String headers<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;request &#34;</span> <span style="color:#000;font-weight:bold">+</span> headers<span style="color:#000;font-weight:bold">);</span>
   <span style="color:#000;font-weight:bold">}</span>
 <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">RequestCallback</span> <span style="color:#000;font-weight:bold">implements</span> MethodInterceptor <span style="color:#000;font-weight:bold">{</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">RequestCallback</span> <span style="color:#000;font-weight:bold">implements</span> MethodInterceptor <span style="color:#000;font-weight:bold">{</span>
 
   <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">before</span><span style="color:#000;font-weight:bold">(</span>Object arg<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
     System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;before: check https....&#34;</span><span style="color:#000;font-weight:bold">);</span>
@@ -351,7 +351,7 @@ Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。
 </code></pre></div><p>可以看到，我增加了before和after方法，这就类似AOP中Advice的雏形了，</p>
 <p>分别在 methodProxy.invokeSuper(o, args) 的前后调用。</p>
 <p>接下来在客户端中使用CGLIB：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">cglib</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">cglib</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
     Request requestInstance <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Request<span style="color:#000;font-weight:bold">)</span> Enhancer<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">create</span><span style="color:#000;font-weight:bold">(</span>Request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">new</span> RequestCallback<span style="color:#000;font-weight:bold">());</span>
     requestInstance<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;https://leer.moe&#34;</span><span style="color:#000;font-weight:bold">);</span>
     requestInstance<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">request</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://leezoom.xyz&#34;</span><span style="color:#000;font-weight:bold">);</span>
@@ -369,7 +369,7 @@ Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。
 <p>Spring AOP可以使用@AspectJ风格是配置也可以用XML，但是底层还是基于动态代理和CGLIB的实现，并不是使用AspectJ的专门编译器来实现的。当然Spring 也支持完全使用AspectJ，但是这已经不是Spring AOP了，而是AspectJ的内容。</p>
 </blockquote>
 <p>定义一个Aspect：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Aspect</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Aspect</span>
 <span style="color:#3c5d5d;font-weight:bold">@Configuration</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">UserAccessAspect</span> <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#000;font-weight:bold">private</span> Logger logger <span style="color:#000;font-weight:bold">=</span> LoggerFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLogger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
@@ -390,7 +390,7 @@ Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>PointCut的定义使用正则表达式，execution(* moe.leer.springdemo.aop.service.*.*(..)) 表示匹配service包下的所有方法。@Before 和 @After 注解的两个方法分别对应Before Advice 和After Advice，来模拟对用户的检查和在执行完成后打印。</p>
 <p>我们再来看Service包，里面就是简单测试业务：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Service</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Service</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Business1</span> <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#000;font-weight:bold">private</span> Logger logger <span style="color:#000;font-weight:bold">=</span> LoggerFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLogger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
 
@@ -404,7 +404,7 @@ Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。
   <span style="color:#000;font-weight:bold">}</span>
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>接着编写测试代码，对其进行测试：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@RunWith</span><span style="color:#000;font-weight:bold">(</span>SpringRunner<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@RunWith</span><span style="color:#000;font-weight:bold">(</span>SpringRunner<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#3c5d5d;font-weight:bold">@SpringBootTest</span>
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">BusinessAopTests</span> <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#000;font-weight:bold">private</span> Logger logger <span style="color:#000;font-weight:bold">=</span> LoggerFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLogger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>

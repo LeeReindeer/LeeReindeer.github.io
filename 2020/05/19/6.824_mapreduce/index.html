@@ -270,7 +270,7 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 <ul>
 <li>
 <p>Master存储任务和其状态</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">type</span> WorkerTask <span style="color:#000;font-weight:bold">struct</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">type</span> WorkerTask <span style="color:#000;font-weight:bold">struct</span> {
 	filename <span style="color:#458;font-weight:bold">string</span> <span style="color:#998;font-style:italic">// for map tasks
 </span><span style="color:#998;font-style:italic"></span>	state    TaskState
 	id       <span style="color:#458;font-weight:bold">int</span> <span style="color:#998;font-style:italic">// for non-idle tasks
@@ -289,7 +289,7 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 </code></pre></div></li>
 <li>
 <p>worker函数死循环获取任务</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">Worker</span>(mapf <span style="color:#000;font-weight:bold">func</span>(<span style="color:#458;font-weight:bold">string</span>, <span style="color:#458;font-weight:bold">string</span>) []KeyValue,
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">Worker</span>(mapf <span style="color:#000;font-weight:bold">func</span>(<span style="color:#458;font-weight:bold">string</span>, <span style="color:#458;font-weight:bold">string</span>) []KeyValue,
 	reducef <span style="color:#000;font-weight:bold">func</span>(<span style="color:#458;font-weight:bold">string</span>, []<span style="color:#458;font-weight:bold">string</span>) <span style="color:#458;font-weight:bold">string</span>) {
 	<span style="color:#000;font-weight:bold">for</span> {
       time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second)
@@ -305,7 +305,7 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 </code></pre></div></li>
 <li>
 <p><code>AssignTask</code>：给worker分配任务，</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">type</span> TaskReply <span style="color:#000;font-weight:bold">struct</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">type</span> TaskReply <span style="color:#000;font-weight:bold">struct</span> {
 	File  <span style="color:#458;font-weight:bold">string</span> <span style="color:#998;font-style:italic">// only for map phase
 </span><span style="color:#998;font-style:italic"></span>	Phase JobPhase
 	Id    <span style="color:#458;font-weight:bold">int</span> <span style="color:#998;font-style:italic">//task index
@@ -317,7 +317,7 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 </code></pre></div></li>
 <li>
 <p><code>DoneTask</code>：任务完成，包含完成任务的id和阶段</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">type</span> TaskDoneArgs <span style="color:#000;font-weight:bold">struct</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">type</span> TaskDoneArgs <span style="color:#000;font-weight:bold">struct</span> {
 	Id    <span style="color:#458;font-weight:bold">int</span> <span style="color:#998;font-style:italic">// done task id
 </span><span style="color:#998;font-style:italic"></span>	Phase JobPhase
 	<span style="color:#998;font-style:italic">// TempFiles *[]os.File

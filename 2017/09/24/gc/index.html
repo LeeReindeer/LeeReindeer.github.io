@@ -393,7 +393,7 @@ Survivor中的存活对象,移到另一块Survivor中(当然,在对象存活率�
 <p>这样一标注应该就清楚多了.</p>
 <p>下面主要通过比较两种参数情况下的垃圾回收机制进行分析.</p>
 <p>测试代码:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> ONEMB <span style="color:#000;font-weight:bold">=</span> 1024 <span style="color:#000;font-weight:bold">*</span> 1024<span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> ONEMB <span style="color:#000;font-weight:bold">=</span> 1024 <span style="color:#000;font-weight:bold">*</span> 1024<span style="color:#000;font-weight:bold">;</span>
 
 <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#458;font-weight:bold">byte</span><span style="color:#000;font-weight:bold">[]</span> allocation1<span style="color:#000;font-weight:bold">,</span> allocation2<span style="color:#000;font-weight:bold">,</span> allocation3<span style="color:#000;font-weight:bold">,</span> allocation4<span style="color:#000;font-weight:bold">,</span> allocation5<span style="color:#000;font-weight:bold">;</span>
@@ -404,7 +404,7 @@ Survivor中的存活对象,移到另一块Survivor中(当然,在对象存活率�
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h2 id="useserialgc">UseSerialGC</h2>
 <p>参数设置为:</p>
-<pre><code>-Xms20m
+<pre tabindex="0"><code>-Xms20m
 -Xmx20m
 -Xmn10m
 -XX:+UseSerialGC
@@ -413,7 +413,7 @@ Survivor中的存活对象,移到另一块Survivor中(当然,在对象存活率�
 -XX:+PrintGCTimeStamps
 -XX:+PrintGCDetails
 </code></pre><p>此时的GC日志:</p>
-<pre><code>0.103: [GC (Allocation Failure) 0.103: [DefNew: 8027K-&gt;358K(9216K), 0.0034545 secs] 8027K-&gt;6502K(19456K), 0.0034934 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+<pre tabindex="0"><code>0.103: [GC (Allocation Failure) 0.103: [DefNew: 8027K-&gt;358K(9216K), 0.0034545 secs] 8027K-&gt;6502K(19456K), 0.0034934 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
 Heap
  def new generation   total 9216K, used 4620K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
   eden space 8192K,  52% used [0x00000000fec00000, 0x00000000ff029918, 0x00000000ff400000)
@@ -428,7 +428,7 @@ Heap
 <p>这次的GC结束后,4MB的 <code>allocation4</code> 就可以分配到Eden里了.</p>
 <h2 id="useparallelgc">UseParallelGC</h2>
 <p>参数设置为:</p>
-<pre><code>-Xms20m
+<pre tabindex="0"><code>-Xms20m
 -Xmx20m
 -Xmn10m
 -XX:+UseParallelGC
@@ -437,7 +437,7 @@ Heap
 -XX:+PrintGCTimeStamps
 -XX:+PrintGCDetails
 </code></pre><p>GC日志为:</p>
-<pre><code>Heap
+<pre tabindex="0"><code>Heap
  PSYoungGen      total 9216K, used 8028K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
   eden space 8192K, 97% used [0x00000000ff600000,0x00000000ffdd7090,0x00000000ffe00000)
   from space 1024K, 0% used [0x00000000fff00000,0x00000000fff00000,0x0000000100000000)

@@ -235,7 +235,7 @@
 <li>每个进程当前申请各类资源数量矩阵 <code>Request[i, j] = k</code>，表示进程 P 当前申请R类资源k个。</li>
 </ul>
 <p>对应在 C++ 中的定义如下，在这里向量和矩阵其实就是一维数组和二维数组：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#458;font-weight:bold">int</span> resource[MAX_RESOURCE], available[MAX_RESOURCE];
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#458;font-weight:bold">int</span> resource[MAX_RESOURCE], available[MAX_RESOURCE];
 <span style="color:#458;font-weight:bold">int</span> allocation[THREAD_NUM][MAX_RESOURCE];
 <span style="color:#458;font-weight:bold">int</span> claim[THREAD_NUM][MAX_RESOURCE], need[THREAD_NUM][MAX_RESOURCE];
 </code></pre></div><h2 id="算法实现">算法实现</h2>
@@ -256,13 +256,13 @@
 </li>
 <li>
 <p>系统对 P 进程请求资源进行试探性分配，执行</p>
-<pre><code>Allocation[i, *] = Allocation[i, *] + Request[i, *]
+<pre tabindex="0"><code>Allocation[i, *] = Allocation[i, *] + Request[i, *]
 Available[*] = Available[*] - Request[i, *]
 Need[i, *] = Need[i, *] - Request[i, *]
 </code></pre></li>
 <li>
 <p>转向步骤5执行安全性测试算法，如果返回安全状态则承认试分配，否则抛弃试分配，进程P等待，并执行恢复原来的状态：</p>
-<pre><code>Allocation[i, *] = Allocation[i, *] - Request[i, *]
+<pre tabindex="0"><code>Allocation[i, *] = Allocation[i, *] - Request[i, *]
 Available[*] = Available[*] + Request[i, *]
 Need[i, *] = Need[i, *] + Request[i, *]
 </code></pre></li>
@@ -284,7 +284,7 @@ Need[i, *] = Need[i, *] + Request[i, *]
 </ol>
 <h3 id="c-实现">C++ 实现</h3>
 <p>安全性测试算法基本上和自然语言描述的步骤一致：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#998;font-style:italic">/** Wether current state is safe.
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#998;font-style:italic">/** Wether current state is safe.
 </span><span style="color:#998;font-style:italic"> * return true if safe, else return false.
 </span><span style="color:#998;font-style:italic"> * if return true, the safe_seq will be filled with the sequence that thread
 </span><span style="color:#998;font-style:italic"> * process
@@ -335,7 +335,7 @@ Need[i, *] = Need[i, *] + Request[i, *]
   <span style="color:#000;font-weight:bold">return</span> rest.size() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><p>处理进程的资源请求：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#458;font-weight:bold">int</span> thread_id;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">  <span style="color:#458;font-weight:bold">int</span> thread_id;
   <span style="color:#458;font-weight:bold">int</span> request[RESOURCE_NUM];
   <span style="color:#998;font-style:italic">// input request thread id, index start from 0
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">while</span> (scanf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;font-weight:bold">&amp;</span>thread_id) <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {
@@ -374,20 +374,20 @@ Need[i, *] = Need[i, *] + Request[i, *]
 <h3 id="测试用例">测试用例</h3>
 <p>我分别用书上的例子和 wiki 上的例子来测试这个算法。</p>
 <h4 id="test-case-1">Test Case 1</h4>
-<pre><code>Total system resources are:
+<pre tabindex="0"><code>Total system resources are:
 A  B C
 10 5 7
-</code></pre><pre><code>Available system resources are:
+</code></pre><pre tabindex="0"><code>Available system resources are:
 A B C
 3 3 2
-</code></pre><pre><code>Processes (currently allocated resources):
+</code></pre><pre tabindex="0"><code>Processes (currently allocated resources):
    A B C
 P0 0 1 0
 P1 2 0 0
 P2 3 0 2
 P3 2 1 1
 P4 0 0 2
-</code></pre><pre><code>Processes (maximum resources):
+</code></pre><pre tabindex="0"><code>Processes (maximum resources):
    A B C
 P0 7 5 3
 P1 3 2 2
@@ -400,7 +400,7 @@ P4 4 3 3
 </a>
 </p>
 <p>请求：</p>
-<pre><code>1. P1: 1 0 2
+<pre tabindex="0"><code>1. P1: 1 0 2
 2. P4: 3 3 0
 3. P0: 0 2 0
 </code></pre><p>
@@ -409,18 +409,18 @@ P4 4 3 3
 </a>
 </p>
 <h4 id="test-case-2">Test Case 2</h4>
-<pre><code>Total system resources are:
+<pre tabindex="0"><code>Total system resources are:
 A B C D
 6 5 7 6
-</code></pre><pre><code>Available system resources are:
+</code></pre><pre tabindex="0"><code>Available system resources are:
 A B C D
 3 1 1 2
-</code></pre><pre><code>Processes (currently allocated resources):
+</code></pre><pre tabindex="0"><code>Processes (currently allocated resources):
    A B C D
 P0 1 2 2 1
 P1 1 0 3 3
 P2 1 2 1 0
-</code></pre><pre><code>Processes (maximum resources):
+</code></pre><pre tabindex="0"><code>Processes (maximum resources):
    A B C D
 P0 3 3 2 2
 P1 1 2 3 4

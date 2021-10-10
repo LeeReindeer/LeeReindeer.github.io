@@ -222,7 +222,7 @@
 <h2 id="先排序">先排序&hellip;</h2>
 <p>这是我首先想到的，或者说想都没想就脱口而出的（。使用快速排序，时间复杂度为<code>O(nlgn)</code>。</p>
 <p>而当使用选择排序是，时间复杂度为<code>O(k*n)</code>，伪代码如下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> k; i<span style="color:#000;font-weight:bold">++</span>) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> k; i<span style="color:#000;font-weight:bold">++</span>) {
   <span style="color:#458;font-weight:bold">int</span> max <span style="color:#000;font-weight:bold">=</span> i;
   <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> j <span style="color:#000;font-weight:bold">=</span> i <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>; j <span style="color:#000;font-weight:bold">&lt;</span> n; j<span style="color:#000;font-weight:bold">++</span>) {
     <span style="color:#000;font-weight:bold">if</span> (a[j] <span style="color:#000;font-weight:bold">&gt;</span> a[max]) max <span style="color:#000;font-weight:bold">=</span> j;
@@ -235,7 +235,7 @@
 <p>当<code>lgn &lt; k</code>时，使用快速排序时间复杂度较小。但是其实我们做了很多无用功，题目只需要第 k 个最大的数，而我们则排序了整个数组。</p>
 <h2 id="利用快速排序原理">利用快速排序原理</h2>
 <p>利用快速排序的<code>partition()</code>函数，**使得比第 k 个数大的都在数组左边。比第 k 个数小的都在右边，那么第 k 个数就是第 k 个最大的数。**使用二分法来查找第 k 个数的下标，所以时间复杂度为<code>O(n)</code>，因为是<code>partition</code>是原地的，所以需要修改原始数组。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">exch</span>(<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>a, <span style="color:#458;font-weight:bold">int</span> i, <span style="color:#458;font-weight:bold">int</span> j) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">exch</span>(<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>a, <span style="color:#458;font-weight:bold">int</span> i, <span style="color:#458;font-weight:bold">int</span> j) {
   <span style="color:#458;font-weight:bold">int</span> t <span style="color:#000;font-weight:bold">=</span> a[i];
   a[i] <span style="color:#000;font-weight:bold">=</span> a[j];
   a[j] <span style="color:#000;font-weight:bold">=</span> t;
@@ -270,7 +270,7 @@
   <span style="color:#000;font-weight:bold">return</span> a[k <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>];
 }
 </code></pre></div><p>使用递归的版本，参考《算法导论》第 9 章：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">random_partition</span>(<span style="color:#458;font-weight:bold">int</span> a[], <span style="color:#458;font-weight:bold">int</span> lo, <span style="color:#458;font-weight:bold">int</span> hi) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">random_partition</span>(<span style="color:#458;font-weight:bold">int</span> a[], <span style="color:#458;font-weight:bold">int</span> lo, <span style="color:#458;font-weight:bold">int</span> hi) {
   <span style="color:#458;font-weight:bold">int</span> x <span style="color:#000;font-weight:bold">=</span> rand() <span style="color:#000;font-weight:bold">%</span> (hi <span style="color:#000;font-weight:bold">-</span> lo <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>) <span style="color:#000;font-weight:bold">+</span> lo;
   exch(a, x, lo);
   <span style="color:#000;font-weight:bold">return</span> partition(a, lo, hi);
@@ -300,7 +300,7 @@
 <p>Except: $T(n)=\Theta(n)$</p>
 <h2 id="利用最小堆原理">利用最小堆原理</h2>
 <p>用容量为 k 的最小堆来存储最大的 k 个数。最小堆堆顶的元素是最小的，扫描剩下的数据，如果比堆顶元素大，则替换之，然后调整堆。调整是时间复杂度为<code>O(lgk)</code>,需要调整 n 次，所以总的时间复杂度也是<code>O(nlgk)</code>。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">sink</span>(<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>heap, <span style="color:#458;font-weight:bold">int</span> i, <span style="color:#458;font-weight:bold">int</span> size) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">sink</span>(<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>heap, <span style="color:#458;font-weight:bold">int</span> i, <span style="color:#458;font-weight:bold">int</span> size) {
   <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">2</span> <span style="color:#000;font-weight:bold">*</span> i <span style="color:#000;font-weight:bold">&lt;=</span> size) {
     <span style="color:#458;font-weight:bold">int</span> j <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span> <span style="color:#000;font-weight:bold">*</span> i;  <span style="color:#998;font-style:italic">// select min child
 </span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> (j <span style="color:#000;font-weight:bold">&lt;</span> size <span style="color:#000;font-weight:bold">&amp;&amp;</span> heap[j] <span style="color:#000;font-weight:bold">&gt;</span> heap[j <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>]) j<span style="color:#000;font-weight:bold">++</span>;

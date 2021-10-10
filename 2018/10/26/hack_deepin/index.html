@@ -237,14 +237,14 @@
 </li>
 <li>
 <p>deepin-wm (<code>git reset ce50 --hard</code>)</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">  ./autogen.sh --prefix<span style="color:#000;font-weight:bold">=</span>/usr <span style="color:#000;font-weight:bold">&amp;&amp;</span> make
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">  ./autogen.sh --prefix<span style="color:#000;font-weight:bold">=</span>/usr <span style="color:#000;font-weight:bold">&amp;&amp;</span> make
   sudo make install
 </code></pre></div></li>
 </ul>
 <p>但是都不是我想要的，没有快捷方式！！不想用鼠标来拖动啊！！</p>
 <h2 id="继续折腾">继续折腾</h2>
 <p>意外的在<code>vi /usr/share/dde-daemon/gesture.json</code>发现下面的配置：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">	 {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">	 {
 		  <span style="color:#000080">&#34;Name&#34;</span>: <span style="color:#d14">&#34;swipe&#34;</span>,
           <span style="color:#000080">&#34;Direction&#34;</span>: <span style="color:#d14">&#34;left&#34;</span>,
           <span style="color:#000080">&#34;Fingers&#34;</span>: <span style="color:#099">3</span>,
@@ -265,7 +265,7 @@
 
 </code></pre></div><p>这也算是一个意外的收获，毕竟不需要拖动窗口了，只需要用三根手指滑动。但是想想这姿势，就有点尴尬。。。</p>
 <p>于是找到<code>dde-daemon</code>这个项目，发现时用 go 写的，还行。在 <code>gesture</code>包下的 <a href="https://github.com/linuxdeepin/dde-daemon/blob/master/gesture/built-in.go">built-in.go</a>即是这个配置文件中 action 的实现。但是其实只有对<code>wm</code>方法的调用：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">const</span> (
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">const</span> (
 	wmTileDirectionLeft <span style="color:#458;font-weight:bold">uint32</span> = <span style="color:#000;font-weight:bold">iota</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>
 	wmTileDirectionRight
 )
@@ -277,7 +277,7 @@
 <span style="color:#000;font-weight:bold">func</span> (m <span style="color:#000;font-weight:bold">*</span>Manager) <span style="color:#900;font-weight:bold">doTileActiveWindowRight</span>() <span style="color:#458;font-weight:bold">error</span> {
 	<span style="color:#000;font-weight:bold">return</span> m.wm.<span style="color:#900;font-weight:bold">TileActiveWindow</span>(<span style="color:#099">0</span>, wmTileDirectionRight)
 </code></pre></div><p>其中<code>wmTileDirectionLeft</code>为 1，<code>wmTileDirectionRight</code>为 2。使用到的 <code>wm</code>是在<code>go-debug-factory</code>下的<code>com.deepin.wm/auto.go</code>：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">func</span> (v <span style="color:#000;font-weight:bold">*</span>wm) <span style="color:#900;font-weight:bold">GetObject_</span>() <span style="color:#000;font-weight:bold">*</span>proxy.Object {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">func</span> (v <span style="color:#000;font-weight:bold">*</span>wm) <span style="color:#900;font-weight:bold">GetObject_</span>() <span style="color:#000;font-weight:bold">*</span>proxy.Object {
 	<span style="color:#000;font-weight:bold">return</span> (<span style="color:#000;font-weight:bold">*</span>proxy.Object)(unsafe.<span style="color:#900;font-weight:bold">Pointer</span>(v))
 }
 
@@ -306,7 +306,7 @@
 <h2 id="触控板横向滑动">触控板横向滑动</h2>
 <p>Deepin 默认没有开启触控板的左右滑动，需要在终端执行：</p>
 <p>在<a href="https://bbs.deepin.org/forum.php?mod=viewthread&amp;tid=145314">官方论坛</a>里找到的解决方案：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">gsettings <span style="color:#0086b3">set</span> com.deepin.dde.touchpad horiz-scroll-enabled <span style="color:#0086b3">true</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">gsettings <span style="color:#0086b3">set</span> com.deepin.dde.touchpad horiz-scroll-enabled <span style="color:#0086b3">true</span>
 </code></pre></div><h2 id="ｏ口ｏ">Ｏ(≧口≦)Ｏ</h2>
 <p>一波折腾，重启电脑，开不了机了，大概卡在了启动桌面环境？又出现和上次一样的迷之错误，（今年三月份的时候也遇到过，记得当时也是换了桌面环境之后遇到的，结果重装了系统）<code>CTRL + ALT + F2</code>之类也进不去终端。</p>
 <p>
@@ -316,10 +316,10 @@
 </p>
 <p>似乎是预感到会开不了机，在关机之前，我做了一个<code>Ubuntu16.04</code>启动盘。使用启动盘的<code>Try ubuntu</code> 功能，进入新系统备份了一些重要的资料。这已经是在为重装系统做准备了吧。。。</p>
 <p>最后试了试<code>recovery</code>模式进入原来的系统，可以使用<code>CTRL + ALT + F2</code>进去终端，只要可以进去就有解决的方法了。于是我卸载了 <code>dde</code>和 <code>deepin-wm</code>，切换 <code>DM</code>为 <code>lightdm</code>。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt purge remove dde* deepin-*
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt purge remove dde* deepin-*
 sudo dpkg-reconfigure lightdm
 </code></pre></div><p>退出<code>recovery</code>模式，进入原来的系统，终于不在出现那个迷之错误了，但是还是只能进入终端，没有图形界面。可以用这个命令启动图形界面：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo systemctl start graphical.target
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo systemctl start graphical.target
 </code></pre></div><p>终于，一道光闪过，进入了 unity 桌面。</p>
 <p>不过我不甘心啊，又重新装了 <code>dde</code> ，总觉得是<code>gdm3</code>的问题，这次使用 <code>lightdm</code>进入 deepin 桌面，没什么大问题（就是不能开启 windows effect）。重启后还是一切正常。接着我把<code>DM</code>换成<code>gdm3</code>，又进不去了。。还是稳稳的用<code>lightdm</code>吧。</p>
 <p>真香！</p>
@@ -338,8 +338,6 @@ sudo dpkg-reconfigure lightdm
 <div class="post-archive">
     <h2>See Also</h2>
     <ul class="listing">
-        
-        <li><a href="/2018/07/19/how_to_insert_code_wps/">在Microsoft Word/WPS中优雅地插入代码</a></li>
         
         <li><a href="/2017/10/09/ubuntu-one-year/">入坑一年啦</a></li>
         

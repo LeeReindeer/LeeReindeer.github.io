@@ -283,7 +283,7 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 <h3 id="实现">实现</h3>
 <p>使用<code>Okhttp</code> 发起网络请求，用 <code>Jsoup</code>来解析HTML，用<code>Rxjava</code>来处理异步调用。</p>
 <h4 id="获取-execution">获取 <code>execution</code></h4>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getExecution</span>(): Observable&lt;String&gt; {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getExecution</span>(): Observable&lt;String&gt; {
         <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
             <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(executionRequest).execute()
             <span style="color:#000;font-weight:bold">if</span> (!response.isSuccessful) {
@@ -302,7 +302,7 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
             .observeOn(AndroidSchedulers.mainThread())
     }
 </code></pre></div><h4 id="登录">登录</h4>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic">     * @param user user to login with is and password
 </span><span style="color:#998;font-style:italic">     * @return return observable of login status code
 </span><span style="color:#998;font-style:italic">     * @see LOGIN_NET_ERROR -1 -&gt; network error
@@ -346,7 +346,7 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
     }
 </code></pre></div><p><code>login</code>方法需要用户id、密码和<code>execution</code>。所以需要在登录之前先获取<code>execution</code>，获取成功之后才会登录。</p>
 <h4 id="登出">登出</h4>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">logoutAsync</span>(callback: Callback) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">logoutAsync</span>(callback: Callback) {
         <span style="color:#000;font-weight:bold">val</span> logoutRequest = Request.Builder()
             .url(<span style="color:#d14">&#34;https://my.zjou.edu.cn/cas/logout?service=http://portal.zjou.edu.cn&#34;</span>)
             .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)
@@ -355,14 +355,14 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
         httpClient.newCall(logoutRequest).enqueue(callback)
     }
 </code></pre></div><p><code>logout</code>没有返回<code>Rxjava</code>的<code>Observable</code>，而是传入<code>okhttp3.Callback</code>，<code>Callback</code>中的方法是异步的，不在主线程。其实效果和<code>Rxjava</code>差不多，返回的<code>Observable</code>可以<code>subscribe</code>一个<code>Observer</code>。在<code>Observable</code>中处理网络请求，在<code>Observer</code>中处理结果。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">observable
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">observable
 	.subscribeOn(Schedulers.io()) <span style="color:#998;font-style:italic">// Observable 运行在 IO 线程
 </span><span style="color:#998;font-style:italic"></span>	.observeOn(AndroidSchedulers.mainThread()) <span style="color:#998;font-style:italic">// Observer 运行在 Main 线程
 </span></code></pre></div><p>我个人比较喜欢<code>Rxjava</code>的链式调用。</p>
 <h2 id="成绩">成绩</h2>
 <p>解决了登录问题，那么接下来的问题都不是问题了（</p>
 <p>返回数据的Content-Type为text/html，但实际上就是json数据，这也太垃圾了吧（搞的我要手动去解析。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getTranscript</span>(): Observable&lt;MutableList&lt;Transcript&gt;?&gt; {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getTranscript</span>(): Observable&lt;MutableList&lt;Transcript&gt;?&gt; {
         <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
             <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(transcriptRequest).execute()
             Log.d(TAG, <span style="color:#d14">&#34;onResponse: code: </span><span style="color:#d14">${response.code()}</span><span style="color:#d14">&#34;</span>)
@@ -389,7 +389,7 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
   <img class="mx-auto" alt="ecard-request" src="/images/ecard-request.png" />
 </a>
 </p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic">     * @param pageIndex page start from 1
 </span><span style="color:#998;font-style:italic">     */</span>
     <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getECardList</span>(pageIndex: Int, pageSize: Int): Observable&lt;ArrayList&lt;ECard&gt;?&gt; {
@@ -416,7 +416,7 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
     }
 </code></pre></div><p>校园卡的消费记录是一个表单 post 请求，response 是 html。。。大概是没有做专门的 RESTful API 吧。所以只能使用 Jsoup 解析表格。</p>
 <p>下面是一段 HTML 表格代码的截取：第一个<code>tr</code>标签是表头，不需要。从第二个<code>tr</code>开始提取我们想要的<code>td</code>，组成每一项消费记录。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#000080">table</span> <span style="color:#008080">isscroll</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;false&#34;</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;portlet-table&#34;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>&gt;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#000080">table</span> <span style="color:#008080">isscroll</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;false&#34;</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;portlet-table&#34;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>&gt;
 &lt;<span style="color:#000080">thead</span>&gt;
 &lt;<span style="color:#000080">tr</span>&gt;
 &lt;<span style="color:#000080">th</span>&gt;卡号&lt;/<span style="color:#000080">th</span>&gt;
@@ -444,14 +444,14 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 &lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;-5&lt;/<span style="color:#000080">td</span>&gt;
 &lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;38.61&lt;/<span style="color:#000080">td</span>&gt;&lt;/<span style="color:#000080">tr</span>&gt;&lt;/<span style="color:#000080">tbody</span>&gt;
 &lt;/<span style="color:#000080">table</span>&gt;
-</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">val</span> table = doc.getElementById(<span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>)
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">val</span> table = doc.getElementById(<span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>)
 <span style="color:#000;font-weight:bold">val</span> rows = table.select(<span style="color:#d14">&#34;tr&#34;</span>)
 <span style="color:#000;font-weight:bold">for</span> (i <span style="color:#000;font-weight:bold">in</span> <span style="color:#099">1</span> until rows.size) {
   <span style="color:#000;font-weight:bold">val</span> cols = rows[i].select(<span style="color:#d14">&#34;td&#34;</span>)
 	<span style="color:#998;font-style:italic">//...
 </span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div><p>交易流水号、交易时间、商户代码、交易金额都是我们需要的数据，分别对其进行提取和提纯：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">val</span> regex1 = Regex(<span style="color:#d14">&#34;(消费机|同力|多媒体)[0-9]*&#34;</span>)
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">val</span> regex1 = Regex(<span style="color:#d14">&#34;(消费机|同力|多媒体)[0-9]*&#34;</span>)
     <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">val</span> regexToRemoveNum = Regex(<span style="color:#d14">&#34;[0-9]+&#34;</span>)
     <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">parseCardTable</span>(responseString: String, pageSize: Int): ArrayList&lt;ECard&gt;? {
         <span style="color:#000;font-weight:bold">if</span> (responseString.isEmpty()) {
@@ -503,7 +503,7 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </a>
 </p>
 <p>唯一需要注意的是：一个标签的第0项是它和它所以子标签内容的合集。所以这里取第一项：<code>val nameText = div[1].text()</code>。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getUserInfo</span>(): Observable&lt;User&gt; {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getUserInfo</span>(): Observable&lt;User&gt; {
         <span style="color:#000;font-weight:bold">val</span> request = Request.Builder()
             .url(<span style="color:#d14">&#34;http://portal.zjou.edu.cn/index.portal&#34;</span>)
             .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)

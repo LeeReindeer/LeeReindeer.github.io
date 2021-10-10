@@ -215,25 +215,25 @@
 </p>
 <p>将证书上传到服务器里，我这里放在了<code>/usr/local/ssl/</code>下。</p>
 <h2 id="修改applicationproperties">修改application.properties</h2>
-<pre><code class="language-properties" data-lang="properties">server.port=8443
+<pre tabindex="0"><code class="language-properties" data-lang="properties">server.port=8443
 server.ssl.key-store=/usr/local/ssl/ssl.pfx
 server.ssl.key-store-password=password
 server.ssl.keyStoreType=PKCS12
 server.ssl.enabled=true
 </code></pre><h2 id="打包-jar">打包 jar</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy">bootJar <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy">bootJar <span style="color:#000;font-weight:bold">{</span>
     launchScript<span style="color:#000;font-weight:bold">()</span>
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>运行 Gradle 命令：<code>gradle bootJar</code>，会在 <code>build/libs</code>下生成 jar 包。</p>
 <h2 id="上传到服务器">上传到服务器</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">scp lightblog-java-1.2-beta.jar root@yourserver:~/
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">scp lightblog-java-1.2-beta.jar root@yourserver:~/
 </code></pre></div><h2 id="启动-spring-boot-应用">启动 spring boot 应用</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">screen -S blog
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">screen -S blog
 java -jar lightblog-java-1.2-beta.jar
 </code></pre></div><p>现在，网站运行在端口：8443，我们想要的是直接访问：<a href="https://lightblog.xyz">https://lightblog.xyz</a>。所以需要一个从 <a href="https://lightblog.xyz">https://:8443</a> 到 <a href="https://lightblog.xyz">https://lightblog.xyz</a> 的映射。（HTTPS 默认端口：443）。</p>
 <h2 id="端口映射">端口映射</h2>
 <p>我用的是<code>firewall</code>，也可以使用<code>iptables</code>。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt install firewall
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt install firewall
 firewall-cmd --add-port<span style="color:#000;font-weight:bold">=</span>443/tcp
 firewall-cmd --add-forward-port<span style="color:#000;font-weight:bold">=</span><span style="color:#008080">port</span><span style="color:#000;font-weight:bold">=</span>443:proto<span style="color:#000;font-weight:bold">=</span>tcp:toport<span style="color:#000;font-weight:bold">=</span><span style="color:#099">8443</span>
 </code></pre></div><p>通过<code>firewall</code>,把所以在 <code>443</code>端口的请求转发到 <code>8443</code>。</p>

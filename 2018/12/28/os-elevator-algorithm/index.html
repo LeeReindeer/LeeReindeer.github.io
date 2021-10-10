@@ -255,16 +255,16 @@
 <p>输出格式：</p>
 <p>访问柱面的次序和移动臂移动的柱面总数。</p>
 <p>输入样例：</p>
-<pre><code>200 50 1
+<pre tabindex="0"><code>200 50 1
 7
 150 30 190 20 100 55 90
 </code></pre><p>输出样例：</p>
-<pre><code>55 90 100 150 190 30 20
+<pre tabindex="0"><code>55 90 100 150 190 30 20
 310
 </code></pre></blockquote>
 <p>需要对访问的序列进行搜索，判断是否和当前所在的柱面相同，可以用二分法加快搜索速度。接下来根据它的移动方向，判断是否有比当前柱面大或这小的柱面，有的话就去处理大于当前柱面中最小的或者是小于当前柱面中最大的。这样可以一次性处理完同一个方向的请求，并且不会有重复的移动。</p>
 <p>main 函数代码：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">int</span> maxn <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1000</span>;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">int</span> maxn <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1000</span>;
 <span style="color:#458;font-weight:bold">int</span> N, n;
 <span style="color:#458;font-weight:bold">int</span> order[maxn], ans[maxn];
 <span style="color:#458;font-weight:bold">int</span> cylinder[maxn] <span style="color:#000;font-weight:bold">=</span> {<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>};
@@ -303,7 +303,7 @@
   <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><p>使用一个<code>cylinder</code> 数组来标记这个柱面是否已经访问过了，在二分查找时，如果这个柱面已经访问过了，就不记录。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * @brief  find the index of current cylinder,
 </span><span style="color:#998;font-style:italic"> * if there is no same, return the
 </span><span style="color:#998;font-style:italic"> */</span>
@@ -322,7 +322,7 @@
   <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
 }
 </code></pre></div><p>对于查找大于当前柱面中最小的或者是小于当前柱面中最大的，我直接使用了顺序查找，应该也可以使用二分法来查找，但我没有过多的去优化这个实现。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">find_greater_less</span>(<span style="color:#458;font-weight:bold">int</span> current, <span style="color:#458;font-weight:bold">int</span> dir) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">find_greater_less</span>(<span style="color:#458;font-weight:bold">int</span> current, <span style="color:#458;font-weight:bold">int</span> dir) {
   <span style="color:#000;font-weight:bold">if</span> (dir <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {  <span style="color:#998;font-style:italic">//向内,查找大于当前柱面中最小的
 </span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 从小到大搜索
 </span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> n; i<span style="color:#000;font-weight:bold">++</span>) {

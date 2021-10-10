@@ -212,7 +212,7 @@
 <p>JCP 第五章：在单线程代码中也可能抛出<code>ConcurrentModificationException</code>。当对象直接从容器中删除而不是通过<code>Iterator.remove</code>来删除时，就会抛出这个异常。</p>
 </blockquote>
 <p>虽然<code>ConcurrentModificationException</code>这个异常听上去是多线程环境下出现的。但是如上面的引用，单线程里如果使用不当也会出现。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> list <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> list <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
   <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">iterateAndRemove</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>Integer i <span style="color:#000;font-weight:bold">:</span> list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
       <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">%</span> 4 <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
@@ -224,7 +224,7 @@
 <p>解决办法也很简单，只要使用<code>Iterator.remove</code>就不会有异常。<strong>所以即使在单线程中也不能混用<code>Iterator</code>和容器中的方法。</strong></p>
 <h2 id="multi-thread">Multi Thread</h2>
 <p>多线程的情况下，情况变得更加复杂。我们来看下面的实例代码：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ConcurrentModificationExceptionTest</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ConcurrentModificationExceptionTest</span> <span style="color:#000;font-weight:bold">{</span>
 
   <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> ExecutorService executor <span style="color:#000;font-weight:bold">=</span> Executors<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newFixedThreadPool</span><span style="color:#000;font-weight:bold">(</span>10<span style="color:#000;font-weight:bold">);</span>
   <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> list <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
@@ -284,7 +284,7 @@
 <ul>
 <li>迭代时对容器加锁</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span>list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span>list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>Integer integer <span style="color:#000;font-weight:bold">:</span> list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
 		<span style="color:#998;font-style:italic">//doSomething
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">}</span>
@@ -292,7 +292,7 @@
 </code></pre></div><ul>
 <li>在副本上进行迭代</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> cloneList <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;)</span> list<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">();</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> cloneList <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;)</span> list<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">();</span>
 <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>Integer integer <span style="color:#000;font-weight:bold">:</span> cloneList<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
 	<span style="color:#998;font-style:italic">//doSomething
 </span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span>

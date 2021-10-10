@@ -216,7 +216,7 @@
 <h1 id="菜单的创建">菜单的创建</h1>
 <h2 id="数据结构分析">数据结构分析</h2>
 <p>Button的类型可以分为cilck和view，分别是点击的时间推送和跳转网页．看下面开发文档中的例子</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"> {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"> {
      <span style="color:#000080">&#34;button&#34;</span>:[
      {
           <span style="color:#000080">&#34;type&#34;</span>:<span style="color:#d14">&#34;click&#34;</span>,
@@ -246,7 +246,7 @@
 </code></pre></div><p>这是一个button数组,里面有两个按钮分别是&quot;今日歌曲&quot;，&ldquo;菜单&rdquo;，&ldquo;菜单&quot;按钮又有二级按钮&quot;搜索&rdquo;,&ldquo;视频&rdquo;,&ldquo;赞一下我们&rdquo;.这样分析之后，可知要创建几个实体类来封装json数据包,这里主要以viewbutton为例．</p>
 <h2 id="具体实现">具体实现</h2>
 <p>新建Button类,ClickButton类（继承Button）,VIewButton类（继承Button），和Menu类．各种参数参考开发文档.Button类代码如下．</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Button</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Button</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#000;font-weight:bold">private</span> String type<span style="color:#000;font-weight:bold">;</span>
     <span style="color:#000;font-weight:bold">private</span> String name<span style="color:#000;font-weight:bold">;</span>
     <span style="color:#000;font-weight:bold">private</span> Button<span style="color:#000;font-weight:bold">[]</span> sub_button<span style="color:#000;font-weight:bold">;</span>
@@ -282,7 +282,7 @@
     <span style="color:#000;font-weight:bold">}</span>
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>Menu类</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Menu</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Menu</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#000;font-weight:bold">private</span> Button<span style="color:#000;font-weight:bold">[]</span> button<span style="color:#000;font-weight:bold">;</span>
 
     <span style="color:#000;font-weight:bold">public</span> Button<span style="color:#000;font-weight:bold">[]</span> <span style="color:#900;font-weight:bold">getButton</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
@@ -296,7 +296,7 @@
 </code></pre></div><p>接下来可以看到创建菜单是通过向微信服务器发送POST请求的．所以在WechatUtil类增加一个doPost()方法，同样也是返回JSONOBject对象．传入两个参数:请求地址和需要post的数据（这里是菜单的json数据).
 <code>public JSONObject doPost(String url,String outStr){}</code>
 接着继续添加代码,</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> Menu <span style="color:#900;font-weight:bold">initMenu</span><span style="color:#000;font-weight:bold">(){</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> Menu <span style="color:#900;font-weight:bold">initMenu</span><span style="color:#000;font-weight:bold">(){</span>
         Menu menu<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> Menu<span style="color:#000;font-weight:bold">();</span>
         ViewButton viewButton<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> ViewButton<span style="color:#000;font-weight:bold">();</span>
         viewButton<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setUrl</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;http://http://leezoom.xyz&#34;</span><span style="color:#000;font-weight:bold">);</span>
@@ -335,7 +335,7 @@
         <span style="color:#000;font-weight:bold">return</span>  errcode<span style="color:#000;font-weight:bold">;</span>
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>然后也在WechatInitial类中进行测试．</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String menu<span style="color:#000;font-weight:bold">=</span> JSONObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">fromObject</span><span style="color:#000;font-weight:bold">(</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">initMenu</span><span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">();</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String menu<span style="color:#000;font-weight:bold">=</span> JSONObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">fromObject</span><span style="color:#000;font-weight:bold">(</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">initMenu</span><span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">();</span>
             <span style="color:#458;font-weight:bold">int</span> errcode<span style="color:#000;font-weight:bold">=</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">creatMenu</span><span style="color:#000;font-weight:bold">(</span>menu<span style="color:#000;font-weight:bold">,</span>access_token<span style="color:#000;font-weight:bold">);</span>
             <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>errcode<span style="color:#000;font-weight:bold">==</span>0<span style="color:#000;font-weight:bold">){</span>
                 System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;创建菜单成功&#34;</span><span style="color:#000;font-weight:bold">);</span>
@@ -352,7 +352,7 @@
 <h1 id="模板消息的发送主动发送消息">模板消息的发送(主动发送消息)</h1>
 <h2 id="数据结果分析">数据结果分析</h2>
 <p>这个做法都差不多，先看看开发文档的例子：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">      {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">      {
            <span style="color:#000080">&#34;touser&#34;</span>:<span style="color:#d14">&#34;OPENID&#34;</span>,
            <span style="color:#000080">&#34;template_id&#34;</span>:<span style="color:#d14">&#34;ngqIpbwh8bUfcSsECmogfXcV14J0tQlEpBO27izEYtY&#34;</span>,
            <span style="color:#000080">&#34;url&#34;</span>:<span style="color:#d14">&#34;http://weixin.qq.com/download&#34;</span>,
@@ -392,7 +392,7 @@
 <h3 id="封装消息">封装消息</h3>
 <p>然后创建与之对应的实体类，我分别创建了ArrivedTime类，Content类，都继承Datas,然后用Data类封装他们，再用ModMsg封装Data类．
 继续在WechatUtil中添加代码，也同样是利用之前写的doPost方法．</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> ModMsg <span style="color:#900;font-weight:bold">initModMsg</span><span style="color:#000;font-weight:bold">(</span>String mcontent<span style="color:#000;font-weight:bold">,</span>String openid<span style="color:#000;font-weight:bold">){</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> ModMsg <span style="color:#900;font-weight:bold">initModMsg</span><span style="color:#000;font-weight:bold">(</span>String mcontent<span style="color:#000;font-weight:bold">,</span>String openid<span style="color:#000;font-weight:bold">){</span>
         ModMsg modMsg<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> ModMsg<span style="color:#000;font-weight:bold">();</span>
         CalUtil calUtil<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> CalUtil<span style="color:#000;font-weight:bold">();</span>
         modMsg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setTouser</span><span style="color:#000;font-weight:bold">(</span>openid<span style="color:#000;font-weight:bold">);</span><span style="color:#998;font-style:italic">//用户的openid
@@ -422,7 +422,7 @@
         <span style="color:#000;font-weight:bold">return</span>  errcode<span style="color:#000;font-weight:bold">;</span>
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>先在WechatInitial中测试，当然最后是要在网页上发送的．这里暂时不讲这个了，有时间写一写网页的，预计会写在&lt;一个微信公众号的诞生　番外篇&gt;23333.貌似跑题了．</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String content<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;明天下午的三四两节线代课不上了&#34;</span><span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            String content<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;明天下午的三四两节线代课不上了&#34;</span><span style="color:#000;font-weight:bold">;</span>
             String openid<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;OPENID&#34;</span><span style="color:#000;font-weight:bold">;</span>
             String modmsg<span style="color:#000;font-weight:bold">=</span>JSONObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">fromObject</span><span style="color:#000;font-weight:bold">(</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">initModMsg</span><span style="color:#000;font-weight:bold">(</span>content<span style="color:#000;font-weight:bold">,</span>openid<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">();</span>
             <span style="color:#458;font-weight:bold">int</span> errcode1<span style="color:#000;font-weight:bold">=(</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sendModMessage</span><span style="color:#000;font-weight:bold">(</span>modmsg<span style="color:#000;font-weight:bold">,</span>access_token<span style="color:#000;font-weight:bold">));</span>

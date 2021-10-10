@@ -222,13 +222,13 @@ Servlet 用于和微信服务器通信．根据<a href="https://mp.weixin.qq.com
 <p>开发文档这样写的．所以要从用户发送的消息里提取信息的话，就要先解析xml数据．发送信息个用户也一样，需要将先数据打包成xml再post.</p>
 <h1 id="服务器的验证">服务器的验证</h1>
 <p>既然微信服务器发送的是GET请求，新建一个WechatServlet类继承HttpServlet，可以重写Servlet的doGet方法，从请求里得到四个参数，再进行验证．</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        String signature<span style="color:#000;font-weight:bold">=</span>request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParameter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;signature&#34;</span><span style="color:#000;font-weight:bold">);</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        String signature<span style="color:#000;font-weight:bold">=</span>request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParameter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;signature&#34;</span><span style="color:#000;font-weight:bold">);</span>
         String timestamp<span style="color:#000;font-weight:bold">=</span>request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParameter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;timestamp&#34;</span><span style="color:#000;font-weight:bold">);</span>
         String nonce<span style="color:#000;font-weight:bold">=</span>request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParameter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;nonce&#34;</span><span style="color:#000;font-weight:bold">);</span>
         String echostr<span style="color:#000;font-weight:bold">=</span>request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParameter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;echostr&#34;</span><span style="color:#000;font-weight:bold">);</span>
 </code></pre></div><p>然后就是验证的工作了．
 排序：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        String array<span style="color:#000;font-weight:bold">[]=</span><span style="color:#000;font-weight:bold">new</span> String<span style="color:#000;font-weight:bold">[]{</span>token<span style="color:#000;font-weight:bold">,</span>timestamp<span style="color:#000;font-weight:bold">,</span>nonce<span style="color:#000;font-weight:bold">};</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        String array<span style="color:#000;font-weight:bold">[]=</span><span style="color:#000;font-weight:bold">new</span> String<span style="color:#000;font-weight:bold">[]{</span>token<span style="color:#000;font-weight:bold">,</span>timestamp<span style="color:#000;font-weight:bold">,</span>nonce<span style="color:#000;font-weight:bold">};</span>
         <span style="color:#998;font-style:italic">//将token、timestamp、nonce三个参数进行字典序排序
 </span><span style="color:#998;font-style:italic"></span>        Arrays<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sort</span><span style="color:#000;font-weight:bold">(</span>array<span style="color:#000;font-weight:bold">);</span>
         <span style="color:#998;font-style:italic">//重组字符串
@@ -237,7 +237,7 @@ Servlet 用于和微信服务器通信．根据<a href="https://mp.weixin.qq.com
             builder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">append</span><span style="color:#000;font-weight:bold">(</span>array<span style="color:#000;font-weight:bold">[</span>i<span style="color:#000;font-weight:bold">]);</span>
         <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>加密:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        MessageDigest md <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        MessageDigest md <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
         String tmpStr <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
         <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
             md <span style="color:#000;font-weight:bold">=</span> MessageDigest<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInstance</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;SHA-1&#34;</span><span style="color:#000;font-weight:bold">);</span>
@@ -283,7 +283,7 @@ Servlet 用于和微信服务器通信．根据<a href="https://mp.weixin.qq.com
 
 xml的数据结构是这样的</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"> <span style="color:#000080">&lt;xml&gt;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"> <span style="color:#000080">&lt;xml&gt;</span>
  <span style="color:#000080">&lt;ToUserName&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">&lt;![CDATA[toUser]]&gt;</span><span style="color:#000080">&lt;/ToUserName&gt;</span>
  <span style="color:#000080">&lt;FromUserName&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">&lt;![CDATA[fromUser]]&gt;</span><span style="color:#000080">&lt;/FromUserName&gt;</span>
  <span style="color:#000080">&lt;CreateTime&gt;</span>1348831860<span style="color:#000080">&lt;/CreateTime&gt;</span>
@@ -304,7 +304,7 @@ xml的数据结构是这样的</li>
 </a>
 
 重写doPost方法,把解析出来的数据放入一个Map.</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
     <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">doPost</span><span style="color:#000;font-weight:bold">(</span>HttpServletRequest request<span style="color:#000;font-weight:bold">,</span> HttpServletResponse response<span style="color:#000;font-weight:bold">)</span>
         <span style="color:#000;font-weight:bold">throws</span> ServletException<span style="color:#000;font-weight:bold">,</span>IOException<span style="color:#000;font-weight:bold">{</span>
         request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setCharacterEncoding</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;UTF-8&#34;</span><span style="color:#000;font-weight:bold">);</span>
@@ -329,7 +329,7 @@ xml的数据结构是这样的</li>
         <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h2 id="被动发送消息">被动发送消息</h2>
 <p>上面已经从用户发送过来的消息里得到了用户的openid(FromUserName).需要注意的是发送消息时，FromUserName就变成了公众号的Appid,ToUserName才是用户的openid.MsgUtil里添加一个方法：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">initalMessage</span><span style="color:#000;font-weight:bold">(</span>String ToUserName<span style="color:#000;font-weight:bold">,</span>String FromUserName<span style="color:#000;font-weight:bold">,</span>String Content<span style="color:#000;font-weight:bold">){</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">initalMessage</span><span style="color:#000;font-weight:bold">(</span>String ToUserName<span style="color:#000;font-weight:bold">,</span>String FromUserName<span style="color:#000;font-weight:bold">,</span>String Content<span style="color:#000;font-weight:bold">){</span>
         TextMsg textMsg<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> TextMsg<span style="color:#000;font-weight:bold">();</span>
         textMsg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setContent</span><span style="color:#000;font-weight:bold">(</span>Content<span style="color:#000;font-weight:bold">);</span>
         textMsg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setFromUserName</span><span style="color:#000;font-weight:bold">(</span>ToUserName<span style="color:#000;font-weight:bold">);</span>
@@ -341,7 +341,7 @@ xml的数据结构是这样的</li>
         <span style="color:#000;font-weight:bold">return</span> xmlmsg<span style="color:#000;font-weight:bold">;</span>
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>然后在WechatServlet里调用，</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>msgUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MESSAGE_TEXT</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span>MsgType<span style="color:#000;font-weight:bold">)){</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>msgUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MESSAGE_TEXT</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span>MsgType<span style="color:#000;font-weight:bold">)){</span>
                 sendMsg<span style="color:#000;font-weight:bold">=</span>msgUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">initalMessage</span><span style="color:#000;font-weight:bold">(</span>ToUserName<span style="color:#000;font-weight:bold">,</span>FromUserName<span style="color:#000;font-weight:bold">,</span><span style="color:#d14">&#34;Hello &#34;</span><span style="color:#000;font-weight:bold">+</span>Content<span style="color:#000;font-weight:bold">);</span>
              <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>Content<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;view&#34;</span><span style="color:#000;font-weight:bold">)){</span>
                     <span style="color:#998;font-style:italic">//Todo

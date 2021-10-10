@@ -222,7 +222,7 @@ Java并发-目录
 <h2 id="临界区管理的问题">临界区管理的问题</h2>
 <p>临界区是多个并发的进程中访问共享变量的代码段。如果多个线程同步访问一个共享变量，而不加以限制，会产生和时间相关的错误，导致结果不一致。</p>
 <p>比如一个售票系统，它的简单代码如下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">WrongTicket</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">WrongTicket</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#458;font-weight:bold">int</span> num <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
 
     <span style="color:#3c5d5d;font-weight:bold">@Override</span>
@@ -250,7 +250,7 @@ Java并发-目录
     <span style="color:#000;font-weight:bold">}</span>
   <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>输出结果可能会是这样的：</p>
-<pre><code>Thread-3: sale 10
+<pre tabindex="0"><code>Thread-3: sale 10
 Thread-0: sale 9
 Thread-1: sale 8
 Thread-2: sale 7
@@ -264,7 +264,7 @@ Thread-0: sale 3
 Thread-2: sale 2
 </code></pre><p>Thread-1和Thread-0卖出来同一张票，这显然是不合理的。</p>
 <p>也可能出现这种情况：</p>
-<pre><code>Thread-0: sale 10
+<pre tabindex="0"><code>Thread-0: sale 10
 Thread-2: sale 9
 Thread-3: sale 8
 Thread-1: sale 7
@@ -288,28 +288,28 @@ Thread-0: sale -2
 <li>对象同步</li>
 </ul>
 <p>只有对同一个对象实例执行这段代码时，才能达到互斥访问的效果，因为锁住的是这一个对象。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
   
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><ul>
 <li>类同步</li>
 </ul>
 <p>锁住的是类，即使存在多个对象实例，也可以互斥的访问这段代码。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span><span style="color:#000;font-weight:bold">(</span>SynchronizedTest<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span><span style="color:#000;font-weight:bold">(</span>SynchronizedTest<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
   
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h4 id="方法同步">方法同步</h4>
 <ul>
 <li>对象同步</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{}</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{}</span>
 </code></pre></div><ul>
 <li>类同步</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method2</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{}</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method2</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{}</span>
 </code></pre></div><h3 id="synchronized的解决方案">synchronized的解决方案</h3>
 <p>只要对临界区这段代码加上代码块同步即可：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Ticket</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Ticket</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#458;font-weight:bold">int</span> num <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
 
     <span style="color:#3c5d5d;font-weight:bold">@Override</span>
@@ -341,7 +341,7 @@ Thread-0: sale -2
   <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h3 id="synchronized-原理">synchronized 原理</h3>
 <p>代码块同步和方法同步，两者虽然实现细节不同，但本质上都是对一个对象的监视器（monitor）的获取。<strong>任意一个对象都拥有自己的监视器</strong>，当同步代码块或同步方法时，执行方法的线程必须先获得该对象的监视器才能进入同步块或同步方法，没有获取到监视器的线程将会被阻塞，并进入同步队列，状态变为<code>BLOCKED</code>。当成功获取监视器的线程释放了锁后，会唤醒阻塞在同步队列的线程，使其重新尝试对监视器的获取。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">{</span>
   <span style="color:#000;font-weight:bold">public</span> moe<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">leer</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">javareview</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">concurrent</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Test</span><span style="color:#000;font-weight:bold">();</span>
     descriptor<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">()</span>V
     flags<span style="color:#000;font-weight:bold">:</span> ACC_PUBLIC
@@ -399,7 +399,7 @@ capabilities.</p>
 </blockquote>
 <p>上面的描述在<code>ReentrantLock</code>源码的注释中。一个可重入锁和<code>synchronized</code>关键字实现的基本功能类似，都可以获取对象的monitor，来实现互斥访问。<code>ReentrantLock</code>在此基础上扩展了一些功能。</p>
 <h3 id="reentrantlock-的使用">ReentrantLock 的使用</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ReentrantLock lock <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ReentrantLock<span style="color:#000;font-weight:bold">();</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">ReentrantLock lock <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ReentrantLock<span style="color:#000;font-weight:bold">();</span>
 
 publick <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
   <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
@@ -410,7 +410,7 @@ publick <span style="color:#458;font-weight:bold">void</span> <span style="color
   <span style="color:#000;font-weight:bold">}</span>
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h3 id="reentrantlock的解决方案">ReentrantLock的解决方案</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">LockTicket</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">LockTicket</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#458;font-weight:bold">int</span> num <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
     ReentrantLock lock <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ReentrantLock<span style="color:#000;font-weight:bold">();</span>
 
@@ -446,7 +446,7 @@ publick <span style="color:#458;font-weight:bold">void</span> <span style="color
 <ul>
 <li>synchronized</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span>SynchronizedTest<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
       System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;method1 get lock&#34;</span><span style="color:#000;font-weight:bold">);</span>
       method2<span style="color:#000;font-weight:bold">();</span>
@@ -462,7 +462,7 @@ publick <span style="color:#458;font-weight:bold">void</span> <span style="color
 </code></pre></div><ul>
 <li>ReentrantLock</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
       lock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lock</span><span style="color:#000;font-weight:bold">();</span>
       System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;method1 get lock&#34;</span><span style="color:#000;font-weight:bold">);</span>

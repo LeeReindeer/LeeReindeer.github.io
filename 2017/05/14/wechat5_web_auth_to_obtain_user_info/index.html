@@ -199,10 +199,10 @@
 </blockquote>
 <h1 id="获取code">获取code</h1>
 <p>获取code的网址为</p>
-<pre><code>https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect
+<pre tabindex="0"><code>https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect
 </code></pre><p>这里的redirect_uri的就是自己的业务页面．在用户主动同意授权后，页面将跳转至 redirect_uri/?code=CODE&amp;state=STATE．这个state参数貌似有点意思，我曾经想过用这个参数来传递学工号来着，然后在跳转后的页面绑定．但是后来又改成了先用学工号登录自己的网站，把学工号存在cookie里，在跳转后读取cookie然后绑定．这样顺便也利用cookie实现了一下自动登录之类的功能．
 好了，接下来新建一个OAuth2Servlet类，来处理网页的参数和跳转自己的页面．</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
     <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">doGet</span><span style="color:#000;font-weight:bold">(</span>HttpServletRequest request<span style="color:#000;font-weight:bold">,</span> HttpServletResponse <span style="color:#900;font-weight:bold">respons</span><span style="color:#000;font-weight:bold">(</span>
             <span style="color:#000;font-weight:bold">throws</span> ServletException<span style="color:#000;font-weight:bold">,</span>IOException <span style="color:#000;font-weight:bold">{</span>
         request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setCharacterEncoding</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;UTF-8&#34;</span><span style="color:#000;font-weight:bold">);</span>
@@ -218,9 +218,9 @@
 </p>
 <h1 id="用code-获取access_token">用code 获取access_token</h1>
 <p>这里也要用到之前写的doGet()方法，请求的Http地址为</p>
-<pre><code>https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&amp;secret=SECRET&amp;code=CODE&amp;grant_type=authorization_code
+<pre tabindex="0"><code>https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&amp;secret=SECRET&amp;code=CODE&amp;grant_type=authorization_code
 </code></pre><p>这里将处理网页的实现，放在一个新的WebUtil类中继承WechatUtil，便可以直接用父类的doGet(),doPost()和一些字段了.具体代码如下:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> OAuth2AccessToken <span style="color:#900;font-weight:bold">getOAuth2AccessToken</span><span style="color:#000;font-weight:bold">(</span>String code<span style="color:#000;font-weight:bold">){</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> OAuth2AccessToken <span style="color:#900;font-weight:bold">getOAuth2AccessToken</span><span style="color:#000;font-weight:bold">(</span>String code<span style="color:#000;font-weight:bold">){</span>
         OAuth2AccessToken oAuth2AccessToken<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> OAuth2AccessToken<span style="color:#000;font-weight:bold">();</span>
         String url <span style="color:#000;font-weight:bold">=</span> WEB_ACCESS_TOKEN_URL<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;APPID&#34;</span><span style="color:#000;font-weight:bold">,</span> getAPPID<span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;SECRET&#34;</span><span style="color:#000;font-weight:bold">,</span> getAPPSECRET<span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;CODE&#34;</span><span style="color:#000;font-weight:bold">,</span>code<span style="color:#000;font-weight:bold">);</span>
         JSONObject jsonObject <span style="color:#000;font-weight:bold">=</span> doGet<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">);</span>
@@ -236,7 +236,7 @@
 </code></pre></div><p>这里有一个坑啊，因为此access_token，非彼access_token.<code>这里通过code换取的是一个特殊的网页授权access_token,与基础支持中的access_token（该access_token用于调用其他接口）不同</code>.所以微信为了安全又在这里搞了另一个token，来增大在网页获取用户信息的难度？</p>
 <h1 id="用access_token和openid获取用户基本信息">用access_token和openid获取用户基本信息</h1>
 <p>新建一个UserInfo实体类来储存用户信息，代码就不贴了．接着继续在WebUtil类中添加代码,依旧是doGet()方法，请求的链接是<code>https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&amp;openid=OPENID&amp;lang=zh_CN</code>:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> UserInfo <span style="color:#900;font-weight:bold">getUserInfo</span><span style="color:#000;font-weight:bold">(</span>String webAccessToken<span style="color:#000;font-weight:bold">,</span> String openid<span style="color:#000;font-weight:bold">){</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> UserInfo <span style="color:#900;font-weight:bold">getUserInfo</span><span style="color:#000;font-weight:bold">(</span>String webAccessToken<span style="color:#000;font-weight:bold">,</span> String openid<span style="color:#000;font-weight:bold">){</span>
         UserInfo userInfo<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> UserInfo<span style="color:#000;font-weight:bold">();</span>
         String url<span style="color:#000;font-weight:bold">=</span>USER_INFO_URL<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;ACCESS_TOKEN&#34;</span><span style="color:#000;font-weight:bold">,</span>webAccessToken<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;OPENID&#34;</span><span style="color:#000;font-weight:bold">,</span>openid<span style="color:#000;font-weight:bold">);</span>
         JSONObject jsonObject <span style="color:#000;font-weight:bold">=</span> doGet<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">);</span>
@@ -253,7 +253,7 @@
         <span style="color:#000;font-weight:bold">return</span> userInfo<span style="color:#000;font-weight:bold">;</span>
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>这样就已经实现了获取用户的基本信息，但是还没有结束，再在OAuth2Servlet()类中调用以上的方法，</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
     <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">doGet</span><span style="color:#000;font-weight:bold">(</span>HttpServletRequest request<span style="color:#000;font-weight:bold">,</span> HttpServletResponse response<span style="color:#000;font-weight:bold">)</span>
             <span style="color:#000;font-weight:bold">throws</span> ServletException<span style="color:#000;font-weight:bold">,</span>IOException <span style="color:#000;font-weight:bold">{</span>
         request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setCharacterEncoding</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;UTF-8&#34;</span><span style="color:#000;font-weight:bold">);</span>
@@ -278,7 +278,7 @@
 </code></pre></div><p>可以看到在经过一系列操作之后得到了userInfo对象，并且将他传递到下一个页面．</p>
 <h1 id="实现自己的跳转页面">实现自己的跳转页面</h1>
 <p>message.jsp代码如下:</p>
-<pre><code>&lt;%@ page language=&quot;java&quot; pageEncoding=&quot;UTF-8&quot;%&gt;
+<pre tabindex="0"><code>&lt;%@ page language=&quot;java&quot; pageEncoding=&quot;UTF-8&quot;%&gt;
 &lt;%@ page import=&quot;ObjectC.UserInfo&quot;%&gt;
 &lt;html&gt;
 &lt;head&gt;

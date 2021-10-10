@@ -226,7 +226,7 @@ class Main : Application() {
 <h2 id="三次尝试">三次尝试</h2>
 <h3 id="一">一</h3>
 <p>首先，在 Java 里的代码应该是这样的：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> <span style="color:#000;font-weight:bold">extends</span> Application <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> <span style="color:#000;font-weight:bold">extends</span> Application <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#998;font-style:italic">//...
 </span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
         launch<span style="color:#000;font-weight:bold">(</span>args<span style="color:#000;font-weight:bold">);</span>
@@ -234,7 +234,7 @@ class Main : Application() {
 <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><p>没有任何问题。</p>
 <p>那么在 Kotlin 中，我首先想到的是 <code>Top level</code> 的 Main 函数：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) = Application.launch(*args)
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) = Application.launch(*args)
 
 <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {
 	<span style="color:#998;font-style:italic">//...
@@ -250,7 +250,7 @@ class Main : Application() {
 <p>Java 的实现确实是再创建一个类，来实现<code>Top level</code> 的 Main 函数：）</p>
 <h3 id="二">二</h3>
 <p>接下来尝试了<code>companion object </code>:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {  
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {  
 	<span style="color:#998;font-style:italic">//...
 </span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">companion</span> <span style="color:#000;font-weight:bold">object</span> {
     	<span style="color:#3c5d5d;font-weight:bold">@JvmStatic</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) {
@@ -260,7 +260,7 @@ class Main : Application() {
 </code></pre></div><p>结果类似与第一个尝试，还是相同的报错：<code>java.lang.RuntimeException: Error: class moe.leer.Main$Companion is not a subclass of javafx.application.Application</code>。那也可以肯定 <code>companion object </code>是创建了内部类来实现的。</p>
 <h3 id="三">三</h3>
 <p>最后出场的是<code>object</code>，Kotlin 里单例模式的实现。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">
 <span style="color:#000;font-weight:bold">object</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {
 
   <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">lateinit</span> <span style="color:#000;font-weight:bold">var</span> stage: Stage
@@ -271,7 +271,7 @@ class Main : Application() {
   }
 }
 </code></pre></div><p>这次的错误信息终于和前两次不同了（笑）</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reflect</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">InvocationTargetException</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reflect</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">InvocationTargetException</span>
 	at com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sun</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">javafx</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">application</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LauncherImpl</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">launchApplicationWithArgs</span><span style="color:#000;font-weight:bold">(</span>LauncherImpl<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">java</span><span style="color:#000;font-weight:bold">:</span>389<span style="color:#000;font-weight:bold">)</span>
 	at sun<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">launcher</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LauncherHelper$FXHelper</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">main</span><span style="color:#000;font-weight:bold">(</span>LauncherHelper<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">java</span><span style="color:#000;font-weight:bold">:</span>767<span style="color:#000;font-weight:bold">)</span>
 Caused by<span style="color:#000;font-weight:bold">:</span> java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RuntimeException</span><span style="color:#000;font-weight:bold">:</span> Unable to construct Application instance<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">moe</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">leer</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Main</span>
@@ -290,7 +290,7 @@ Caused by<span style="color:#000;font-weight:bold">:</span> java<span style="col
 <p>不过我反编译了一下好像没有看到所说的<code>private constructor</code>，所以还是一知半解了。</p>
 <p>但是解决方法和这个没关系，只是调用了另一个<code>launch</code>函数而已，不过最终都是反射来调用里面的方法吧。</p>
 <p>可以这样写：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Main</span> : Application() {
 
   <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">lateinit</span> <span style="color:#000;font-weight:bold">var</span> stage: Stage
   <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">lateinit</span> <span style="color:#000;font-weight:bold">var</span> rootLayout: BorderPane
@@ -302,7 +302,7 @@ Caused by<span style="color:#000;font-weight:bold">:</span> java<span style="col
   }
 }
 </code></pre></div><p>你也可以用 <code>Top level</code> 的 Main 函数：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) = Application.launch(Main<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java)
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">main</span>(args: Array&lt;String&gt;) = Application.launch(Main<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java)
 </code></pre></div><p>🎉🎉🎉 可以慢慢玩<code>JavaFX</code>了。</p>
         </div>
 

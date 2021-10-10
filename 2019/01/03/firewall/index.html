@@ -203,7 +203,7 @@
 <p>在换 ss 端口的时候，发生一件神奇的事。我发现那台 VPS 只能使用2019端口，改成其他的都不行。最后（在用 <code>CTRL-R</code> 翻以前用过的命令时，不知怎么出现<code>firewall-cmd</code>的提示😂，太灵性了，不然我也想不到），我才意识到是我自己使用<code>firewall-cmd</code>加了端口访问限制。好蠢。</p>
 </blockquote>
 <h2 id="安装">安装</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt install firewalld
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt install firewalld
 </code></pre></div><h2 id="常用命令">常用命令</h2>
 <ul>
 <li>
@@ -211,7 +211,7 @@
 </li>
 <li>
 <p>添加允许访问的端口：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">firewall-cmd --add-port<span style="color:#000;font-weight:bold">=</span>2019/tcp
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">firewall-cmd --add-port<span style="color:#000;font-weight:bold">=</span>2019/tcp
 firewall-cmd --add-port<span style="color:#000;font-weight:bold">=</span>2019/udp
 </code></pre></div></li>
 <li>
@@ -219,7 +219,7 @@ firewall-cmd --add-port<span style="color:#000;font-weight:bold">=</span>2019/ud
 </li>
 <li>
 <p>添加和移除端口转发规则：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">firewall-cmd --add-forward-port<span style="color:#000;font-weight:bold">=</span><span style="color:#008080">port</span><span style="color:#000;font-weight:bold">=</span>80:proto<span style="color:#000;font-weight:bold">=</span>tcp:toport<span style="color:#000;font-weight:bold">=</span><span style="color:#099">8080</span> // <span style="color:#099">80</span> 端口转发到 <span style="color:#099">8080</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">firewall-cmd --add-forward-port<span style="color:#000;font-weight:bold">=</span><span style="color:#008080">port</span><span style="color:#000;font-weight:bold">=</span>80:proto<span style="color:#000;font-weight:bold">=</span>tcp:toport<span style="color:#000;font-weight:bold">=</span><span style="color:#099">8080</span> // <span style="color:#099">80</span> 端口转发到 <span style="color:#099">8080</span>
 firewall-cmd --remove-forward-port<span style="color:#000;font-weight:bold">=</span><span style="color:#008080">port</span><span style="color:#000;font-weight:bold">=</span>80:proto<span style="color:#000;font-weight:bold">=</span>tcp:toport<span style="color:#000;font-weight:bold">=</span><span style="color:#099">8080</span>
 </code></pre></div></li>
 <li>

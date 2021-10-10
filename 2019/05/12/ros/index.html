@@ -287,17 +287,17 @@ GitHub 地址
 <p>当一个任务主动让出 CPU，即调用系统函数 ros_delay 时，当前任务不再入队（就绪队列），而是保存在一个阻塞队列中（阻塞任务）。在ISR中检查是否有任务的delay到期，则重新将其加入就绪队列（唤醒任务）。</p>
 <p>同时我为每个函数都写了详细的英文注解，在贴代码的同时我会连着注解一起贴上来。</p>
 <p>下面简要说明ROS提供的内核API：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// 初始化系统
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// 初始化系统
 </span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">bool</span> <span style="color:#900;font-weight:bold">ros_init</span>();
 <span style="color:#998;font-style:italic">// 获取当前在运行的任务
 </span><span style="color:#998;font-style:italic"></span>ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">ros_current_tcb</span>();
 <span style="color:#998;font-style:italic">// 创建任务
-</span><span style="color:#998;font-style:italic"></span>status_t <span style="color:#900;font-weight:bold">ros_create_task</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb, task_func task, uint8_t priority,stack_t <span style="color:#000;font-weight:bold">*</span>stack, <span style="color:#458;font-weight:bold">int</span> stack_size);
+</span><span style="color:#998;font-style:italic"></span>status_t <span style="color:#900;font-weight:bold">ros_create_task</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb, task_func task, <span style="color:#458;font-weight:bold">uint8_t</span> priority,stack_t <span style="color:#000;font-weight:bold">*</span>stack, <span style="color:#458;font-weight:bold">int</span> stack_size);
 <span style="color:#998;font-style:italic">// 任务调度
 </span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_schedule</span>();
 
 <span style="color:#998;font-style:italic">// 阻塞任务，以 System tick 为单位
-</span><span style="color:#998;font-style:italic"></span>status_t <span style="color:#900;font-weight:bold">ros_delay</span>(uint32_t ticks);
+</span><span style="color:#998;font-style:italic"></span>status_t <span style="color:#900;font-weight:bold">ros_delay</span>(<span style="color:#458;font-weight:bold">uint32_t</span> ticks);
 
 <span style="color:#998;font-style:italic">// 下面四个函数,是移植 ROS 时需要实现的
 </span><span style="color:#998;font-style:italic">// 初始化 Timer
@@ -312,7 +312,7 @@ GitHub 地址
 <h3 id="就绪队列">就绪队列</h3>
 <p>根据上面的思路，我们需要两个队列：就绪队列和阻塞队列。就绪队列保存所有就绪的任务，并且按照优先级降序；阻塞队列保存阻塞的任务。</p>
 <p>首先定义任务的数据结构：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">enum</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">enum</span> {
 TASK_READY <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>,
 TASK_BLOCKED,
 TASK_TERMINATED
@@ -322,7 +322,7 @@ TASK_TERMINATED
 <span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> ros_tcb {
 <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>sp;
 Task_Status status;
-uint8_t priority; <span style="color:#998;font-style:italic">// 0~255
+<span style="color:#458;font-weight:bold">uint8_t</span> priority; <span style="color:#998;font-style:italic">// 0~255
 </span><span style="color:#998;font-style:italic"></span>task_func task_entry;
 <span style="color:#000;font-weight:bold">struct</span> ros_tcb <span style="color:#000;font-weight:bold">*</span>next_tcb;
 } ROS_TCB;
@@ -336,7 +336,7 @@ uint8_t priority; <span style="color:#998;font-style:italic">// 0~255
 <p>sp 保存任务的栈指针，我们为每个任务都分配一个单独的栈。我们把 sp 放在结构体的首位也是别有用意的，因为在 3.3.4上下文切换 时，我们需要改变系统的栈指针，将系统栈指针指向一个 ROS_TCB 结构体，也就指向了该任务的栈指针。</p>
 <p>next_tcb 指针保存下一个任务，和FreeRTOS和AtomThreads等RTOS不同，ROS的就绪列表是一个单链表。使用双向链表的优势在这里不明显，并且会增加一个指针的内存使用。使用单链表使得链表的操作简单，不容易出错。</p>
 <p>接下来就是任务的本体，一个任务函数指针，我们的业务逻辑也是卸载这个函数中。下面是一个任务函数的例子：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">task1</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">task1</span>() {
 <span style="color:#000;font-weight:bold">for</span>(;;) {
 <span style="color:#998;font-style:italic">// task code here
 </span><span style="color:#998;font-style:italic"></span>}
@@ -344,9 +344,9 @@ uint8_t priority; <span style="color:#998;font-style:italic">// 0~255
 </span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div><p>一个典型的任务是把逻辑写在无限循环中。当然你也可以从这个任务中 return，这样的话它就是一个 run-to-compeletion 任务，任务状态变为 TERMINATED，很快会被从就绪列表中删除，并永远不再运行。</p>
 <h3 id="阻塞队列">阻塞队列</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> ros_timer {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> ros_timer {
 ROS_TCB <span style="color:#000;font-weight:bold">*</span>blocked_tcb;
-uint32_t ticks;
+<span style="color:#458;font-weight:bold">uint32_t</span> ticks;
 <span style="color:#000;font-weight:bold">struct</span> ros_timer <span style="color:#000;font-weight:bold">*</span>next_timer;
 } ROS_TIMER
 </code></pre></div><p>和就绪队列类似，阻塞队列也是一个单链表。但是阻塞队列不是有序的。Ticks 保存任务需要延迟的 System tick 数，当 ticks 数递减为 0 时，唤醒该任务。</p>
@@ -361,7 +361,7 @@ uint32_t ticks;
 <p>创建一个 idle（默认） 任务到 ready list，保证系统总有任务在运行</p>
 </li>
 </ol>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * @brief  Start the os:
 </span><span style="color:#998;font-style:italic"> * 1. init the system timer, start ticking
 </span><span style="color:#998;font-style:italic"> * 2. add a idle task into the list
@@ -379,7 +379,7 @@ uint32_t ticks;
 }
 </code></pre></div><h4 id="配置timer">配置Timer</h4>
 <p>Timer（定时器）的配置根据平台的不同而不同，对与 Arduino Uno，它拥有三个 timer，我这里选择 Timer1 作为ROS产生 system tick 的 timer，因为使用了 Timer1，而 Timer1 也是驱动 PWM 9 和 10 号引脚的定时器。所以当你使用了ROS，就不能把 PWM 9,10做模拟输出。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">init_timer1</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">init_timer1</span>() {
   <span style="color:#998;font-style:italic">// Set prescaler 256
 </span><span style="color:#998;font-style:italic"></span>  TCCR1B <span style="color:#000;font-weight:bold">=</span> _BV(CS12) <span style="color:#000;font-weight:bold">|</span> _BV(WGM12);
   <span style="color:#998;font-style:italic">// For Arduino Uno CPU 16000000 HZ, so the OCR1A should count from 0 to 624
@@ -395,7 +395,7 @@ uint32_t ticks;
 <h4 id="创建默认任务">创建默认任务</h4>
 <p>系统初始化时，创建一个idle任务，保证系统在任何时候都有一个任务在运行。Idle任务的优先级最低，为255。</p>
 <p>同时idle任务利用了Atmega328p的省电功能，在默认任务中调用睡眠模式以节省能耗。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * @brief The idle task takes advantage of atmega328p&#39;s sleep mode, sleep when
 </span><span style="color:#998;font-style:italic"> * there is no task to run
 </span><span style="color:#998;font-style:italic"> */</span>
@@ -422,12 +422,12 @@ uint32_t ticks;
 <p>R18-R27，R30，R31，R0，SREG 状态寄存器的T-Flag 都是 Called-Used Register。所谓Called-Used Register在调用函数进入和结束的时候，GCC会生成保存和恢复这些寄存器的指令（PUSH 和POP）。<strong>对于ISR，在进入和退出时会保存和恢复这些寄存器。</strong></p>
 <p>R2-R17，R28，R29，R1 是Called-Saved Register。如果函数使用了这些寄存器，那么调用者需要负责保存和恢复这些寄存器。所以我们需要手动保存的寄存器就是Called-Saved Register。而 R1是 Fixed Register，GCC也会保存和恢复。</p>
 <p>因此在创建一个新任务时，初始化它的栈：留下空间给R2-R17，R28-R29，并赋值为0。因此栈的大小至少为 18 bytes。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_task_context_init</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb_ptr, task_func task_f, <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>sp) {
-  uint8_t <span style="color:#000;font-weight:bold">*</span>stack_top <span style="color:#000;font-weight:bold">=</span> (uint8_t <span style="color:#000;font-weight:bold">*</span>)sp;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_task_context_init</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb_ptr, task_func task_f, <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>sp) {
+  <span style="color:#458;font-weight:bold">uint8_t</span> <span style="color:#000;font-weight:bold">*</span>stack_top <span style="color:#000;font-weight:bold">=</span> (<span style="color:#458;font-weight:bold">uint8_t</span> <span style="color:#000;font-weight:bold">*</span>)sp;
   <span style="color:#998;font-style:italic">// pc
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// the function pointer is uint16_t in avr
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> (uint8_t)((uint16_t)task_shell <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#099">0xFF</span>);         <span style="color:#998;font-style:italic">// the LSB
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> (uint8_t)(((uint16_t)task_shell <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">8</span>) <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#099">0xFF</span>);  <span style="color:#998;font-style:italic">// THE MSB
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> (<span style="color:#458;font-weight:bold">uint8_t</span>)((<span style="color:#458;font-weight:bold">uint16_t</span>)task_shell <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#099">0xFF</span>);         <span style="color:#998;font-style:italic">// the LSB
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> (<span style="color:#458;font-weight:bold">uint8_t</span>)(((<span style="color:#458;font-weight:bold">uint16_t</span>)task_shell <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">8</span>) <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#099">0xFF</span>);  <span style="color:#998;font-style:italic">// THE MSB
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// Make space for R2-R17, R28-R29
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R2
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R3
@@ -450,7 +450,7 @@ uint32_t ticks;
 </span><span style="color:#998;font-style:italic"></span>  tcb_ptr<span style="color:#000;font-weight:bold">-&gt;</span>sp <span style="color:#000;font-weight:bold">=</span> stack_top;
 }
 </code></pre></div><p>需要注意的是，我们在栈上最先PUSH的是task_shell的函数指针，而函数指针在AVR中一般为 16 位，所以需要两个字节，分别存储它的低8位和高8位。使用task_shell，而不直接用任务的task_entry意图很明显：我们可以在task_shell中标记结束的任务，因为ROS是支持run-to-completion的任务的；同时也可以支持传递任务函数的参数，虽然ROS的任务没有参数，但也有考虑到未来系统的扩展。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * @brief Wrapper of task function, which can pass param to task(for furture
 </span><span style="color:#998;font-style:italic"> * usage), and terminated it and re-schedule when a task run to compeletion
 </span><span style="color:#998;font-style:italic"> */</span>
@@ -483,33 +483,33 @@ uint32_t ticks;
 </ul>
 <h3 id="isr">ISR</h3>
 <p>当中断发生时，系统会调用ISR（Interrupt Service Routine）函数来处理中断。Scheduler的实现依赖于Timer的周期性中断和ISR，因此中断是实现Multitask的基础。每个中断名称都定义在中断向量表中，编写ISR函数的基本格式如下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">ISR(interrupt_name_in_vect) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">ISR(interrupt_name_in_vect) {
  <span style="color:#998;font-style:italic">//your code
 </span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div><p>AVR平台在进入ISR时会默认关闭中断。但是对于支持嵌套中断的平台，如果我们在嵌套的ISR中进行上下文切换，可能会破坏队列的结构，使得任务的运行顺序和期望的不同，这就和多线程中的与时间相关的错误类似。我们需要一种机制来让在所有的嵌套ISR快结束时才调用scheduler。通过一个计数就可以解决这个问题：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_int_enter</span>() { ros_int_cnt<span style="color:#000;font-weight:bold">++</span>; }
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_int_enter</span>() { ros_int_cnt<span style="color:#000;font-weight:bold">++</span>; }
 <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_int_exit</span>() {
 	ros_int_cnt<span style="color:#000;font-weight:bold">--</span>;
 	ros_schedule();
 }
 </code></pre></div><p>如果 ros_int_cnt 不为 0，则当前处于ISR context中，为0时处于 task context。在 task context 中可以安全的进行任务调度。而这里我们需要处理的中断为Timer1的“compare match 1A”中断。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// interrupt every SYS_TICK to re-schedule tasks
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// interrupt every SYS_TICK to re-schedule tasks
 </span><span style="color:#998;font-style:italic"></span>ISR(TIMER1_COMPA_vect) {
   ros_int_enter();
   ros_sys_tick();
   <span style="color:#998;font-style:italic">// exit ISR, ready to call scheduler
 </span><span style="color:#998;font-style:italic"></span>  ros_int_exit();
 }
-</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_schedule</span>() {
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_schedule</span>() {
 	<span style="color:#000;font-weight:bold">if</span> (ros_int_cnt <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">!</span>ROS_STARTED) <span style="color:#000;font-weight:bold">return</span>
 	<span style="color:#998;font-style:italic">// core scheduler code
 </span><span style="color:#998;font-style:italic"></span>}
 </code></pre></div><h3 id="队列操作">队列操作</h3>
 <p>对于队列的操作只有两个：入队和出队。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_tcb_enqueue</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb);
-ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">ros_tcb_dequeue</span>(uint8_t lowest_priority);
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_tcb_enqueue</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb);
+ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">ros_tcb_dequeue</span>(<span style="color:#458;font-weight:bold">uint8_t</span> lowest_priority);
 </code></pre></div><p>维护一个优先队列，使用排序链表实现。入队操作的时间复杂度为O(N)，因为入队时需要把TCB按优先级按序插入；而出队最高优先级的任务时间复杂度为O(1)。Round-robin（轮转调度）算法的实现也体现在入队操作中。对于相同优先级的任务，该任务会入队到其他相同优先级任务的尾部：next_ptr-&gt;priority &gt; tcb-&gt;priority，配合系统的周期性中断，实现相同优先级的任务按时间片轮转调度。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * @brief enqueue tcb to list order by priority. Do round-robin when priority is
 </span><span style="color:#998;font-style:italic"> * same.
 </span><span style="color:#998;font-style:italic"> * @param  *tcb: the tcb to insert
@@ -540,7 +540,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
   } <span style="color:#000;font-weight:bold">while</span> (prev_ptr <span style="color:#000;font-weight:bold">!=</span> <span style="color:#0086b3">NULL</span>);
 }
 </code></pre></div><p>出队操作则只需要检查队首的TCB，因为队列是有序的，所以队首的TCB总是优先级最高的，如果队首不满足条件，那么接下来的TCB更不会满足。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * @brief  dequeue a tcb to swap in, requeir its priority no lower than
 </span><span style="color:#998;font-style:italic"> * lowest_priority Because the list ordered by priority, we just check the head,
 </span><span style="color:#998;font-style:italic"> * if the head is lower than lowest_priority, return NULL. use
@@ -548,7 +548,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 </span><span style="color:#998;font-style:italic"> * @param lowest_priority: the lowest priority of dequeue tcb or NULL if no such
 </span><span style="color:#998;font-style:italic"> * tcb
 </span><span style="color:#998;font-style:italic"> */</span>
-ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">ros_tcb_dequeue</span>(uint8_t lowest_priority) {
+ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">ros_tcb_dequeue</span>(<span style="color:#458;font-weight:bold">uint8_t</span> lowest_priority) {
   <span style="color:#000;font-weight:bold">if</span> (tcb_ready_list <span style="color:#000;font-weight:bold">==</span> <span style="color:#0086b3">NULL</span> <span style="color:#000;font-weight:bold">||</span> tcb_ready_list<span style="color:#000;font-weight:bold">-&gt;</span>priority <span style="color:#000;font-weight:bold">&gt;</span> lowest_priority) {
     <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
   } <span style="color:#000;font-weight:bold">else</span> {
@@ -568,7 +568,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 <p>否则，从链表中dequeue 一个 new_tcb，如果任务已经终结，则删除任务继续dequeue，直到一个任务符合要求或者为NULL。</p>
 <p>如果new_tcb不为 NULL， enqueue当前的任务，调用switch_context。</p>
 <p>Scheduler依赖于两个队列操作，操作队列时需要关中断。一个基于优先级的非抢占式调度器基本实现，同时还支持删除 run to complete 的任务。详细的代码和逻辑描述如下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_schedule</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_schedule</span>() {
   <span style="color:#998;font-style:italic">// no schedule and context switch util the very end of ISR
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">if</span> (ros_int_cnt <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">!</span>ROS_STARTED) <span style="color:#000;font-weight:bold">return</span>;
   CRITICAL_STORE;
@@ -617,7 +617,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 <p>恢复新任务的上下文（因为我们现在已经在新任务的栈上）</p>
 </li>
 </ol>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_switch_context</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>old_tcb, ROS_TCB <span style="color:#000;font-weight:bold">*</span>new_tcb) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_switch_context</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>old_tcb, ROS_TCB <span style="color:#000;font-weight:bold">*</span>new_tcb) {
   <span style="color:#998;font-style:italic">// The assembly code is in intel style, source is always on the right
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// Y-reg is R28 and R29
 </span><span style="color:#998;font-style:italic"></span>  __asm__ __volatile__(
@@ -701,11 +701,11 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 <li>从<code>timer_queue</code>中遍历出 tick 等于 0 的任务，更新任务状态为<code>TASK_READY</code>，并重新<code>enqueue</code>。</li>
 </ol>
 <p>阻塞任务：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// delay current tcb
-</span><span style="color:#998;font-style:italic"></span>status_t <span style="color:#900;font-weight:bold">ros_delay</span>(uint32_t ticks) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// delay current tcb
+</span><span style="color:#998;font-style:italic"></span>status_t <span style="color:#900;font-weight:bold">ros_delay</span>(<span style="color:#458;font-weight:bold">uint32_t</span> ticks) {
   ROS_TIMER timer;
   ROS_TCB <span style="color:#000;font-weight:bold">*</span>cur_tcb;
-  uint8_t status;
+  <span style="color:#458;font-weight:bold">uint8_t</span> status;
   CRITICAL_STORE;
   cur_tcb <span style="color:#000;font-weight:bold">=</span> ros_current_tcb();
   <span style="color:#000;font-weight:bold">if</span> (ticks <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
@@ -730,7 +730,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
   <span style="color:#000;font-weight:bold">return</span> status;
 }
 </code></pre></div><p>唤醒任务：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">wakeup_task</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">wakeup_task</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb) {
   CRITICAL_STORE;
   CRITICAL_START();
   tcb<span style="color:#000;font-weight:bold">-&gt;</span>status <span style="color:#000;font-weight:bold">=</span> TASK_READY;
@@ -740,12 +740,12 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 </code></pre></div><h2 id="构建">构建</h2>
 <p>我使用make来构建ROS。对于一个比较大的C项目，如果每次做一点修改，都要去一个个编译，链接，而且编译和链接是有顺序的，每次如此就很繁琐。</p>
 <p>使用make，编写Makefile来构建整个项目，只要编写一次Makefile，接下来就可以实现自动构建。Makefile的基本格式如下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#998;font-style:italic"># comment
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#998;font-style:italic"># comment
 </span><span style="color:#998;font-style:italic"># (note: the &lt;tab&gt; in the command line is necessary for make to work)
 </span><span style="color:#998;font-style:italic"></span><span style="color:#900;font-weight:bold">target</span><span style="color:#000;font-weight:bold">:</span>  dependency1 dependency2 ...
       &lt;tab&gt; <span style="color:#0086b3">command</span>
 </code></pre></div><p>一个构建的目标分为依赖和命令。下面贴上ROS的Makefile：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#008080">CC</span><span style="color:#000;font-weight:bold">=</span>avr-gcc
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#008080">CC</span><span style="color:#000;font-weight:bold">=</span>avr-gcc
 <span style="color:#008080">OBJCOPY</span><span style="color:#000;font-weight:bold">=</span>avr-objcopy
 <span style="color:#008080">SIZE</span><span style="color:#000;font-weight:bold">=</span>avr-size
 <span style="color:#008080">DUDE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>ARDUINO_DIR<span style="color:#000;font-weight:bold">)</span>/hardware/tools/avr/bin/avrdude
@@ -795,7 +795,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 <p>Upload 将构建好的 hex 文件通过 avrdude 工具上传到 avr开发板上，这里为atmega328p的Arduino Uno。同时也可以自定义 MCU 变量来为不同的开发板构建和上传。</p>
 <h2 id="示例">示例</h2>
 <p>下面的代码是使用ROS来以不同的频率闪烁两个LED的例子：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * Blink example in ROS, DO NOT use any function in Arduino.h
 </span><span style="color:#998;font-style:italic"> */</span>
 <span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;avr/io.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
@@ -806,8 +806,8 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 </span><span style="color:#998;font-style:italic">// AVR_MCU(F_CPU, &#34;atmega328p&#34;);
 </span><span style="color:#998;font-style:italic"></span>ROS_TCB task1;
 ROS_TCB task2;
-uint8_t task1_stack[ROS_DEFAULT_STACK_SIZE];
-uint8_t task2_stack[ROS_DEFAULT_STACK_SIZE];
+<span style="color:#458;font-weight:bold">uint8_t</span> task1_stack[ROS_DEFAULT_STACK_SIZE];
+<span style="color:#458;font-weight:bold">uint8_t</span> task2_stack[ROS_DEFAULT_STACK_SIZE];
 
 <span style="color:#999;font-weight:bold;font-style:italic">#define LED1 13
 </span><span style="color:#999;font-weight:bold;font-style:italic">#define LED2 12

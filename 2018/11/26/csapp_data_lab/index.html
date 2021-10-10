@@ -241,7 +241,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 <p>解题的思路一般会写在注释里的。</p>
 </blockquote>
 <h2 id="bitxor">bitXor</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*s
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*s
 </span><span style="color:#998;font-style:italic"> * bitXor - x^y using only ~ and &amp;
 </span><span style="color:#998;font-style:italic"> *   Example: bitXor(4, 5) = 1
 </span><span style="color:#998;font-style:italic"> *   Legal ops: ~ &amp;
@@ -261,7 +261,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 <li>(~a | ~b) = ~(a &amp; b)</li>
 </ul>
 <h2 id="tmin">tmin</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
 </span><span style="color:#998;font-style:italic"> * tmin - return minimum two&#39;s complement integer
 </span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
 </span><span style="color:#998;font-style:italic"> *   Max ops: 4
@@ -274,7 +274,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </code></pre></div><p>最简单的一题，最小的有符号数是 <code>0x80000000</code>。</p>
 <hr>
 <h2 id="istmax">isTmax</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
 </span><span style="color:#998;font-style:italic"> * isTmax - returns 1 if x is the maximum, two&#39;s complement number,
 </span><span style="color:#998;font-style:italic"> *     and 0 otherwise
 </span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | +
@@ -286,11 +286,11 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">!</span>(x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x7fffffff</span>);
 }
 </code></pre></div><p>我一开始是像上面这样写的，如果没有限定的话这样是对的。但是整数部分的要求比较严格：</p>
-<pre><code>Integer constants 0 through 255 (0xFF), inclusive. You are
+<pre tabindex="0"><code>Integer constants 0 through 255 (0xFF), inclusive. You are
       not allowed to use big constants such as 0xffffffff.
 </code></pre><p>而且这一题不能使用移位操作，就不能通过移位来得到 <code>0x7fffffff</code>。然后只能Google了。。。</p>
 <p>这是我 Google 到的版本:</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">isTmax</span>(<span style="color:#458;font-weight:bold">int</span> x) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">isTmax</span>(<span style="color:#458;font-weight:bold">int</span> x) {
   <span style="color:#998;font-style:italic">// creates i = x plus 1 then makes x = that number plus x.
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// then flips the bits of x and bangs i, adds them and returns.
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// this effectively checks if the number was tmax
@@ -307,10 +307,10 @@ a ^ b = (~a | ~b) &amp; (a | b)
 }
 </code></pre></div><h2 id="alloddbits">allOddBits</h2>
 <p>和上一题一样，我一开始也违反了这条规定：</p>
-<pre><code>Integer constants 0 through 255 (0xFF), inclusive. You are
+<pre tabindex="0"><code>Integer constants 0 through 255 (0xFF), inclusive. You are
       not allowed to use big constants such as 0xffffffff.
 </code></pre><p>幸运的是，这题可以用移位：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
 </span><span style="color:#998;font-style:italic"> * allOddBits - return 1 if all odd-numbered bits in word set to 1
 </span><span style="color:#998;font-style:italic"> *   where bits are numbered from 0 (least significant) to 31 (most significant)
 </span><span style="color:#998;font-style:italic"> *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
@@ -329,7 +329,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 }
 </code></pre></div><p>主要是利用了 <code>0xAAAAAAAA</code> 这个 mask，<code>x</code> 和 mask 相与来判断是否全部的奇数位都被置1。</p>
 <h2 id="negate">negate</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
 </span><span style="color:#998;font-style:italic"> * negate - return -x
 </span><span style="color:#998;font-style:italic"> *   Example: negate(1) = -1.
 </span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
@@ -343,7 +343,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </code></pre></div><p>一个数取反加一，就是它的负数，利用了补码的性质。</p>
 <hr>
 <h2 id="isasciidigit">isAsciiDigit</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
 </span><span style="color:#998;font-style:italic"> * isAsciiDigit - return 1 if 0x30 &lt;= x &lt;= 0x39 (ASCII codes for characters &#39;0&#39;
 </span><span style="color:#998;font-style:italic"> * to &#39;9&#39;) Example: isAsciiDigit(0x35) = 1. isAsciiDigit(0x3a) = 0.
 </span><span style="color:#998;font-style:italic"> *            isAsciiDigit(0x05) = 0.
@@ -367,7 +367,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 }
 </code></pre></div><p>这题我目前想到的解法就是这样，很明显超过了操作符个数的限制，而且看上去很蠢。就是判断这个数是否等于<code>‘0’</code>到<code>‘9’</code>中的一个。</p>
 <h2 id="conditional">conditional</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
 </span><span style="color:#998;font-style:italic"> * conditional - same as x ? y : z
 </span><span style="color:#998;font-style:italic"> *   Example: conditional(2,4,5) = 4
 </span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
@@ -375,7 +375,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </span><span style="color:#998;font-style:italic"> *   Rating: 3
 </span><span style="color:#998;font-style:italic"> */</span>
 </code></pre></div><p>在 <code>15213 - Recitation 3 - Datalab</code> 中有关于这题的小提示：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">//Find an algorithm for computing the expression (cond) ? t : //f, which equals t if cond is
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">//Find an algorithm for computing the expression (cond) ? t : //f, which equals t if cond is
 </span><span style="color:#998;font-style:italic">//1 and f if cond is 0.
 </span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">conditional</span>(<span style="color:#458;font-weight:bold">int</span> cond, <span style="color:#458;font-weight:bold">int</span> t, <span style="color:#458;font-weight:bold">int</span> f) {
 <span style="color:#998;font-style:italic">/* Compute a mask that equals 0x00000000 or
@@ -385,7 +385,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 <span style="color:#000;font-weight:bold">return</span> __________________________________________;
 }
 </code></pre></div><p>当 x 取 0 时，返回 z，否则，返回 y。假设 <code>x = 0</code> 时，取 <code>mask = 0xffffffff</code>，否则，<code>mask = 0x0</code>。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">conditional</span>(<span style="color:#458;font-weight:bold">int</span> x, <span style="color:#458;font-weight:bold">int</span> y, <span style="color:#458;font-weight:bold">int</span> z) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">conditional</span>(<span style="color:#458;font-weight:bold">int</span> x, <span style="color:#458;font-weight:bold">int</span> y, <span style="color:#458;font-weight:bold">int</span> z) {
   <span style="color:#998;font-style:italic">// when x = 0, t1 is overflow, it&#39;s value is 0
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">~</span>x <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
   <span style="color:#998;font-style:italic">// when x = 0, t2 =0, else its MSB is 1
@@ -400,7 +400,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> (<span style="color:#000;font-weight:bold">~</span>mask <span style="color:#000;font-weight:bold">&amp;</span> y) <span style="color:#000;font-weight:bold">|</span> (mask <span style="color:#000;font-weight:bold">&amp;</span> z);
 }
 </code></pre></div><h2 id="islessorequal">isLessOrEqual</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
 </span><span style="color:#998;font-style:italic"> * isLessOrEqual - if x &lt;= y  then return 1, else return 0
 </span><span style="color:#998;font-style:italic"> *   Example: isLessOrEqual(4,5) = 1.
 </span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
@@ -437,12 +437,12 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </ol>
 <p>为什么需要考虑 x, y 是否同号呢？</p>
 <p>其实我一开始也只考虑了两种情况，即 x == y；x - y &lt; 0。在进行测试的时候有如下输出：</p>
-<pre><code>ERROR: Test isLessOrEqual(-2147483648[0x80000000],2147483647[0x7fffffff]) failed...
+<pre tabindex="0"><code>ERROR: Test isLessOrEqual(-2147483648[0x80000000],2147483647[0x7fffffff]) failed...
 ...Gives 0[0x0]. Should be 1[0x1]
 </code></pre><p>很明显 <code>0x80000000</code> 应该小于 <code>0x7fffffff</code>，但是却输出了 0。因为 <code>0x80000000 + 0x80000001</code> 发生了负溢出，产生的结果是一个大于 0 的数。所以 <code>less</code>会是 0。</p>
 <hr>
 <h2 id="logicalneg">logicalNeg</h2>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
 </span><span style="color:#998;font-style:italic"> * logicalNeg - implement the ! operator, using all of
 </span><span style="color:#998;font-style:italic"> *              the legal operators except !
 </span><span style="color:#998;font-style:italic"> *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
@@ -465,7 +465,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </code></pre></div><p>和 conditional 那题类似，不过我开始使用的是 <code>(unsigned)t3 &gt;&gt; 31;</code>，转化为 unsigned 执行逻辑右移来直接获取 MSB。但是题目是不允许使用强制类型转换的，所以改成 <code> (t3 &gt;&gt; 31) &amp; 1</code>。</p>
 <h2 id="逻辑右移和算术右移">逻辑右移和算术右移</h2>
 <p>在调试 logicalNeg 这题时，发生了一个小插曲。我想知道 C 在什么时候会用逻辑右移，什么时候会用算术右移。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">logicalNeg</span>(<span style="color:#458;font-weight:bold">int</span> x) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">logicalNeg</span>(<span style="color:#458;font-weight:bold">int</span> x) {
   <span style="color:#998;font-style:italic">// when x = 0, t1 is overflow, it&#39;s value is 0
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">~</span>x <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
   <span style="color:#998;font-style:italic">// when x = 0, t2 =0, else its MSB is 1
@@ -477,7 +477,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
 }
 </code></pre></div><p>当 x 是 0时，t3 = 0xffffffff。此时是要使用逻辑右移就可以变成 <code>0x00000001</code>。</p>
 <p>再看下面的测试代码：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
   <span style="color:#458;font-weight:bold">int</span> neg_one <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0xffffffff</span>;
   <span style="color:#458;font-weight:bold">int</span> shift <span style="color:#000;font-weight:bold">=</span> neg_one <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>;
   <span style="color:#458;font-weight:bold">int</span> shift_inline <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0xffffffff</span> <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>;
@@ -494,7 +494,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
   <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><p>结果很奇怪，怎么两个一样的式子有不同的结果呢？第一个使用了算术右移，第二个使用了逻辑右移。唯一的区别就是 <code>0xffffffff</code> 所在的位置，第一个是被保存在 int 中的，第二个式子，则是包含在式子里面<code>int shift_inline = 0xffffffff &gt;&gt; 31;</code>。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#a61717;background-color:#e3d2d2">▶</span> .<span style="color:#000;font-weight:bold">/</span><span style="color:#d14">&#34;right_shift&#34;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#a61717;background-color:#e3d2d2">▶</span> .<span style="color:#000;font-weight:bold">/</span><span style="color:#d14">&#34;right_shift&#34;</span>
 <span style="color:#000;font-weight:bold">------</span>right shift<span style="color:#000;font-weight:bold">-----</span>
 <span style="color:#099">0xffffffff</span> <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span> <span style="color:#000;font-weight:bold">=</span>
  ff ff ff ff
@@ -514,13 +514,13 @@ a ^ b = (~a | ~b) &amp; (a | b)
 <p>因为就是这样设计的，<code>C</code> 是字母表中的第3个字母，所以可能为了方便？<code>CTRL-C</code> 就是 3。</p>
 <p>想在编辑器中捕捉<code>CTRL-C</code>首先要关闭<code>CTRL-C</code>的默认功能：发出<code>SIGINT</code> 信号终止程序。之后你可以写类似这样的代码：<code>if(c == 3)</code></p>
 <p>但是为了使代码更容易理解，使用这个宏来表示<code>CTRL-KEY</code>：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#define CTRL_KEY(k) ((k)&amp;0x1f)
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#define CTRL_KEY(k) ((k)&amp;0x1f)
 </span></code></pre></div><p>这样你便可以用<code>if(c == CTRL_KEY('C'))</code> 来表示 <code>CTRL-C</code>了。</p>
 <p><code>CTRL</code> 键和 26 个字母组合分别对应 ASCII 表中的 1～26。最少需要用 5 位二进制表示。所以只需要用<code>0x1f</code>(0001 1111) 这个 mask 取字母的低五位便可以把字母转化成<code>CTRL+KEY</code>的组合。</p>
 <p>这个式子成立的前提还有一个，就是字母的低位必须是从1开始的，而 ASCII 表设计的恰恰满足这个条件：<code>A</code>：0x41，<code>a</code>：0x61。</p>
 <h2 id="upercase--lowercase">Upercase &amp; Lowercase</h2>
 <p>利用这个的性质，还可以用位运算完成大小写的转换。只需要变换第五位二进制数（大写字母和小写字母差32.）</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">unsigned</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#900;font-weight:bold">toggle_case</span>(<span style="color:#458;font-weight:bold">unsigned</span> <span style="color:#458;font-weight:bold">char</span> a) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">unsigned</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#900;font-weight:bold">toggle_case</span>(<span style="color:#458;font-weight:bold">unsigned</span> <span style="color:#458;font-weight:bold">char</span> a) {
   <span style="color:#458;font-weight:bold">int</span> mask <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x20</span>;
   <span style="color:#000;font-weight:bold">return</span> a <span style="color:#000;font-weight:bold">^</span> mask;
 }

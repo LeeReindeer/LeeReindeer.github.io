@@ -236,7 +236,7 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 <ul>
 <li>
 <p>P(s)</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">P(s) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">P(s) {
     <span style="color:#000;font-weight:bold">if</span> (p <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span>) {
      s<span style="color:#000;font-weight:bold">--</span>;
     } <span style="color:#000;font-weight:bold">else</span> {
@@ -247,7 +247,7 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </code></pre></div></li>
 <li>
 <p>V(s)</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">V(s) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">V(s) {
     s<span style="color:#000;font-weight:bold">++</span>;
     <span style="color:#000;font-weight:bold">if</span> (list is no empty) {
         list.pop().wakeup();
@@ -261,7 +261,7 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 <h2 id="semaphore-in-c">Semaphore in C</h2>
 <p>在使用信号量实现互斥之前，先来介绍一下 <code>POSIX</code> 标准中的线程（<code>pthread</code>）。在 C 语言中可以使用 <code>pthread</code> 接口来编写多进程的程序。</p>
 <p>下面是一个简单的 hello world（进程版），参考了CSAPP 中的代码，所以使用 CSAPP 对 <code>pthread</code> 的 wrapper 函数：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">thread1</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>vargp);
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">thread1</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>vargp);
 
 <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
   <span style="color:#998;font-style:italic">//平时编写的C程序只有一个线程--主线程
@@ -279,7 +279,7 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 }
 </code></pre></div><p>对 pthread 不再过多介绍，还不如去看<code>man page</code>。</p>
 <p>如果两个并发的进程，在访问同一个个共享变量的时候不加限制，可能会造成结果与预期不同。比如下面的计数器例子：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&#34;csapp.h&#34;</span><span style="color:#999;font-weight:bold;font-style:italic">
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&#34;csapp.h&#34;</span><span style="color:#999;font-weight:bold;font-style:italic">
 </span><span style="color:#999;font-weight:bold;font-style:italic"></span>
 <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg);
 <span style="color:#000;font-weight:bold">volatile</span> <span style="color:#458;font-weight:bold">int</span> cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; <span style="color:#998;font-style:italic">// shared counter
@@ -312,12 +312,12 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
   <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p><code>cnt</code>变量被两个进程同时访问，在访问它的过程中随时可能被打断，即使<code>cnt++</code>看起来是不会被打断的操作，但是当它被编译成汇编语言时：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-asm" data-lang="asm"><span style="color:#900;font-weight:bold">movl</span> <span style="color:#008080">cnt</span>, <span style="color:#008080">%eax</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-asm" data-lang="asm"><span style="color:#900;font-weight:bold">movl</span> <span style="color:#008080">cnt</span>, <span style="color:#008080">%eax</span>
 <span style="color:#900;font-weight:bold">incl</span> <span style="color:#008080">%eax</span>
 <span style="color:#900;font-weight:bold">movl</span> <span style="color:#008080">%eax</span>, <span style="color:#008080">cnt</span>
 </code></pre></div><p>这样看来，机器在执行的时候可能会有问题。具体一点，一开始 cnt 为 0 ，一个进程如果在第二条指令被另一个进程打断，%eax 已经加一，而 cnt 的值还未保存。另一个进程完成操作后， cnt 为 1。接着原先的进程继续运行， cnt 也为 1。所以结果应该会比两倍的 n 要小。</p>
 <p>为了解决这个问题，就可以使用二元信号量，对 临界区（critical section）加锁,来保证同时只有一个进程访问它。在上面的例子里，临界区就是那三条汇编指令，即  <code>cnt++</code>。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t mutex;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t mutex;
 
 <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
     <span style="color:#998;font-style:italic">//...
@@ -336,7 +336,7 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
   <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p><strong>其中的<code>P()</code>，<code>V()</code>两个函数分别是对 Linux 下信号量函数的简单封装</strong>：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">P</span>(sem_t <span style="color:#000;font-weight:bold">*</span>sem) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">P</span>(sem_t <span style="color:#000;font-weight:bold">*</span>sem) {
   <span style="color:#000;font-weight:bold">if</span> (sem_wait(sem) <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">0</span>)
     unix_error(<span style="color:#d14">&#34;P error&#34;</span>);
 }
@@ -378,7 +378,7 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 <li>生产者和消费者<strong>分别</strong>对缓存区的访问互斥</li>
 <li>对缓存区中可用资源的计数</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> {
   <span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>buf; <span style="color:#998;font-style:italic">// buffer array
 </span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> n; <span style="color:#998;font-style:italic">// size of solts, the buffer size is n - 1, because index 0 will not be
 </span><span style="color:#998;font-style:italic"></span>         <span style="color:#998;font-style:italic">// filled.
@@ -390,7 +390,7 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span style="color:#998;font-style:italic"></span>  sem_t items; <span style="color:#998;font-style:italic">// counts available items;
 </span><span style="color:#998;font-style:italic"></span>} sbuf_t;
 </code></pre></div><p>我们使用两个互斥锁来保证缓存区的访问是互斥，同时使用信号量：slots 和 items 来对缓存区中的空位和数据进行计数。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sbuf_t <span style="color:#000;font-weight:bold">*</span>sp;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sbuf_t <span style="color:#000;font-weight:bold">*</span>sp;
 
 sem_t mutex_c, mutex_p;
 <span style="color:#458;font-weight:bold">int</span> p_cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, c_cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
@@ -476,7 +476,7 @@ sem_t mutex_c, mutex_p;
 <p>在生产者进程中，我们模拟生产10条数据便结束进程。消费者进程相同地取走10条数据也就结束了。同时引入 <code>c_cnt, p_cnt</code>来验证我们的结果是否正确，对他们的访问也需要加锁。</p>
 <p><code>sbuf_insert</code> 函数等待一个可用的空位，加互斥锁，插入数据，然后宣布一个数据可用，来唤醒可能在等待的消费者进程；<code>sbuf_remove</code>函数等待可用的数据，加互斥锁，取走数据，然后宣布一个空位可用。</p>
 <p>如果要进一步提高它们的并发性，当插入数据和取出数据很耗时时，把它们放在互斥锁中是不合理的。比如一个消费者正在取走数据，这需要花费很久时间，而其他消费者也只能等待，即使还有可用的空位。可以使用一个局部变量保存数据的下标，把读写操作放到互斥锁之后。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// add to rear
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// add to rear
 </span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">sbuf_insert</span>(sbuf_t <span style="color:#000;font-weight:bold">*</span>sp, <span style="color:#458;font-weight:bold">int</span> item) {
   <span style="color:#458;font-weight:bold">int</span> tmp;
   P(<span style="color:#000;font-weight:bold">&amp;</span>sp<span style="color:#000;font-weight:bold">-&gt;</span>slots);
@@ -534,14 +534,14 @@ sem_t mutex_c, mutex_p;
 </tbody>
 </table>
 <p>读者和写者之前，需要判断是否已经有读者在读，那么仅仅使用信号量不能解决这问题。所以，我们定义<code>reader_cnt</code>来统计当前的读者进程数，<code>mutex</code>为对<code>read_cnt</code>这个共享变量的互斥锁，而<code>w</code>为读者数量的信号量，因为最大只允许一个写者进行写操作，所以也相当于一个二元信号量。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#define THREAD_SIZE 10
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#define THREAD_SIZE 10
 </span><span style="color:#999;font-weight:bold;font-style:italic"></span>
 <span style="color:#458;font-weight:bold">char</span> file[<span style="color:#099">20</span>] <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Init file&#34;</span>; <span style="color:#998;font-style:italic">// simulate file I/O
 </span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> reader_cnt;
 sem_t mutex; <span style="color:#998;font-style:italic">// mutux for reader_cnt
 </span><span style="color:#998;font-style:italic"></span>sem_t w;     <span style="color:#998;font-style:italic">// mutex for writer
 </span></code></pre></div><p>main 函数，初始化信号量<code>mutex</code>和<code>w</code>为 1 ，并且创建读者和写者进程，使得读者进程个数大于写着进程：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
   pthread_t tid_list[THREAD_SIZE];
   Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
   Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>w, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
@@ -559,7 +559,7 @@ sem_t mutex; <span style="color:#998;font-style:italic">// mutux for reader_cnt
   <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
 }
 </code></pre></div><p>读者进程，每个读者进程模拟进行5次读操作：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">reader_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">reader_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
   <span style="color:#458;font-weight:bold">int</span> cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
   <span style="color:#000;font-weight:bold">while</span> (cnt<span style="color:#000;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">5</span>) {
     <span style="color:#998;font-style:italic">// printf(&#34;%d\n&#34;, cnt);
@@ -581,7 +581,7 @@ sem_t mutex; <span style="color:#998;font-style:italic">// mutux for reader_cnt
   <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p>写者进程，每个写者同样模拟5次写操作：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">writer_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">writer_thread</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
   <span style="color:#458;font-weight:bold">int</span> cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
   <span style="color:#000;font-weight:bold">while</span> (cnt<span style="color:#000;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">5</span>) {
     P(<span style="color:#000;font-weight:bold">&amp;</span>w);
@@ -601,11 +601,11 @@ sem_t mutex; <span style="color:#998;font-style:italic">// mutux for reader_cnt
 <h2 id="sleepy-barber">Sleepy barber</h2>
 <p>睡眠理发师问题：理发店里有一位理发师，一把理发椅和多把等候的椅子；如果没有顾客，理发师在理发椅上睡觉；当有顾客来时，他唤醒理发师，进行理发，此时如果有其他顾客进来，如果有空椅子，则坐下等待，否则直接离开。</p>
 <p>定义4个全局变量分别为：<code>barber_ready</code>表示等待顾客的理发师数，因为理发师只有一个，也可以看做是二元信号量，用户阻塞顾客进程；<code>cust_ready</code>表示等待理发的顾客数，用于阻塞理发师进程，初始为0；<code>mutex</code>是用于保护共享变量<code>wating</code>的互斥锁；而<code>free_seats</code>则是常量，表示等待理发的椅子数量。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t barber_ready, cust_ready;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t barber_ready, cust_ready;
 sem_t mutex;
 <span style="color:#458;font-weight:bold">int</span> free_seats, wating <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
 </code></pre></div><p>理发师进程：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">barber</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">barber</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
   <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> cnt <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
   <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
     P(<span style="color:#000;font-weight:bold">&amp;</span>cust_ready);  <span style="color:#998;font-style:italic">// sleetp to wait customer
@@ -626,7 +626,7 @@ sem_t mutex;
 }
 
 </code></pre></div><p>顾客进程：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">customer</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">customer</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
   P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
   <span style="color:#000;font-weight:bold">if</span> (wating <span style="color:#000;font-weight:bold">&lt;</span> free_seats) {
     wating<span style="color:#000;font-weight:bold">++</span>;
@@ -642,7 +642,7 @@ sem_t mutex;
   <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
 }
 </code></pre></div><p>main 函数：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
   <span style="color:#998;font-style:italic">// scanf(&#34;%d&#34;, &amp;free_seats);
 </span><span style="color:#998;font-style:italic"></span>  free_seats <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">5</span>;
   Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>barber_ready, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
@@ -676,7 +676,7 @@ sem_t mutex;
 <blockquote>
 <p>按着上面的思路，敲得下面的代码。但是运行起来还有点问题。。。</p>
 </blockquote>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&#34;csapp.h&#34;</span><span style="color:#999;font-weight:bold;font-style:italic">
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&#34;csapp.h&#34;</span><span style="color:#999;font-weight:bold;font-style:italic">
 </span><span style="color:#999;font-weight:bold;font-style:italic"></span>
 sem_t offer1;  <span style="color:#998;font-style:italic">// offer paper and matchs
 </span><span style="color:#998;font-style:italic"></span>sem_t offer2;  <span style="color:#998;font-style:italic">// offer tobacco and matchs
@@ -759,14 +759,14 @@ sem_t offer1;  <span style="color:#998;font-style:italic">// offer paper and mat
 <li>水井每次只能容一个桶取水，所以小和尚之前也有互斥关系</li>
 <li>信号量：<code>mutex1</code>用于小和尚之前互斥的从水井取水；<code>mutex2</code>用于互斥的从水缸倒水或取水；<code>empty</code>表示水缸还可放入的水；<code>full</code>表示水缸中已有的水；<code>pail</code>则是表示水桶的数量的信号量。</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t mutex1, mutex2;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t mutex1, mutex2;
 sem_t empty;  <span style="color:#998;font-style:italic">// 水缸中的空位
 </span><span style="color:#998;font-style:italic"></span>sem_t full;   <span style="color:#998;font-style:italic">//水缸中已经放入的水
 </span><span style="color:#998;font-style:italic"></span>sem_t pail;   <span style="color:#998;font-style:italic">//水桶
 </span><span style="color:#998;font-style:italic"></span>
 <span style="color:#458;font-weight:bold">int</span> water <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;  <span style="color:#998;font-style:italic">//水缸中的水量
 </span></code></pre></div><p>小和尚取水：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">get_water</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">get_water</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
   <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
     P(<span style="color:#000;font-weight:bold">&amp;</span>empty);
     P(<span style="color:#000;font-weight:bold">&amp;</span>pail);
@@ -786,7 +786,7 @@ sem_t empty;  <span style="color:#998;font-style:italic">// 水缸中的空位
 </span><span style="color:#998;font-style:italic"></span>  }
 }
 </code></pre></div><p>老和尚喝水：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">use_water</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">use_water</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
   <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
     P(<span style="color:#000;font-weight:bold">&amp;</span>full);
     P(<span style="color:#000;font-weight:bold">&amp;</span>pail);
@@ -803,7 +803,7 @@ sem_t empty;  <span style="color:#998;font-style:italic">// 水缸中的空位
   }
 }
 </code></pre></div><p>main 函数：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
   Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex1, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
   Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>mutex2, <span style="color:#099">0</span>, <span style="color:#099">1</span>);
   Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>empty, <span style="color:#099">0</span>, <span style="color:#099">10</span>);  <span style="color:#998;font-style:italic">//水缸中最多放10桶水
@@ -832,13 +832,13 @@ sem_t empty;  <span style="color:#998;font-style:italic">// 水缸中的空位
 <li>很显然需要四个进程，表示四个人</li>
 <li>信号量：<code>empty</code>表示盘子中还可放的水果数量，<code>organge</code>表示盘子中橘子的数量，<code>apple</code>表示盘子中苹果的数量，<code>mutex</code>是二元信号量，用来互斥的放或取水果。</li>
 </ul>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t empty, orange, apple;
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">sem_t empty, orange, apple;
 sem_t mutex;
 
 <span style="color:#998;font-style:italic">// 盘子中的苹果数和橘子数
 </span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> apple_num <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, orange_num <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
 </code></pre></div><p>四个进程分别如下：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">father</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">father</span>(<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>arg) {
   <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
     P(<span style="color:#000;font-weight:bold">&amp;</span>empty);
     P(<span style="color:#000;font-weight:bold">&amp;</span>mutex);
@@ -884,7 +884,7 @@ sem_t mutex;
   V(<span style="color:#000;font-weight:bold">&amp;</span>empty);
 }
 </code></pre></div><p>main 函数：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
   Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>empty, <span style="color:#099">0</span>, <span style="color:#099">3</span>);  <span style="color:#998;font-style:italic">// 盘子最多放三个水果
 </span><span style="color:#998;font-style:italic"></span>  Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>orange, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
   Sem_init(<span style="color:#000;font-weight:bold">&amp;</span>apple, <span style="color:#099">0</span>, <span style="color:#099">0</span>);

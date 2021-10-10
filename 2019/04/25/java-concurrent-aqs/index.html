@@ -245,12 +245,12 @@ Java并发-目录
 <h2 id="实现">实现</h2>
 <p>同步器的基本思想很直接简洁，用伪代码表示如下：</p>
 <p>acquire</p>
-<pre><code>while (syncronization state does not allow acquire) {
+<pre tabindex="0"><code>while (syncronization state does not allow acquire) {
   enqueue current thread if not already queued;
   possiblly block current thread;
 }
 </code></pre><p>release</p>
-<pre><code>update synchronization state;
+<pre tabindex="0"><code>update synchronization state;
 if (state may premit a blocked thread acuire) {
   unblock one or more queued thread;
 }
@@ -279,7 +279,7 @@ if (state may premit a blocked thread acuire) {
 </blockquote>
 <p>这样我可以用更加详细的伪代码来描述<code>acquire</code>和<code>release</code>，这里只考虑exclusive mode，不可中断的、没有超时功能的情况：</p>
 <p>acquire：</p>
-<pre><code>if (!tryAcquire(arg)) {
+<pre tabindex="0"><code>if (!tryAcquire(arg)) {
   node = create and enqueue new node;
   pred = node's effective predecessor;
   while (pred is not head node || !tryAcquire(arg)) {
@@ -292,13 +292,13 @@ if (state may premit a blocked thread acuire) {
   head = node;
 }
 </code></pre><p>release:</p>
-<pre><code>if (tryRelease(arg) &amp;&amp; head node's signal bit is set) {
+<pre tabindex="0"><code>if (tryRelease(arg) &amp;&amp; head node's signal bit is set) {
   compareAndSet head's signal bit to false;
   unpack head's successor, if one exists
 }s
 </code></pre><h2 id="使用">使用</h2>
 <p>实现一个同步器需要实现下面的方法：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">tryAcquire<span style="color:#000;font-weight:bold">()</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">tryAcquire<span style="color:#000;font-weight:bold">()</span>
 tryRelease<span style="color:#000;font-weight:bold">()</span>
 tryAcquireShared<span style="color:#000;font-weight:bold">()</span>
 tryReleaseShared<span style="color:#000;font-weight:bold">()</span>
@@ -313,7 +313,7 @@ isHeldExclusively<span style="color:#000;font-weight:bold">()</span>
 <p>实现一个同步器最好的设计模式是把功能委托给一个AQS的私有内部子类，而不是直接继承 AQS 来实现（这样会破坏同步器的简洁性，调用者可能会调用 AQS 的其他方法破坏同步状态）。</p>
 </blockquote>
 <h3 id="例子">例子</h3>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">java.util.concurrent.locks.AbstractQueuedSynchronizer</span><span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">java.util.concurrent.locks.AbstractQueuedSynchronizer</span><span style="color:#000;font-weight:bold">;</span>
 
 <span style="color:#998;font-style:italic">/**
 </span><span style="color:#998;font-style:italic"> * @author leer
@@ -350,7 +350,7 @@ isHeldExclusively<span style="color:#000;font-weight:bold">()</span>
 <li>ReentrantLock 有公平锁和非公平锁两种模式：对应的， ReentrantLock 内部有两个 AQS 的子类。（the fair one disabling barging）</li>
 </ul>
 <p>非公平锁的<code>tryAcquire</code>实现：</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">       <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">nonfairTryAcquire</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">       <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">nonfairTryAcquire</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
             <span style="color:#000;font-weight:bold">final</span> Thread current <span style="color:#000;font-weight:bold">=</span> Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentThread</span><span style="color:#000;font-weight:bold">();</span>
             <span style="color:#458;font-weight:bold">int</span> c <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
             <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>c <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
@@ -376,7 +376,7 @@ isHeldExclusively<span style="color:#000;font-weight:bold">()</span>
 </ul>
 <h3 id="semaphore">Semaphore</h3>
 <p><code>Semaphore</code>使用同步状态来保存当前可用许可数量。它重写<code>tryAcquireShared</code>来减少计数来模拟获取资源，如果计数小于 0 则会阻塞线程；重写<code>tryReleaseShared</code>来模拟释放资源。同时它也有公平模式和非公平模式。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">nonfairTryAcquireShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">nonfairTryAcquireShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
             <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(;;)</span> <span style="color:#000;font-weight:bold">{</span>
                 <span style="color:#458;font-weight:bold">int</span> available <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
                 <span style="color:#458;font-weight:bold">int</span> remaining <span style="color:#000;font-weight:bold">=</span> available <span style="color:#000;font-weight:bold">-</span> acquires<span style="color:#000;font-weight:bold">;</span>
@@ -398,7 +398,7 @@ isHeldExclusively<span style="color:#000;font-weight:bold">()</span>
         <span style="color:#000;font-weight:bold">}</span>
 </code></pre></div><h3 id="countdownlatch">CountDownLatch</h3>
 <p>和<code>Semaphore</code>类似，同步状态保存当前的计数值。<code>countDown()</code>调用<code>releaseShared()</code>，<code>await()</code>方法调用<code>acquireShared()</code>，等待计数器到零。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">tryAcquireShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">tryAcquireShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
             <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>getState<span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">?</span> 1 <span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">;</span>
         <span style="color:#000;font-weight:bold">}</span>
 
