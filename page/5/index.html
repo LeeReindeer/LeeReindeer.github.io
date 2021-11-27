@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-cn">
 <head>
-	<meta name="generator" content="Hugo 0.88.1" />
+	<meta name="generator" content="Hugo 0.89.2" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -66,6 +66,48 @@
                 <div class="col-8" id="main">
                     
 <div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/2018/12/02/write-vip-step-by-step1/" title="乞丐版Vi编辑器的实现1-Raw mode">乞丐版Vi编辑器的实现1-Raw mode</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年12月2日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <blockquote>
+<p>参考 <a href="https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html">Entering raw mode</a></p>
+</blockquote>
+<p>这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。</p>
+<h2 id="makefile">Makefile</h2>
+<p>我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#008080">CC</span> <span style="color:#000;font-weight:bold">=</span> gcc
+<span style="color:#008080">CFLAGS</span> <span style="color:#000;font-weight:bold">=</span> -Wall -Wextra -pedantic -std<span style="color:#000;font-weight:bold">=</span>c99 -O3
+
+<span style="color:#900;font-weight:bold">all</span><span style="color:#000;font-weight:bold">:</span> vip
+
+<span style="color:#900;font-weight:bold">debug</span><span style="color:#000;font-weight:bold">:</span>
+	<span style="color:#000;font-weight:bold">$(</span>CC<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">$(</span>CFLAGS<span style="color:#000;font-weight:bold">)</span> vip.c -g -o vipd
+
+<span style="color:#900;font-weight:bold">re</span><span style="color:#000;font-weight:bold">:</span>
+	make clean;make
+
+<span style="color:#900;font-weight:bold">clean</span><span style="color:#000;font-weight:bold">:</span>
+	rm -f vip vipd
+</code></pre></div><p>CFLAGS 里使用 c99 标准；使用<code> -O3</code>进行编译优化，主要是对内联函数进行优化；<code>-Wall -Wextra -pedantic </code>会打印一些额外的警告，对 debug 有帮助。</p>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/2018/12/02/write-vip-step-by-step1/">阅读全文</a></p>
+    </article>
     
     <article class="post">
         <header>
@@ -351,54 +393,6 @@
         <p class="readmore"><a href="https://leer.moe/2018/10/26/hack_deepin/">阅读全文</a></p>
     </article>
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="https://leer.moe/2018/10/18/semaphore/" title="Concurrent with Semaphore">Concurrent with Semaphore</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年10月18日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        <div class="post-content">
-            <h2 id="semaphore">Semaphore</h2>
-<p>Dijkstra 大佬提出了一种解决不同线程之前同步和互斥问题的方法。这种方法就是 PV 操作，它基于 Semaphore（信号量）。</p>
-<p>可以把信号量简单看成一个非负整数，只能使用两种操作来改变它的值，这两种操作就是 P 和 V，用伪代码描述如下（与教材《操作系统教程》上不同，这里的<a href="https://stackoverflow.com/questions/20656295/what-is-general-semaphores-range">信号量不能为负值</a>）。PV 操作的伪代码实现如下：</p>
-<ul>
-<li>
-<p>P(s)</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">P(s) {
-    <span style="color:#000;font-weight:bold">if</span> (p <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span>) {
-     s<span style="color:#000;font-weight:bold">--</span>;
-    } <span style="color:#000;font-weight:bold">else</span> {
-     append this <span style="color:#000;font-weight:bold">thread</span> to list;
-     sleep();
-    }
-}
-</code></pre></div></li>
-<li>
-<p>V(s)</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">V(s) {
-    s<span style="color:#000;font-weight:bold">++</span>;
-    <span style="color:#000;font-weight:bold">if</span> (list is no empty) {
-        list.pop().wakeup();
-    }
-}
-</code></pre></div></li>
-</ul>
-<p>P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。</p>
-        </div>
-        <p class="readmore"><a href="https://leer.moe/2018/10/18/semaphore/">阅读全文</a></p>
-    </article>
-    
     
 
 
@@ -476,6 +470,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://leer.moe/2021/11/27/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
+    </li>
+    
+    <li>
         <a href="https://leer.moe/2021/05/26/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
     </li>
     
@@ -511,10 +509,6 @@
         <a href="https://leer.moe/2020/04/10/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
     </li>
     
-    <li>
-        <a href="https://leer.moe/2019/12/26/final-project-codeflow/" title="Final Project">Final Project</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -538,7 +532,7 @@
     <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
     
     
-    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (12)</a></li>
+    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
     
     
     
@@ -692,6 +686,12 @@
     
     
     <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
     
     
     
