@@ -223,7 +223,7 @@ GitHub 地址
         
         <div class="post-meta">
             <span>|</span>
-            <span class="meta-category">9347 words</span>
+            <span class="meta-category">9518 words</span>
         </div>
         
         
@@ -234,13 +234,16 @@ GitHub 地址
 <p><a href="https://github.com/LeeReindeer/ROS">GitHub 地址</a></p>
 </blockquote>
 <h2 id="我想要怎么的rtos">我想要怎么的RTOS</h2>
-<p>ROS作为一个RTOS（Real-Time Operating System）的实现，它的核心是 scheduler（调度器），负责任务的调度。而其他的系统工具比如： Semaphore、 Queue 都可以在此基础上实现。</p>
+<p>ROS作为一个RTOS（Real-Time Operating System）的实现，它的核心是 scheduler（调度器），负责任务/协程（下文统一使用「任务」来表述）的调度。而其他的系统工具比如： Semaphore、 Queue 都可以在此基础上实现。</p>
 <p>对于嵌入式系统来说，如果需要一个操作系统，那么它应该是轻量级的。因为嵌入式系统的内存通常有限制。对于我来说，去实现一个复杂的，重量级的操作系统，也不太可能。</p>
 <p>所以我的RTOS应该是这样（实际上也确实是这样）：</p>
 <ol>
-<li>轻量：实现  preemtive priority scheduler、semaphore，即任务调度和任务通信</li>
-<li>简单：基于优先队列的<strong>非抢占式</strong>的协程调度器。使用排序链表实现，实现简单。插入O(N)，取出最高优先级元素O(1)。</li>
+<li>轻量：实现 priority-based and cooperative scheduler、semaphore，即任务调度和任务通信</li>
+<li>简单：基于优先队列的<strong>非抢占式</strong>(<a href="https://en.wikipedia.org/wiki/Cooperative_multitasking">Cooperative multitasking</a>)的协程调度器。使用排序链表实现，实现简单。插入O(N)，取出最高优先级元素O(1)。</li>
 </ol>
+<blockquote>
+<p>注意此处 priority-based 和 cooperative 并不冲突。ROS 归根到底是一个 cooperative 调度器，而 priority 仅仅是任务被启动的顺序，也就是说一个低优先级的任务不会被高优先级的无条件抢占（<strong>scheduler never interrupts a process unexpectedly</strong>），除非低优先级任务<strong>主动</strong>让出CPU时间（<strong>unless processes voluntarily yield control periodically or when idle or logically blocked</strong>）。</p>
+</blockquote>
 <h2 id="需求分析">需求分析</h2>
 <p>嵌入式系统上真的需要操作系统吗？或者说任务调度有什么优点？</p>
 <p>回答这个问题之前，我们先回想一下日常使用的手机，是不是都搭载了一个系统（比如 Android 或者 iOS），有了操作系统我们可以一边听歌一边聊天，也就是 Multitasking。</p>
@@ -407,7 +410,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span>blocked_tcb;
 }
 </code></pre></div><h3 id="上下文是什么">上下文是什么？</h3>
 <p>在开始初始化任务的“上下文”之前，我们先介绍一下在ROS中上下文指的是什么。</p>
-<p>ROS 为每个任务都单独分配一个栈，而程序（函数）是运行在栈上的，那么它的上下就是栈了。</p>
+<p>ROS 为每个任务都单独分配一个栈，而程序（函数）是运行在栈上的，那么它的上下文就是栈（一块连续的内存空间）。</p>
 <p>栈上都有些什么？函数运行过程中，比如我们想要相加两个数，首先这两个数会被存放在寄存器上，然后 CPU 对他们进行计算，再将结果保存在寄存器中。函数的运行实际上就是内存（栈）、寄存器、CPU三者的交互。</p>
 <p>如果我们要打断一个函数的运行，而去运行另一个函数（将系统栈指针指向另一个函数的入口）。因为另一个函数也要使用寄存器，所以我们需要在栈上保存寄存器中的值。</p>
 <h3 id="初始化上下文">初始化上下文</h3>
@@ -469,7 +472,7 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span>blocked_tcb;
 </span><span style="color:#998;font-style:italic"></span>  ros_schedule();
 }
 </code></pre></div><h2 id="任务调度算法">任务调度算法</h2>
-<p>ROS采用preemtive priority-based和Round-robin的调度算法，代码中有三个地方会调用scheduler：</p>
+<p>ROS采用 priority-based 和 Round-robin的调度算法，代码中有三个地方会调用scheduler：</p>
 <ul>
 <li>
 <p>Timer ISR 中周期性调用 scheduler</p>
@@ -959,7 +962,7 @@ ROS_TCB task2;
   </div>
   <footer id="footer">
     <div class="container">
-        &copy; 2021 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
+        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
         Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
         <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
         
