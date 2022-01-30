@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Posts | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="Posts - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
+    
+    
+    <meta name="Keywords" content="[LeeReindeer Hugo even]">
+    <meta name="description"
+        content="">
+    
+    <meta name="author" content="LeeReindeer">
+    <meta property="og:url" content="https://leer.moe/post/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    
+    <link rel="alternate" type="application/rss+xml" href="https://leer.moe/post/index.xml" title="LeeReindeer's blog" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/" title="Home">Home</a>
+                    
+                    <a class="current" href="https://leer.moe/post/" title="Archives">Archives</a>
+                    
+                    <a  href="https://leer.moe/tags/" title="Tags">Tags</a>
+                    
+                    <a  href="https://leer.moe/categories/" title="Categories">Categories</a>
+                    
+                    <a  href="https://leer.moe/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/write-vip-step-by-step1/" title="乞丐版Vi编辑器的实现1-Raw mode">乞丐版Vi编辑器的实现1-Raw mode</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年12月2日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <blockquote>
+<p>参考 <a href="https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html">Entering raw mode</a></p>
+</blockquote>
+<p>这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。</p>
+<h2 id="makefile">Makefile</h2>
+<p>我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="nv">CC</span> <span class="o">=</span> gcc
+<span class="nv">CFLAGS</span> <span class="o">=</span> -Wall -Wextra -pedantic -std<span class="o">=</span>c99 -O3
+
+<span class="nf">all</span><span class="o">:</span> <span class="n">vip</span>
+
+<span class="nf">debug</span><span class="o">:</span>
+	<span class="k">$(</span>CC<span class="k">)</span> <span class="k">$(</span>CFLAGS<span class="k">)</span> vip.c -g -o vipd
+
+<span class="nf">re</span><span class="o">:</span>
+	make clean<span class="p">;</span>make
+
+<span class="nf">clean</span><span class="o">:</span>
+	rm -f vip vipd
+</code></pre></td></tr></table>
+</div>
+</div><p>CFLAGS 里使用 c99 标准；使用<code> -O3</code>进行编译优化，主要是对内联函数进行优化；<code>-Wall -Wextra -pedantic </code>会打印一些额外的警告，对 debug 有帮助。</p>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/write-vip-step-by-step1/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/write-vip-step-by-step0/" title="乞丐版Vi编辑器的实现0-想法">乞丐版Vi编辑器的实现0-想法</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年12月1日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            逛 GitHub 的时候发现了一个大概几百行 C 代码实现的命令行编辑器，但是看了一些代码，感觉好垃圾。于是 Google 一下，发现一个Build Your Own Text Editor的教程
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/write-vip-step-by-step0/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/csapp_data_lab/" title="CSAPP Data Lab 思路和笔记">CSAPP Data Lab 思路和笔记</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年11月26日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <p><a href="http://csapp.cs.cmu.edu/3e/labs.html">Data Lab</a><em>[Updated 11/2/18]</em></p>
+<blockquote>
+<p>11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。</p>
+<p>肝了两天还是没有全部做出来，之前很以为很简单呢（</p>
+<p>最近也终于买了 CS:APP3e 英文版，配合 CMU 的<a href="https://www.bilibili.com/video/av20304787">课程视频</a>食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（</p>
+<p>解题的思路一般会写在注释里的。</p>
+</blockquote>
+<h2 id="bitxor">bitXor</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*s
+</span><span class="cm"> * bitXor - x^y using only ~ and &amp;
+</span><span class="cm"> *   Example: bitXor(4, 5) = 1
+</span><span class="cm"> *   Legal ops: ~ &amp;
+</span><span class="cm"> *   Max ops: 14
+</span><span class="cm"> *   Rating: 1
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">bitXor</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// 德摩根定律
+</span><span class="c1"></span>  <span class="c1">// a xor b = (~a | ~b) &amp; (a | b)
+</span><span class="c1"></span>  <span class="c1">// = ~(a &amp; b) &amp; ~(~a &amp; ~b)
+</span><span class="c1"></span>  <span class="k">return</span> <span class="o">~</span><span class="p">(</span><span class="o">~</span><span class="n">x</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">y</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。</p>
+<p>利用的性质主要是：</p>
+<ul>
+<li>a ^ b = (~a | ~b) &amp; (a | b)</li>
+<li>(~a | ~b) = ~(a &amp; b)</li>
+</ul>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/csapp_data_lab/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/springboot-https/" title="Spring Boot项目部署之开启HTTPS">Spring Boot项目部署之开启HTTPS</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年11月16日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            迫于课设，完成了对 LightBlog 的重构，使用 Spring Boot 和 SSM 框架，今晚突然想要支持一下 HTTPS（小绿锁）。 差不多折腾了一小时，现在使用的是下面这种方案（又不是
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/springboot-https/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/android_fundamental_toc/" title="【Android 基础】学习计划">【Android 基础】学习计划</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年11月12日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <blockquote>
+<p>准备春招，重温 Android</p>
+</blockquote>
+<p>这是一篇接下来的学习计划，使用的教程是<a href="https://developer.android.com/courses/fundamentals-training/toc-v2#top_of_page">Google Training courses</a>。基本上是按着 CodeLab 一步一步做下来，CodeLab 里用的是 Java，我用的 Kotlin 。会对期间遇到问题和编程方法进行总结，发布在 <a href="https://blog.csdn.net/lreindeer363">CSDN</a>。</p>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/android_fundamental_toc/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/spring_aop/" title="【Spring 揭秘（二）】Spring AOP">【Spring 揭秘（二）】Spring AOP</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年11月10日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <h2 id="术语">术语</h2>
+<p>术语不是为了限制你的设计，而是借此可以更方便的讨论和思考这个问题。这是我早上在《游戏设计要则探秘》上看的一句话，当然术语也不能华而不实，最好做到顾名思义或指出本质。</p>
+<p>在使用 AOP 之前，我们需要了解AOP涉及的相关概念。</p>
+<ul>
+<li>
+<p>JoinPint：AOP的功能模块要植入到OOP的模块中，需要知道在哪些执行点上进行植入，这些执行点就是JoinPoint。JoinPoint可以是方法的调用，字段设置，异常处理执行等等。</p>
+</li>
+<li>
+<p>PointCut：PointCut是对JoinPoint的表现形式，可以直接用方法名，正则表达式还有特定的PointCut表述语言。</p>
+</li>
+<li>
+<p>Advice：Advice就是横切点功能的载体。包括，Before Advice，AAfter Advice，Around Advice。这三个切入的时间不同，可顾名思义。</p>
+</li>
+<li>
+<p>Aspect：Aspect可以理解为切面，它可以包含多个PointCut和Advice。</p>
+</li>
+</ul>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/spring_aop/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/spring_bean/" title="【Spring 揭秘（一）】Spring Bean DI and Instantiating">【Spring 揭秘（一）】Spring Bean DI and Instantiating</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年11月10日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <h2 id="cheatsheet">cheatsheet</h2>
+<p>如果你赶时间，可以只看这一节的内容。</p>
+<h3 id="bean-的实例化方式">bean 的实例化方式</h3>
+<ul>
+<li>XML 配置时
+<ul>
+<li>工厂方法</li>
+<li>静态工厂</li>
+<li>构造函数</li>
+</ul>
+</li>
+<li>注解方式</li>
+</ul>
+<blockquote>
+<p>关于注解方式：</p>
+<ol>
+<li>@Component：可以用于注册所有bean</li>
+<li>@Repository：主要用于注册dao层的bean</li>
+<li>@Controller：主要用于注册控制层的bean</li>
+<li>@Service：主要用于注册服务层的bean</li>
+</ol>
+</blockquote>
+<h3 id="spring-bean-的注入方式">Spring bean 的注入方式</h3>
+<ul>
+<li>XML配置
+<ul>
+<li>setter 方法注入</li>
+<li>构造函数注入</li>
+<li>工厂方法/静态工厂</li>
+</ul>
+</li>
+<li>注解方式注入（<code>@AutoWired</code>）</li>
+</ul>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/spring_bean/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/mybatis_datetime/" title="Map DateTime to Java Date in MyBatis">Map DateTime to Java Date in MyBatis</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年11月7日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            问题 最近在用 Spring Boot 重写 LightBlog，查询到的博客的 Date 属性的日期正常，但是时间始终为 00:00:00。 resultMap 映射如下： 1 2 3 4 5 6 7 8 9 10 &lt;resultMap id=&#34;blogMap&#34;
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/mybatis_datetime/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/fuck_qiniu/" title="【博客事记】停用七牛云图床，更换图片链接">【博客事记】停用七牛云图床，更换图片链接</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年10月28日
+        </date>
+        
+        <div class="post-content">
+            邮箱里发来一份邮件：测试域名回收通知&ndash;七牛云服务，一直没在意。今天发现之前的博客里的图片全部失效了，当然这也无可厚非，毕竟免费的
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/fuck_qiniu/">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="https://leer.moe/post/hack_deepin/" title="【瞎折腾】Hack Deepin Desktop Environment">【瞎折腾】Hack Deepin Desktop Environment</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年10月26日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4'>实验室</a></span>
+            
+        </div>
+        
+        <div class="post-content">
+            <h2 id="我想要什么">我想要什么？</h2>
+<p>初来乍到 Deepin，界面不可谓不美观。试用不久就发现一个不爽的地方，键盘快捷方式太少了，特别是没有控制窗口停靠贴标的快捷方式，根本就没有这个选项。</p>
+<p>在官方论坛里搜索一番，<code>deepin-wm</code>的 commit message 中有一条 <code>:feat: support interactive tiling</code>，这个新功能在<a href="https://bbs.deepin.org/forum.php?mod=viewthread&amp;tid=155171">官方论坛</a>中也有介绍：</p>
+<blockquote>
+<p>1、当一个窗口拖到边界分屏的时候；
+2、剩下的应用窗口会全部平铺展示；
+3、这时候点击剩下的应用窗口，会自动放置在另一半屏幕，方便左右对比；</p>
+</blockquote>
+        </div>
+        <p class="readmore"><a href="https://leer.moe/post/hack_deepin/">阅读全文</a></p>
+    </article>
+    
+    
+    
+
+
+
+<ol class="page-navigator">
+    
+    <li class="prev">
+        <a href="https://leer.moe/post/page/4/">上一页</a>
+    </li>
+    
+
+    
+    <li >
+        <a href="https://leer.moe/post/">1</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/post/page/2/">2</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/post/page/3/">3</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/post/page/4/">4</a>
+    </li>
+    
+    <li  class="current">
+        <a href="https://leer.moe/post/page/5/">5</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/post/page/6/">6</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/post/page/7/">7</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/post/page/8/">8</a>
+    </li>
+    
+    <li >
+        <a href="https://leer.moe/post/page/9/">9</a>
+    </li>
+    
+
+    
+    <li class="next">
+        <a href="https://leer.moe/post/page/6/">下一页</a>
+    </li>
+    
+</ol>
+
+
+
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/crime_and_punishment/" title="「罪与罚」读后感">「罪与罚」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pandemic/" title="Human, Animal, Pandemic">Human, Animal, Pandemic</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href="/categories">分类</a></h3>
+<ul class="widget-list">
+    
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
+    
+    
+    
+    <li><a href="#">未分类
+            (3)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+
+
+
+
+
+
+
+
+<div class="tagcloud">
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
+        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+    <div class="container" id="showDays"></div>
+</footer>
+<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+
+
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+<script src='/js/sitedate.js'></script>
+
+
+
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
+
+</body>
+
+</html>

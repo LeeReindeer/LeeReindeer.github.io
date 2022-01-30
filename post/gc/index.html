@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Java垃圾收集器与内存分配策略 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 最近在看《深入理解Java虚拟机:JVM高级特性与最佳实践》这本书,觉得有必要记录一下. 如无说明,则图片是我用Google Drawings制作的, under CC BY-NC-SA 3.0 CN License.
+ Java运行时内存 先上图
+虽然Java中没有直接(明显)的指针操作,但是在内部的实现里用的还是指针的.在访问对象的过程中,有两种方式可以实现:句柄访问,直接指针.对象实际上是一个reference类型的数据,其中存储的是他自己的地址,通过句柄访问则是句柄的地址.
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/gc/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Java垃圾收集器与内存分配策略" />
+<meta property="og:description" content="
+最近在看《深入理解Java虚拟机:JVM高级特性与最佳实践》这本书,觉得有必要记录一下.
+如无说明,则图片是我用Google Drawings制作的,  under CC BY-NC-SA 3.0 CN License.
+
+Java运行时内存
+先上图
+
+虽然Java中没有直接(明显)的指针操作,但是在内部的实现里用的还是指针的.在访问对象的过程中,有两种方式可以实现:句柄访问,直接指针.对象实际上是一个reference类型的数据,其中存储的是他自己的地址,通过句柄访问则是句柄的地址." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/gc/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-09-24T20:31:21+00:00" />
+<meta property="article:modified_time" content="2017-09-24T20:31:21+00:00" />
+
+<meta itemprop="name" content="Java垃圾收集器与内存分配策略">
+<meta itemprop="description" content="
+最近在看《深入理解Java虚拟机:JVM高级特性与最佳实践》这本书,觉得有必要记录一下.
+如无说明,则图片是我用Google Drawings制作的,  under CC BY-NC-SA 3.0 CN License.
+
+Java运行时内存
+先上图
+
+虽然Java中没有直接(明显)的指针操作,但是在内部的实现里用的还是指针的.在访问对象的过程中,有两种方式可以实现:句柄访问,直接指针.对象实际上是一个reference类型的数据,其中存储的是他自己的地址,通过句柄访问则是句柄的地址."><meta itemprop="datePublished" content="2017-09-24T20:31:21+00:00" />
+<meta itemprop="dateModified" content="2017-09-24T20:31:21+00:00" />
+<meta itemprop="wordCount" content="2064">
+<meta itemprop="keywords" content="Java,JVM," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java垃圾收集器与内存分配策略"/>
+<meta name="twitter:description" content="
+最近在看《深入理解Java虚拟机:JVM高级特性与最佳实践》这本书,觉得有必要记录一下.
+如无说明,则图片是我用Google Drawings制作的,  under CC BY-NC-SA 3.0 CN License.
+
+Java运行时内存
+先上图
+
+虽然Java中没有直接(明显)的指针操作,但是在内部的实现里用的还是指针的.在访问对象的过程中,有两种方式可以实现:句柄访问,直接指针.对象实际上是一个reference类型的数据,其中存储的是他自己的地址,通过句柄访问则是句柄的地址."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Java垃圾收集器与内存分配策略</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-09-24 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 2064 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#idea设置">IDEA设置</a></li>
+    <li><a href="#参数介绍">参数介绍</a></li>
+  </ol>
+
+  <ol>
+    <li><a href="#根搜索算法">根搜索算法</a></li>
+    <li><a href="#分代算法">分代算法</a></li>
+    <li><a href="#标记-清理">标记-清理</a></li>
+    <li><a href="#复制">复制</a></li>
+    <li><a href="#标记-整理">标记-整理</a></li>
+  </ol>
+
+  <ol>
+    <li><a href="#minor-gc-和-full-gc">Minor GC 和 Full GC</a></li>
+    <li><a href="#useserialgc">UseSerialGC</a></li>
+    <li><a href="#useparallelgc">UseParallelGC</a></li>
+  </ol>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2017-09-24T20:31:21" title="September 24, 2017">September 24, 2017</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
+<p>最近在看《深入理解Java虚拟机:JVM高级特性与最佳实践》这本书,觉得有必要记录一下.
+如无说明,则图片是我用<a href="#">Google Drawings</a>制作的,  under <code>CC BY-NC-SA 3.0 CN</code> License.</p>
+</blockquote>
+<h1 id="java运行时内存">Java运行时内存</h1>
+<p>先上图</p>
+<p><img src="/images/java_runtime_mem.png" alt="java_runtime_memory"></p>
+<p>虽然Java中没有直接(明显)的指针操作,但是在内部的实现里用的还是指针的.在访问对象的过程中,有两种方式可以实现:<strong>句柄访问</strong>,<strong>直接指针</strong>.对象实际上是一个reference类型的数据,其中存储的是他自己的地址,通过句柄访问则是句柄的地址.</p>
+<p><img src="/images/two_Method_object.png" alt="tow-method-to1"></p>
+<p><img src="/images/two_Method_object2.png" alt="two-method-to2"></p>
+<h1 id="vm-options">VM options</h1>
+<h2 id="idea设置">IDEA设置</h2>
+<p>书中需要设置各种虚拟机参数,书里用的是<code>Eclipse</code>,这里介绍一下IDEA的怎么设置.</p>
+<p>点击导航栏 <code>Run</code> -&gt; <code>Edit Configurations</code> -&gt; <code>VM options</code>.这样就可以对不同的main方法设置不同的参数了.</p>
+<p><img src="/images/vm_options1.png" alt="vmoptions"></p>
+<h2 id="参数介绍">参数介绍</h2>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-XX:+PrintGC</td>
+<td>打印 GC 信息</td>
+</tr>
+<tr>
+<td>-XX:+PrintGCDetails</td>
+<td>打印 GC 信息&hellip;</td>
+</tr>
+<tr>
+<td>-XX:+PrintGCTimeStamps</td>
+<td>打印 GC 信息..</td>
+</tr>
+<tr>
+<td>-XX:+UseConcMarkSweepGC</td>
+<td>使用 ParNew + CMS + Serial Old(备用)进行内存收集</td>
+</tr>
+<tr>
+<td>-XX:+UseParallelGC</td>
+<td>在 Server 模式下的默认值,使用 Parallel Scavenge + Serial Old.</td>
+</tr>
+<tr>
+<td>-XX:+UseSerialGC</td>
+<td>在 Client 模式下的默认值,使用 Serial Old + Serial 的组合收集器</td>
+</tr>
+<tr>
+<td>-XX:SurvivorRatio=</td>
+<td>Eden 区与 Survivor 区的大小比值</td>
+</tr>
+<tr>
+<td>-Xmn</td>
+<td>新生代大小</td>
+</tr>
+<tr>
+<td>-Xms</td>
+<td>初始堆大小</td>
+</tr>
+<tr>
+<td>-Xmx</td>
+<td>最大堆大小</td>
+</tr>
+</tbody>
+</table>
+<h1 id="垃圾回收算法">垃圾回收算法</h1>
+<h2 id="根搜索算法">根搜索算法</h2>
+<blockquote>
+<p>根搜索算法应该不算是垃圾回收算法,而是用来判断对象是否存活的算法.我为了方便就放到这里了.</p>
+</blockquote>
+<p>基本思路就是通过一系列 <code>GC Roots</code> 的对象作为起点,从这些节点开始进行搜索.如果有对象是 <code>GC Roots</code> 不能到达的,就将对象标记为可清理的.</p>
+<p><img src="/images/gc_roots.png" alt="gc_roots"></p>
+<p>那么什么样的对象可以成为GC Roots呢?</p>
+<ul>
+<li>虚拟机栈中局部变量引用的对象</li>
+<li>方法区中的类静态属性引用的对象</li>
+<li>方法区中的常量引用的对象</li>
+<li>本地方法栈(Native Method Stack)中的引用的对象.</li>
+</ul>
+<h2 id="分代算法">分代算法</h2>
+<p>虚拟机大多采用这种分代收集的算法,也就是根据对象存活的周期将内存划分几个区域.一把把Java Heap 分为新生代和老年代.对不同的年代,使用不同的回收方法.</p>
+<p>新生代一般采用复制算法.</p>
+<p>老年代一般采用标记-清理 或 标记-整理 算法.</p>
+<h2 id="标记-清理">标记-清理</h2>
+<blockquote>
+<p>图片来自<a href="http://blog.csdn.net/stven_king/article/details/77602255">CSDN</a>
+<img src="http://upload-images.jianshu.io/upload_images/1319879-9721d8b65befd938.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+</blockquote>
+<p>顾名思义,这个算法分成两部分:标记和清理.标记部分就是用的根搜索算法.在标记后,统一回收被标记的对象.从图中可以看出,清理后,留下了大量的不连续的内存碎片.这可能会导致无法分配大对象,而触发另一次的GC.</p>
+<h2 id="复制">复制</h2>
+<blockquote>
+<p>图片来自<a href="http://blog.csdn.net/stven_king/article/details/77602255">CSDN</a>
+<img src="http://upload-images.jianshu.io/upload_images/1319879-884ab0c3cf30bb13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+</blockquote>
+<p>复制(Copying)可以解决标记-清理算法产生大量内存碎片的问题.</p>
+<p>它将可用内存分为等大的两块,每次使用其中的一块,当这一块内存用完时,将其中还存活的对象移到另一块内存中,然后一次性就把已使用的一块内存清理掉.</p>
+<p>新生代一般采用这种算法,只不过,虚拟机里的并不是按1:1来分配内存的,而是分为一块大的Eden,和两块小的Survivor.每次使用Eden和一块Survivor,回收时将Eden中和已使用的一块
+Survivor中的存活对象,移到另一块Survivor中(当然,在对象存活率高的时候,这一块Survivor可能不够用,那么就会依赖老年代了,(下面将讨论这个问题)),最后进行清理.</p>
+<p>一般的,Eden和Survivor的比例是8:1;也就是说新生代的可用内存是整个新生代容量的90%(=80% + 10%).可以通过 <code>-XX:SurvivorRatio</code> 来设置比例.</p>
+<h2 id="标记-整理">标记-整理</h2>
+<blockquote>
+<p>图片来自<a href="http://blog.csdn.net/stven_king/article/details/77602255">CSDN</a>
+<img src="http://upload-images.jianshu.io/upload_images/1319879-335a1d8911058ae5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+</blockquote>
+<p>那么还是顾名思义&hellip;</p>
+<p>标记-整理(Mark-Compact)分为两个部分:标记和整理,标记部分和&quot;标记-清理&quot;算法一样,整理就是将存活的对象都整理到一边,而后清理.</p>
+<h1 id="内存回收策略">内存回收策略</h1>
+<p>图片来自<a href="#">网络</a>
+`
+<img src="/images/heap.png" alt=""></p>
+<ul>
+<li>
+<p>对象优先在Eden分配</p>
+</li>
+<li>
+<p>大对象直接进老年代</p>
+</li>
+<li>
+<p>长期存活的对象将进入老年代</p>
+</li>
+</ul>
+<h1 id="垃圾收集器">垃圾收集器</h1>
+<h2 id="minor-gc-和-full-gc">Minor GC 和 Full GC</h2>
+<ul>
+<li>
+<p>新生代GC(Minor GC)</p>
+</li>
+<li>
+<p>老年代GC(Full GC / Major GC)</p>
+</li>
+</ul>
+<p>这样一标注应该就清楚多了.</p>
+<p>下面主要通过比较两种参数情况下的垃圾回收机制进行分析.</p>
+<p>测试代码:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">ONEMB</span> <span class="o">=</span> <span class="n">1024</span> <span class="o">*</span> <span class="n">1024</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kt">byte</span><span class="o">[]</span> <span class="n">allocation1</span><span class="o">,</span> <span class="n">allocation2</span><span class="o">,</span> <span class="n">allocation3</span><span class="o">,</span> <span class="n">allocation4</span><span class="o">,</span> <span class="n">allocation5</span><span class="o">;</span>
+    <span class="n">allocation1</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
+    <span class="n">allocation2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
+    <span class="n">allocation3</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
+    <span class="n">allocation4</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">4</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
+    <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="useserialgc">UseSerialGC</h2>
+<p>参数设置为:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">-Xms20m
+-Xmx20m
+-Xmn10m
+-XX:+UseSerialGC
+-XX:SurvivorRatio=8
+-XX:+PrintGC
+-XX:+PrintGCTimeStamps
+-XX:+PrintGCDetails
+</code></pre></td></tr></table>
+</div>
+</div><p>此时的GC日志:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">0.103: [GC (Allocation Failure) 0.103: [DefNew: 8027K-&gt;358K(9216K), 0.0034545 secs] 8027K-&gt;6502K(19456K), 0.0034934 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+Heap
+ def new generation   total 9216K, used 4620K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
+  eden space 8192K,  52% used [0x00000000fec00000, 0x00000000ff029918, 0x00000000ff400000)
+  from space 1024K,  34% used [0x00000000ff500000, 0x00000000ff5598c8, 0x00000000ff600000)
+  to   space 1024K,   0% used [0x00000000ff400000, 0x00000000ff400000, 0x00000000ff500000)
+ tenured generation   total 10240K, used 6144K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
+   the space 10240K,  60% used [0x00000000ff600000, 0x00000000ffc00030, 0x00000000ffc00200, 0x0000000100000000)
+ Metaspace       used 3235K, capacity 4496K, committed 4864K, reserved 1056768K
+  class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
+</code></pre></td></tr></table>
+</div>
+</div><p>注意到,新生代占用了差不多(大概其他的使用吧)4MB,而<strong>老年代却是6MB</strong>.这是为什么呢?</p>
+<p>在给 <code>allocation4</code> 分配内存的时候,Eden(8MB)已经使用了6MB,因此无法分配.发生了一次Minor GC,而三个2MB的对象(都是存活的)无法一次性放入另一个Survivor(1MB)里.所以就要依赖老年代了.把这三个对象移到了老年代.</p>
+<p>这次的GC结束后,4MB的 <code>allocation4</code> 就可以分配到Eden里了.</p>
+<h2 id="useparallelgc">UseParallelGC</h2>
+<p>参数设置为:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">-Xms20m
+-Xmx20m
+-Xmn10m
+-XX:+UseParallelGC
+-XX:SurvivorRatio=8
+-XX:+PrintGC
+-XX:+PrintGCTimeStamps
+-XX:+PrintGCDetails
+</code></pre></td></tr></table>
+</div>
+</div><p>GC日志为:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Heap
+ PSYoungGen      total 9216K, used 8028K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
+  eden space 8192K, 97% used [0x00000000ff600000,0x00000000ffdd7090,0x00000000ffe00000)
+  from space 1024K, 0% used [0x00000000fff00000,0x00000000fff00000,0x0000000100000000)
+  to   space 1024K, 0% used [0x00000000ffe00000,0x00000000ffe00000,0x00000000fff00000)
+ ParOldGen       total 10240K, used 4096K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
+  object space 10240K, 40% used [0x00000000fec00000,0x00000000ff000010,0x00000000ff600000)
+ Metaspace       used 3251K, capacity 4496K, committed 4864K, reserved 1056768K
+  class space    used 362K, capacity 388K, committed 512K, reserved 1048576K
+</code></pre></td></tr></table>
+</div>
+</div><p>通过日志可以看到,老年代的内存占用为 <code>4096kb=1024*4</code> .可以推测4MB的<em>大</em>对象直接进入了老年代.因此也没有触发GC.(对不对就不知道了(:3」∠❀)_)</p>
+<p>不过新生代占用了8028kb(7.8MB差不多),加起来11.8MB比对象总的10MB大啊(逃)&hellip;</p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-09-24
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/jvm/">JVM</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/wechat_to_telegram/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">EFB:Receive Wechat messages on Telegram</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/google-java-style-guide/">
+            <span class="next-text nav-default">Google Java 代码规范</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+
+
+
+
+
+
+<script src="/js/sitedate.js"></script>
+
+
+</body>
+</html>

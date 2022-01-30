@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>操作系统-银行家算法 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 这篇笔记主要介绍死锁避免中的银行家算法的实现。同样是参考书上的例子和使用C&#43;&#43;实现的。作为新年的第一篇文章🎉，我也尝试了一些新鲜的东西，比如Markdown中数学公式，同时为算法找了两个测试用例进行测试。
+写文章耗时：1 hour
+编码：1 hour
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/os-banker-algorithm/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="操作系统-银行家算法" />
+<meta property="og:description" content="
+这篇笔记主要介绍死锁避免中的银行家算法的实现。同样是参考书上的例子和使用C&#43;&#43;实现的。作为新年的第一篇文章🎉，我也尝试了一些新鲜的东西，比如Markdown中数学公式，同时为算法找了两个测试用例进行测试。
+写文章耗时：1 hour
+编码：1 hour
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/os-banker-algorithm/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-01-01T19:31:21+00:00" />
+<meta property="article:modified_time" content="2019-01-01T19:31:21+00:00" />
+
+<meta itemprop="name" content="操作系统-银行家算法">
+<meta itemprop="description" content="
+这篇笔记主要介绍死锁避免中的银行家算法的实现。同样是参考书上的例子和使用C&#43;&#43;实现的。作为新年的第一篇文章🎉，我也尝试了一些新鲜的东西，比如Markdown中数学公式，同时为算法找了两个测试用例进行测试。
+写文章耗时：1 hour
+编码：1 hour
+"><meta itemprop="datePublished" content="2019-01-01T19:31:21+00:00" />
+<meta itemprop="dateModified" content="2019-01-01T19:31:21+00:00" />
+<meta itemprop="wordCount" content="2508">
+<meta itemprop="keywords" content="OS,算法," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="操作系统-银行家算法"/>
+<meta name="twitter:description" content="
+这篇笔记主要介绍死锁避免中的银行家算法的实现。同样是参考书上的例子和使用C&#43;&#43;实现的。作为新年的第一篇文章🎉，我也尝试了一些新鲜的东西，比如Markdown中数学公式，同时为算法找了两个测试用例进行测试。
+写文章耗时：1 hour
+编码：1 hour
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">操作系统-银行家算法</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-01-01 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 2508 words </span>
+          <span class="more-meta"> 6 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#数据结构">数据结构</a></li>
+    <li><a href="#算法实现">算法实现</a>
+      <ol>
+        <li><a href="#自然语言描述">自然语言描述</a></li>
+        <li><a href="#c-实现">C++ 实现</a></li>
+        <li><a href="#测试用例">测试用例</a></li>
+      </ol>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ol>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2019-01-01T19:31:21" title="January 1, 2019">January 1, 2019</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
+<p>这篇笔记主要介绍<strong>死锁避免中的银行家算法</strong>的实现。同样是参考书上的例子和使用<a href="https://gist.github.com/LeeReindeer/a0a78d29d2940dd5a958da67f0db30e8">C++实现</a>的。作为新年的第一篇文章🎉，我也尝试了一些新鲜的东西，比如Markdown中数学公式，同时为算法找了两个测试用例进行测试。</p>
+<p>写文章耗时：1 hour</p>
+<p>编码：1 hour</p>
+</blockquote>
+<h2 id="简介">简介</h2>
+<p>死销避免动态地确定是否分配资源给提出请求的进程。如果一个进程当前请求资源会导致死锁，系统将拒绝启动此进程；如果一个资源分配会导致系统下一步死锁，便拒绝本次分配。</p>
+<p>算法大师 Dijkstra 提出了银行家算法&mdash;一种死锁避免的实现：假定小城镇银行家拥有资金数量为∑，被N个客户共享，银行家对客户提出下列约束条件:每个客户必须预先说明所要的最大资金量；每个客户每次提出部分资金量的申请并获得分配；如果银行满足客户对资金的最大需求量，那么客户在资金运作后，应在有限时间内全部归还银行。</p>
+<p>只要客户遵守上述约束条件，银行家将保证做到：若一个客户所要的最大资金量不超过∑，银行一定会接纳此客户并满足其资金需求；银行在收到一个客户的资金申请时，可能会因资金不足而让客户等待，但保证在有限时间内让客户获得资金。</p>
+<p>在银行家算法中，客户可看做进程，资金可看做资源，银行家可看做操作系统。银行家算法虽然能避免死锁，但是在操作系统中实际应用时却很难实现，因为要求所涉及的进程不相交，即不能有同步要求，而且要知道进程的总数和每个进程请求的最大资源数，这些都很难办到。</p>
+<blockquote>
+<p>既然很难实际应用，那么这个算法的意义何在？当然它现在对我来说最重要的意义就是应付考试😂；等到考试过去之后，我可能会说它的思想很重要，即使不能实际应用。</p>
+</blockquote>
+<h2 id="数据结构">数据结构</h2>
+<p>对于一个拥有 n 个进程和 m 种不同资源的系统，定义以下的向量和矩阵：</p>
+<ul>
+<li>系统中每类资源总数向量
+<code>Resource = [R1, R2, ..., Rm]</code></li>
+<li>系统中每类资源当前可用数向量
+<code>Available = [V1, V2, ... ,Vm]</code></li>
+<li>每个进程对各类资源的最大需求矩阵 <code>Claim[i, j] = k</code>，表示进程 P，需要 R 类资源的最大数目为 k 。</li>
+<li>每个进程已占有各类资源数量矩阵 <code>Allocation[i, j] = k</code>示进程 P，已占用 R 类资源 k 个。</li>
+<li>每个进程尚需各类资源数量矩阵<code>Need[i, j]</code>，若 <code>Need[i, j] = k</code>，表示进程P 需 R类资源k个。<strong>计算 Need 数组可以使用：<code>Need[i, j]＝ Claim[i, j] -Allocation[i, j]</code></strong></li>
+<li>每个进程当前申请各类资源数量矩阵 <code>Request[i, j] = k</code>，表示进程 P 当前申请R类资源k个。</li>
+</ul>
+<p>对应在 C++ 中的定义如下，在这里向量和矩阵其实就是一维数组和二维数组：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="n">resource</span><span class="p">[</span><span class="n">MAX_RESOURCE</span><span class="p">],</span> <span class="n">available</span><span class="p">[</span><span class="n">MAX_RESOURCE</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">allocation</span><span class="p">[</span><span class="n">THREAD_NUM</span><span class="p">][</span><span class="n">MAX_RESOURCE</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">claim</span><span class="p">[</span><span class="n">THREAD_NUM</span><span class="p">][</span><span class="n">MAX_RESOURCE</span><span class="p">],</span> <span class="n">need</span><span class="p">[</span><span class="n">THREAD_NUM</span><span class="p">][</span><span class="n">MAX_RESOURCE</span><span class="p">];</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="算法实现">算法实现</h2>
+<p>当前系统状态是安全的，当且仅当存在一个进程序列 <code>P0，P2，…，Pn-1</code>，对进程 <code>P(k=0, 2, …，n - 1)</code>满足公式（第一次尝试在 Markdown 里写数学公式 🐱）：</p>
+<p>$$Need[k, i] ≤  Available[i] +\sum_{j=0}^{k-1}Allocation[j, i] (i = 0,&hellip;,m-1;k=1,&hellip;, n-1)$$</p>
+<p>这个序列就称为安全序列。其中，公式左边表示进程P尚缺少的资源，$Available[i]$ 即 $V_i$ 是系统尚可用于分配且为P所想要的那类资源数，$Alocation[j, i]$ 表示排在进程 $P_k$ 之前的所有进程所占用的P所需要的资源总数。显然，进程P所需资源若不能立即被满足，那么在所有 $P_{j=0, 1,…,k-1}$ 运行完成后可以满足，然后 P 也能获得资源以完成任务；当 $P_k$ 释放全部资源后，$P_{k+1}$ 也能获得资源以完成任务。如此下去，直到最后一个进程完成任务，从该状态起按照这个进程序列运行的系统是安全的，所以不会产生死锁。</p>
+<h3 id="自然语言描述">自然语言描述</h3>
+<p>银行家算法资源分配步骤如下：</p>
+<blockquote>
+<p><code>*</code>表示所有情况都满足这个等式/不等式，在代码中表示就是一个循环的事情</p>
+</blockquote>
+<ol>
+<li>
+<p>如果 <code>Request[i, *] &lt;= Need[i, *]</code>转步骤2；否则，进程申请量超过最大需求量，拒绝请求。</p>
+</li>
+<li>
+<p>如果 <code>Request[i, *] &lt;= Available[*]</code>，步骤3；否则，申请量超过当前系统所拥有的可分配量，拒绝请求，进程 P 等待。</p>
+</li>
+<li>
+<p>系统对 P 进程请求资源进行试探性分配，执行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Allocation[i, *] = Allocation[i, *] + Request[i, *]
+Available[*] = Available[*] - Request[i, *]
+Need[i, *] = Need[i, *] - Request[i, *]
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>转向步骤5执行安全性测试算法，如果返回安全状态则承认试分配，否则抛弃试分配，进程P等待，并执行恢复原来的状态：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Allocation[i, *] = Allocation[i, *] - Request[i, *]
+Available[*] = Available[*] + Request[i, *]
+Need[i, *] = Need[i, *] + Request[i, *]
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>安全性测试算法</p>
+<ol>
+<li>定义向量Work[i]，布尔型标志 possible 和进程集合 rest；</li>
+<li>执行初始化操作：让全部进程进入rest集合，并让:
+<code>Work[*] = Available[*]; possible＝true</code>；</li>
+<li>保持 <code>possible＝true</code>，从进程集合rest中找出满足下列条件的进程P:
+<code>Nee[k, *] &lt;= work[*]</code></li>
+<li>如果不存在，则转向5；如果找到，则释放进程P所占用的资源，并执行以下操作，假设现在 P 已经运行结束并释放资源：
+<code>Work[*] = Work[*] + Allocation[k, *]</code>
+把P从进程集合中去掉，再转向③；</li>
+<li>置 <code>possible = false</code>，停止执行安全性测试；</li>
+<li>最后查看进程集合rest，若其为空集则返回安全标记，否则返回不安全标记。</li>
+</ol>
+</li>
+</ol>
+<h3 id="c-实现">C++ 实现</h3>
+<p>安全性测试算法基本上和自然语言描述的步骤一致：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="cm">/** Wether current state is safe.
+</span><span class="cm"> * return true if safe, else return false.
+</span><span class="cm"> * if return true, the safe_seq will be filled with the sequence that thread
+</span><span class="cm"> * process
+</span><span class="cm"> */</span>
+<span class="kt">bool</span> <span class="nf">is_safe</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">available</span><span class="p">,</span> <span class="kt">int</span> <span class="n">need</span><span class="p">[][</span><span class="n">MAX_RESOURCE</span><span class="p">],</span>
+             <span class="kt">int</span> <span class="n">alloction</span><span class="p">[][</span><span class="n">MAX_RESOURCE</span><span class="p">],</span> <span class="kt">int</span> <span class="o">*</span><span class="n">safe_seq</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">work</span><span class="p">[</span><span class="n">RESOURCE_NUM</span><span class="p">];</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="n">work</span><span class="p">,</span> <span class="n">available</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="o">*</span> <span class="n">RESOURCE_NUM</span><span class="p">);</span>
+
+  <span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">rest</span><span class="p">;</span>
+  <span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">THREAD_NUM</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">rest</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">rest</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// find a thread that its need &lt; available
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">no_possible</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">it</span> <span class="o">=</span> <span class="n">rest</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">rest</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="n">it</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">bool</span> <span class="n">ok</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">RESOURCE_NUM</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">need</span><span class="p">[</span><span class="o">*</span><span class="n">it</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">work</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+          <span class="n">ok</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+          <span class="c1">// break inner loop
+</span><span class="c1"></span>          <span class="n">j</span> <span class="o">=</span> <span class="n">RESOURCE_NUM</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">ok</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">no_possible</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="n">id</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+        <span class="n">safe_seq</span><span class="p">[</span><span class="n">size</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">id</span><span class="p">;</span>
+        <span class="c1">// remove from set
+</span><span class="c1"></span>        <span class="n">rest</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">RESOURCE_NUM</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+          <span class="c1">// assume we release this thread&#39;s resource
+</span><span class="c1"></span>          <span class="n">work</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">alloction</span><span class="p">[</span><span class="o">*</span><span class="n">it</span><span class="p">][</span><span class="n">k</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">// no thread satisfied, stop search
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">no_possible</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">rest</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>处理进程的资源请求：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++">  <span class="kt">int</span> <span class="n">thread_id</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">request</span><span class="p">[</span><span class="n">RESOURCE_NUM</span><span class="p">];</span>
+  <span class="c1">// input request thread id, index start from 0
+</span><span class="c1"></span>  <span class="k">while</span> <span class="p">(</span><span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">thread_id</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// input request
+</span><span class="c1"></span>    <span class="kt">bool</span> <span class="n">overflow</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">RESOURCE_NUM</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">need</span><span class="p">[</span><span class="n">thread_id</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">||</span> <span class="n">request</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">available</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="p">{</span>
+        <span class="n">overflow</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;request rejected: request too much resource</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">overflow</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+
+    <span class="c1">// try to satisfy request
+</span><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">RESOURCE_NUM</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">allocation</span><span class="p">[</span><span class="n">thread_id</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">request</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">available</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">request</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">need</span><span class="p">[</span><span class="n">thread_id</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">request</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;try to satisfy request, now available:</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="n">print_sequence</span><span class="p">(</span><span class="n">available</span><span class="p">,</span> <span class="n">RESOURCE_NUM</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">is_safe</span><span class="p">(</span><span class="n">available</span><span class="p">,</span> <span class="n">need</span><span class="p">,</span> <span class="n">allocation</span><span class="p">,</span> <span class="n">safe_sequence</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">&#34;request accepted</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">&#34;request rejected: state not safe</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+      <span class="c1">// restore previous state
+</span><span class="c1"></span>      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">RESOURCE_NUM</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">allocation</span><span class="p">[</span><span class="n">thread_id</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">request</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="n">available</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">request</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="n">need</span><span class="p">[</span><span class="n">thread_id</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">request</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>完整的代码可以在我的 <a href="https://gist.github.com/LeeReindeer/a0a78d29d2940dd5a958da67f0db30e8">Gist</a> 上查看。</p>
+<h3 id="测试用例">测试用例</h3>
+<p>我分别用书上的例子和 wiki 上的例子来测试这个算法。</p>
+<h4 id="test-case-1">Test Case 1</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Total system resources are:
+A  B C
+10 5 7
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Available system resources are:
+A B C
+3 3 2
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Processes (currently allocated resources):
+   A B C
+P0 0 1 0
+P1 2 0 0
+P2 3 0 2
+P3 2 1 1
+P4 0 0 2
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Processes (maximum resources):
+   A B C
+P0 7 5 3
+P1 3 2 2
+P2 9 0 2
+P3 2 2 2
+P4 4 3 3
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/images/testcase1-1.png" alt="testcase1-1"></p>
+<p>请求：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">1. P1: 1 0 2
+2. P4: 3 3 0
+3. P0: 0 2 0
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/images/testcase1-2.png" alt="testcase1-2"></p>
+<h4 id="test-case-2">Test Case 2</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Total system resources are:
+A B C D
+6 5 7 6
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Available system resources are:
+A B C D
+3 1 1 2
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Processes (currently allocated resources):
+   A B C D
+P0 1 2 2 1
+P1 1 0 3 3
+P2 1 2 1 0
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Processes (maximum resources):
+   A B C D
+P0 3 3 2 2
+P1 1 2 3 4
+P2 1 3 5 0
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/images/banker-result2.png" alt="banker-result2"></p>
+<h2 id="参考">参考</h2>
+<ul>
+<li>《操作系统教程》第五版 P163-168</li>
+<li><a href="https://en.wikipedia.org/wiki/Banker%27s_algorithm">Banker&rsquo;s algorithm</a></li>
+</ul>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-01-01
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/os/">OS</a>
+          <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/os-review-map/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">操作系统-复习提纲</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/os-elevator-algorithm/">
+            <span class="next-text nav-default">操作系统-电梯调度算法</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+<script src="/js/sitedate.js"></script>
+
+
+</body>
+</html>

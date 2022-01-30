@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>AbstractQueuedSynchronizer - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*The java.util.concurrent Synchronizer Framework* 和 JDK 1.8 的文档。
+Java并发-目录
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/java-concurrent-aqs/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="AbstractQueuedSynchronizer" />
+<meta property="og:description" content="
+AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*The java.util.concurrent Synchronizer Framework* 和 JDK 1.8 的文档。
+Java并发-目录
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/java-concurrent-aqs/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-04-25T19:31:21+00:00" />
+<meta property="article:modified_time" content="2019-04-25T19:31:21+00:00" />
+
+<meta itemprop="name" content="AbstractQueuedSynchronizer">
+<meta itemprop="description" content="
+AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*The java.util.concurrent Synchronizer Framework* 和 JDK 1.8 的文档。
+Java并发-目录
+"><meta itemprop="datePublished" content="2019-04-25T19:31:21+00:00" />
+<meta itemprop="dateModified" content="2019-04-25T19:31:21+00:00" />
+<meta itemprop="wordCount" content="2455">
+<meta itemprop="keywords" content="Java,Java并发," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="AbstractQueuedSynchronizer"/>
+<meta name="twitter:description" content="
+AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*The java.util.concurrent Synchronizer Framework* 和 JDK 1.8 的文档。
+Java并发-目录
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">AbstractQueuedSynchronizer</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-04-25 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 2455 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#设计要求">设计要求</a></li>
+    <li><a href="#实现">实现</a>
+      <ol>
+        <li><a href="#synchronization-state">Synchronization state</a></li>
+        <li><a href="#blocking">Blocking</a></li>
+        <li><a href="#queue">Queue</a></li>
+      </ol>
+    </li>
+    <li><a href="#使用">使用</a>
+      <ol>
+        <li><a href="#例子">例子</a></li>
+      </ol>
+    </li>
+    <li><a href="#aqs-在-synchronizers-中的具体实现">AQS 在 Synchronizers 中的具体实现</a>
+      <ol>
+        <li><a href="#reentrantlock">ReentrantLock</a></li>
+        <li><a href="#reentrantreadwritelock">ReentrantReadWriteLock</a></li>
+        <li><a href="#semaphore">Semaphore</a></li>
+        <li><a href="#countdownlatch">CountDownLatch</a></li>
+        <li><a href="#futuretask">FutureTask</a></li>
+      </ol>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ol>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2019-04-25T19:31:21" title="April 25, 2019">April 25, 2019</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
+<p>AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*<a href="http://gee.cs.oswego.edu/dl/papers/aqs.pdf">The java.util.concurrent Synchronizer Framework</a>* 和 JDK 1.8 的文档。</p>
+<p><a href="/2019/01/06/java-concurrent-toc/">Java并发-目录</a></p>
+</blockquote>
+<h2 id="设计要求">设计要求</h2>
+<p>同步（维持变量在各个线程间状态的一致性）至少需要两种操作：</p>
+<ul>
+<li>acquire：阻塞线程直到*同步状态（synchronization state）*允许线程运行</li>
+<li>release：改变<em>同步状态</em>，并且 unblock 一个或多个阻塞的线程</li>
+</ul>
+<p>同时支持两种模式：</p>
+<ul>
+<li>exclusive mode：一次只允许一个线程改变同步状态</li>
+<li>shared mode：多个线程同时改变同步状态<strong>可能</strong>成功；一次同时唤醒多个线程</li>
+</ul>
+<p>同时框架需要一些高级功能：</p>
+<ul>
+<li>非阻塞和阻塞地改变同步状态（如<code>tryLock</code>和<code>lock</code>）</li>
+<li>可选的超时功能，超时即放弃尝试</li>
+<li>可以响应线程中断</li>
+</ul>
+<h2 id="实现">实现</h2>
+<p>同步器的基本思想很直接简洁，用伪代码表示如下：</p>
+<p>acquire</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">while (syncronization state does not allow acquire) {
+  enqueue current thread if not already queued;
+  possiblly block current thread;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>release</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">update synchronization state;
+if (state may premit a blocked thread acuire) {
+  unblock one or more queued thread;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>要实现这两个操作，需要三个基本模块的配合：</p>
+<ul>
+<li>以原子操作管理<em>同步状态</em></li>
+<li>block 和 unblock 线程</li>
+<li>维护 FIFO 队列</li>
+</ul>
+<h3 id="synchronization-state">Synchronization state</h3>
+<p>AQS 使用一个 32 位整数（int）来代表共享资源，也就是同步状态。</p>
+<blockquote>
+<p>该整数可以表现任何状态。比如， <code>Semaphore</code> 用它来表现剩余的许可数，<code>ReentrantLock</code> 用它来表现拥有它的线程已经请求了多少次锁；<code>FutureTask</code> 用它来表现任务的状态 (尚未开始、运行、完成和取消)</p>
+</blockquote>
+<h3 id="blocking">Blocking</h3>
+<p>AQS 使用 JUC 包下<code>LockSupport</code>中的<code>pack()</code>和<code>unpack()</code>方法来阻塞和唤醒进程。最终会调用<code>Unsafe.park()</code>和<code>Unsafe.unpack()</code>两个 native 方法，最终的阻塞线程和唤醒线程具体实现还是由操作系统来实现的。</p>
+<h3 id="queue">Queue</h3>
+<p>维护一个 FIFO 的队列，来管理阻塞的线程，<strong>可以实现公平性（但也可以不公平）</strong>，也就是同时支持公平锁和非公平锁两种模式。内部使用 CLH Lock，但是做了很多优化，比如<strong>CLH 锁不是自旋的而是阻塞的。</strong></p>
+<p>AQS 中的 CLH lock 和原汁原味的 CLH lock 相比，主要有两点不同：</p>
+<ul>
+<li>节点有显式的后继节点<code>next</code>，原来的 CLH lock 不需要显式的链表因为当前一个节点为释放锁时，因为后一个节点在一直轮询，所以它能够拿到锁。而 AQS 是阻塞的，所以需要在释放锁的时候，需要调用<code>unpack(Thread)</code>来唤醒特定的线程，所以需要知道它的后继节点。</li>
+<li>不使用自旋锁而是阻塞锁，调用<code>pack()</code>和<code>unpack()</code>实现。</li>
+</ul>
+<blockquote>
+<p>同时还设置了一个<code>signal bit</code>来避免不必要的<code>pack()</code>和<code>unpack()</code>调用。在调用它们之前，首先设置<code>signal bit</code>然后再次检查节点状态，如果还不能拿到锁，就阻塞线程。</p>
+</blockquote>
+<p>这样我可以用更加详细的伪代码来描述<code>acquire</code>和<code>release</code>，这里只考虑exclusive mode，不可中断的、没有超时功能的情况：</p>
+<p>acquire：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (!tryAcquire(arg)) {
+  node = create and enqueue new node;
+  pred = node&#39;s effective predecessor;
+  while (pred is not head node || !tryAcquire(arg)) {
+    if (pred&#39;s signal bit is set)
+    	park();
+    else
+    	compareAndSet pred&#39;s signal bit to ture
+    pred = node&#39;s effective predecessor;
+  }
+  head = node;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>release:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (tryRelease(arg) &amp;&amp; head node&#39;s signal bit is set) {
+  compareAndSet head&#39;s signal bit to false;
+  unpack head&#39;s successor, if one exists
+}s
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="使用">使用</h2>
+<p>实现一个同步器需要实现下面的方法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">tryAcquire</span><span class="o">()</span>
+<span class="n">tryRelease</span><span class="o">()</span>
+<span class="n">tryAcquireShared</span><span class="o">()</span>
+<span class="n">tryReleaseShared</span><span class="o">()</span>
+<span class="n">isHeldExclusively</span><span class="o">()</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>以上方法不需要全部实现，根据获取的锁的种类可以选择实现不同的方法.</p>
+<ul>
+<li>支持独占 (排他) 获取锁的同步器应该实现<code>tryAcquire</code>、 <code>tryRelease</code>、<code>isHeldExclusively</code></li>
+<li>支持共享获取的同步器应该实现<code>tryAcquireShared</code>、<code>tryReleaseShared</code>、<code>isHeldExclusively</code></li>
+<li>当然也可以同时支持  exclusive 模式和 shared 模式，比如<code>ReentrantReadWriteLock</code></li>
+</ul>
+<blockquote>
+<p>实现一个同步器最好的设计模式是把功能委托给一个AQS的私有内部子类，而不是直接继承 AQS 来实现（这样会破坏同步器的简洁性，调用者可能会调用 AQS 的其他方法破坏同步状态）。</p>
+</blockquote>
+<h3 id="例子">例子</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.util.concurrent.locks.AbstractQueuedSynchronizer</span><span class="o">;</span>
+
+<span class="cm">/**
+</span><span class="cm"> * @author leer
+</span><span class="cm"> * Created at 4/25/19 6:24 PM
+</span><span class="cm"> * 一个不可重入的互斥锁
+</span><span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Mutex</span> <span class="o">{</span>
+  <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Sync</span> <span class="kd">extends</span> <span class="n">AbstractQueuedSynchronizer</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryAcquire</span><span class="o">(</span><span class="kt">int</span> <span class="n">ignore</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">compareAndSetState</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryRelease</span><span class="o">(</span><span class="kt">int</span> <span class="n">ignore</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">setState</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Sync</span> <span class="n">sync</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Sync</span><span class="o">();</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">lock</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">sync</span><span class="o">.</span><span class="na">acquire</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">unlock</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">sync</span><span class="o">.</span><span class="na">release</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="aqs-在-synchronizers-中的具体实现">AQS 在 Synchronizers 中的具体实现</h2>
+<h3 id="reentrantlock">ReentrantLock</h3>
+<ul>
+<li>ReentrantLock 是可重入的：所以需要记录当前线程获取原子状态的次数，如果次数为零，那么就说明这个线程放弃了锁（也有可能其他线程占据着锁从而需要等待），如果次数大于 1，也就是获得了重进入的效果，而其他线程只能被 park 住，直到这个线程重进入锁次数变成 0 而释放原子状态</li>
+<li>ReentrantLock 有公平锁和非公平锁两种模式：对应的， ReentrantLock 内部有两个 AQS 的子类。（the fair one disabling barging）</li>
+</ul>
+<p>非公平锁的<code>tryAcquire</code>实现：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">       <span class="kd">final</span> <span class="kt">boolean</span> <span class="nf">nonfairTryAcquire</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">Thread</span> <span class="n">current</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">acquires</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="n">setExclusiveOwnerThread</span><span class="o">(</span><span class="n">current</span><span class="o">);</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">current</span> <span class="o">==</span> <span class="n">getExclusiveOwnerThread</span><span class="o">())</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">nextc</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">acquires</span><span class="o">;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">nextc</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="c1">// overflow
+</span><span class="c1"></span>                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Error</span><span class="o">(</span><span class="s">&#34;Maximum lock count exceeded&#34;</span><span class="o">);</span>
+                <span class="n">setState</span><span class="o">(</span><span class="n">nextc</span><span class="o">);</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="reentrantreadwritelock">ReentrantReadWriteLock</h3>
+<p>ReentrantReadWriteLock 使用 同步状态的 16 位来存放读锁计数，另外的 16 位存放写锁计数。</p>
+<ul>
+<li>写锁和<code>ReentrantLock</code>类似</li>
+<li>读锁使用 shared 模式的 AQS来支持多个读者同时读</li>
+</ul>
+<h3 id="semaphore">Semaphore</h3>
+<p><code>Semaphore</code>使用同步状态来保存当前可用许可数量。它重写<code>tryAcquireShared</code>来减少计数来模拟获取资源，如果计数小于 0 则会阻塞线程；重写<code>tryReleaseShared</code>来模拟释放资源。同时它也有公平模式和非公平模式。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">        <span class="kd">final</span> <span class="kt">int</span> <span class="nf">nonfairTryAcquireShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">available</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+                <span class="kt">int</span> <span class="n">remaining</span> <span class="o">=</span> <span class="n">available</span> <span class="o">-</span> <span class="n">acquires</span><span class="o">;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">remaining</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span>
+                    <span class="n">compareAndSetState</span><span class="o">(</span><span class="n">available</span><span class="o">,</span> <span class="n">remaining</span><span class="o">))</span>
+                    <span class="k">return</span> <span class="n">remaining</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="kd">protected</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="nf">tryReleaseShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">releases</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">current</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+                <span class="kt">int</span> <span class="n">next</span> <span class="o">=</span> <span class="n">current</span> <span class="o">+</span> <span class="n">releases</span><span class="o">;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">next</span> <span class="o">&lt;</span> <span class="n">current</span><span class="o">)</span> <span class="c1">// overflow
+</span><span class="c1"></span>                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Error</span><span class="o">(</span><span class="s">&#34;Maximum permit count exceeded&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">current</span><span class="o">,</span> <span class="n">next</span><span class="o">))</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="countdownlatch">CountDownLatch</h3>
+<p>和<code>Semaphore</code>类似，同步状态保存当前的计数值。<code>countDown()</code>调用<code>releaseShared()</code>，<code>await()</code>方法调用<code>acquireShared()</code>，等待计数器到零。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">        <span class="kd">protected</span> <span class="kt">int</span> <span class="nf">tryAcquireShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="o">(</span><span class="n">getState</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">?</span> <span class="n">1</span> <span class="o">:</span> <span class="o">-</span><span class="n">1</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryReleaseShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">releases</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// Decrement count; signal when transition to zero
+</span><span class="c1"></span>            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span>
+                    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+                <span class="kt">int</span> <span class="n">nextc</span> <span class="o">=</span> <span class="n">c</span><span class="o">-</span><span class="n">1</span><span class="o">;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="n">nextc</span><span class="o">))</span>
+                    <span class="k">return</span> <span class="n">nextc</span> <span class="o">==</span> <span class="n">0</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="futuretask">FutureTask</h3>
+<blockquote>
+<p>Only when JDK version &lt; JDK1.7</p>
+</blockquote>
+<p><code>FutureTask</code>使用同步状态保存<code>Future</code>任务的状态（initial、running、cancelled、done）。</p>
+<p>设置和取消一个任务将调用<code>release()</code>，调用<code>Future.get()</code>等待结果将会调用<code>acquire()</code>。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li>Doug Lea 的论文 <a href="http://gee.cs.oswego.edu/dl/papers/aqs.pdf">The java.util.concurrent Synchronizer Framework</a></li>
+<li>《Java并发编程实战》第14章</li>
+<li><a href="https://bigbully.github.io/FutureTask">新版FutureTask</a></li>
+</ul>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-04-25
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/java%E5%B9%B6%E5%8F%91/">Java并发</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/ros/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">RTOS设计与实现</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/k-th/">
+            <span class="next-text nav-default">K-th 问题</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+
+
+
+
+
+
+<script src="/js/sitedate.js"></script>
+
+
+</body>
+</html>

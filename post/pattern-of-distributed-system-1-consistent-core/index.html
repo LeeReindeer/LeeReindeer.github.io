@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>分布式系统设计模式-分布式共识核心 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 维护一组提供较强一致性的小型集群（共识核心 Consistent Core），以允许大型数据集群协调服务器活动，而无需自行实现基于quorum的算法。
+" /><meta name="keywords" content="设计模式, 分布式系统" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="分布式系统设计模式-分布式共识核心" />
+<meta property="og:description" content="
+维护一组提供较强一致性的小型集群（共识核心 Consistent Core），以允许大型数据集群协调服务器活动，而无需自行实现基于quorum的算法。
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-05-26T18:36:15+08:00" />
+<meta property="article:modified_time" content="2021-05-26T18:36:15+08:00" />
+
+<meta itemprop="name" content="分布式系统设计模式-分布式共识核心">
+<meta itemprop="description" content="
+维护一组提供较强一致性的小型集群（共识核心 Consistent Core），以允许大型数据集群协调服务器活动，而无需自行实现基于quorum的算法。
+"><meta itemprop="datePublished" content="2021-05-26T18:36:15+08:00" />
+<meta itemprop="dateModified" content="2021-05-26T18:36:15+08:00" />
+<meta itemprop="wordCount" content="2260">
+<meta itemprop="keywords" content="分布式系统,设计模式," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="分布式系统设计模式-分布式共识核心"/>
+<meta name="twitter:description" content="
+维护一组提供较强一致性的小型集群（共识核心 Consistent Core），以允许大型数据集群协调服务器活动，而无需自行实现基于quorum的算法。
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">分布式系统设计模式-分布式共识核心</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-05-26 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/"> 翻译集 </a>
+            </div>
+          <span class="more-meta"> 2260 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#问题">问题</a></li>
+    <li><a href="#方案">方案</a></li>
+    <li><a href="#元数据存储">元数据存储</a>
+      <ol>
+        <li><a href="#支持分层存储">支持分层存储</a></li>
+      </ol>
+    </li>
+    <li><a href="#处理客户端交互">处理客户端交互</a>
+      <ol>
+        <li><a href="#寻找-leader">寻找 Leader</a></li>
+        <li><a href="#处理重复请求">处理重复请求</a></li>
+      </ol>
+    </li>
+    <li><a href="#例子">例子</a></li>
+  </ol>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="hint">
+      <p>[NOTE] Updated <span class="timeago" datetime="2021-05-26T18:36:15" title="May 26, 2021">May 26, 2021</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
+<p>维护一组提供较强一致性的小型集群（共识核心 Consistent Core），以允许大型数据集群协调服务器活动，而无需自行实现基于<em>quorum</em>的算法。</p>
+</blockquote>
+<blockquote>
+<p><a href="https://martinfowler.com/articles/patterns-of-distributed-systems/consistent-core.html">原文</a></p>
+</blockquote>
+<h2 id="问题">问题</h2>
+<p>当一个集群需要处理大量数据时，它需要更多的服务器。对于集群服务器，有一些共同的要求：例如选择特定的服务器作为特定任务的主服务器（master）；管理集群成员信息；管理数据分片到服务器的映射等。这些要求都需要强一致性的保证，即线性度（linearizability）。并且这种实现也必须具有容错性。一种常见的方法是使用基于<a href="https://martinfowler.com/articles/patterns-of-distributed-systems/quorum.html">Quorum</a>的容错共识算法，但基于 Quorum 的系统，其吞吐量会随着集群的增大而降低。</p>
+<h2 id="方案">方案</h2>
+<p>实现一个较小的，3 到 5 个节点的集群来提供线性度保证和容错能力。单独的数据集群可使用小型共识集群来管理元数据，并使用诸如<a href="https://martinfowler.com/articles/patterns-of-distributed-systems/time-bound-lease.html">Lease</a>之类的原语来做出集群范围的决策。这样数据集群可以扩容至拥有大量服务器，但是仍能使用较小的元数据集群执行某些需要强一致性保证的操作。</p>
+<p><img src="/images/ConsistentCore.png" alt="Consistent Core"></p>
+<p>共识核心的典型接口如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ConsistentCore</span> <span class="o">{</span>
+    <span class="n">CompletableFuture</span> <span class="nf">put</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">String</span> <span class="n">value</span><span class="o">);</span>
+
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">get</span><span class="o">(</span><span class="n">String</span> <span class="n">keyPrefix</span><span class="o">);</span>
+
+    <span class="n">CompletableFuture</span> <span class="nf">registerLease</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">long</span> <span class="n">ttl</span><span class="o">);</span>
+
+    <span class="kt">void</span> <span class="nf">refreshLease</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+
+    <span class="kt">void</span> <span class="nf">watch</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">WatchEvent</span><span class="o">&gt;</span> <span class="n">watchCallback</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>共识核心至少需要提供一种简单的键值存储机制，它用于存储元数据。</p>
+<h2 id="元数据存储">元数据存储</h2>
+<p>存储机制时由 Raft 之类的共识算法来实现的。Raft 算法是“复制预写日志”（Replicated Write Ahead Log）的实现，在其中<a href="https://martinfowler.com/articles/patterns-of-distributed-systems/leader-follower.html">Leader and Followers</a>机制用于实现复制，<a href="https://martinfowler.com/articles/patterns-of-distributed-systems/high-watermark.html">High-Water Mark</a>机制用于标记基于 Quorum 的成功复制的副本。</p>
+<h3 id="支持分层存储">支持分层存储</h3>
+<p>共识核心通常用来存储像这样的数据：集群成员或跨服务器的任务调度。一种常见的方式是使用前缀来限定元数据的类型。例如，对于集群成员，键将全部存储为<code>/servers/1</code>，<code>/servers/2</code>等。对于分配给服务器的任务，键可以是<code>/tasks/task1</code>，<code>/tasks/task2</code>。通常使用所有键带有的特定前缀来读取此数据。比如要获取集群所有服务器的信息，将读取所有前缀带<code>/servers</code>的键。</p>
+<p>下面是一个使用用例：</p>
+<p>服务器可以通过创建带有<code>/servers</code>的键向共识核心注册自己。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">client1</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="s">&#34;/servers/1&#34;</span><span class="o">,</span> <span class="s">&#34;{address:192.168.199.10, port:8000}&#34;</span><span class="o">);</span>
+
+<span class="n">client2</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="s">&#34;/servers/2&#34;</span><span class="o">,</span> <span class="s">&#34;{address:192.168.199.11, port:8000}&#34;</span><span class="o">);</span>
+
+<span class="n">client3</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="s">&#34;/servers/3&#34;</span><span class="o">,</span> <span class="s">&#34;{address:192.168.199.12, port:8000}&#34;</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>客户端可以通过读取带有<code>/servers/</code>前缀的键来获取所有该集群中的服务器：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">assertEquals</span><span class="o">(</span><span class="n">client1</span><span class="o">.</span><span class="na">getValue</span><span class="o">(</span><span class="s">&#34;/servers&#34;</span><span class="o">),</span>
+             <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">&#34;{address:192.168.199.12, port:8000}&#34;</span><span class="o">,</span>
+                           <span class="s">&#34; {address:192.168.199.11, port:8000}&#34;</span><span class="o">,</span>
+                           <span class="s">&#34;{address:192.168.199.10, port:8000}&#34;</span><span class="o">));</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>由于数据存储的这种分层性质，<a href="https://zookeeper.apache.org">zookeeper</a>, <a href="https://research.google/pubs/pub27897/">chubby</a> 这样的软件提供了类似文件系统的接口，用户可以调用创建目录、文件或者节点，并拥有父节点和子节点的概念。<a href="https://coreos.com/blog/etcd3-a-new-etcd.html">etcd3</a>因拥有平坦键空间而可以读取一个区间内的键。</p>
+<h2 id="处理客户端交互">处理客户端交互</h2>
+<p>共识核心功能的关键要求之一是客户端如何和核心交互。以下几个方面对于客户端和共识核心的交互来说是至关重要的。</p>
+<h3 id="寻找-leader">寻找 Leader</h3>
+<p>所有的操作都必须在 Leader 上执行是相当重要的，所以客户端需要先找到 Leader 服务器。下面有两种可行并满足要求的方案：</p>
+<ul>
+<li>共识核心中的 Follower 服务器知道当前的 Leader 信息，因此如果客户端连接到 Follower 服务器，服务器就能返回 Leader 的地址。然后客户端就能直接连接至在响应中识别出的 Leader 服务器地址。 应该注意的是，当客户端试图连接时，服务器可能正在进行 Leader 选举。这种情况下，服务器不能返回 Leader 的地址，而客户端需要等待并尝试连接其他服务器。</li>
+<li>服务器可以实现转发机制，并转发所有客户端的请求到 Leader。这使得客户端可以连接到任何服务器。同样的，如果服务器正在进行 Leader 选举，那么客户端需要重试，直到 Leader 选举成功并选出一个合法的 Leader 为止。</li>
+</ul>
+<p>像 zookeeper 和 etcd 这样的软件都使用第二种方式实现，因为它们允许一些只读的请求由 Follower 服务器处理。这避免了大量客户端都发起只读请求的情况下，Leader 服务器出现性能瓶颈。这也减轻了客户端根据请求类型连接到 Leader 或 Follower 的复杂度。</p>
+<p>寻找 Leader 的一种简单机制是：尝试连接到每个服务器并尝试发送请求，如果服务器不是 Leader，它会返回重定向响应。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">establishConnectionToLeader</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">InetAddressAndPort</span><span class="o">&gt;</span> <span class="n">servers</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">InetAddressAndPort</span> <span class="n">server</span> <span class="o">:</span> <span class="n">servers</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">SingleSocketChannel</span> <span class="n">socketChannel</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SingleSocketChannel</span><span class="o">(</span><span class="n">server</span><span class="o">,</span> <span class="n">10</span><span class="o">);</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;Trying to connect to &#34;</span> <span class="o">+</span> <span class="n">server</span><span class="o">);</span>
+            <span class="n">RequestOrResponse</span> <span class="n">response</span> <span class="o">=</span> <span class="n">sendConnectRequest</span><span class="o">(</span><span class="n">socketChannel</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">isRedirectResponse</span><span class="o">(</span><span class="n">response</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">redirectToLeader</span><span class="o">(</span><span class="n">response</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">isLookingForLeader</span><span class="o">(</span><span class="n">response</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;Server is looking for leader. Trying next server&#34;</span><span class="o">);</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span> <span class="c1">//we know the leader
+</span><span class="c1"></span>                <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;Found leader. Establishing a new connection.&#34;</span><span class="o">);</span>
+                <span class="n">newPipelinedConnection</span><span class="o">(</span><span class="n">server</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;Unable to connect to &#34;</span> <span class="o">+</span> <span class="n">server</span><span class="o">);</span>
+            <span class="c1">//try next server
+</span><span class="c1"></span>        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isLookingForLeader</span><span class="o">(</span><span class="n">RequestOrResponse</span> <span class="n">requestOrResponse</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">requestOrResponse</span><span class="o">.</span><span class="na">getRequestId</span><span class="o">()</span> <span class="o">==</span> <span class="n">RequestId</span><span class="o">.</span><span class="na">LookingForLeader</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">redirectToLeader</span><span class="o">(</span><span class="n">RequestOrResponse</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">RedirectToLeaderResponse</span> <span class="n">redirectResponse</span> <span class="o">=</span> <span class="n">deserialize</span><span class="o">(</span><span class="n">response</span><span class="o">);</span>
+    <span class="n">newPipelinedConnection</span><span class="o">(</span><span class="n">redirectResponse</span><span class="o">.</span><span class="na">leaderAddress</span><span class="o">);</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;Connected to the new leader &#34;</span>
+            <span class="o">+</span> <span class="n">redirectResponse</span><span class="o">.</span><span class="na">leaderServerId</span>
+            <span class="o">+</span> <span class="s">&#34; &#34;</span> <span class="o">+</span> <span class="n">redirectResponse</span><span class="o">.</span><span class="na">leaderAddress</span>
+            <span class="o">+</span> <span class="s">&#34;. Checking connection&#34;</span><span class="o">);</span>
+<span class="o">}</span>
+
+
+<span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isRedirectResponse</span><span class="o">(</span><span class="n">RequestOrResponse</span> <span class="n">requestOrResponse</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">requestOrResponse</span><span class="o">.</span><span class="na">getRequestId</span><span class="o">()</span> <span class="o">==</span> <span class="n">RequestId</span><span class="o">.</span><span class="na">RedirectToLeader</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>仅仅建立 TCP 连接是不够的，我们需要知道服务器能否处理我们的请求。所以客户端发送一个特殊的连接请求，让服务器确认它能否处理请求，否则就重定向到 Leader 服务器。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="n">RequestOrResponse</span> <span class="nf">sendConnectRequest</span><span class="o">(</span><span class="n">SingleSocketChannel</span> <span class="n">socketChannel</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="n">RequestOrResponse</span> <span class="n">request</span>
+            <span class="o">=</span> <span class="k">new</span> <span class="n">RequestOrResponse</span><span class="o">(</span><span class="n">RequestId</span><span class="o">.</span><span class="na">ConnectRequest</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span> <span class="s">&#34;CONNECT&#34;</span><span class="o">,</span> <span class="n">0</span><span class="o">);</span>
+    <span class="k">try</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">socketChannel</span><span class="o">.</span><span class="na">blockingSend</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">resetConnectionToLeader</span><span class="o">();</span>
+        <span class="k">throw</span> <span class="n">e</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如果现有的 Leader 服务器宕机了，相同的技术被用来确定从集群中新选出的 Leader。</p>
+<p>一旦连接，客户端就会维持一个单套接字通道（<a href="https://martinfowler.com/articles/patterns-of-distributed-systems/single-socket-channel.html">Single Socket Channel</a>）到 Leader 服务器。</p>
+<h3 id="处理重复请求">处理重复请求</h3>
+<p>在请求失败的情况下，客户端可能尝试连接至新的 leader，并重新发送请求。但是如果这些请求在失败之前已经被宕机的 leader 处理了，就可能导致重复处理。因此，在服务器上设置一个忽略重复请求的制止时很重要的。<a href="https://martinfowler.com/articles/patterns-of-distributed-systems/idempotent-receiver.html">Idempotent Receiver</a> 模式就被用来实现重复检测。</p>
+<p>协调一组服务器之间的任务可以通过使用<a href="https://martinfowler.com/articles/patterns-of-distributed-systems/time-bound-lease.html">Lease</a>来完成。它同样可以用来实现组成员和故障检测机制。</p>
+<p><a href="https://martinfowler.com/articles/patterns-of-distributed-systems/state-watch.html">State Watch</a> 用来获取元数据或限时租约的变化通知。</p>
+<h2 id="例子">例子</h2>
+<p>众所周知，谷歌使用[<a href="https://research.google/pubs/pub27897/">chubby]</a>锁服务进行协调和元数据管理。</p>
+<p>[<a href="https://kafka.apache.org/">kafka]</a> 使用 [<a href="https://zookeeper.apache.org/">zookeeper]</a>来管理元数据并做出决定，如集群选主。 Kafka 的<a href="https://cwiki.apache.org/confluence/display/KAFKA/KIP-500%3A+Replace+ZooKeeper+with+a+Self-Managed+Metadata+Quorum">架构提议变化</a>将用它自己基于 Raft 的控制集群来取代 zookeeper。</p>
+<p>[<a href="https://bookkeeper.apache.org/">bookkeeper]</a>使用 zookeeper 来管理集群元数据。</p>
+<p>[<a href="https://kubernetes.io/">kubernetes]</a> 使用 [<a href="https://etcd.io/">etcd]</a> 来协调管理机群元数据和成员信息。</p>
+<p>所有的大数据存储和处理系统，如 [<a href="https://hadoop.apache.org/docs/r3.0.0/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithNFS.html">hdfs]</a>, [<a href="http://spark.apache.org/docs/latest/spark-standalone.html#standby-masters-with-zookeeper">spark]</a>和 [<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.11/ops/jobmanager_high_availability.html">flink]</a> 都使用 [<a href="https://zookeeper.apache.org/">zookeeper]</a>来实现高可用和集群协调。</p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2021-05-26
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a>
+          <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/byte-pingan-hi-alipay/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">再见平安，你好支付宝</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/intro-macos/">
+            <span class="next-text nav-default">macOS 入门 😁</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+
+
+
+
+
+
+<script src="/js/sitedate.js"></script>
+
+
+</body>
+</html>

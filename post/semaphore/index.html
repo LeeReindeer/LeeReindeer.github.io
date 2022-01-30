@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Concurrent with Semaphore - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content="Semaphore Dijkstra 大佬提出了一种解决不同线程之前同步和互斥问题的方法。这种方法就是 PV 操作，它基于 Semaphore（信号量）。
+可以把信号量简单看成一个非负整数，只能使用两种操作来改变它的值，这两种操作就是 P 和 V，用伪代码描述如下（与教材《操作系统教程》上不同，这里的信号量不能为负值）。PV 操作的伪代码实现如下：
+  P(s)
+1 2 3 4 5 6 7 8  P(s) { if (p != 0) { s--; } else { append this thread to list; sleep(); } }     V(s)
+1 2 3 4 5 6  V(s) { s&#43;&#43;; if (list is no empty) { list.pop().wakeup(); } }     P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/semaphore/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Concurrent with Semaphore" />
+<meta property="og:description" content="Semaphore
+Dijkstra 大佬提出了一种解决不同线程之前同步和互斥问题的方法。这种方法就是 PV 操作，它基于 Semaphore（信号量）。
+可以把信号量简单看成一个非负整数，只能使用两种操作来改变它的值，这两种操作就是 P 和 V，用伪代码描述如下（与教材《操作系统教程》上不同，这里的信号量不能为负值）。PV 操作的伪代码实现如下：
+
+
+P(s)
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+
+P(s) {
+    if (p != 0) {
+    	s--;
+    } else {
+    	append this thread to list;
+    	sleep();
+    }
+}
+
+
+
+
+V(s)
+
+
+1
+2
+3
+4
+5
+6
+
+
+V(s) {
+    s&#43;&#43;;
+    if (list is no empty) {
+        list.pop().wakeup();
+    }
+}
+
+
+
+
+P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/semaphore/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-10-18T16:31:21+00:00" />
+<meta property="article:modified_time" content="2018-10-18T16:31:21+00:00" />
+
+<meta itemprop="name" content="Concurrent with Semaphore">
+<meta itemprop="description" content="Semaphore
+Dijkstra 大佬提出了一种解决不同线程之前同步和互斥问题的方法。这种方法就是 PV 操作，它基于 Semaphore（信号量）。
+可以把信号量简单看成一个非负整数，只能使用两种操作来改变它的值，这两种操作就是 P 和 V，用伪代码描述如下（与教材《操作系统教程》上不同，这里的信号量不能为负值）。PV 操作的伪代码实现如下：
+
+
+P(s)
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+
+P(s) {
+    if (p != 0) {
+    	s--;
+    } else {
+    	append this thread to list;
+    	sleep();
+    }
+}
+
+
+
+
+V(s)
+
+
+1
+2
+3
+4
+5
+6
+
+
+V(s) {
+    s&#43;&#43;;
+    if (list is no empty) {
+        list.pop().wakeup();
+    }
+}
+
+
+
+
+P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。"><meta itemprop="datePublished" content="2018-10-18T16:31:21+00:00" />
+<meta itemprop="dateModified" content="2018-10-18T16:31:21+00:00" />
+<meta itemprop="wordCount" content="5311">
+<meta itemprop="keywords" content="C,OS," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Concurrent with Semaphore"/>
+<meta name="twitter:description" content="Semaphore
+Dijkstra 大佬提出了一种解决不同线程之前同步和互斥问题的方法。这种方法就是 PV 操作，它基于 Semaphore（信号量）。
+可以把信号量简单看成一个非负整数，只能使用两种操作来改变它的值，这两种操作就是 P 和 V，用伪代码描述如下（与教材《操作系统教程》上不同，这里的信号量不能为负值）。PV 操作的伪代码实现如下：
+
+
+P(s)
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+
+P(s) {
+    if (p != 0) {
+    	s--;
+    } else {
+    	append this thread to list;
+    	sleep();
+    }
+}
+
+
+
+
+V(s)
+
+
+1
+2
+3
+4
+5
+6
+
+
+V(s) {
+    s&#43;&#43;;
+    if (list is no empty) {
+        list.pop().wakeup();
+    }
+}
+
+
+
+
+P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Concurrent with Semaphore</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-10-18 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 5311 words </span>
+          <span class="more-meta"> 11 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#semaphore">Semaphore</a></li>
+    <li><a href="#binary-semaphore">Binary semaphore</a></li>
+    <li><a href="#semaphore-in-c">Semaphore in C</a></li>
+    <li><a href="#producer-consumer">Producer-Consumer</a></li>
+    <li><a href="#reader-writer">Reader-Writer</a></li>
+    <li><a href="#sleepy-barber">Sleepy barber</a></li>
+    <li><a href="#cigarette-smokers">Cigarette smokers</a></li>
+    <li><a href="#和尚吃水问题">和尚吃水问题</a></li>
+    <li><a href="#吃水果问题">吃水果问题</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ol>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2018-10-18T16:31:21" title="October 18, 2018">October 18, 2018</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h2 id="semaphore">Semaphore</h2>
+<p>Dijkstra 大佬提出了一种解决不同线程之前同步和互斥问题的方法。这种方法就是 PV 操作，它基于 Semaphore（信号量）。</p>
+<p>可以把信号量简单看成一个非负整数，只能使用两种操作来改变它的值，这两种操作就是 P 和 V，用伪代码描述如下（与教材《操作系统教程》上不同，这里的<a href="https://stackoverflow.com/questions/20656295/what-is-general-semaphores-range">信号量不能为负值</a>）。PV 操作的伪代码实现如下：</p>
+<ul>
+<li>
+<p>P(s)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">P</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    	<span class="n">s</span><span class="o">--</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    	<span class="n">append</span> <span class="n">this</span> <span class="kr">thread</span> <span class="n">to</span> <span class="n">list</span><span class="p">;</span>
+    	<span class="n">sleep</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>V(s)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">V</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">s</span><span class="o">++</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">list</span> <span class="n">is</span> <span class="n">no</span> <span class="n">empty</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">list</span><span class="p">.</span><span class="n">pop</span><span class="p">().</span><span class="n">wakeup</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p>P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。</p>
+<h2 id="binary-semaphore">Binary semaphore</h2>
+<p>Binary semaphore（二元信号量），是信号量的一种，因为其初始化信号量为1，所以二元信号量只能取值 0 或 1。使用二元信号量可以实现互斥，所以也把它叫做互斥锁（mutex）。</p>
+<h2 id="semaphore-in-c">Semaphore in C</h2>
+<p>在使用信号量实现互斥之前，先来介绍一下 <code>POSIX</code> 标准中的线程（<code>pthread</code>）。在 C 语言中可以使用 <code>pthread</code> 接口来编写多进程的程序。</p>
+<p>下面是一个简单的 hello world（进程版），参考了CSAPP 中的代码，所以使用 CSAPP 对 <code>pthread</code> 的 wrapper 函数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">thread1</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">vargp</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="c1">//平时编写的C程序只有一个线程--主线程
+</span><span class="c1"></span>  <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">;</span>
+  <span class="c1">//创建线程，同时开始运行
+</span><span class="c1"></span>  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="c1">//阻塞主线程，直到tid1线程结束
+</span><span class="c1"></span>  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="nf">thread1</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">vargp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello world</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>对 pthread 不再过多介绍，还不如去看<code>man page</code>。</p>
+<p>如果两个并发的进程，在访问同一个个共享变量的时候不加限制，可能会造成结果与预期不同。比如下面的计数器例子：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&#34;csapp.h&#34;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">void</span> <span class="o">*</span><span class="nf">thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+<span class="k">volatile</span> <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// shared counter
+</span><span class="c1"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Usage: %s &lt;n&gt;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+  <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">,</span> <span class="n">tid2</span><span class="p">;</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="kr">thread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">);</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="kr">thread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">))</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;BOOM! cnt=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">cnt</span><span class="p">);</span>
+  <span class="k">else</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;OK cnt=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">cnt</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="nf">thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cnt</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>cnt</code>变量被两个进程同时访问，在访问它的过程中随时可能被打断，即使<code>cnt++</code>看起来是不会被打断的操作，但是当它被编译成汇编语言时：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="nf">movl</span> <span class="no">cnt</span><span class="p">,</span> <span class="nv">%eax</span>
+<span class="nf">incl</span> <span class="nv">%eax</span>
+<span class="nf">movl</span> <span class="nv">%eax</span><span class="p">,</span> <span class="no">cnt</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这样看来，机器在执行的时候可能会有问题。具体一点，一开始 cnt 为 0 ，一个进程如果在第二条指令被另一个进程打断，%eax 已经加一，而 cnt 的值还未保存。另一个进程完成操作后， cnt 为 1。接着原先的进程继续运行， cnt 也为 1。所以结果应该会比两倍的 n 要小。</p>
+<p>为了解决这个问题，就可以使用二元信号量，对 临界区（critical section）加锁,来保证同时只有一个进程访问它。在上面的例子里，临界区就是那三条汇编指令，即  <code>cnt++</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">//...
+</span><span class="c1"></span>	<span class="c1">// init mutex with 1
+</span><span class="c1"></span>    <span class="n">sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="c1">//...
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="nf">thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span> <span class="c1">// sem_wait(sem_t *s)
+</span><span class="c1"></span>    <span class="n">cnt</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span> <span class="c1">// sem_post(sem_t *s)
+</span><span class="c1"></span>  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>其中的<code>P()</code>，<code>V()</code>两个函数分别是对 Linux 下信号量函数的简单封装</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">P</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">sem_wait</span><span class="p">(</span><span class="n">sem</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">unix_error</span><span class="p">(</span><span class="s">&#34;P error&#34;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">V</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">sem_post</span><span class="p">(</span><span class="n">sem</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">unix_error</span><span class="p">(</span><span class="s">&#34;V error&#34;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>接下来讨论几个老师上课讲到的和没讲到的😢几个进程同步问题，分别为<strong>生产者-消费者问题</strong>，<strong>读者-写者问题</strong>，<strong>睡眠理发师问题</strong>，<strong>吸烟者问题</strong>，<strong>和尚吃水问题</strong>，<strong>吃水果问题</strong>。顺便可以写写代码（</p>
+<h2 id="producer-consumer">Producer-Consumer</h2>
+<p>一般信号量，是一个非负整数，可以用来表示可用资源的数量。对生产者消费者问题，对于多个消费者，多个生产者和缓存区大小大于 1 的情况：</p>
+<table>
+<thead>
+<tr>
+<th>线程</th>
+<th>关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-C</td>
+<td>互斥</td>
+</tr>
+<tr>
+<td>P-C</td>
+<td>同步</td>
+</tr>
+<tr>
+<td>P-P</td>
+<td>互斥</td>
+</tr>
+</tbody>
+</table>
+<p>生产者和消费者共享一个大小为n的缓存区，生产者不断生产数据，把他们放入缓存区；消费者不断地从缓存区取走数据，然后使用它们。</p>
+<p>两个生产者之前对缓存区的插入是互斥的，它们使用一个共享变量来表明当前要插入的位置。消费者也类似。所以必须保证生产者和消费者<strong>分别</strong>对缓存区的访问互斥。</p>
+<p>同时，我们还需要对调度对缓存区的访问，如果缓存区是空的，那么消费者不能从中取走数据，直到生产者生产了一个数据；如果缓存区的满的，那么生产者不能再往里面插入数据，直到消费者取走了一个数据。</p>
+<p>好了，说了那么多，总结起来就是：</p>
+<ul>
+<li>生产者和消费者<strong>分别</strong>对缓存区的访问互斥</li>
+<li>对缓存区中可用资源的计数</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="o">*</span><span class="n">buf</span><span class="p">;</span> <span class="c1">// buffer array
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">n</span><span class="p">;</span> <span class="c1">// size of solts, the buffer size is n - 1, because index 0 will not be
+</span><span class="c1"></span>         <span class="c1">// filled.
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">front</span><span class="p">;</span>     <span class="c1">// buf[(front+1)%n] is the first item
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">rear</span><span class="p">;</span>      <span class="c1">// buf[rear%n] is the last item
+</span><span class="c1"></span>  <span class="n">sem_t</span> <span class="n">mutex_p</span><span class="p">;</span> <span class="c1">// protect access to buf for prodecter
+</span><span class="c1"></span>  <span class="n">sem_t</span> <span class="n">mutex_c</span><span class="p">;</span>
+  <span class="n">sem_t</span> <span class="n">slots</span><span class="p">;</span> <span class="c1">// counts available solts
+</span><span class="c1"></span>  <span class="n">sem_t</span> <span class="n">items</span><span class="p">;</span> <span class="c1">// counts available items;
+</span><span class="c1"></span><span class="p">}</span> <span class="n">sbuf_t</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>我们使用两个互斥锁来保证缓存区的访问是互斥，同时使用信号量：slots 和 items 来对缓存区中的空位和数据进行计数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">;</span>
+
+<span class="n">sem_t</span> <span class="n">mutex_c</span><span class="p">,</span> <span class="n">mutex_p</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">p_cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">c_cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="nf">producter_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;produce: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="n">sbuf_insert</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_p</span><span class="p">);</span>
+    <span class="n">p_cnt</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_p</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="nf">consumer_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;consume: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">sbuf_remove</span><span class="p">(</span><span class="n">sp</span><span class="p">));</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_c</span><span class="p">);</span>
+    <span class="n">c_cnt</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_c</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="n">sp</span> <span class="o">=</span> <span class="n">Calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">sbuf_t</span><span class="p">));</span>
+  <span class="n">sbuf_init</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_c</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+  <span class="n">pthread_t</span> <span class="n">tids</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">producter_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="k">else</span>
+      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">consumer_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">sbuf_deinit</span><span class="p">(</span><span class="n">sp</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;producters run: %d times</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p_cnt</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;consumers run: %d times</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">c_cnt</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Create an empty, bounded, shared FIFO buffer with n slots
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">sbuf_init</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span> <span class="o">=</span> <span class="n">Calloc</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span>                    <span class="cm">/* Buffer holds max of n items */</span>
+  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>     <span class="cm">/* Empty buffer iff front == rear */</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="cm">/* Binary semaphore for locking */</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="cm">/* Binary semaphore for locking */</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>   <span class="cm">/* Initially, buf has n empty slots */</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>   <span class="cm">/* Initially, buf has zero data items */</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">sbuf_deinit</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Free</span><span class="p">(</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">);</span>
+  <span class="n">Free</span><span class="p">(</span><span class="n">sp</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// add to rear
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">sbuf_insert</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>  		<span class="c1">// Request solts
+</span><span class="c1"></span>  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span> 		<span class="c1">// Lock buf for producter
+</span><span class="c1"></span>  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span>
+  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span>  	<span class="c1">// unlock
+</span><span class="c1"></span>  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span> 		<span class="c1">// Make a item
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="c1">// remove from head
+</span><span class="c1"></span><span class="kt">int</span> <span class="nf">sbuf_remove</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">item</span><span class="p">;</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">];</span>
+  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
+  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>从 main 函数 看起，初始化信号量和缓存区，接着我们创建 10 个进程：5 个消费者,5 个生产者。</p>
+<p>在生产者进程中，我们模拟生产10条数据便结束进程。消费者进程相同地取走10条数据也就结束了。同时引入 <code>c_cnt, p_cnt</code>来验证我们的结果是否正确，对他们的访问也需要加锁。</p>
+<p><code>sbuf_insert</code> 函数等待一个可用的空位，加互斥锁，插入数据，然后宣布一个数据可用，来唤醒可能在等待的消费者进程；<code>sbuf_remove</code>函数等待可用的数据，加互斥锁，取走数据，然后宣布一个空位可用。</p>
+<p>如果要进一步提高它们的并发性，当插入数据和取出数据很耗时时，把它们放在互斥锁中是不合理的。比如一个消费者正在取走数据，这需要花费很久时间，而其他消费者也只能等待，即使还有可用的空位。可以使用一个局部变量保存数据的下标，把读写操作放到互斥锁之后。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// add to rear
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">sbuf_insert</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">tmp</span><span class="p">;</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span>
+  <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">;</span>
+  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span>
+  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[</span><span class="n">tmp</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span> <span class="c1">// assume this operation consume too much time,
+</span><span class="c1"></span>                       <span class="c1">// so put it out of the lock of the buffer, make
+</span><span class="c1"></span>                       <span class="c1">// producters more concurrent.
+</span><span class="c1"></span>  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// remove from head
+</span><span class="c1"></span><span class="kt">int</span> <span class="nf">sbuf_remove</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">item</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">tmp</span><span class="p">;</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
+  <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">;</span>
+  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[</span><span class="n">tmp</span><span class="p">];</span> <span class="c1">// same as productor
+</span><span class="c1"></span>  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="reader-writer">Reader-Writer</h2>
+<p>读者-写者问题的描述如下：</p>
+<p>有两组并发进程：读者和写者，它们共同读写共享文件F，要求：</p>
+<ol>
+<li>允许多个读者同时读文件</li>
+<li>只允许一个写者同时写文件</li>
+<li>写者在完成操作之前，不允许其他读者或写者操作</li>
+<li>写者在执行操作之前，其他读者或写者必须全部退出</li>
+</ol>
+<p>根据上面的几个要求，可以得知读者和写者之前的同步互斥关系：</p>
+<table>
+<thead>
+<tr>
+<th>进程</th>
+<th>关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R-R</td>
+<td>同步：<br />已经有读者在读：直接进行读操作；<br />无读者在读：等待写操作完成</td>
+</tr>
+<tr>
+<td>R-W</td>
+<td>互斥</td>
+</tr>
+<tr>
+<td>W-W</td>
+<td>互斥</td>
+</tr>
+</tbody>
+</table>
+<p>读者和写者之前，需要判断是否已经有读者在读，那么仅仅使用信号量不能解决这问题。所以，我们定义<code>reader_cnt</code>来统计当前的读者进程数，<code>mutex</code>为对<code>read_cnt</code>这个共享变量的互斥锁，而<code>w</code>为读者数量的信号量，因为最大只允许一个写者进行写操作，所以也相当于一个二元信号量。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define THREAD_SIZE 10
+</span><span class="cp"></span>
+<span class="kt">char</span> <span class="n">file</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;Init file&#34;</span><span class="p">;</span> <span class="c1">// simulate file I/O
+</span><span class="c1"></span><span class="kt">int</span> <span class="n">reader_cnt</span><span class="p">;</span>
+<span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span> <span class="c1">// mutux for reader_cnt
+</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">w</span><span class="p">;</span>     <span class="c1">// mutex for writer
+</span></code></pre></td></tr></table>
+</div>
+</div><p>main 函数，初始化信号量<code>mutex</code>和<code>w</code>为 1 ，并且创建读者和写者进程，使得读者进程个数大于写着进程：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="n">pthread_t</span> <span class="n">tid_list</span><span class="p">[</span><span class="n">THREAD_SIZE</span><span class="p">];</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">THREAD_SIZE</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// more reader
+</span><span class="c1"></span>      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">reader_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="k">else</span>
+      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">writer_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span> <span class="c1">// WAIT
+</span><span class="c1"></span>  <span class="p">}</span>
+
+  <span class="n">puts</span><span class="p">(</span><span class="s">&#34;Finally file:&#34;</span><span class="p">);</span>
+  <span class="n">puts</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>读者进程，每个读者进程模拟进行5次读操作：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">reader_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">cnt</span><span class="o">++</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// printf(&#34;%d\n&#34;, cnt);
+</span><span class="c1"></span>    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="n">reader_cnt</span><span class="o">++</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">reader_cnt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">// first reader
+</span><span class="c1"></span>      <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+
+    <span class="c1">// read file...
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Read file: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="n">reader_cnt</span><span class="o">--</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">reader_cnt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// last reader
+</span><span class="c1"></span>      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>写者进程，每个写者同样模拟5次写操作：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">writer_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">cnt</span><span class="o">++</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
+    <span class="c1">// critical section
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Writing file</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="n">strcpy</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s">&#34;Hello world&#34;</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>运行结果：</p>
+<p><img src="/images/sem-rw.png" alt="sem-rw"></p>
+<h2 id="sleepy-barber">Sleepy barber</h2>
+<p>睡眠理发师问题：理发店里有一位理发师，一把理发椅和多把等候的椅子；如果没有顾客，理发师在理发椅上睡觉；当有顾客来时，他唤醒理发师，进行理发，此时如果有其他顾客进来，如果有空椅子，则坐下等待，否则直接离开。</p>
+<p>定义4个全局变量分别为：<code>barber_ready</code>表示等待顾客的理发师数，因为理发师只有一个，也可以看做是二元信号量，用户阻塞顾客进程；<code>cust_ready</code>表示等待理发的顾客数，用于阻塞理发师进程，初始为0；<code>mutex</code>是用于保护共享变量<code>wating</code>的互斥锁；而<code>free_seats</code>则是常量，表示等待理发的椅子数量。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sem_t</span> <span class="n">barber_ready</span><span class="p">,</span> <span class="n">cust_ready</span><span class="p">;</span>
+<span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">free_seats</span><span class="p">,</span> <span class="n">wating</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>理发师进程：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">barber</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cust_ready</span><span class="p">);</span>  <span class="c1">// sleetp to wait customer
+</span><span class="c1"></span>    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="n">wating</span><span class="o">--</span><span class="p">;</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">barber_ready</span><span class="p">);</span>  <span class="c1">// ready to cut
+</span><span class="c1"></span>    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="n">cnt</span><span class="o">++</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">wating</span> <span class="o">=</span> <span class="n">free_seats</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">&#34;close shop</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+      <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>  <span class="c1">// barber close shop after cut &lt;arg&gt; customers
+</span><span class="c1"></span>    <span class="p">}</span>
+    <span class="c1">// cuthair
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;I&#39;m cutting your hair</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>顾客进程：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">customer</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">wating</span> <span class="o">&lt;</span> <span class="n">free_seats</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">wating</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cust_ready</span><span class="p">);</span>  <span class="c1">// notif barber
+</span><span class="c1"></span>    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">barber_ready</span><span class="p">);</span>  <span class="c1">// wait for barber
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;cut customer %d&#39;s hair</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">arg</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;I&#39;m leaving without cut</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>main 函数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="c1">// scanf(&#34;%d&#34;, &amp;free_seats);
+</span><span class="c1"></span>  <span class="n">free_seats</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">barber_ready</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cust_ready</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="n">pthread_t</span> <span class="n">b_tid</span><span class="p">,</span> <span class="n">c_tids</span><span class="p">[</span><span class="n">free_seats</span> <span class="o">*</span> <span class="mi">2</span><span class="p">];</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b_tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">barber</span><span class="p">,</span> <span class="n">free_seats</span> <span class="o">+</span> <span class="mi">2</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">free_seats</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">c_tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">customer</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">b_tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">free_seats</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Pthread_join</span><span class="p">(</span><span class="n">c_tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="cigarette-smokers">Cigarette smokers</h2>
+<p>吸烟者问题：三个抽烟者和一个供应者。每个抽烟者需要有三种材料：烟草、纸和火柴，才可吸烟。三个抽烟者分别拥有三种材料中的一种。 供应者每次随机将两种材料放到桌子上，拥有剩下那种材料的抽烟者卷一根烟并抽掉它。材料被使用后，供应者按上述原则继续提供材料。</p>
+<ul>
+<li>
+<p>供应者与三个抽烟者分别是同步关系。由于供应者无法同时满足两个或 以上的抽烟者，三个抽烟者对抽烟这个动作互斥。</p>
+</li>
+<li>
+<p>设置四个进程，供应者作为生产者向三个抽烟者提供材料。</p>
+</li>
+<li>
+<p>信号量设置：信号量<code>offer1</code>、<code>offer2</code>、<code>offer3</code>分别表示烟草和火柴的三种两两组合。信号量finish用于互斥进行抽烟动作。</p>
+</li>
+</ul>
+<blockquote>
+<p>按着上面的思路，敲得下面的代码。但是运行起来还有点问题。。。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&#34;csapp.h&#34;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="n">sem_t</span> <span class="n">offer1</span><span class="p">;</span>  <span class="c1">// offer paper and matchs
+</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">offer2</span><span class="p">;</span>  <span class="c1">// offer tobacco and matchs
+</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">offer3</span><span class="p">;</span>  <span class="c1">// offer tobacco and paper
+</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">finish</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">times</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>  <span class="c1">// offer 10 times somke
+</span><span class="c1"></span>
+<span class="kt">void</span> <span class="o">*</span><span class="nf">agent_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">times</span><span class="o">--</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">kase</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;time%d: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">kase</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">kase</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer1</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">kase</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer2</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer3</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>  <span class="c1">// wait somker finish
+</span><span class="c1"></span>  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// i hava tobacco
+</span><span class="c1"></span><span class="kt">void</span> <span class="o">*</span><span class="nf">somker1_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">times</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer1</span><span class="p">);</span>
+    <span class="c1">// smoke
+</span><span class="c1"></span>    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;somker1: that feeling...&#34;</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// i have paper
+</span><span class="c1"></span><span class="kt">void</span> <span class="o">*</span><span class="nf">somker2_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">times</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer2</span><span class="p">);</span>
+    <span class="c1">// smoke
+</span><span class="c1"></span>    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;somker2: that feeling...&#34;</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// i have matchs
+</span><span class="c1"></span><span class="kt">void</span> <span class="o">*</span><span class="nf">somker3_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">times</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer3</span><span class="p">);</span>
+    <span class="c1">// smoke
+</span><span class="c1"></span>    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;somker3: that feeling...&#34;</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="n">srand</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">pthread_t</span> <span class="n">somker1</span><span class="p">,</span> <span class="n">somker2</span><span class="p">,</span> <span class="n">somker3</span><span class="p">;</span>
+  <span class="n">pthread_t</span> <span class="n">agent</span><span class="p">;</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">somker1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">somker1_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">somker2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">somker1_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">somker3</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">somker1_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">agent</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">agent_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">somker3</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">somker2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">somker1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">puts</span><span class="p">(</span><span class="s">&#34;all threads created</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="和尚吃水问题">和尚吃水问题</h2>
+<p>某寺庙，有小、老和尚若干，有一水缸，有小和尚提水入缸供老和尚饮用。水缸可容 10 桶水，水取自同一井中。水井径窄，每次只能容一个桶取水。水桶总数为 3 个。每次入、取缸水仅为 1 桶，且不可同时进行。</p>
+<ul>
+<li>每次入、取缸水仅为 1 桶，所以小和尚和老和尚有互斥关系</li>
+<li>水井每次只能容一个桶取水，所以小和尚之前也有互斥关系</li>
+<li>信号量：<code>mutex1</code>用于小和尚之前互斥的从水井取水；<code>mutex2</code>用于互斥的从水缸倒水或取水；<code>empty</code>表示水缸还可放入的水；<code>full</code>表示水缸中已有的水；<code>pail</code>则是表示水桶的数量的信号量。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sem_t</span> <span class="n">mutex1</span><span class="p">,</span> <span class="n">mutex2</span><span class="p">;</span>
+<span class="n">sem_t</span> <span class="n">empty</span><span class="p">;</span>  <span class="c1">// 水缸中的空位
+</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">full</span><span class="p">;</span>   <span class="c1">//水缸中已经放入的水
+</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">pail</span><span class="p">;</span>   <span class="c1">//水桶
+</span><span class="c1"></span>
+<span class="kt">int</span> <span class="n">water</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">//水缸中的水量
+</span></code></pre></td></tr></table>
+</div>
+</div><p>小和尚取水：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">get_water</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex1</span><span class="p">);</span>
+    <span class="c1">// 从井中取水
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;little monk get water from wall</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex1</span><span class="p">);</span>
+
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
+    <span class="c1">// 倒入水缸
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;little monk put water to vat, water: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">water</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">full</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
+
+    <span class="n">Sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>  <span class="c1">// slow down...
+</span><span class="c1"></span>  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>老和尚喝水：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">use_water</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">full</span><span class="p">);</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
+    <span class="c1">// 从水缸取水
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;old monk get water from vat, water: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">--</span><span class="n">water</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+    <span class="c1">// 喝水
+</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;old monk drink water</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
+
+    <span class="n">Sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>main 函数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>  <span class="c1">//水缸中最多放10桶水
+</span><span class="c1"></span>  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">full</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>  <span class="c1">//三个木桶
+</span><span class="c1"></span>
+  <span class="n">pthread_t</span> <span class="n">little_id</span><span class="p">,</span> <span class="n">old_id</span><span class="p">;</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">little_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">get_water</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">old_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">use_water</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">little_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">old_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>运行结果：</p>
+<p><img src="/images/sem-monk.png" alt="sem-monk"></p>
+<h2 id="吃水果问题">吃水果问题</h2>
+<p>桌上有一个可以容纳3个水果的盘子，每次只能放或取一个水果，爸爸负责放苹果，妈妈负责放桔子，儿子只吃苹果，女儿只吃橘子。</p>
+<ul>
+<li>因为每次只能放或取一个水果，所以四人之前都存在互斥关系。</li>
+<li>爸爸放苹果，儿子吃苹果，两者是同步关系</li>
+<li>妈妈放橘子，女儿吃橘子，两者也是同步关系</li>
+<li>很显然需要四个进程，表示四个人</li>
+<li>信号量：<code>empty</code>表示盘子中还可放的水果数量，<code>organge</code>表示盘子中橘子的数量，<code>apple</code>表示盘子中苹果的数量，<code>mutex</code>是二元信号量，用来互斥的放或取水果。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sem_t</span> <span class="n">empty</span><span class="p">,</span> <span class="n">orange</span><span class="p">,</span> <span class="n">apple</span><span class="p">;</span>
+<span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span>
+
+<span class="c1">// 盘子中的苹果数和橘子数
+</span><span class="c1"></span><span class="kt">int</span> <span class="n">apple_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">orange_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>四个进程分别如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">father</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="c1">// put an apple
+</span><span class="c1"></span>    <span class="n">apple_num</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Put an apple: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">apple</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">mother</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="c1">// put an orange
+</span><span class="c1"></span>    <span class="n">orange_num</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Put an orange: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">orange</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">son</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">apple</span><span class="p">);</span>
+    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="c1">// eat apple
+</span><span class="c1"></span>    <span class="n">apple_num</span><span class="o">--</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Eat an apple: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">daugther</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">orange</span><span class="p">);</span>
+  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+  <span class="c1">// eat an orange
+</span><span class="c1"></span>  <span class="n">orange_num</span><span class="o">--</span><span class="p">;</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Eat an orange: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
+  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>main 函数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>  <span class="c1">// 盘子最多放三个水果
+</span><span class="c1"></span>  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">orange</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">apple</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="n">pthread_t</span> <span class="n">father_id</span><span class="p">,</span> <span class="n">mother_id</span><span class="p">,</span> <span class="n">son_id</span><span class="p">,</span> <span class="n">daugther_id</span><span class="p">;</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">father_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">father</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mother_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">mother</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">father_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">son</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">daugther_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">daugther</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">father_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">mother_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">son_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">daugther_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>运行结果：</p>
+<p><img src="/images/sem-fruit.png" alt="sem-fruit"></p>
+<h2 id="参考">参考</h2>
+<ul>
+<li>
+<p>CSAPP 第12章</p>
+</li>
+<li>
+<p><a href="https://book.douban.com/subject/1231788/">UNP 卷2</a></p>
+</li>
+<li>
+<p><a href="http://c.biancheng.net/cpp/html/2603.html">C语言教程网</a></p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Cigarette_smokers_problem">Cigarette smokers problem wiki</a></p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/Leafage_M/article/details/79726626">CSDN 家庭吃水果问题</a></p>
+</li>
+<li>
+<p><a href="https://wenku.baidu.com/view/e9624416866fb84ae45c8d1c.html">百度文库 吃水果问题</a></p>
+</li>
+<li>
+<p><a href="https://www.nowcoder.com/questionTerminal/688341e484e1479badc45f9d472c2c45">牛客网 吃水果问题</a></p>
+</li>
+</ul>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-10-18
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c/">C</a>
+          <a href="/tags/os/">OS</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/hack_deepin/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">【瞎折腾】Hack Deepin Desktop Environment</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/6.828_hw2_shell/">
+            <span class="next-text nav-default">6.828 Homework 2:Shell</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+
+
+
+
+
+
+<script src="/js/sitedate.js"></script>
+
+
+</body>
+</html>
