@@ -1,273 +1,163 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-cn">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>乞丐版Vi编辑器的实现1-Raw mode - LeeReindeer&#39;s blog</title>
-  <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-
-<meta name="author" content="LeeReindeer" /><meta name="description" content=" 参考 Entering raw mode
- 这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&amp;hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。
-Makefile 我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：
-1 2 3 4 5 6 7 8 9 10 11 12 13  CC = gcc CFLAGS = -Wall -Wextra -pedantic -std=c99 -O3 all: vip debug: $(CC) $(CFLAGS) vip.c -g -o vipd re: make clean;make clean: rm -f vip vipd   CFLAGS 里使用 c99 标准；使用 -O3进行编译优化，主要是对内联函数进行优化；-Wall -Wextra -pedantic 会打印一些额外的警告，对 debug 有帮助。
-" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
-
-
-<link rel="canonical" href="https://leer.moe/post/write-vip-step-by-step1/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-
-
-
-<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
-
-
-<meta property="og:title" content="乞丐版Vi编辑器的实现1-Raw mode" />
-<meta property="og:description" content="
-参考 Entering raw mode
-
-这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。
-Makefile
-我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-
-
-CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -std=c99 -O3
-
-all: vip
-
-debug:
-	$(CC) $(CFLAGS) vip.c -g -o vipd
-
-re:
-	make clean;make
-
-clean:
-	rm -f vip vipd
-
-
-CFLAGS 里使用 c99 标准；使用 -O3进行编译优化，主要是对内联函数进行优化；-Wall -Wextra -pedantic 会打印一些额外的警告，对 debug 有帮助。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/post/write-vip-step-by-step1/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2018-12-02T14:31:21+00:00" />
-<meta property="article:modified_time" content="2018-12-02T14:31:21+00:00" />
-
-<meta itemprop="name" content="乞丐版Vi编辑器的实现1-Raw mode">
-<meta itemprop="description" content="
-参考 Entering raw mode
-
-这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。
-Makefile
-我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-
-
-CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -std=c99 -O3
-
-all: vip
-
-debug:
-	$(CC) $(CFLAGS) vip.c -g -o vipd
-
-re:
-	make clean;make
-
-clean:
-	rm -f vip vipd
-
-
-CFLAGS 里使用 c99 标准；使用 -O3进行编译优化，主要是对内联函数进行优化；-Wall -Wextra -pedantic 会打印一些额外的警告，对 debug 有帮助。"><meta itemprop="datePublished" content="2018-12-02T14:31:21+00:00" />
-<meta itemprop="dateModified" content="2018-12-02T14:31:21+00:00" />
-<meta itemprop="wordCount" content="2699">
-<meta itemprop="keywords" content="C," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="乞丐版Vi编辑器的实现1-Raw mode"/>
-<meta name="twitter:description" content="
-参考 Entering raw mode
-
-这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。
-Makefile
-我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-
-
-CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -std=c99 -O3
-
-all: vip
-
-debug:
-	$(CC) $(CFLAGS) vip.c -g -o vipd
-
-re:
-	make clean;make
-
-clean:
-	rm -f vip vipd
-
-
-CFLAGS 里使用 c99 标准；使用 -O3进行编译优化，主要是对内联函数进行优化；-Wall -Wextra -pedantic 会打印一些额外的警告，对 debug 有帮助。"/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-</head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <a href="/">
-        <li class="mobile-menu-item">Home</li>
-      </a><a href="/categories/newsletter/">
-        <li class="mobile-menu-item">Newsletter</li>
-      </a><a href="/post/">
-        <li class="mobile-menu-item">Archives</li>
-      </a><a href="/tags/">
-        <li class="mobile-menu-item">Tags</li>
-      </a><a href="/categories/">
-        <li class="mobile-menu-item">Categories</li>
-      </a><a href="/about/">
-        <li class="mobile-menu-item">About</li>
-      </a>
-  </ul>
-
-  
-
-
-</nav>
-
-  <div class="container" id="mobile-panel">
-    <header id="header" class="header">
-        <div class="logo-wrapper">
-  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-</div>
-
-
-
-
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    <li class="menu-item">
-        <a class="menu-item-link" href="/">Home</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/post/">Archives</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/tags/">Tags</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/">Categories</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/about/">About</a>
-      </li>
-  </ul>
-</nav>
-
-    </header>
-
-    <main id="main" class="main">
-      <div class="content-wrapper">
-        <div id="content" class="content">
-          <article class="post">
+    <title>乞丐版Vi编辑器的实现1-Raw mode | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="乞丐版Vi编辑器的实现1-Raw mode - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
     
-    <header class="post-header">
-      <h1 class="post-title">乞丐版Vi编辑器的实现1-Raw mode</h1>
+    <meta property="article:published_time" content='2018-12-02T14:31:21&#43;08:00'>
+    
+    
+    <meta property="article:modified_time" content='2018-12-02T14:31:21&#43;08:00'>
+    
+    <meta name="Keywords" content="">
+    <meta name="description"
+        content="
+参考 Entering raw mode
 
-      <div class="post-meta">
-        <span class="post-time"> 2018-12-02 </span>
-        <div class="post-category">
-            <a href="/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/"> 创作集 </a>
+这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。
+Makefile
+我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：
+CC = gcc
+CFLAGS = -Wall -Wextra -pedantic -std=c99 -O3
+
+all: vip
+
+debug:
+	$(CC) $(CFLAGS) vip.c -g -o vipd
+
+re:
+	make clean;make
+
+clean:
+	rm -f vip vipd
+CFLAGS 里使用 c99 标准；使用 -O3进行编译优化，主要是对内联函数进行优化；-Wall -Wextra -pedantic 会打印一些额外的警告，对 debug 有帮助。">
+    
+    <meta name="author" content="LeeR">
+    <meta property="og:url" content="https://leer.moe/post/write-vip-step-by-step1/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                <p class="description">Dive in</p>
             </div>
-          <span class="more-meta"> 2699 words </span>
-          <span class="more-meta"> 6 mins read </span>
-        
-      </div>
-    </header>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://leer.moe/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
 
-    <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">Contents</h2>
-  <div class="post-toc-content always-active">
-    <nav id="TableOfContents">
+    <div id="body">
+        
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 260px;
+        margin-top: 1%;
+        right: 8.5%;
+         
+        margin-right: 1%;
+        padding: 5px 10px;
+        font-size: 12px;
+         
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+         
+         
+         
+        word-wrap: break-word;
+        line-height: 1.5;
+         
+         
+         
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 18px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+        color: #ba3925;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">乞丐版Vi编辑器的实现1-Raw mode</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
   <ol>
     <li><a href="#makefile">Makefile</a></li>
     <li><a href="#错误处理">错误处理</a></li>
@@ -285,98 +175,98 @@ CFLAGS 里使用 c99 标准；使用 -O3进行编译优化，主要是对内联�
     <li><a href="#小结">小结</a></li>
   </ol>
 </nav>
-  </div>
-</div>
-  <div class="post-outdated">
-    <div class="warn">
-      <p>[NOTE] Updated <span class="timeago" datetime="2018-12-02T14:31:21" title="December 2, 2018">December 2, 2018</span>. This article may have outdated content or subject matter.</p>
     </div>
-  </div>
-    <div class="post-content">
-      <blockquote>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            
+            
+            
+            
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">乞丐版Vi编辑器的实现1-Raw mode</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年12月2日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span>|</span>
+            <span class="meta-category">2586 words</span>
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
 <p>参考 <a href="https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html">Entering raw mode</a></p>
 </blockquote>
 <p>这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。</p>
 <h2 id="makefile">Makefile</h2>
 <p>我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="nv">CC</span> <span class="o">=</span> gcc
-<span class="nv">CFLAGS</span> <span class="o">=</span> -Wall -Wextra -pedantic -std<span class="o">=</span>c99 -O3
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#008080">CC</span> <span style="color:#000;font-weight:bold">=</span> gcc
+<span style="color:#008080">CFLAGS</span> <span style="color:#000;font-weight:bold">=</span> -Wall -Wextra -pedantic -std<span style="color:#000;font-weight:bold">=</span>c99 -O3
 
-<span class="nf">all</span><span class="o">:</span> <span class="n">vip</span>
+<span style="color:#900;font-weight:bold">all</span><span style="color:#000;font-weight:bold">:</span> vip
 
-<span class="nf">debug</span><span class="o">:</span>
-	<span class="k">$(</span>CC<span class="k">)</span> <span class="k">$(</span>CFLAGS<span class="k">)</span> vip.c -g -o vipd
+<span style="color:#900;font-weight:bold">debug</span><span style="color:#000;font-weight:bold">:</span>
+	<span style="color:#000;font-weight:bold">$(</span>CC<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">$(</span>CFLAGS<span style="color:#000;font-weight:bold">)</span> vip.c -g -o vipd
 
-<span class="nf">re</span><span class="o">:</span>
-	make clean<span class="p">;</span>make
+<span style="color:#900;font-weight:bold">re</span><span style="color:#000;font-weight:bold">:</span>
+	make clean;make
 
-<span class="nf">clean</span><span class="o">:</span>
+<span style="color:#900;font-weight:bold">clean</span><span style="color:#000;font-weight:bold">:</span>
 	rm -f vip vipd
-</code></pre></td></tr></table>
-</div>
-</div><p>CFLAGS 里使用 c99 标准；使用<code> -O3</code>进行编译优化，主要是对内联函数进行优化；<code>-Wall -Wextra -pedantic </code>会打印一些额外的警告，对 debug 有帮助。</p>
+</code></pre></div><p>CFLAGS 里使用 c99 标准；使用<code> -O3</code>进行编译优化，主要是对内联函数进行优化；<code>-Wall -Wextra -pedantic </code>会打印一些额外的警告，对 debug 有帮助。</p>
 <h2 id="错误处理">错误处理</h2>
 <p>首先介绍一下通用的错误处理函数，当遇到错误是，我们只是打印错误消息，然后直接退出程序。虽然程序没有那么健壮，但是足够简单（</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">die</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">perror</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-  <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><h2 id="canonical-mode">Canonical mode</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">die</span>(<span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>msg) {
+  perror(msg);
+  exit(<span style="color:#099">1</span>);
+}
+</code></pre></div><h2 id="canonical-mode">Canonical mode</h2>
 <p>我们使用<code>read()</code> system call 来读取一个字节的输入：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;q&#39;</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>上面的代码，至少可以说明两点：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;unistd.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  <span style="color:#458;font-weight:bold">char</span> c;
+  <span style="color:#000;font-weight:bold">while</span> (read(STDIN_FILENO, <span style="color:#000;font-weight:bold">&amp;</span>c, <span style="color:#099">1</span>) <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {
+    write(STDOUT_FILENO, <span style="color:#000;font-weight:bold">&amp;</span>c, <span style="color:#099">1</span>);
+    <span style="color:#000;font-weight:bold">if</span> (c <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;q&#39;</span>) <span style="color:#000;font-weight:bold">break</span>;
+  }
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+}
+</code></pre></div><p>上面的代码，至少可以说明两点：</p>
 <ul>
 <li>当我们按下按键时，输入的字符马上显示在屏幕上了，即<strong>echoing</strong>（回显）。</li>
 <li>只有按下<code>Enter</code>键后，程序才接收到输入的字符，即 <strong>canonical mode</strong>，是按行进行输入的。</li>
@@ -384,100 +274,50 @@ CFLAGS 里使用 c99 标准；使用 -O3进行编译优化，主要是对内联�
 <p>接下来，我们关闭 echoing 和 canonical mode，因为我不需要 Terminal 的回显，我们要自己来实现显示字符，也不要按行读取字符，每当按下一个按键时，程序就会接收到它，编辑器应该是按字节读取的。</p>
 <h2 id="关闭回显和canonical-mode">关闭回显和canonical mode</h2>
 <p>使用 <code>tcgetattr</code>当前 terminal 的属性，使用 <code>tcsetattr</code>设置 terminal 的属性，这些方法都在<code>termios.h</code>头文件中。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">editor_config</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">termios</span> <span class="n">origin_termios</span><span class="p">;</span>
-<span class="p">}</span> <span class="n">Editor</span><span class="p">;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> editor_config {
+  <span style="color:#000;font-weight:bold">struct</span> termios origin_termios;
+} Editor;
 
-<span class="k">static</span> <span class="n">Editor</span> <span class="n">editor</span><span class="p">;</span>
+<span style="color:#000;font-weight:bold">static</span> Editor editor;
 
-<span class="kt">void</span> <span class="nf">enable_raw_mode</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">termios</span> <span class="n">raw</span><span class="p">;</span>
-  <span class="c1">// get terminal attributes
-</span><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">raw</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">die</span><span class="p">(</span><span class="s">&#34;tcgetattr&#34;</span><span class="p">);</span>
-  <span class="n">editor</span><span class="p">.</span><span class="n">origin_termios</span> <span class="o">=</span> <span class="n">raw</span><span class="p">;</span>
-  <span class="c1">// restore at exit
-</span><span class="c1"></span>  <span class="n">atexit</span><span class="p">(</span><span class="n">disable_raw_mode</span><span class="p">);</span>
-  <span class="c1">// it turns out that termianl won&#39; print what you input, and read
-</span><span class="c1"></span>  <span class="c1">// byte-by-byte instead of line-by-line
-</span><span class="c1"></span>  <span class="n">raw</span><span class="p">.</span><span class="n">c_lflag</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">ECHO</span> <span class="o">|</span> <span class="n">ICANON</span><span class="p">);</span>
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">enable_raw_mode</span>() {
+  <span style="color:#000;font-weight:bold">struct</span> termios raw;
+  <span style="color:#998;font-style:italic">// get terminal attributes
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">if</span> (tcgetattr(STDIN_FILENO, <span style="color:#000;font-weight:bold">&amp;</span>raw) <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) die(<span style="color:#d14">&#34;tcgetattr&#34;</span>);
+  editor.origin_termios <span style="color:#000;font-weight:bold">=</span> raw;
+  <span style="color:#998;font-style:italic">// restore at exit
+</span><span style="color:#998;font-style:italic"></span>  atexit(disable_raw_mode);
+  <span style="color:#998;font-style:italic">// it turns out that termianl won&#39; print what you input, and read
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// byte-by-byte instead of line-by-line
+</span><span style="color:#998;font-style:italic"></span>  raw.c_lflag <span style="color:#000;font-weight:bold">&amp;=</span> <span style="color:#000;font-weight:bold">~</span>(ECHO <span style="color:#000;font-weight:bold">|</span> ICANON);
 
-  <span class="k">if</span> <span class="p">(</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="n">TCSAFLUSH</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">raw</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">die</span><span class="p">(</span><span class="s">&#34;tcsetattr&#34;</span><span class="p">);</span>
-<span class="p">}</span>
+  <span style="color:#000;font-weight:bold">if</span> (tcsetattr(STDIN_FILENO, TCSAFLUSH, <span style="color:#000;font-weight:bold">&amp;</span>raw) <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) die(<span style="color:#d14">&#34;tcsetattr&#34;</span>);
+}
 
-<span class="kt">void</span> <span class="nf">disable_raw_mode</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="n">TCSAFLUSH</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">editor</span><span class="p">.</span><span class="n">origin_termios</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">die</span><span class="p">(</span><span class="s">&#34;disable_raw_mode&#34;</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>定义 Editor 结构体来保存全局变量，之后会添加更多变量到其中的。目前就只有一个 <code>termios</code>，用来保存之前的 terminal属性。在<code>enable_raw_mode()</code>函数里，对终端属性一通乱改之后，那么在程序退出的时候需要恢复原理的属性吧。</p>
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">disable_raw_mode</span>() {
+  <span style="color:#000;font-weight:bold">if</span> (tcsetattr(STDIN_FILENO, TCSAFLUSH, <span style="color:#000;font-weight:bold">&amp;</span>editor.origin_termios) <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>)
+    die(<span style="color:#d14">&#34;disable_raw_mode&#34;</span>);
+}
+</code></pre></div><p>定义 Editor 结构体来保存全局变量，之后会添加更多变量到其中的。目前就只有一个 <code>termios</code>，用来保存之前的 terminal属性。在<code>enable_raw_mode()</code>函数里，对终端属性一通乱改之后，那么在程序退出的时候需要恢复原理的属性吧。</p>
 <p>这里利用<code>atexi()</code>函数，会在程序退出之前调用传给他的函数。</p>
 <p>这时候，如果你运行程序，似乎没有发现什么区别。我们按下按键之后，字符还是马上显示在屏幕上了。其实不然，终端已经关闭了 echoing 和 canonical mode。那么，程序就是按字节读取的，不需要按下<code>ENTER</code>，而字符可以显示在屏幕上是因为这句代码：<code>write(STDOUT_FILENO, &amp;c, 1);</code>，这可以看做我们自己又实现了回显，注释掉这句代码，就没有任何输出了。</p>
 <h2 id="按键">按键</h2>
 <p>在屏幕打印出我们按下按键的编码，这样有利于之后的编码。比如，必须知道<code>INS</code>键的编码，我们才能在读取的时候捕获它。运行下面的代码可以发现<code>INS</code>键其实对应的不是一个ASCII码，而是四个：<code>27 [ 2 ~</code>。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">enable_raw_mode</span><span class="p">();</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  enable_raw_mode();
 
-  <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">iscntrl</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span>
-      <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d (&#39;%c&#39;)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;q&#39;</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><code>iscntrl()</code>来自<code>ctype.h</code>头文件，顾名思义，它是<em>is control</em>的缩写，判断一个字符是否是 control character。</p>
+  <span style="color:#458;font-weight:bold">char</span> c;
+  <span style="color:#000;font-weight:bold">while</span> (read(STDIN_FILENO, <span style="color:#000;font-weight:bold">&amp;</span>c, <span style="color:#099">1</span>) <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {
+    <span style="color:#000;font-weight:bold">if</span> (iscntrl(c)) {
+      printf(<span style="color:#d14">&#34;%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, c);
+    } <span style="color:#000;font-weight:bold">else</span> {
+      printf(<span style="color:#d14">&#34;%d (&#39;%c&#39;)</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, c, c);
+    }
+    <span style="color:#000;font-weight:bold">if</span> (c <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;q&#39;</span>) <span style="color:#000;font-weight:bold">break</span>;
+  }
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+}
+</code></pre></div><p><code>iscntrl()</code>来自<code>ctype.h</code>头文件，顾名思义，它是<em>is control</em>的缩写，判断一个字符是否是 control character。</p>
 <blockquote>
 <p>Control characters are nonprintable characters that we don’t want to print to the screen. ASCII codes 0–31 are all control characters, and 127 is also a control character. . ASCII codes 32–126 are all printable.</p>
 </blockquote>
@@ -491,34 +331,13 @@ CFLAGS 里使用 c99 标准；使用 -O3进行编译优化，主要是对内联�
 <li><code>CTRL-C</code>发送<code>SIGINT</code>信号结束进程。</li>
 </ul>
 <h3 id="关闭-ctrl-c-ctrl-z-ctrl-v">关闭 <code>CTRL-C</code> <code>CTRL-Z</code> <code>CTRL-V</code></h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c">  <span class="n">raw</span><span class="p">.</span><span class="n">c_lflag</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">ECHO</span> <span class="o">|</span> <span class="n">ICANON</span> <span class="o">|</span> <span class="n">ISIG</span> <span class="o">|</span> <span class="n">IEXTEN</span><span class="p">);</span>
-</code></pre></td></tr></table>
-</div>
-</div><h3 id="关闭-ctrl-s-ctrl-q">关闭 <code>CTRL-S</code> <code>CTRL-Q</code></h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C">  <span class="n">raw</span><span class="p">.</span><span class="n">c_iflag</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">IXON</span><span class="p">);</span>
-</code></pre></td></tr></table>
-</div>
-</div><h3 id="修复-ctrl-m">修复 <code>CTRL-M</code></h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  raw.c_lflag <span style="color:#000;font-weight:bold">&amp;=</span> <span style="color:#000;font-weight:bold">~</span>(ECHO <span style="color:#000;font-weight:bold">|</span> ICANON <span style="color:#000;font-weight:bold">|</span> ISIG <span style="color:#000;font-weight:bold">|</span> IEXTEN);
+</code></pre></div><h3 id="关闭-ctrl-s-ctrl-q">关闭 <code>CTRL-S</code> <code>CTRL-Q</code></h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">  raw.c_iflag <span style="color:#000;font-weight:bold">&amp;=</span> <span style="color:#000;font-weight:bold">~</span>(IXON);
+</code></pre></div><h3 id="修复-ctrl-m">修复 <code>CTRL-M</code></h3>
 <p>你会发现<code>CTRL-WORD</code>都是对应字母表的顺序的，除了这个<code>CTRL-M</code>是10，<code>CTRL-J</code>已经是10了，还有什么也是10吗，就是<code>Enter</code>键。这是终端的一个功能，会把 13（<code>'\r'</code>） 变成 10（<code>\n</code>）。即， translating any carriage returns (<code>13</code>, <code>'\r'</code>) inputted by the user into newlines (<code>10</code>, <code>'\n'</code>)。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C">  <span class="n">raw</span><span class="p">.</span><span class="n">c_iflag</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">IXON</span> <span class="o">|</span> <span class="n">ICRNL</span><span class="p">);</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>之后，<code>CTRL-M</code>和<code>Enter</code>都会变成13。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">  raw.c_iflag <span style="color:#000;font-weight:bold">&amp;=</span> <span style="color:#000;font-weight:bold">~</span>(IXON <span style="color:#000;font-weight:bold">|</span> ICRNL);
+</code></pre></div><p>之后，<code>CTRL-M</code>和<code>Enter</code>都会变成13。</p>
 <h3 id="关闭-output-processing">关闭 output processing</h3>
 <p>其实我也一直不明白为啥要用<code>\r\n</code>来表示换行，直到看了这篇教程。先来解释一下<code>\r</code>和<code>\n</code>的作用：</p>
 <ul>
@@ -531,239 +350,468 @@ CFLAGS 里使用 c99 标准；使用 -O3进行编译优化，主要是对内联�
 </ul>
 <p>相信这样的解释以后，你已经明白为什么需要两个字符，才能达到所谓的“换行”效果了。</p>
 <p>终端会自动把<code>\n</code>转化成<code>\r\n</code>，这带来很多方便，我们使用<code>printf</code>函数时，只需要加上<code>\n</code>就可以达到换行效果。而现在是时候需要关闭这个功能了。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">raw</span><span class="p">.</span><span class="n">c_oflag</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">OPOST</span><span class="p">);</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>没有 <code>\r</code>的<code>\n</code>，就是下图这个样子的</p>
-<p><img src="/images/without-carriage.png" alt="without-carriage"></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">raw.c_oflag <span style="color:#000;font-weight:bold">&amp;=</span> <span style="color:#000;font-weight:bold">~</span>(OPOST);
+</code></pre></div><p>没有 <code>\r</code>的<code>\n</code>，就是下图这个样子的</p>
+<p>
+<a data-fancybox="gallery" href="/images/without-carriage.png">
+  <img class="mx-auto" alt="without-carriage" src="/images/without-carriage.png" />
+</a>
+</p>
 <p>这之后，我们需要修改<code>printf</code>语句为：<code>printf(&quot;\r\n&quot;)</code>。这显然不方便，所以我编写了一个<code>println</code>内联函数来代替。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;stdarg.h&gt;</span><span class="cp">
-</span><span class="cp"></span><span class="k">static</span> <span class="kr">inline</span> <span class="kt">int</span> <span class="nf">println</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="p">...)</span> <span class="p">{</span>
-  <span class="n">va_list</span> <span class="n">args</span><span class="p">;</span>
-  <span class="n">va_start</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">fmt</span><span class="p">);</span>
-  <span class="n">vprintf</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">args</span><span class="p">);</span>
-  <span class="n">va_end</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\r\n</span><span class="s">&#34;</span><span class="p">);</span>
-<span class="p">}</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;stdarg.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">inline</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">println</span>(<span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  vprintf(fmt, args);
+  va_end(args);
+  <span style="color:#000;font-weight:bold">return</span> printf(<span style="color:#d14">&#34;</span><span style="color:#d14">\r\n</span><span style="color:#d14">&#34;</span>);
+}
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">enable_raw_mode</span><span class="p">();</span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  enable_raw_mode();
 
-  <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">iscntrl</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">&#34;%d (&#39;%c&#39;)&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;q&#39;</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><h2 id="timeout-for-read">Timeout for <code>read()</code></h2>
+  <span style="color:#458;font-weight:bold">char</span> c;
+  <span style="color:#000;font-weight:bold">while</span> (read(STDIN_FILENO, <span style="color:#000;font-weight:bold">&amp;</span>c, <span style="color:#099">1</span>) <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {
+    <span style="color:#000;font-weight:bold">if</span> (iscntrl(c)) {
+      println(<span style="color:#d14">&#34;%d&#34;</span>, c);
+    } <span style="color:#000;font-weight:bold">else</span> {
+      println(<span style="color:#d14">&#34;%d (&#39;%c&#39;)&#34;</span>, c, c);
+    }
+    <span style="color:#000;font-weight:bold">if</span> (c <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;q&#39;</span>) <span style="color:#000;font-weight:bold">break</span>;
+  }
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+}
+</code></pre></div><h2 id="timeout-for-read">Timeout for <code>read()</code></h2>
 <p>现在，<code>read()</code>函数是阻塞的，程序阻塞在<code>read()</code>，等待键盘的输入。 如果  在等待的过程中我们想要做些事情该咋办呢？我们可以设置 timeout，这样如果一定时间内<code>read()</code>没有读到输入，就会直接返回，这样依赖<code>read()</code>函数，就不是阻塞的了。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// in ed_enable_raw_mode()
-</span><span class="c1"></span>  <span class="n">raw</span><span class="p">.</span><span class="n">c_cc</span><span class="p">[</span><span class="n">VMIN</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="c1">// read timeout at 200 ms
-</span><span class="c1"></span>  <span class="c1">// if don&#39;t set screen will not refresh until key press
-</span><span class="c1"></span>  <span class="n">raw</span><span class="p">.</span><span class="n">c_cc</span><span class="p">[</span><span class="n">VTIME</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// in ed_enable_raw_mode()
+</span><span style="color:#998;font-style:italic"></span>  raw.c_cc[VMIN] <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+  <span style="color:#998;font-style:italic">// read timeout at 200 ms
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// if don&#39;t set screen will not refresh until key press
+</span><span style="color:#998;font-style:italic"></span>  raw.c_cc[VTIME] <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>;
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">enable_raw_mode</span><span class="p">();</span>
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
+  enable_raw_mode();
 
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">errno</span> <span class="o">!=</span> <span class="n">EAGAIN</span><span class="p">)</span> <span class="n">die</span><span class="p">(</span><span class="s">&#34;read&#34;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">iscntrl</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">println</span><span class="p">(</span><span class="s">&#34;%d (&#39;%c&#39;)&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;q&#39;</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><code>VMIN</code>表示最小可读的字节数。我们设置为0，读取任何可读的字节。<code>VTIME</code>表示<code>read()</code>的最长等待时间，设置为2，表示200毫秒。如果<code>read()</code>超时了，它会返回 0 ，进而进入下一个循环。运行程序可以看到程序一直打印0。而当按下按键时，会显示按键的编码。</p>
+  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
+    <span style="color:#458;font-weight:bold">char</span> c <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;\0&#39;</span>;
+    <span style="color:#000;font-weight:bold">if</span> (read(STDIN_FILENO, <span style="color:#000;font-weight:bold">&amp;</span>c, <span style="color:#099">1</span>) <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> errno <span style="color:#000;font-weight:bold">!=</span> EAGAIN) die(<span style="color:#d14">&#34;read&#34;</span>);
+    <span style="color:#000;font-weight:bold">if</span> (iscntrl(c)) {
+      println(<span style="color:#d14">&#34;%d&#34;</span>, c);
+    } <span style="color:#000;font-weight:bold">else</span> {
+      println(<span style="color:#d14">&#34;%d (&#39;%c&#39;)&#34;</span>, c, c);
+    }
+    <span style="color:#000;font-weight:bold">if</span> (c <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;q&#39;</span>) <span style="color:#000;font-weight:bold">break</span>;
+  }
+  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+}
+</code></pre></div><p><code>VMIN</code>表示最小可读的字节数。我们设置为0，读取任何可读的字节。<code>VTIME</code>表示<code>read()</code>的最长等待时间，设置为2，表示200毫秒。如果<code>read()</code>超时了，它会返回 0 ，进而进入下一个循环。运行程序可以看到程序一直打印0。而当按下按键时，会显示按键的编码。</p>
 <h2 id="小结">小结</h2>
 <p>这一步中，我们让终端进入 raw mode，这使得编辑器可以自己渲染和打印字符在屏幕上。下一步，我们会处理低级的终端输入输出，并利用这些来渲染和移动光标。</p>
 <p>第一步的代码可以在<a href="https://github.com/LeeReindeer/VIP/tree/step1">GitHub</a>上查看，我用step1, step2 &hellip; 这样分支来分离每一步的代码。更加详细的步骤在<code>steps/</code>文件夹下给出。</p>
-    </div>
-
-    <div class="post-copyright">
-  <p class="copyright-item">
-    <span class="item-title">Author</span>
-    <span class="item-content">LeeReindeer</span>
-  </p>
-  <p class="copyright-item">
-    <span class="item-title">LastMod</span>
-    <span class="item-content">
-        2018-12-02
-        
-    </span>
-  </p>
-  
-  <p class="copyright-item">
-    <span class="item-title">License</span>
-    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
-  </p>
-</div>
-<footer class="post-footer">
-      <div class="post-tags">
-          <a href="/tags/c/">C</a>
-          </div>
-      <nav class="post-nav">
-        <a class="prev" href="/post/write-vip-step-by-step2/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">乞丐版Vi编辑器的实现2-原始输入输出</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
-        <a class="next" href="/post/write-vip-step-by-step0/">
-            <span class="next-text nav-default">乞丐版Vi编辑器的实现0-想法</span>
-            <span class="next-text nav-mobile">Next</span>
-            <i class="iconfont icon-right"></i>
-          </a>
-      </nav>
-    </footer>
-  </article>
         </div>
+
         
 
-  
 
-  
-    <script src="https://utteranc.es/client.js"
-            repo="LeeReindeer/LeeReindeer.github.io"
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/write-vip-step-by-step0/">乞丐版Vi编辑器的实现0-想法</a></li>
+        
+        <li><a href="/post/csapp_data_lab/">CSAPP Data Lab 思路和笔记</a></li>
+        
+        <li><a href="/post/semaphore/">Concurrent with Semaphore</a></li>
+        
+        <li><a href="/post/pointer_in_c/">C语言-可怕的指针</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/c'>C</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
-
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
-      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
-      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
-  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
-</div>
-
-<div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme -
-    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
-  </span>
-
-  
-
-  <span class="copyright-year">
-    &copy;
-    2017 -
-    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
-  </span>
-</div>
-
-<div class="copyright" id="showDays">
-
-</div>
-
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
+      </script>
     </div>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
-  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
-    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
-    timeago().render(document.querySelectorAll('.timeago'), languageCode);
-    timeago.cancel();  
-  </script>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href="/categories">分类</a></h3>
+<ul class="widget-list">
+    
+    
+    
+    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
+    
+    
+    
+    <li><a href="#">未分类
+            (3)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+
+
+
+
+
+<div class="tagcloud">
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
+        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+    <div class="container" id="showDays"></div>
+</footer>
+<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+
+
+
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
 
 
 
 
 
 
-<script src="/js/sitedate.js"></script>
 
+
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
+
 </html>

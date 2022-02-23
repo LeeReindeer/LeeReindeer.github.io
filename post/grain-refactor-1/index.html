@@ -1,173 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-cn">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Grain重构记-API - LeeReindeer&#39;s blog</title>
-  <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-
-<meta name="author" content="LeeReindeer" /><meta name="description" content=" Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务器接口，卒。 最近发现了一个新的可用的网站，所以重构的时候到了，在框架的选择上我一直纠结是用 MVP 还是 MVVM，最后还是用了 MVVM 配合 Google 的 Jetpack，使用起来很奇妙，也有很多坑。
-目前 App 确定的几个功能是：查成绩、校园卡、借阅查询。
- 这次我用的数据来源是学校的官网，可以在外网访问，貌似知道这个网站的同学很少啊。
-" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
-
-
-<link rel="canonical" href="https://leer.moe/post/grain-refactor-1/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-
-
-
-<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
-
-
-<meta property="og:title" content="Grain重构记-API" />
-<meta property="og:description" content="
-Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务器接口，卒。
-最近发现了一个新的可用的网站，所以重构的时候到了，在框架的选择上我一直纠结是用 MVP 还是 MVVM，最后还是用了 MVVM 配合 Google 的 Jetpack，使用起来很奇妙，也有很多坑。
-目前 App 确定的几个功能是：查成绩、校园卡、借阅查询。
-
-这次我用的数据来源是学校的官网，可以在外网访问，貌似知道这个网站的同学很少啊。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/post/grain-refactor-1/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2019-01-16T18:31:21+00:00" />
-<meta property="article:modified_time" content="2019-01-16T18:31:21+00:00" />
-
-<meta itemprop="name" content="Grain重构记-API">
-<meta itemprop="description" content="
-Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务器接口，卒。
-最近发现了一个新的可用的网站，所以重构的时候到了，在框架的选择上我一直纠结是用 MVP 还是 MVVM，最后还是用了 MVVM 配合 Google 的 Jetpack，使用起来很奇妙，也有很多坑。
-目前 App 确定的几个功能是：查成绩、校园卡、借阅查询。
-
-这次我用的数据来源是学校的官网，可以在外网访问，貌似知道这个网站的同学很少啊。"><meta itemprop="datePublished" content="2019-01-16T18:31:21+00:00" />
-<meta itemprop="dateModified" content="2019-01-16T18:31:21+00:00" />
-<meta itemprop="wordCount" content="2852">
-<meta itemprop="keywords" content="Android," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Grain重构记-API"/>
-<meta name="twitter:description" content="
-Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务器接口，卒。
-最近发现了一个新的可用的网站，所以重构的时候到了，在框架的选择上我一直纠结是用 MVP 还是 MVVM，最后还是用了 MVVM 配合 Google 的 Jetpack，使用起来很奇妙，也有很多坑。
-目前 App 确定的几个功能是：查成绩、校园卡、借阅查询。
-
-这次我用的数据来源是学校的官网，可以在外网访问，貌似知道这个网站的同学很少啊。"/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-</head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <a href="/">
-        <li class="mobile-menu-item">Home</li>
-      </a><a href="/categories/newsletter/">
-        <li class="mobile-menu-item">Newsletter</li>
-      </a><a href="/post/">
-        <li class="mobile-menu-item">Archives</li>
-      </a><a href="/tags/">
-        <li class="mobile-menu-item">Tags</li>
-      </a><a href="/categories/">
-        <li class="mobile-menu-item">Categories</li>
-      </a><a href="/about/">
-        <li class="mobile-menu-item">About</li>
-      </a>
-  </ul>
-
-  
-
-
-</nav>
-
-  <div class="container" id="mobile-panel">
-    <header id="header" class="header">
-        <div class="logo-wrapper">
-  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-</div>
-
-
-
-
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    <li class="menu-item">
-        <a class="menu-item-link" href="/">Home</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/post/">Archives</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/tags/">Tags</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/">Categories</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/about/">About</a>
-      </li>
-  </ul>
-</nav>
-
-    </header>
-
-    <main id="main" class="main">
-      <div class="content-wrapper">
-        <div id="content" class="content">
-          <article class="post">
+    <title>Grain重构记-API | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="Grain重构记-API - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
     
-    <header class="post-header">
-      <h1 class="post-title">Grain重构记-API</h1>
+    <meta property="article:published_time" content='2019-01-16T18:31:21&#43;08:00'>
+    
+    
+    <meta property="article:modified_time" content='2019-01-16T18:31:21&#43;08:00'>
+    
+    <meta name="Keywords" content="">
+    <meta name="description"
+        content="
+Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务器接口，卒。
+最近发现了一个新的可用的网站，所以重构的时候到了，在框架的选择上我一直纠结是用 MVP 还是 MVVM，最后还是用了 MVVM 配合 Google 的 Jetpack，使用起来很奇妙，也有很多坑。
+目前 App 确定的几个功能是：查成绩、校园卡、借阅查询。
 
-      <div class="post-meta">
-        <span class="post-time"> 2019-01-16 </span>
-        <div class="post-category">
-            <a href="/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/"> 创作集 </a>
+这次我用的数据来源是学校的官网，可以在外网访问，貌似知道这个网站的同学很少啊。">
+    
+    <meta name="author" content="LeeR">
+    <meta property="og:url" content="https://leer.moe/post/grain-refactor-1/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                <p class="description">Dive in</p>
             </div>
-          <span class="more-meta"> 2852 words </span>
-          <span class="more-meta"> 6 mins read </span>
-        
-      </div>
-    </header>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://leer.moe/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
 
-    <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">Contents</h2>
-  <div class="post-toc-content always-active">
-    <nav id="TableOfContents">
+    <div id="body">
+        
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 260px;
+        margin-top: 1%;
+        right: 8.5%;
+         
+        margin-right: 1%;
+        padding: 5px 10px;
+        font-size: 12px;
+         
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+         
+         
+         
+        word-wrap: break-word;
+        line-height: 1.5;
+         
+         
+         
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 18px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+        color: #ba3925;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">Grain重构记-API</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
   <ol>
     <li><a href="#直接可用的-api">直接可用的 API</a></li>
     <li><a href="#登录和登出">登录和登出</a>
@@ -181,15 +157,60 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
     <li><a href="#用户信息">用户信息</a></li>
   </ol>
 </nav>
-  </div>
-</div>
-  <div class="post-outdated">
-    <div class="warn">
-      <p>[NOTE] Updated <span class="timeago" datetime="2019-01-16T18:31:21" title="January 16, 2019">January 16, 2019</span>. This article may have outdated content or subject matter.</p>
     </div>
-  </div>
-    <div class="post-content">
-      <blockquote>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            
+            
+            
+            
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Grain重构记-API</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年1月16日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span>|</span>
+            <span class="meta-category">2599 words</span>
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
 <p>Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务器接口，卒。
 最近发现了一个新的可用的<a href="http://portal.zjou.edu.cn/index.portal">网站</a>，所以重构的时候到了，在框架的选择上我一直纠结是用 MVP 还是 MVVM，最后还是用了 MVVM 配合 Google 的 Jetpack，使用起来很奇妙，也有很多坑。</p>
 <p>目前 App 确定的几个功能是：查成绩、校园卡、借阅查询。</p>
@@ -243,722 +264,715 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 <h2 id="登录和登出">登录和登出</h2>
 <p>大概最难搞定的就是登录了，通过 Chrome 抓包来看是使用 cookie + session 的方式来校验用户的。</p>
 <h3 id="分析">分析</h3>
-<p><img src="/images/grain-login-post.png" alt="grain-login-post"></p>
+<p>
+<a data-fancybox="gallery" href="/images/grain-login-post.png">
+  <img class="mx-auto" alt="grain-login-post" src="/images/grain-login-post.png" />
+</a>
+</p>
 <p>登录是一个POST请求，表单的内容也很一般，唯一需要注意的是<code>excution</code>字段，一开始还以为是一个固定的字段，结果发现它是会“递增”的。当前是<code>e1s1</code>，下次再使用这个<code>session id</code> 登录会变成<code>e2s1</code>，以此类推。</p>
 <p><code>execution</code>是一个隐藏的字段，所以可以先<code>GET</code> 这个网页，拿到隐藏字段之后再发起<code>POST</code>请求登录。相等于模拟在浏览器上登录一样。（不过，如果使用某些 User-agent 会触发验证码的样子，而使用其他的就不会，所以当然选择不触发验证码的User-agent。。。）</p>
 <p>当密码或者学号错误的时候，会返回登录界面，并且有错误提示，在id为<code>status</code>的 div 中，所以可以根据有无错误提示来判断是否登录成功。</p>
-<p><img src="/images/grain-login-error.png" alt="grain-login-error"></p>
+<p>
+<a data-fancybox="gallery" href="/images/grain-login-error.png">
+  <img class="mx-auto" alt="grain-login-error" src="/images/grain-login-error.png" />
+</a>
+</p>
 <p>登出就比较简单，只需要访问</p>
 <p><a href="">https://my.zjou.edu.cn/cas/logout?service=http://portal.zjou.edu.cn</a></p>
 <p>就会清除cookie和session。</p>
 <h3 id="实现">实现</h3>
 <p>使用<code>Okhttp</code> 发起网络请求，用 <code>Jsoup</code>来解析HTML，用<code>Rxjava</code>来处理异步调用。</p>
 <h4 id="获取-execution">获取 <code>execution</code></h4>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">getExecution</span><span class="p">():</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">executionRequest</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(!</span><span class="n">response</span><span class="p">.</span><span class="n">isSuccessful</span><span class="p">)</span> <span class="p">{</span>
-                <span class="s2">&#34;&#34;</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="k">val</span> <span class="py">respString</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">string</span><span class="p">()</span>
-                <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">respString</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">selected</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;input[type=hidden]&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">executionNode</span> <span class="p">=</span> <span class="n">selected</span><span class="p">[</span><span class="m">1</span><span class="p">]</span>
-                <span class="k">val</span> <span class="py">executionStr</span> <span class="p">=</span> <span class="n">executionNode</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s2">&#34;value&#34;</span><span class="p">)</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResponse: execution: </span><span class="si">$executionStr</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="n">executionStr</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><h4 id="登录">登录</h4>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="cm">/**
-</span><span class="cm">     * @param user user to login with is and password
-</span><span class="cm">     * @return return observable of login status code
-</span><span class="cm">     * @see LOGIN_NET_ERROR -1 -&gt; network error
-</span><span class="cm">     * @see LOGIN_ID_PASS_ERROR 0 -&gt; password error
-</span><span class="cm">     * @see LOGIN_SUCCESS 1 -&gt; success
-</span><span class="cm">     */</span>
-    <span class="k">fun</span> <span class="nf">login</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">execution</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">execution</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
-            <span class="n">Log</span><span class="p">.</span><span class="n">e</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;getExecution failed&#34;</span><span class="p">);</span>
-            <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span> <span class="n">LOGIN_NET_ERROR</span> <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="k">val</span> <span class="py">formBody</span> <span class="p">=</span> <span class="n">FormBody</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;authType&#34;</span><span class="p">,</span> <span class="s2">&#34;0&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;username&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">id</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;password&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">password</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;lt&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;execution&#34;</span><span class="p">,</span> <span class="n">execution</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;_eventId&#34;</span><span class="p">,</span> <span class="s2">&#34;submit&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;randomStr&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">val</span> <span class="py">loginRequest</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;https://my.zjou.edu.cn/cas/login?service=http%3A%2F%2Fportal.zjou.edu.cn%2Findex.portal&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="n">formBody</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getExecution</span>(): Observable&lt;String&gt; {
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(executionRequest).execute()
+            <span style="color:#000;font-weight:bold">if</span> (!response.isSuccessful) {
+                <span style="color:#d14">&#34;&#34;</span>
+            } <span style="color:#000;font-weight:bold">else</span> {
+                <span style="color:#000;font-weight:bold">val</span> respString = response.body()<span style="color:#000;font-weight:bold">!!</span>.string()
+                <span style="color:#000;font-weight:bold">val</span> doc = Jsoup.parse(respString)
+                <span style="color:#000;font-weight:bold">val</span> selected = doc.select(<span style="color:#d14">&#34;input[type=hidden]&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> executionNode = selected[<span style="color:#099">1</span>]
+                <span style="color:#000;font-weight:bold">val</span> executionStr = executionNode.attr(<span style="color:#d14">&#34;value&#34;</span>)
+                Log.d(TAG, <span style="color:#d14">&#34;onResponse: execution: </span><span style="color:#d14">$executionStr</span><span style="color:#d14">&#34;</span>)
+                executionStr
+            }
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+</code></pre></div><h4 id="登录">登录</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * @param user user to login with is and password
+</span><span style="color:#998;font-style:italic">     * @return return observable of login status code
+</span><span style="color:#998;font-style:italic">     * @see LOGIN_NET_ERROR -1 -&gt; network error
+</span><span style="color:#998;font-style:italic">     * @see LOGIN_ID_PASS_ERROR 0 -&gt; password error
+</span><span style="color:#998;font-style:italic">     * @see LOGIN_SUCCESS 1 -&gt; success
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">login</span>(user: User, execution: String): Observable&lt;Int&gt; {
+        <span style="color:#000;font-weight:bold">if</span> (execution.isEmpty()) {
+            Log.e(TAG, <span style="color:#d14">&#34;getExecution failed&#34;</span>);
+            <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable { LOGIN_NET_ERROR }
+        }
+        <span style="color:#000;font-weight:bold">val</span> formBody = FormBody.Builder()
+            .add(<span style="color:#d14">&#34;authType&#34;</span>, <span style="color:#d14">&#34;0&#34;</span>)
+            .add(<span style="color:#d14">&#34;username&#34;</span>, user.id.toString())
+            .add(<span style="color:#d14">&#34;password&#34;</span>, user.password)
+            .add(<span style="color:#d14">&#34;lt&#34;</span>, <span style="color:#d14">&#34;&#34;</span>)
+            .add(<span style="color:#d14">&#34;execution&#34;</span>, execution)
+            .add(<span style="color:#d14">&#34;_eventId&#34;</span>, <span style="color:#d14">&#34;submit&#34;</span>)
+            .add(<span style="color:#d14">&#34;randomStr&#34;</span>, <span style="color:#d14">&#34;&#34;</span>)
+            .build()
+        <span style="color:#000;font-weight:bold">val</span> loginRequest = Request.Builder()
+            .url(<span style="color:#d14">&#34;https://my.zjou.edu.cn/cas/login?service=http%3A%2F%2Fportal.zjou.edu.cn%2Findex.portal&#34;</span>)
+            .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)
+            .post(formBody)
+            .build()
 
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">loginRequest</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;login: respose code: </span><span class="si">${response.code()}</span><span class="s2">&#34;</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">?.</span><span class="n">string</span><span class="p">())</span>
-            <span class="c1">// password or ID error
-</span><span class="c1"></span>            <span class="k">val</span> <span class="py">statusDiv</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s2">&#34;status&#34;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">statusDiv</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">LOGIN_ID_PASS_ERROR</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// login succeed, redirect to home page
-</span><span class="c1"></span>                <span class="n">LOGIN_SUCCESS</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><code>login</code>方法需要用户id、密码和<code>execution</code>。所以需要在登录之前先获取<code>execution</code>，获取成功之后才会登录。</p>
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(loginRequest).execute()
+            Log.d(TAG, <span style="color:#d14">&#34;login: respose code: </span><span style="color:#d14">${response.code()}</span><span style="color:#d14">&#34;</span>)
+            <span style="color:#000;font-weight:bold">val</span> doc = Jsoup.parse(response.body()<span style="color:#000;font-weight:bold">?.</span>string())
+            <span style="color:#998;font-style:italic">// password or ID error
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">val</span> statusDiv = doc.getElementById(<span style="color:#d14">&#34;status&#34;</span>)
+            <span style="color:#000;font-weight:bold">if</span> (statusDiv <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span>) {
+                LOGIN_ID_PASS_ERROR
+            } <span style="color:#000;font-weight:bold">else</span> { <span style="color:#998;font-style:italic">// login succeed, redirect to home page
+</span><span style="color:#998;font-style:italic"></span>                LOGIN_SUCCESS
+            }
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+</code></pre></div><p><code>login</code>方法需要用户id、密码和<code>execution</code>。所以需要在登录之前先获取<code>execution</code>，获取成功之后才会登录。</p>
 <h4 id="登出">登出</h4>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">logoutAsync</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">logoutRequest</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;https://my.zjou.edu.cn/cas/logout?service=http://portal.zjou.edu.cn&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
-            <span class="p">.</span><span class="k">get</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">logoutRequest</span><span class="p">).</span><span class="n">enqueue</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><code>logout</code>没有返回<code>Rxjava</code>的<code>Observable</code>，而是传入<code>okhttp3.Callback</code>，<code>Callback</code>中的方法是异步的，不在主线程。其实效果和<code>Rxjava</code>差不多，返回的<code>Observable</code>可以<code>subscribe</code>一个<code>Observer</code>。在<code>Observable</code>中处理网络请求，在<code>Observer</code>中处理结果。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">observable</span>
-	<span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span> <span class="c1">// Observable 运行在 IO 线程
-</span><span class="c1"></span>	<span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span> <span class="c1">// Observer 运行在 Main 线程
-</span></code></pre></td></tr></table>
-</div>
-</div><p>我个人比较喜欢<code>Rxjava</code>的链式调用。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">logoutAsync</span>(callback: Callback) {
+        <span style="color:#000;font-weight:bold">val</span> logoutRequest = Request.Builder()
+            .url(<span style="color:#d14">&#34;https://my.zjou.edu.cn/cas/logout?service=http://portal.zjou.edu.cn&#34;</span>)
+            .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)
+            .<span style="color:#000;font-weight:bold">get</span>()
+            .build()
+        httpClient.newCall(logoutRequest).enqueue(callback)
+    }
+</code></pre></div><p><code>logout</code>没有返回<code>Rxjava</code>的<code>Observable</code>，而是传入<code>okhttp3.Callback</code>，<code>Callback</code>中的方法是异步的，不在主线程。其实效果和<code>Rxjava</code>差不多，返回的<code>Observable</code>可以<code>subscribe</code>一个<code>Observer</code>。在<code>Observable</code>中处理网络请求，在<code>Observer</code>中处理结果。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">observable
+	.subscribeOn(Schedulers.io()) <span style="color:#998;font-style:italic">// Observable 运行在 IO 线程
+</span><span style="color:#998;font-style:italic"></span>	.observeOn(AndroidSchedulers.mainThread()) <span style="color:#998;font-style:italic">// Observer 运行在 Main 线程
+</span></code></pre></div><p>我个人比较喜欢<code>Rxjava</code>的链式调用。</p>
 <h2 id="成绩">成绩</h2>
 <p>解决了登录问题，那么接下来的问题都不是问题了（</p>
 <p>返回数据的Content-Type为text/html，但实际上就是json数据，这也太垃圾了吧（搞的我要手动去解析。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">getTranscript</span><span class="p">():</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">MutableList</span><span class="p">&lt;</span><span class="n">Transcript</span><span class="p">&gt;?&gt;</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">transcriptRequest</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResponse: code: </span><span class="si">${response.code()}</span><span class="s2">&#34;</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">resp</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">?.</span><span class="n">string</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">resp</span><span class="o">?.</span><span class="n">startsWith</span><span class="p">(</span><span class="s2">&#34;{&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="k">true</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResponse: </span><span class="si">$resp</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">transcriptResponse</span> <span class="p">=</span> <span class="n">Gson</span><span class="p">().</span><span class="n">parseJson</span><span class="p">&lt;</span><span class="n">TranscriptResponse</span><span class="p">&gt;(</span><span class="n">resp</span><span class="p">)</span>
-                <span class="n">transcriptResponse</span><span class="o">?.</span><span class="n">transcriptList</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">Transcript</span><span class="p">&gt;()</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><hr>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getTranscript</span>(): Observable&lt;MutableList&lt;Transcript&gt;?&gt; {
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(transcriptRequest).execute()
+            Log.d(TAG, <span style="color:#d14">&#34;onResponse: code: </span><span style="color:#d14">${response.code()}</span><span style="color:#d14">&#34;</span>)
+            <span style="color:#000;font-weight:bold">val</span> resp = response.body()<span style="color:#000;font-weight:bold">?.</span>string()
+            <span style="color:#000;font-weight:bold">if</span> (resp<span style="color:#000;font-weight:bold">?.</span>startsWith(<span style="color:#d14">&#34;{&#34;</span>) <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">true</span>) {
+                Log.d(TAG, <span style="color:#d14">&#34;onResponse: </span><span style="color:#d14">$resp</span><span style="color:#d14">&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> transcriptResponse = Gson().parseJson&lt;TranscriptResponse&gt;(resp)
+                transcriptResponse<span style="color:#000;font-weight:bold">?.</span>transcriptList
+            } <span style="color:#000;font-weight:bold">else</span> {
+                ArrayList&lt;Transcript&gt;()
+            }
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+</code></pre></div><hr>
 <p>剩下的校园卡和借阅的数据需要用<code>Jsoup</code>解析HTML去获取，下回再写。</p>
 <blockquote>
 <p>2019.1.30 更新</p>
 </blockquote>
 <h2 id="校园卡">校园卡</h2>
-<p><img src="/images/ecard-request.png" alt="ecard-request"></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="cm">/**
-</span><span class="cm">     * @param pageIndex page start from 1
-</span><span class="cm">     */</span>
-    <span class="k">fun</span> <span class="nf">getECardList</span><span class="p">(</span><span class="n">pageIndex</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="n">pageSize</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">ECard</span><span class="p">&gt;?&gt;</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">form</span> <span class="p">=</span> <span class="n">FormBody</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;pageIndex&#34;</span><span class="p">,</span> <span class="n">pageIndex</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;pageSize&#34;</span><span class="p">,</span> <span class="n">pageSize</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">val</span> <span class="py">request</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;http://portal.zjou.edu.cn/independent.portal?.cs=ZHxjb20uZWR1LmRrLnN0YXJnYXRlLnBvcnRhbC5jb250YWluZXIuY29yZS5pbXBsLlBvcnRsZXRFbnRpdHlXaW5kb3d8aW50ZS1qeXh4fHZpZXd8bm9ybWFsfHBtX2ludGUtanl4eF9hY3Rpb249cXVlcnlKeXh4fHJtX3xwcm1f&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
+<p>
+<a data-fancybox="gallery" href="/images/ecard-request.png">
+  <img class="mx-auto" alt="ecard-request" src="/images/ecard-request.png" />
+</a>
+</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * @param pageIndex page start from 1
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getECardList</span>(pageIndex: Int, pageSize: Int): Observable&lt;ArrayList&lt;ECard&gt;?&gt; {
+        <span style="color:#000;font-weight:bold">val</span> form = FormBody.Builder()
+            .add(<span style="color:#d14">&#34;pageIndex&#34;</span>, pageIndex.toString())
+            .add(<span style="color:#d14">&#34;pageSize&#34;</span>, pageSize.toString())
+            .build()
+        <span style="color:#000;font-weight:bold">val</span> request = Request.Builder()
+            .url(<span style="color:#d14">&#34;http://portal.zjou.edu.cn/independent.portal?.cs=ZHxjb20uZWR1LmRrLnN0YXJnYXRlLnBvcnRhbC5jb250YWluZXIuY29yZS5pbXBsLlBvcnRsZXRFbnRpdHlXaW5kb3d8aW50ZS1qeXh4fHZpZXd8bm9ybWFsfHBtX2ludGUtanl4eF9hY3Rpb249cXVlcnlKeXh4fHJtX3xwcm1f&#34;</span>)
+            .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)
+            .post(form)
+            .build()
 
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">request</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(!</span><span class="n">response</span><span class="p">.</span><span class="n">isSuccessful</span> <span class="o">||</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">ArrayList</span><span class="p">()</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="n">parseCardTable</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">string</span><span class="p">())</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>校园卡的消费记录是一个表单 post 请求，response 是 html。。。大概是没有做专门的 RESTful API 吧。所以只能使用 Jsoup 解析表格。</p>
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(request).execute()
+            <span style="color:#000;font-weight:bold">if</span> (!response.isSuccessful <span style="color:#000;font-weight:bold">||</span> response.body() <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span>) {
+                ArrayList()
+            } <span style="color:#000;font-weight:bold">else</span> {
+                parseCardTable(response.body()<span style="color:#000;font-weight:bold">!!</span>.string())
+            }
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+</code></pre></div><p>校园卡的消费记录是一个表单 post 请求，response 是 html。。。大概是没有做专门的 RESTful API 吧。所以只能使用 Jsoup 解析表格。</p>
 <p>下面是一段 HTML 表格代码的截取：第一个<code>tr</code>标签是表头，不需要。从第二个<code>tr</code>开始提取我们想要的<code>td</code>，组成每一项消费记录。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">table</span> <span class="na">isscroll</span><span class="o">=</span><span class="s">&#34;false&#34;</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;portlet-table&#34;</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;queryGridPluto_inte_jyxx_&#34;</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">thead</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>卡号<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易流水号<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易时间<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>商户代码<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易类型<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易金额<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易余额<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;&lt;/</span><span class="nt">thead</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tbody</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tr</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;odd&#34;</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>57016<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>219171082<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>2019-01-12 11:41:05<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>长峙学生宿舍P<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>收费冲正<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>4.69<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>43.3<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tr</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;even&#34;</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>57016<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>219169846<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>2019-01-12 11:32:01<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>长峙学生宿舍P<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>商务收费<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>-5<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>38.61<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;&lt;/</span><span class="nt">tbody</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
-</code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">table</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s2">&#34;queryGridPluto_inte_jyxx_&#34;</span><span class="p">)</span>
-<span class="k">val</span> <span class="py">rows</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;tr&#34;</span><span class="p">)</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">1</span> <span class="n">until</span> <span class="n">rows</span><span class="p">.</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">val</span> <span class="py">cols</span> <span class="p">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;td&#34;</span><span class="p">)</span>
-	<span class="c1">//...
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>交易流水号、交易时间、商户代码、交易金额都是我们需要的数据，分别对其进行提取和提纯：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">private</span> <span class="k">val</span> <span class="py">regex1</span> <span class="p">=</span> <span class="n">Regex</span><span class="p">(</span><span class="s2">&#34;(消费机|同力|多媒体)[0-9]*&#34;</span><span class="p">)</span>
-    <span class="k">private</span> <span class="k">val</span> <span class="py">regexToRemoveNum</span> <span class="p">=</span> <span class="n">Regex</span><span class="p">(</span><span class="s2">&#34;[0-9]+&#34;</span><span class="p">)</span>
-    <span class="k">private</span> <span class="k">fun</span> <span class="nf">parseCardTable</span><span class="p">(</span><span class="n">responseString</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="n">pageSize</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">ECard</span><span class="p">&gt;?</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">responseString</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="k">null</span>
-        <span class="p">}</span>
-        <span class="k">val</span> <span class="py">itemList</span> <span class="p">=</span> <span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">ECard</span><span class="p">&gt;(</span><span class="n">pageSize</span><span class="p">)</span>
-        <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">responseString</span><span class="p">)</span>
-        <span class="k">val</span> <span class="py">table</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s2">&#34;queryGridPluto_inte_jyxx_&#34;</span><span class="p">)</span>
-        <span class="k">val</span> <span class="py">rows</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;tr&#34;</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#000080">table</span> <span style="color:#008080">isscroll</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;false&#34;</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;portlet-table&#34;</span> <span style="color:#008080">id</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>&gt;
+&lt;<span style="color:#000080">thead</span>&gt;
+&lt;<span style="color:#000080">tr</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;卡号&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易流水号&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易时间&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;商户代码&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易类型&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易金额&lt;/<span style="color:#000080">th</span>&gt;
+&lt;<span style="color:#000080">th</span>&gt;交易余额&lt;/<span style="color:#000080">th</span>&gt;&lt;/<span style="color:#000080">tr</span>&gt;&lt;/<span style="color:#000080">thead</span>&gt;
+&lt;<span style="color:#000080">tbody</span>&gt;
+&lt;<span style="color:#000080">tr</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;odd&#34;</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;57016&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;219171082&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:6%;&#34;</span>&gt;2019-01-12 11:41:05&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:6%;&#34;</span>&gt;长峙学生宿舍P&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;收费冲正&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;4.69&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;43.3&lt;/<span style="color:#000080">td</span>&gt;&lt;/<span style="color:#000080">tr</span>&gt;
+&lt;<span style="color:#000080">tr</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;even&#34;</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;57016&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;219169846&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:6%;&#34;</span>&gt;2019-01-12 11:32:01&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:6%;&#34;</span>&gt;长峙学生宿舍P&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:10%;&#34;</span>&gt;商务收费&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;-5&lt;/<span style="color:#000080">td</span>&gt;
+&lt;<span style="color:#000080">td</span> <span style="color:#008080">style</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;width:8%;&#34;</span>&gt;38.61&lt;/<span style="color:#000080">td</span>&gt;&lt;/<span style="color:#000080">tr</span>&gt;&lt;/<span style="color:#000080">tbody</span>&gt;
+&lt;/<span style="color:#000080">table</span>&gt;
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">val</span> table = doc.getElementById(<span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>)
+<span style="color:#000;font-weight:bold">val</span> rows = table.select(<span style="color:#d14">&#34;tr&#34;</span>)
+<span style="color:#000;font-weight:bold">for</span> (i <span style="color:#000;font-weight:bold">in</span> <span style="color:#099">1</span> until rows.size) {
+  <span style="color:#000;font-weight:bold">val</span> cols = rows[i].select(<span style="color:#d14">&#34;td&#34;</span>)
+	<span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>}
+</code></pre></div><p>交易流水号、交易时间、商户代码、交易金额都是我们需要的数据，分别对其进行提取和提纯：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">val</span> regex1 = Regex(<span style="color:#d14">&#34;(消费机|同力|多媒体)[0-9]*&#34;</span>)
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">val</span> regexToRemoveNum = Regex(<span style="color:#d14">&#34;[0-9]+&#34;</span>)
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">parseCardTable</span>(responseString: String, pageSize: Int): ArrayList&lt;ECard&gt;? {
+        <span style="color:#000;font-weight:bold">if</span> (responseString.isEmpty()) {
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span>
+        }
+        <span style="color:#000;font-weight:bold">val</span> itemList = ArrayList&lt;ECard&gt;(pageSize)
+        <span style="color:#000;font-weight:bold">val</span> doc = Jsoup.parse(responseString)
+        <span style="color:#000;font-weight:bold">val</span> table = doc.getElementById(<span style="color:#d14">&#34;queryGridPluto_inte_jyxx_&#34;</span>)
+        <span style="color:#000;font-weight:bold">val</span> rows = table.select(<span style="color:#d14">&#34;tr&#34;</span>)
 
-        <span class="n">Util</span><span class="p">.</span><span class="n">formatSecondThreadLocal</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">SimpleDateFormat</span><span class="p">(</span><span class="s2">&#34;yyyy-MM-dd HH:mm:ss&#34;</span><span class="p">,</span> <span class="n">Locale</span><span class="p">.</span><span class="n">CHINA</span><span class="p">))</span>
+        Util.formatSecondThreadLocal.<span style="color:#000;font-weight:bold">set</span>(SimpleDateFormat(<span style="color:#d14">&#34;yyyy-MM-dd HH:mm:ss&#34;</span>, Locale.CHINA))
 
-        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">1</span> <span class="n">until</span> <span class="n">rows</span><span class="p">.</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">cols</span> <span class="p">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;td&#34;</span><span class="p">)</span>
-            <span class="k">var</span> <span class="py">money</span> <span class="p">=</span> <span class="m">0.0</span>
-            <span class="k">try</span> <span class="p">{</span>
-                <span class="n">money</span> <span class="p">=</span> <span class="n">cols</span><span class="p">[</span><span class="m">5</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">toDouble</span><span class="p">()</span>
-            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">NumberFormatException</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">continue</span>
-            <span class="p">}</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">money</span> <span class="o">!=</span> <span class="m">0.0</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">val</span> <span class="py">name</span> <span class="p">=</span> <span class="n">prettyName</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="m">3</span><span class="p">].</span><span class="n">text</span><span class="p">())</span>
-                <span class="k">var</span> <span class="py">item</span><span class="p">:</span> <span class="n">ECard</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
-                <span class="k">try</span> <span class="p">{</span>
-                    <span class="k">val</span> <span class="py">date</span> <span class="p">=</span> <span class="n">Util</span><span class="p">.</span><span class="n">getTimeDate</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="m">2</span><span class="p">].</span><span class="n">text</span><span class="p">())</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">date</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="k">continue</span>
-                    <span class="n">item</span> <span class="p">=</span> <span class="n">ECard</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">toLong</span><span class="p">(),</span> <span class="n">name</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">money</span><span class="p">)</span>
-                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">ArrayIndexOutOfBoundsException</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">()</span>
-                    <span class="k">continue</span>
-                <span class="p">}</span>
-                <span class="n">itemList</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">itemList</span>
-    <span class="p">}</span>
+        <span style="color:#000;font-weight:bold">for</span> (i <span style="color:#000;font-weight:bold">in</span> <span style="color:#099">1</span> until rows.size) {
+            <span style="color:#000;font-weight:bold">val</span> cols = rows[i].select(<span style="color:#d14">&#34;td&#34;</span>)
+            <span style="color:#000;font-weight:bold">var</span> money = <span style="color:#099">0.0</span>
+            <span style="color:#000;font-weight:bold">try</span> {
+                money = cols[<span style="color:#099">5</span>].text().toDouble()
+            } <span style="color:#000;font-weight:bold">catch</span> (ignore: NumberFormatException) {
+                <span style="color:#000;font-weight:bold">continue</span>
+            }
+            <span style="color:#000;font-weight:bold">if</span> (money <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0.0</span>) {
+                <span style="color:#000;font-weight:bold">val</span> name = prettyName(cols[<span style="color:#099">3</span>].text())
+                <span style="color:#000;font-weight:bold">var</span> item: ECard? = <span style="color:#000;font-weight:bold">null</span>
+                <span style="color:#000;font-weight:bold">try</span> {
+                    <span style="color:#000;font-weight:bold">val</span> date = Util.getTimeDate(cols[<span style="color:#099">2</span>].text())
+                    <span style="color:#000;font-weight:bold">if</span> (date <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span>) <span style="color:#000;font-weight:bold">continue</span>
+                    item = ECard(cols[<span style="color:#099">1</span>].text().toLong(), name, date, money)
+                } <span style="color:#000;font-weight:bold">catch</span> (e: ArrayIndexOutOfBoundsException) {
+                    e.printStackTrace()
+                    <span style="color:#000;font-weight:bold">continue</span>
+                }
+                itemList.add(item)
+            }
+        }
+        <span style="color:#000;font-weight:bold">return</span> itemList
+    }
 
-    <span class="k">private</span> <span class="k">fun</span> <span class="nf">prettyName</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="n">String</span> <span class="p">{</span>
-        <span class="k">var</span> <span class="py">tmp</span> <span class="p">=</span> <span class="n">name</span>
-        <span class="n">tmp</span> <span class="p">=</span> <span class="n">tmp</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="n">regex1</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-        <span class="n">tmp</span> <span class="p">=</span> <span class="n">tmp</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="n">regexToRemoveNum</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">tmp</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><h2 id="用户信息">用户信息</h2>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">prettyName</span>(name: String): String {
+        <span style="color:#000;font-weight:bold">var</span> tmp = name
+        tmp = tmp.replace(regex1, <span style="color:#d14">&#34;&#34;</span>)
+        tmp = tmp.replace(regexToRemoveNum, <span style="color:#d14">&#34;&#34;</span>)
+        <span style="color:#000;font-weight:bold">return</span> tmp
+    }
+</code></pre></div><h2 id="用户信息">用户信息</h2>
 <p>网站的主页包含一些用户的信息：班级，学号，校园卡余额，图书借阅情况，同样可以用 Jsoup 对其进行提取，在 app 中展示。</p>
-<p><img src="/images/book-request.png" alt="book-request"></p>
+<p>
+<a data-fancybox="gallery" href="/images/book-request.png">
+  <img class="mx-auto" alt="book-request" src="/images/book-request.png" />
+</a>
+</p>
 <p>唯一需要注意的是：一个标签的第0项是它和它所以子标签内容的合集。所以这里取第一项：<code>val nameText = div[1].text()</code>。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">getUserInfo</span><span class="p">():</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">request</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;http://portal.zjou.edu.cn/index.portal&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
-            <span class="p">.</span><span class="k">get</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">request</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="k">val</span> <span class="py">user</span> <span class="p">=</span> <span class="n">User</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">resp</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">?.</span><span class="n">string</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">resp</span><span class="p">.</span><span class="n">isNullOrEmpty</span><span class="p">())</span> <span class="p">{</span>
-                <span class="n">user</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
-                <span class="k">var</span> <span class="py">div</span><span class="p">:</span> <span class="n">Elements</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
-                <span class="k">try</span> <span class="p">{</span>
-                    <span class="n">div</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementsByClass</span><span class="p">(</span><span class="s2">&#34;user_info&#34;</span><span class="p">)[</span><span class="m">0</span><span class="p">].</span><span class="n">allElements</span>
-                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">Exception</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="k">return</span><span class="nd">@fromCallable</span> <span class="n">user</span>
-                <span class="p">}</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">getUserInfo</span>(): Observable&lt;User&gt; {
+        <span style="color:#000;font-weight:bold">val</span> request = Request.Builder()
+            .url(<span style="color:#d14">&#34;http://portal.zjou.edu.cn/index.portal&#34;</span>)
+            .header(<span style="color:#d14">&#34;User-Agent&#34;</span>, USER_AGENT)
+            .<span style="color:#000;font-weight:bold">get</span>()
+            .build()
+        <span style="color:#000;font-weight:bold">return</span> Observable.fromCallable {
+            <span style="color:#000;font-weight:bold">val</span> response = httpClient.newCall(request).execute()
+            <span style="color:#000;font-weight:bold">val</span> user = User(<span style="color:#099">0</span>, <span style="color:#d14">&#34;&#34;</span>)
+            <span style="color:#000;font-weight:bold">val</span> resp = response.body()<span style="color:#000;font-weight:bold">?.</span>string()
+            <span style="color:#000;font-weight:bold">if</span> (resp.isNullOrEmpty()) {
+                user
+            } <span style="color:#000;font-weight:bold">else</span> {
+                <span style="color:#000;font-weight:bold">val</span> doc = Jsoup.parse(resp)
+                <span style="color:#000;font-weight:bold">var</span> div: Elements? = <span style="color:#000;font-weight:bold">null</span>
+                <span style="color:#000;font-weight:bold">try</span> {
+                    div = doc.getElementsByClass(<span style="color:#d14">&#34;user_info&#34;</span>)[<span style="color:#099">0</span>].allElements
+                } <span style="color:#000;font-weight:bold">catch</span> (ignore: Exception) {
+                    <span style="color:#000;font-weight:bold">return</span><span style="color:#3c5d5d;font-weight:bold">@fromCallable</span> user
+                }
 
-                <span class="c1">// index 0 is all content text in the div
-</span><span class="c1"></span>                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;nameText: </span><span class="si">${div!![1].text()}</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">nameText</span> <span class="p">=</span> <span class="n">div</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">let</span> <span class="p">{</span> <span class="n">str</span> <span class="o">-&gt;</span>
-                    <span class="k">val</span> <span class="py">index</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">indexOfFirst</span> <span class="p">{</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;，&#39;</span> <span class="p">}</span>
-                    <span class="n">str</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-                <span class="p">}</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;name: </span><span class="si">$nameText</span><span class="s2">&#34;</span><span class="p">)</span>
+                <span style="color:#998;font-style:italic">// index 0 is all content text in the div
+</span><span style="color:#998;font-style:italic"></span>                Log.d(TAG, <span style="color:#d14">&#34;nameText: </span><span style="color:#d14">${div!![1].text()}</span><span style="color:#d14">&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> nameText = div[<span style="color:#099">1</span>].text().let { str <span style="color:#000;font-weight:bold">-&gt;</span>
+                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { <span style="color:#000;font-weight:bold">it</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;，&#39;</span> }
+                    str.substring(<span style="color:#099">0</span>, index)
+                }
+                Log.d(TAG, <span style="color:#d14">&#34;name: </span><span style="color:#d14">$nameText</span><span style="color:#d14">&#34;</span>)
 
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;idText: </span><span class="si">${div[2].text()}</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">idText</span> <span class="p">=</span> <span class="n">div</span><span class="p">[</span><span class="m">2</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">let</span> <span class="p">{</span> <span class="n">str</span> <span class="o">-&gt;</span>
-                    <span class="k">val</span> <span class="py">index</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">indexOfFirst</span> <span class="p">{</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;：&#39;</span> <span class="p">}</span>
-                    <span class="n">str</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="n">index</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">str</span><span class="p">.</span><span class="n">length</span><span class="p">)</span>
-                <span class="p">}</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;id: </span><span class="si">$idText</span><span class="s2">&#34;</span><span class="p">)</span>
+                Log.d(TAG, <span style="color:#d14">&#34;idText: </span><span style="color:#d14">${div[2].text()}</span><span style="color:#d14">&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> idText = div[<span style="color:#099">2</span>].text().let { str <span style="color:#000;font-weight:bold">-&gt;</span>
+                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { <span style="color:#000;font-weight:bold">it</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;：&#39;</span> }
+                    str.substring(index + <span style="color:#099">1</span>, str.length)
+                }
+                Log.d(TAG, <span style="color:#d14">&#34;id: </span><span style="color:#d14">$idText</span><span style="color:#d14">&#34;</span>)
 
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;classText: </span><span class="si">${div[3].text()}</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">classText</span> <span class="p">=</span> <span class="n">div</span><span class="p">[</span><span class="m">3</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">let</span> <span class="p">{</span> <span class="n">str</span> <span class="o">-&gt;</span>
-                    <span class="k">val</span> <span class="py">index</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">indexOfFirst</span> <span class="p">{</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;：&#39;</span> <span class="p">}</span>
-                    <span class="n">str</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="n">index</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">str</span><span class="p">.</span><span class="n">length</span><span class="p">)</span>
-                <span class="p">}</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;class: </span><span class="si">$classText</span><span class="s2">&#34;</span><span class="p">)</span>
+                Log.d(TAG, <span style="color:#d14">&#34;classText: </span><span style="color:#d14">${div[3].text()}</span><span style="color:#d14">&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> classText = div[<span style="color:#099">3</span>].text().let { str <span style="color:#000;font-weight:bold">-&gt;</span>
+                    <span style="color:#000;font-weight:bold">val</span> index = str.indexOfFirst { <span style="color:#000;font-weight:bold">it</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;：&#39;</span> }
+                    str.substring(index + <span style="color:#099">1</span>, str.length)
+                }
+                Log.d(TAG, <span style="color:#d14">&#34;class: </span><span style="color:#d14">$classText</span><span style="color:#d14">&#34;</span>)
 
-                <span class="k">val</span> <span class="py">cardLi</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementsByClass</span><span class="p">(</span><span class="s2">&#34;ykt&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">libraryLi</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementsByClass</span><span class="p">(</span><span class="s2">&#34;tsg&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">bookRentTexts</span> <span class="p">=</span> <span class="n">libraryLi</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">allElements</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34; &#34;</span><span class="p">)</span>
+                <span style="color:#000;font-weight:bold">val</span> cardLi = doc.getElementsByClass(<span style="color:#d14">&#34;ykt&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> libraryLi = doc.getElementsByClass(<span style="color:#d14">&#34;tsg&#34;</span>)
+                <span style="color:#000;font-weight:bold">val</span> bookRentTexts = libraryLi[<span style="color:#099">0</span>].allElements[<span style="color:#099">0</span>].text().split(<span style="color:#d14">&#34; &#34;</span>)
 
-                <span class="k">var</span> <span class="py">moneyRem</span> <span class="p">=</span> <span class="m">0.0</span>
-                <span class="k">var</span> <span class="py">bookRentNum</span> <span class="p">=</span> <span class="m">0</span>
-                <span class="k">var</span> <span class="py">bookRentOutDateNum</span> <span class="p">=</span> <span class="m">0</span>
-                <span class="k">try</span> <span class="p">{</span>
-                    <span class="n">moneyRem</span> <span class="p">=</span> <span class="n">cardLi</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">allElements</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">filter</span> <span class="p">{</span> <span class="k">it</span><span class="p">.</span><span class="n">isDigit</span><span class="p">()</span> <span class="o">||</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;.&#39;</span> <span class="p">}.</span><span class="n">toDouble</span><span class="p">()</span>
-                    <span class="n">bookRentNum</span> <span class="p">=</span> <span class="n">bookRentTexts</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">toInt</span><span class="p">()</span>
-                    <span class="n">bookRentOutDateNum</span> <span class="p">=</span> <span class="n">bookRentTexts</span><span class="p">[</span><span class="m">2</span><span class="p">].</span><span class="n">filter</span> <span class="p">{</span> <span class="k">it</span><span class="p">.</span><span class="n">isDigit</span><span class="p">()</span> <span class="p">}.</span><span class="n">toInt</span><span class="p">()</span>
-                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">NumberFormatException</span><span class="p">)</span> <span class="p">{</span>
-                <span class="p">}</span>
+                <span style="color:#000;font-weight:bold">var</span> moneyRem = <span style="color:#099">0.0</span>
+                <span style="color:#000;font-weight:bold">var</span> bookRentNum = <span style="color:#099">0</span>
+                <span style="color:#000;font-weight:bold">var</span> bookRentOutDateNum = <span style="color:#099">0</span>
+                <span style="color:#000;font-weight:bold">try</span> {
+                    moneyRem = cardLi[<span style="color:#099">0</span>].allElements[<span style="color:#099">0</span>].text().filter { <span style="color:#000;font-weight:bold">it</span>.isDigit() <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">it</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;.&#39;</span> }.toDouble()
+                    bookRentNum = bookRentTexts[<span style="color:#099">1</span>].toInt()
+                    bookRentOutDateNum = bookRentTexts[<span style="color:#099">2</span>].filter { <span style="color:#000;font-weight:bold">it</span>.isDigit() }.toInt()
+                } <span style="color:#000;font-weight:bold">catch</span> (ignore: NumberFormatException) {
+                }
 
-                <span class="n">User</span><span class="p">(</span><span class="n">idText</span><span class="p">.</span><span class="n">toInt</span><span class="p">(),</span> <span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="n">nameText</span><span class="p">,</span> <span class="n">classText</span><span class="p">,</span> <span class="n">moneyRem</span><span class="p">,</span> <span class="n">bookRentNum</span><span class="p">,</span> <span class="n">bookRentOutDateNum</span><span class="p">)</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
-    </div>
-
-    <div class="post-copyright">
-  <p class="copyright-item">
-    <span class="item-title">Author</span>
-    <span class="item-content">LeeReindeer</span>
-  </p>
-  <p class="copyright-item">
-    <span class="item-title">LastMod</span>
-    <span class="item-content">
-        2019-01-16
-        
-    </span>
-  </p>
-  
-  <p class="copyright-item">
-    <span class="item-title">License</span>
-    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
-  </p>
-</div>
-<footer class="post-footer">
-      <div class="post-tags">
-          <a href="/tags/android/">Android</a>
-          </div>
-      <nav class="post-nav">
-        <a class="prev" href="/post/grain-refactor-2/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">Grain重构记-UI</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
-        <a class="next" href="/post/java-concurrent-synchronized-reentrantlock/">
-            <span class="next-text nav-default">Java并发-Synchronized和Reentrantlock</span>
-            <span class="next-text nav-mobile">Next</span>
-            <i class="iconfont icon-right"></i>
-          </a>
-      </nav>
-    </footer>
-  </article>
+                User(idText.toInt(), <span style="color:#d14">&#34;&#34;</span>, nameText, classText, moneyRem, bookRentNum, bookRentOutDateNum)
+            }
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+</code></pre></div>
         </div>
+
         
 
-  
 
-  
-    <script src="https://utteranc.es/client.js"
-            repo="LeeReindeer/LeeReindeer.github.io"
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/android_fundamental_toc/">【Android 基础】学习计划</a></li>
+        
+        <li><a href="/post/android-activity/">Android 四大组件：Activity</a></li>
+        
+        <li><a href="/post/tree2view_final_report/">Android Tree2View 3-Core Alogrithm</a></li>
+        
+        <li><a href="/post/my_treeview_2_adapder/">Android Tree2View 2-Adapter in Tree2View</a></li>
+        
+        <li><a href="/post/my_treeview_1/">Android Tree2View 1-Introduction</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/android'>Android</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
-
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
-      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
-      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
-  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
-</div>
-
-<div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme -
-    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
-  </span>
-
-  
-
-  <span class="copyright-year">
-    &copy;
-    2017 -
-    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
-  </span>
-</div>
-
-<div class="copyright" id="showDays">
-
-</div>
-
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
+      </script>
     </div>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
-  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
-    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
-    timeago().render(document.querySelectorAll('.timeago'), languageCode);
-    timeago.cancel();  
-  </script>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href="/categories">分类</a></h3>
+<ul class="widget-list">
+    
+    
+    
+    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
+    
+    
+    
+    <li><a href="#">未分类
+            (3)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+
+
+
+
+
+<div class="tagcloud">
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
+        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+    <div class="container" id="showDays"></div>
+</footer>
+<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+
+
+
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
 
 
 
 
 
 
-<script src="/js/sitedate.js"></script>
 
+
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
+
 </html>

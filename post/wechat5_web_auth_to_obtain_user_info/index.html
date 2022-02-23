@@ -1,406 +1,291 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-cn">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>一个微信公众号的诞生（五）网页授权获取用户基本信息 - LeeReindeer&#39;s blog</title>
-  <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-
-<meta name="author" content="LeeReindeer" /><meta name="description" content=" 由于后期需要在微信里跳转网页将用户的openid以及其他信息和学工号绑定，所以需要在通过网页授权来获取用户的基本信息．还有另一种获取用户信息的接口是直接获取的，就无法和业务进行对接了.
-" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
-
-
-<link rel="canonical" href="https://leer.moe/post/wechat5_web_auth_to_obtain_user_info/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-
-
-
-<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
-
-
-<meta property="og:title" content="一个微信公众号的诞生（五）网页授权获取用户基本信息" />
-<meta property="og:description" content="
-由于后期需要在微信里跳转网页将用户的openid以及其他信息和学工号绑定，所以需要在通过网页授权来获取用户的基本信息．还有另一种获取用户信息的接口是直接获取的，就无法和业务进行对接了.
-" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/post/wechat5_web_auth_to_obtain_user_info/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2017-05-14T21:11:28+00:00" />
-<meta property="article:modified_time" content="2017-05-14T21:11:28+00:00" />
-
-<meta itemprop="name" content="一个微信公众号的诞生（五）网页授权获取用户基本信息">
-<meta itemprop="description" content="
-由于后期需要在微信里跳转网页将用户的openid以及其他信息和学工号绑定，所以需要在通过网页授权来获取用户的基本信息．还有另一种获取用户信息的接口是直接获取的，就无法和业务进行对接了.
-"><meta itemprop="datePublished" content="2017-05-14T21:11:28+00:00" />
-<meta itemprop="dateModified" content="2017-05-14T21:11:28+00:00" />
-<meta itemprop="wordCount" content="1763">
-<meta itemprop="keywords" content="微信,Java," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="一个微信公众号的诞生（五）网页授权获取用户基本信息"/>
-<meta name="twitter:description" content="
-由于后期需要在微信里跳转网页将用户的openid以及其他信息和学工号绑定，所以需要在通过网页授权来获取用户的基本信息．还有另一种获取用户信息的接口是直接获取的，就无法和业务进行对接了.
-"/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-</head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <a href="/">
-        <li class="mobile-menu-item">Home</li>
-      </a><a href="/categories/newsletter/">
-        <li class="mobile-menu-item">Newsletter</li>
-      </a><a href="/post/">
-        <li class="mobile-menu-item">Archives</li>
-      </a><a href="/tags/">
-        <li class="mobile-menu-item">Tags</li>
-      </a><a href="/categories/">
-        <li class="mobile-menu-item">Categories</li>
-      </a><a href="/about/">
-        <li class="mobile-menu-item">About</li>
-      </a>
-  </ul>
-
-  
-
-
-</nav>
-
-  <div class="container" id="mobile-panel">
-    <header id="header" class="header">
-        <div class="logo-wrapper">
-  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-</div>
-
-
-
-
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    <li class="menu-item">
-        <a class="menu-item-link" href="/">Home</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/post/">Archives</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/tags/">Tags</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/">Categories</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/about/">About</a>
-      </li>
-  </ul>
-</nav>
-
-    </header>
-
-    <main id="main" class="main">
-      <div class="content-wrapper">
-        <div id="content" class="content">
-          <article class="post">
+    <title>一个微信公众号的诞生（五）网页授权获取用户基本信息 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="一个微信公众号的诞生（五）网页授权获取用户基本信息 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
     
-    <header class="post-header">
-      <h1 class="post-title">一个微信公众号的诞生（五）网页授权获取用户基本信息</h1>
+    <meta property="article:published_time" content='2017-05-14T21:11:28&#43;08:00'>
+    
+    
+    <meta property="article:modified_time" content='2017-05-14T21:11:28&#43;08:00'>
+    
+    <meta name="Keywords" content="">
+    <meta name="description"
+        content="
+由于后期需要在微信里跳转网页将用户的openid以及其他信息和学工号绑定，所以需要在通过网页授权来获取用户的基本信息．还有另一种获取用户信息的接口是直接获取的，就无法和业务进行对接了.
+">
+    
+    <meta name="author" content="LeeR">
+    <meta property="og:url" content="https://leer.moe/post/wechat5_web_auth_to_obtain_user_info/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
-      <div class="post-meta">
-        <span class="post-time"> 2017-05-14 </span>
-        <div class="post-category">
-            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                <p class="description">Dive in</p>
             </div>
-          <span class="more-meta"> 1763 words </span>
-          <span class="more-meta"> 4 mins read </span>
-        
-      </div>
-    </header>
-
-    <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">Contents</h2>
-  <div class="post-toc-content always-active">
-    <nav id="TableOfContents"></nav>
-  </div>
-</div>
-  <div class="post-outdated">
-    <div class="warn">
-      <p>[NOTE] Updated <span class="timeago" datetime="2017-05-14T21:11:28" title="May 14, 2017">May 14, 2017</span>. This article may have outdated content or subject matter.</p>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://leer.moe/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
     </div>
-  </div>
-    <div class="post-content">
-      <blockquote>
+</header>
+
+    <div id="body">
+        
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 260px;
+        margin-top: 1%;
+        right: 8.5%;
+         
+        margin-right: 1%;
+        padding: 5px 10px;
+        font-size: 12px;
+         
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+         
+         
+         
+        word-wrap: break-word;
+        line-height: 1.5;
+         
+         
+         
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 18px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+        color: #ba3925;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">一个微信公众号的诞生（五）网页授权获取用户基本信息</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents"></nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            
+            
+            
+            
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">一个微信公众号的诞生（五）网页授权获取用户基本信息</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年5月14日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span>|</span>
+            <span class="meta-category">1659 words</span>
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <blockquote>
 <p>由于后期需要在微信里跳转网页将用户的openid以及其他信息和学工号绑定，所以需要在通过<a href="https://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html#.E7.AC.AC.E5.9B.9B.E6.AD.A5.EF.BC.9A.E6.8B.89.E5.8F.96.E7.94.A8.E6.88.B7.E4.BF.A1.E6.81.AF.28.E9.9C.80scope.E4.B8.BA_snsapi_userinfo.29">网页授权来获取用户的基本信息</a>．还有<a href="https://mp.weixin.qq.com/wiki/1/8a5ce6257f1d3b2afb20f83e72b72ce9.html">另一种</a>获取用户信息的接口是直接获取的，就无法和业务进行对接了.</p>
 </blockquote>
 <h1 id="获取code">获取code</h1>
 <p>获取code的网址为</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect
-</code></pre></td></tr></table>
-</div>
-</div><p>这里的redirect_uri的就是自己的业务页面．在用户主动同意授权后，页面将跳转至 redirect_uri/?code=CODE&amp;state=STATE．这个state参数貌似有点意思，我曾经想过用这个参数来传递学工号来着，然后在跳转后的页面绑定．但是后来又改成了先用学工号登录自己的网站，把学工号存在cookie里，在跳转后读取cookie然后绑定．这样顺便也利用cookie实现了一下自动登录之类的功能．
+<pre tabindex="0"><code>https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect
+</code></pre><p>这里的redirect_uri的就是自己的业务页面．在用户主动同意授权后，页面将跳转至 redirect_uri/?code=CODE&amp;state=STATE．这个state参数貌似有点意思，我曾经想过用这个参数来传递学工号来着，然后在跳转后的页面绑定．但是后来又改成了先用学工号登录自己的网站，把学工号存在cookie里，在跳转后读取cookie然后绑定．这样顺便也利用cookie实现了一下自动登录之类的功能．
 好了，接下来新建一个OAuth2Servlet类，来处理网页的参数和跳转自己的页面．</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="nf">respons</span><span class="o">(</span>
-            <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span><span class="n">IOException</span> <span class="o">{</span>
-        <span class="n">request</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="n">response</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="c1">// 用户同意授权后，能获取到code
-</span><span class="c1"></span>        <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;code&#34;</span><span class="o">);</span>
-        <span class="o">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>所以可以向而知了，这个OAuth2Servlet就是我们的redirect_uri，需要在测试号里设置一下网址(测试号可以用ip)，以确保可以访问.
-<img src="/images/wechat_redirect.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">doGet</span><span style="color:#000;font-weight:bold">(</span>HttpServletRequest request<span style="color:#000;font-weight:bold">,</span> HttpServletResponse <span style="color:#900;font-weight:bold">respons</span><span style="color:#000;font-weight:bold">(</span>
+            <span style="color:#000;font-weight:bold">throws</span> ServletException<span style="color:#000;font-weight:bold">,</span>IOException <span style="color:#000;font-weight:bold">{</span>
+        request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setCharacterEncoding</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;UTF-8&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        response<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setCharacterEncoding</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;UTF-8&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#998;font-style:italic">// 用户同意授权后，能获取到code
+</span><span style="color:#998;font-style:italic"></span>        String code <span style="color:#000;font-weight:bold">=</span> request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParameter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;code&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>所以可以向而知了，这个OAuth2Servlet就是我们的redirect_uri，需要在测试号里设置一下网址(测试号可以用ip)，以确保可以访问.
+
+<a data-fancybox="gallery" href="/images/wechat_redirect.png">
+  <img class="mx-auto" alt="" src="/images/wechat_redirect.png" />
+</a>
+</p>
 <h1 id="用code-获取access_token">用code 获取access_token</h1>
 <p>这里也要用到之前写的doGet()方法，请求的Http地址为</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&amp;secret=SECRET&amp;code=CODE&amp;grant_type=authorization_code
-</code></pre></td></tr></table>
-</div>
-</div><p>这里将处理网页的实现，放在一个新的WebUtil类中继承WechatUtil，便可以直接用父类的doGet(),doPost()和一些字段了.具体代码如下:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="n">OAuth2AccessToken</span> <span class="nf">getOAuth2AccessToken</span><span class="o">(</span><span class="n">String</span> <span class="n">code</span><span class="o">){</span>
-        <span class="n">OAuth2AccessToken</span> <span class="n">oAuth2AccessToken</span><span class="o">=</span><span class="k">new</span> <span class="n">OAuth2AccessToken</span><span class="o">();</span>
-        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">WEB_ACCESS_TOKEN_URL</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;APPID&#34;</span><span class="o">,</span> <span class="n">getAPPID</span><span class="o">()).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;SECRET&#34;</span><span class="o">,</span> <span class="n">getAPPSECRET</span><span class="o">()).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;CODE&#34;</span><span class="o">,</span><span class="n">code</span><span class="o">);</span>
-        <span class="n">JSONObject</span> <span class="n">jsonObject</span> <span class="o">=</span> <span class="n">doGet</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">jsonObject</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setAccess_token</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;access_token&#34;</span><span class="o">));</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setExpires_in</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&#34;expires_in&#34;</span><span class="o">));</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setRefresh_token</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;refresh_token&#34;</span><span class="o">));</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setOpenid</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;openid&#34;</span><span class="o">));</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setScope</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;scope&#34;</span><span class="o">));</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="n">oAuth2AccessToken</span><span class="o">;</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>这里有一个坑啊，因为此access_token，非彼access_token.<code>这里通过code换取的是一个特殊的网页授权access_token,与基础支持中的access_token（该access_token用于调用其他接口）不同</code>.所以微信为了安全又在这里搞了另一个token，来增大在网页获取用户信息的难度？</p>
+<pre tabindex="0"><code>https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&amp;secret=SECRET&amp;code=CODE&amp;grant_type=authorization_code
+</code></pre><p>这里将处理网页的实现，放在一个新的WebUtil类中继承WechatUtil，便可以直接用父类的doGet(),doPost()和一些字段了.具体代码如下:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> OAuth2AccessToken <span style="color:#900;font-weight:bold">getOAuth2AccessToken</span><span style="color:#000;font-weight:bold">(</span>String code<span style="color:#000;font-weight:bold">){</span>
+        OAuth2AccessToken oAuth2AccessToken<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> OAuth2AccessToken<span style="color:#000;font-weight:bold">();</span>
+        String url <span style="color:#000;font-weight:bold">=</span> WEB_ACCESS_TOKEN_URL<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;APPID&#34;</span><span style="color:#000;font-weight:bold">,</span> getAPPID<span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;SECRET&#34;</span><span style="color:#000;font-weight:bold">,</span> getAPPSECRET<span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;CODE&#34;</span><span style="color:#000;font-weight:bold">,</span>code<span style="color:#000;font-weight:bold">);</span>
+        JSONObject jsonObject <span style="color:#000;font-weight:bold">=</span> doGet<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>jsonObject <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            oAuth2AccessToken<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAccess_token</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;access_token&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            oAuth2AccessToken<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setExpires_in</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;expires_in&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            oAuth2AccessToken<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setRefresh_token</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;refresh_token&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            oAuth2AccessToken<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOpenid</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;openid&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            oAuth2AccessToken<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setScope</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;scope&#34;</span><span style="color:#000;font-weight:bold">));</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> oAuth2AccessToken<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>这里有一个坑啊，因为此access_token，非彼access_token.<code>这里通过code换取的是一个特殊的网页授权access_token,与基础支持中的access_token（该access_token用于调用其他接口）不同</code>.所以微信为了安全又在这里搞了另一个token，来增大在网页获取用户信息的难度？</p>
 <h1 id="用access_token和openid获取用户基本信息">用access_token和openid获取用户基本信息</h1>
 <p>新建一个UserInfo实体类来储存用户信息，代码就不贴了．接着继续在WebUtil类中添加代码,依旧是doGet()方法，请求的链接是<code>https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&amp;openid=OPENID&amp;lang=zh_CN</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="n">UserInfo</span> <span class="nf">getUserInfo</span><span class="o">(</span><span class="n">String</span> <span class="n">webAccessToken</span><span class="o">,</span> <span class="n">String</span> <span class="n">openid</span><span class="o">){</span>
-        <span class="n">UserInfo</span> <span class="n">userInfo</span><span class="o">=</span><span class="k">new</span> <span class="n">UserInfo</span><span class="o">();</span>
-        <span class="n">String</span> <span class="n">url</span><span class="o">=</span><span class="n">USER_INFO_URL</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;ACCESS_TOKEN&#34;</span><span class="o">,</span><span class="n">webAccessToken</span><span class="o">).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;OPENID&#34;</span><span class="o">,</span><span class="n">openid</span><span class="o">);</span>
-        <span class="n">JSONObject</span> <span class="n">jsonObject</span> <span class="o">=</span> <span class="n">doGet</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">jsonObject</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setOpenid</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;openid&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setNickname</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;nickname&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setSex</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;sex&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setProvince</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;province&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setCity</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;city&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setCountry</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;country&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setHeadimgurl</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;headimgurl&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setPrivilege</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;privilege&#34;</span><span class="o">));</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="n">userInfo</span><span class="o">;</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>这样就已经实现了获取用户的基本信息，但是还没有结束，再在OAuth2Servlet()类中调用以上的方法，</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span>
-            <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span><span class="n">IOException</span> <span class="o">{</span>
-        <span class="n">request</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="n">response</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="c1">// 用户同意授权后，能获取到code
-</span><span class="c1"></span>        <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;code&#34;</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">code</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;!</span><span class="n">code</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;&#34;</span><span class="o">))</span> <span class="o">{</span>
-                <span class="n">WebUtil</span> <span class="n">webUtil</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebUtil</span><span class="o">();</span>
-                <span class="c1">//通过code换取网页授权的access_token
-</span><span class="c1"></span>                <span class="n">OAuth2AccessToken</span> <span class="n">oAuth2AccessToken</span> <span class="o">=</span> <span class="n">webUtil</span><span class="o">.</span><span class="na">getOAuth2AccessToken</span><span class="o">(</span><span class="n">code</span><span class="o">);</span>
-                <span class="c1">//access_token
-</span><span class="c1"></span>                <span class="n">String</span> <span class="n">access_token</span> <span class="o">=</span> <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">getAccess_token</span><span class="o">();</span>
-                <span class="c1">//openid
-</span><span class="c1"></span>                <span class="n">String</span> <span class="n">openid</span> <span class="o">=</span> <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">getOpenid</span><span class="o">();</span>
-                <span class="c1">//获取用户信息
-</span><span class="c1"></span>                <span class="n">UserInfo</span> <span class="n">userInfo</span> <span class="o">=</span> <span class="n">webUtil</span><span class="o">.</span><span class="na">getUserInfo</span><span class="o">(</span><span class="n">access_token</span><span class="o">,</span> <span class="n">openid</span><span class="o">);</span>
-                <span class="c1">//todo 可以改成跳转到profile.jsp页面，通过参数（）来显示是否已经绑定
-</span><span class="c1"></span>                <span class="n">request</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">&#34;UserInfo&#34;</span><span class="o">,</span> <span class="n">userInfo</span><span class="o">);</span>
-                <span class="n">request</span><span class="o">.</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">&#34;message.jsp&#34;</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">request</span><span class="o">,</span><span class="n">response</span><span class="o">);</span>
-            <span class="o">}</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>可以看到在经过一系列操作之后得到了userInfo对象，并且将他传递到下一个页面．</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> UserInfo <span style="color:#900;font-weight:bold">getUserInfo</span><span style="color:#000;font-weight:bold">(</span>String webAccessToken<span style="color:#000;font-weight:bold">,</span> String openid<span style="color:#000;font-weight:bold">){</span>
+        UserInfo userInfo<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> UserInfo<span style="color:#000;font-weight:bold">();</span>
+        String url<span style="color:#000;font-weight:bold">=</span>USER_INFO_URL<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;ACCESS_TOKEN&#34;</span><span style="color:#000;font-weight:bold">,</span>webAccessToken<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;OPENID&#34;</span><span style="color:#000;font-weight:bold">,</span>openid<span style="color:#000;font-weight:bold">);</span>
+        JSONObject jsonObject <span style="color:#000;font-weight:bold">=</span> doGet<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">!=</span><span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            userInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOpenid</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;openid&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            userInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setNickname</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;nickname&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            userInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setSex</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;sex&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            userInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setProvince</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;province&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            userInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setCity</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;city&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            userInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setCountry</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;country&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            userInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setHeadimgurl</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;headimgurl&#34;</span><span style="color:#000;font-weight:bold">));</span>
+            userInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setPrivilege</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;privilege&#34;</span><span style="color:#000;font-weight:bold">));</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> userInfo<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>这样就已经实现了获取用户的基本信息，但是还没有结束，再在OAuth2Servlet()类中调用以上的方法，</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">doGet</span><span style="color:#000;font-weight:bold">(</span>HttpServletRequest request<span style="color:#000;font-weight:bold">,</span> HttpServletResponse response<span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000;font-weight:bold">throws</span> ServletException<span style="color:#000;font-weight:bold">,</span>IOException <span style="color:#000;font-weight:bold">{</span>
+        request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setCharacterEncoding</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;UTF-8&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        response<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setCharacterEncoding</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;UTF-8&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#998;font-style:italic">// 用户同意授权后，能获取到code
+</span><span style="color:#998;font-style:italic"></span>        String code <span style="color:#000;font-weight:bold">=</span> request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParameter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;code&#34;</span><span style="color:#000;font-weight:bold">);</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>code<span style="color:#000;font-weight:bold">!=</span><span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">&amp;&amp;!</span>code<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;&#34;</span><span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
+                WebUtil webUtil <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> WebUtil<span style="color:#000;font-weight:bold">();</span>
+                <span style="color:#998;font-style:italic">//通过code换取网页授权的access_token
+</span><span style="color:#998;font-style:italic"></span>                OAuth2AccessToken oAuth2AccessToken <span style="color:#000;font-weight:bold">=</span> webUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getOAuth2AccessToken</span><span style="color:#000;font-weight:bold">(</span>code<span style="color:#000;font-weight:bold">);</span>
+                <span style="color:#998;font-style:italic">//access_token
+</span><span style="color:#998;font-style:italic"></span>                String access_token <span style="color:#000;font-weight:bold">=</span> oAuth2AccessToken<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAccess_token</span><span style="color:#000;font-weight:bold">();</span>
+                <span style="color:#998;font-style:italic">//openid
+</span><span style="color:#998;font-style:italic"></span>                String openid <span style="color:#000;font-weight:bold">=</span> oAuth2AccessToken<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getOpenid</span><span style="color:#000;font-weight:bold">();</span>
+                <span style="color:#998;font-style:italic">//获取用户信息
+</span><span style="color:#998;font-style:italic"></span>                UserInfo userInfo <span style="color:#000;font-weight:bold">=</span> webUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getUserInfo</span><span style="color:#000;font-weight:bold">(</span>access_token<span style="color:#000;font-weight:bold">,</span> openid<span style="color:#000;font-weight:bold">);</span>
+                <span style="color:#998;font-style:italic">//todo 可以改成跳转到profile.jsp页面，通过参数（）来显示是否已经绑定
+</span><span style="color:#998;font-style:italic"></span>                request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAttribute</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;UserInfo&#34;</span><span style="color:#000;font-weight:bold">,</span> userInfo<span style="color:#000;font-weight:bold">);</span>
+                request<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getRequestDispatcher</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;message.jsp&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">forward</span><span style="color:#000;font-weight:bold">(</span>request<span style="color:#000;font-weight:bold">,</span>response<span style="color:#000;font-weight:bold">);</span>
+            <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><p>可以看到在经过一系列操作之后得到了userInfo对象，并且将他传递到下一个页面．</p>
 <h1 id="实现自己的跳转页面">实现自己的跳转页面</h1>
 <p>message.jsp代码如下:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">&lt;%@ page language=&#34;java&#34; pageEncoding=&#34;UTF-8&#34;%&gt;
-&lt;%@ page import=&#34;ObjectC.UserInfo&#34;%&gt;
+<pre tabindex="0"><code>&lt;%@ page language=&quot;java&quot; pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;%@ page import=&quot;ObjectC.UserInfo&quot;%&gt;
 &lt;html&gt;
 &lt;head&gt;
 	&lt;title&gt;账号设置&lt;/title&gt;
-	&lt;meta name=&#34;viewport&#34; content=&#34;width=device-width,user-scalable=0&#34;&gt;
-	&lt;link rel=&#34;shortcut icon&#34; href=&#34;home/favicon.ico&#34;&gt;
-	&lt;style type=&#34;text/css&#34;&gt;
+	&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,user-scalable=0&quot;&gt;
+	&lt;link rel=&quot;shortcut icon&quot; href=&quot;home/favicon.ico&quot;&gt;
+	&lt;style type=&quot;text/css&quot;&gt;
 		*{margin:0; padding:0}
 		table{border:1px dashed #B9B9DD;font-size:12pt}
 		td{border:1px dashed #B9B9DD;word-break:break-all; word-wrap:break-word;}
@@ -409,7 +294,7 @@
 &lt;/head&gt;
 &lt;body&gt;
 	&lt;%
-		UserInfo user = (UserInfo)request.getAttribute(&#34;UserInfo&#34;);
+		UserInfo user = (UserInfo)request.getAttribute(&quot;UserInfo&quot;);
 		if(null != user) {
 		String name=user.getName();
 		String openid=user.getOpenid();
@@ -418,17 +303,17 @@
 	%&gt;
 
     &lt;center&gt;
-	    &lt;div id=&#34;users&#34;&gt;&lt;p&gt;
+	    &lt;div id=&quot;users&quot;&gt;&lt;p&gt;
     	  &lt;%=name %&gt;&lt;br&gt;
     	  &lt;%=schoolid%&gt;&lt;br&gt;
     	  &lt;%=openid%&gt;&lt;br&gt;
     	  &lt;%=headImage%&gt;&lt;br&gt;
            绑定成功！&lt;br&gt;
-    	&lt;a href=&#34;profile.jsp&#34;&gt;返回个人设置&lt;/a&gt;
+    	&lt;a href=&quot;profile.jsp&quot;&gt;返回个人设置&lt;/a&gt;
 	&lt;/center&gt;
 
     &lt;center&gt;
-	&lt;div id=&#34;under&#34;&gt;
+	&lt;div id=&quot;under&quot;&gt;
 	&lt;p&gt;Copyright © 2016-2017 Yappy Doggie&lt;/p&gt;
 	&lt;/div&gt;
 	&lt;/center&gt;
@@ -436,132 +321,419 @@
 	&lt;%
 		}
 		else
-			out.print(&#34;用户不同意授权,未获取到用户信息！&#34;);
+			out.print(&quot;用户不同意授权,未获取到用户信息！&quot;);
 	%&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-</code></pre></td></tr></table>
-</div>
-</div><p>主要是判断了一下用户是否授权，如果没有就显示＂用户不同意授权,未获取到用户信息！＂。这样基本的获取用户信息和跳转自己的页面就实现了。</p>
+</code></pre><p>主要是判断了一下用户是否授权，如果没有就显示＂用户不同意授权,未获取到用户信息！＂。这样基本的获取用户信息和跳转自己的页面就实现了。</p>
 <h1 id="最后">最后</h1>
 <p>到现在终于写完了五篇，不能每个个细节都说的详细，但我也是看着开发文档和一些博客/视频，一步一步做出来的，虽然写的是垃圾代码，到目前为止也没有实现什么核心的业务逻辑，但是整个过程&hellip;..开心就好😂&hellip;..</p>
-    </div>
-
-    <div class="post-copyright">
-  <p class="copyright-item">
-    <span class="item-title">Author</span>
-    <span class="item-content">LeeReindeer</span>
-  </p>
-  <p class="copyright-item">
-    <span class="item-title">LastMod</span>
-    <span class="item-content">
-        2017-05-14
-        
-    </span>
-  </p>
-  
-  <p class="copyright-item">
-    <span class="item-title">License</span>
-    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
-  </p>
-</div>
-<footer class="post-footer">
-      <div class="post-tags">
-          <a href="/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
-          <a href="/tags/java/">Java</a>
-          </div>
-      <nav class="post-nav">
-        <a class="prev" href="/post/rural_in_china/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">乡土中国－分崩离析的乡土社会</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
-        <a class="next" href="/post/wechat4_creat_menu_and_send_template_msg/">
-            <span class="next-text nav-default">一个微信公众号的诞生（四）菜单的创建和模板消息的发送</span>
-            <span class="next-text nav-mobile">Next</span>
-            <i class="iconfont icon-right"></i>
-          </a>
-      </nav>
-    </footer>
-  </article>
         </div>
+
         
 
-  
 
-  
-    <script src="https://utteranc.es/client.js"
-            repo="LeeReindeer/LeeReindeer.github.io"
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/wechat4_creat_menu_and_send_template_msg/">一个微信公众号的诞生（四）菜单的创建和模板消息的发送</a></li>
+        
+        <li><a href="/post/wechat3_access_token/">一个微信公众号的诞生（三）Access Token的获取</a></li>
+        
+        <li><a href="/post/wecaht2_docking_receipt_and_send/">一个微信公众号的诞生（二）公众号对接和消息的接收发送</a></li>
+        
+        <li><a href="/post/wechat1_development_of_the_environment/">一个微信公众号的诞生（一）开发环境的搭建</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/%E5%BE%AE%E4%BF%A1'>微信</a></li>
+                
+                <li><a href='https://leer.moe/tags/java'>Java</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
-
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
-      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
-      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
-  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
-</div>
-
-<div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme -
-    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
-  </span>
-
-  
-
-  <span class="copyright-year">
-    &copy;
-    2017 -
-    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
-  </span>
-</div>
-
-<div class="copyright" id="showDays">
-
-</div>
-
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
+      </script>
     </div>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
-  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
-    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
-    timeago().render(document.querySelectorAll('.timeago'), languageCode);
-    timeago.cancel();  
-  </script>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href="/categories">分类</a></h3>
+<ul class="widget-list">
+    
+    
+    
+    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
+    
+    
+    
+    <li><a href="#">未分类
+            (3)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+
+
+
+
+
+<div class="tagcloud">
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
+        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+    <div class="container" id="showDays"></div>
+</footer>
+<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+
+
+
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
 
 
 
 
 
 
-<script src="/js/sitedate.js"></script>
 
+
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
+
 </html>

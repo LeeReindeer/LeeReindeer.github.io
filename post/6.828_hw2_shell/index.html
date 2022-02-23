@@ -1,309 +1,168 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-cn">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>6.828 Homework 2:Shell - LeeReindeer&#39;s blog</title>
-  <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-
-<meta name="author" content="LeeReindeer" /><meta name="description" content="这次的作业是实现一个简单的 shell。通过阅读 xv6 book 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。
-题目提供的sh.c已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成runcmd函数中缺少的代码即可。
-流程 先从 main 函数看起：
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20  int main(void) { static char buf[100]; int fd, r; // Read and run input commands.  while (getcmd(buf, sizeof(buf)) &amp;gt;= 0) { if (buf[0] == &amp;#39;c&amp;#39; &amp;amp;&amp;amp; buf[1] == &amp;#39;d&amp;#39; &amp;amp;&amp;amp; buf[2] == &amp;#39; &amp;#39;) { // Clumsy but will have to do for now.  // Chdir has no effect on the parent if run in the child.  buf[strlen(buf) - 1] = 0; // chop \n  if (chdir(buf &#43; 3) &amp;lt; 0) fprintf(stderr, &amp;#34;cannot cd %s\n&amp;#34;, buf &#43; 3); continue; } if (fork1() == 0) runcmd(parsecmd(buf)); wait(&amp;amp;r); } exit(0); }   main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特别处理。之后fork创建子进程，调用parsecmd解析命令，再调用runcmd执行得到的命令。最后调用wait等待子进程结束。main 的基本流程就这样。
-" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
-
-
-<link rel="canonical" href="https://leer.moe/post/6.828_hw2_shell/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-
-
-
-<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
-
-
-<meta property="og:title" content="6.828 Homework 2:Shell" />
-<meta property="og:description" content="这次的作业是实现一个简单的 shell。通过阅读 xv6 book 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。
-题目提供的sh.c已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成runcmd函数中缺少的代码即可。
-流程
-先从 main 函数看起：
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-
-
-int main(void) {
-  static char buf[100];
-  int fd, r;
-
-  // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) &gt;= 0) {
-    if (buf[0] == &#39;c&#39; &amp;&amp; buf[1] == &#39;d&#39; &amp;&amp; buf[2] == &#39; &#39;) {
-      // Clumsy but will have to do for now.
-      // Chdir has no effect on the parent if run in the child.
-      buf[strlen(buf) - 1] = 0; // chop \n
-      if (chdir(buf &#43; 3) &lt; 0)
-        fprintf(stderr, &#34;cannot cd %s\n&#34;, buf &#43; 3);
-      continue;
-    }
-    if (fork1() == 0)
-      runcmd(parsecmd(buf));
-    wait(&amp;r);
-  }
-  exit(0);
-}
-
-
-main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特别处理。之后fork创建子进程，调用parsecmd解析命令，再调用runcmd执行得到的命令。最后调用wait等待子进程结束。main 的基本流程就这样。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/post/6.828_hw2_shell/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2018-09-29T16:31:21+00:00" />
-<meta property="article:modified_time" content="2018-09-29T16:31:21+00:00" />
-
-<meta itemprop="name" content="6.828 Homework 2:Shell">
-<meta itemprop="description" content="这次的作业是实现一个简单的 shell。通过阅读 xv6 book 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。
-题目提供的sh.c已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成runcmd函数中缺少的代码即可。
-流程
-先从 main 函数看起：
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-
-
-int main(void) {
-  static char buf[100];
-  int fd, r;
-
-  // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) &gt;= 0) {
-    if (buf[0] == &#39;c&#39; &amp;&amp; buf[1] == &#39;d&#39; &amp;&amp; buf[2] == &#39; &#39;) {
-      // Clumsy but will have to do for now.
-      // Chdir has no effect on the parent if run in the child.
-      buf[strlen(buf) - 1] = 0; // chop \n
-      if (chdir(buf &#43; 3) &lt; 0)
-        fprintf(stderr, &#34;cannot cd %s\n&#34;, buf &#43; 3);
-      continue;
-    }
-    if (fork1() == 0)
-      runcmd(parsecmd(buf));
-    wait(&amp;r);
-  }
-  exit(0);
-}
-
-
-main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特别处理。之后fork创建子进程，调用parsecmd解析命令，再调用runcmd执行得到的命令。最后调用wait等待子进程结束。main 的基本流程就这样。"><meta itemprop="datePublished" content="2018-09-29T16:31:21+00:00" />
-<meta itemprop="dateModified" content="2018-09-29T16:31:21+00:00" />
-<meta itemprop="wordCount" content="2473">
-<meta itemprop="keywords" content="OS," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="6.828 Homework 2:Shell"/>
-<meta name="twitter:description" content="这次的作业是实现一个简单的 shell。通过阅读 xv6 book 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。
-题目提供的sh.c已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成runcmd函数中缺少的代码即可。
-流程
-先从 main 函数看起：
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-
-
-int main(void) {
-  static char buf[100];
-  int fd, r;
-
-  // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) &gt;= 0) {
-    if (buf[0] == &#39;c&#39; &amp;&amp; buf[1] == &#39;d&#39; &amp;&amp; buf[2] == &#39; &#39;) {
-      // Clumsy but will have to do for now.
-      // Chdir has no effect on the parent if run in the child.
-      buf[strlen(buf) - 1] = 0; // chop \n
-      if (chdir(buf &#43; 3) &lt; 0)
-        fprintf(stderr, &#34;cannot cd %s\n&#34;, buf &#43; 3);
-      continue;
-    }
-    if (fork1() == 0)
-      runcmd(parsecmd(buf));
-    wait(&amp;r);
-  }
-  exit(0);
-}
-
-
-main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特别处理。之后fork创建子进程，调用parsecmd解析命令，再调用runcmd执行得到的命令。最后调用wait等待子进程结束。main 的基本流程就这样。"/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-</head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <a href="/">
-        <li class="mobile-menu-item">Home</li>
-      </a><a href="/categories/newsletter/">
-        <li class="mobile-menu-item">Newsletter</li>
-      </a><a href="/post/">
-        <li class="mobile-menu-item">Archives</li>
-      </a><a href="/tags/">
-        <li class="mobile-menu-item">Tags</li>
-      </a><a href="/categories/">
-        <li class="mobile-menu-item">Categories</li>
-      </a><a href="/about/">
-        <li class="mobile-menu-item">About</li>
-      </a>
-  </ul>
-
-  
-
-
-</nav>
-
-  <div class="container" id="mobile-panel">
-    <header id="header" class="header">
-        <div class="logo-wrapper">
-  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-</div>
-
-
-
-
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    <li class="menu-item">
-        <a class="menu-item-link" href="/">Home</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/post/">Archives</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/tags/">Tags</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/">Categories</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/about/">About</a>
-      </li>
-  </ul>
-</nav>
-
-    </header>
-
-    <main id="main" class="main">
-      <div class="content-wrapper">
-        <div id="content" class="content">
-          <article class="post">
+    <title>6.828 Homework 2:Shell | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="6.828 Homework 2:Shell - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
     
-    <header class="post-header">
-      <h1 class="post-title">6.828 Homework 2:Shell</h1>
+    <meta property="article:published_time" content='2018-09-29T16:31:21&#43;08:00'>
+    
+    
+    <meta property="article:modified_time" content='2018-09-29T16:31:21&#43;08:00'>
+    
+    <meta name="Keywords" content="">
+    <meta name="description"
+        content="这次的作业是实现一个简单的 shell。通过阅读 xv6 book 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。
+题目提供的sh.c已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成runcmd函数中缺少的代码即可。
+流程
+先从 main 函数看起：
+int main(void) {
+  static char buf[100];
+  int fd, r;
 
-      <div class="post-meta">
-        <span class="post-time"> 2018-09-29 </span>
-        <div class="post-category">
-            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+  // Read and run input commands.
+  while (getcmd(buf, sizeof(buf)) &gt;= 0) {
+    if (buf[0] == &#39;c&#39; &amp;&amp; buf[1] == &#39;d&#39; &amp;&amp; buf[2] == &#39; &#39;) {
+      // Clumsy but will have to do for now.
+      // Chdir has no effect on the parent if run in the child.
+      buf[strlen(buf) - 1] = 0; // chop \n
+      if (chdir(buf &#43; 3) &lt; 0)
+        fprintf(stderr, &#34;cannot cd %s\n&#34;, buf &#43; 3);
+      continue;
+    }
+    if (fork1() == 0)
+      runcmd(parsecmd(buf));
+    wait(&amp;r);
+  }
+  exit(0);
+}
+main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特别处理。之后fork创建子进程，调用parsecmd解析命令，再调用runcmd执行得到的命令。最后调用wait等待子进程结束。main 的基本流程就这样。">
+    
+    <meta name="author" content="LeeR">
+    <meta property="og:url" content="https://leer.moe/post/6.828_hw2_shell/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                <p class="description">Dive in</p>
             </div>
-          <span class="more-meta"> 2473 words </span>
-          <span class="more-meta"> 5 mins read </span>
-        
-      </div>
-    </header>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://leer.moe/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
 
-    <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">Contents</h2>
-  <div class="post-toc-content always-active">
-    <nav id="TableOfContents">
+    <div id="body">
+        
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 260px;
+        margin-top: 1%;
+        right: 8.5%;
+         
+        margin-right: 1%;
+        padding: 5px 10px;
+        font-size: 12px;
+         
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+         
+         
+         
+        word-wrap: break-word;
+        line-height: 1.5;
+         
+         
+         
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 18px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+        color: #ba3925;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">6.828 Homework 2:Shell</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
   <ol>
     <li><a href="#流程">流程</a></li>
     <li><a href="#system-interface">System interface</a></li>
@@ -316,109 +175,104 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
     <li><a href="#pipe">Pipe</a></li>
   </ol>
 </nav>
-  </div>
-</div>
-  <div class="post-outdated">
-    <div class="warn">
-      <p>[NOTE] Updated <span class="timeago" datetime="2018-09-29T16:31:21" title="September 29, 2018">September 29, 2018</span>. This article may have outdated content or subject matter.</p>
     </div>
-  </div>
-    <div class="post-content">
-      <p>这次的作业是实现一个简单的 shell。通过阅读 <a href="https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf">xv6 book</a> 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。</p>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            
+            
+            
+            
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">6.828 Homework 2:Shell</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年9月29日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span>|</span>
+            <span class="meta-category">2325 words</span>
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <p>这次的作业是实现一个简单的 shell。通过阅读 <a href="https://pdos.csail.mit.edu/6.828/2018/xv6/book-rev11.pdf">xv6 book</a> 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。</p>
 <p>题目提供的<code>sh.c</code>已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成<code>runcmd</code>函数中缺少的代码即可。</p>
 <h2 id="流程">流程</h2>
 <p>先从 <code>main</code> 函数看起：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">static</span> <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
-  <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">r</span><span class="p">;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">void</span>) {
+  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">char</span> buf[<span style="color:#099">100</span>];
+  <span style="color:#458;font-weight:bold">int</span> fd, r;
 
-  <span class="c1">// Read and run input commands.
-</span><span class="c1"></span>  <span class="k">while</span> <span class="p">(</span><span class="n">getcmd</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;c&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;d&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">buf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39; &#39;</span><span class="p">)</span> <span class="p">{</span>
-      <span class="c1">// Clumsy but will have to do for now.
-</span><span class="c1"></span>      <span class="c1">// Chdir has no effect on the parent if run in the child.
-</span><span class="c1"></span>      <span class="n">buf</span><span class="p">[</span><span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// chop \n
-</span><span class="c1"></span>      <span class="k">if</span> <span class="p">(</span><span class="n">chdir</span><span class="p">(</span><span class="n">buf</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;cannot cd %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">buf</span> <span class="o">+</span> <span class="mi">3</span><span class="p">);</span>
-      <span class="k">continue</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-      <span class="n">runcmd</span><span class="p">(</span><span class="n">parsecmd</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
-    <span class="n">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><code>main</code> 函数循环调用 <code>getcmd</code>从 console 读取命令，对 <code>cd </code>命令做了特别处理。之后<code>fork</code>创建子进程，调用<code>parsecmd</code>解析命令，再调用<code>runcmd</code>执行得到的命令。最后调用<code>wait</code>等待子进程结束。<code>main</code> 的基本流程就这样。</p>
+  <span style="color:#998;font-style:italic">// Read and run input commands.
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">while</span> (getcmd(buf, <span style="color:#000;font-weight:bold">sizeof</span>(buf)) <span style="color:#000;font-weight:bold">&gt;=</span> <span style="color:#099">0</span>) {
+    <span style="color:#000;font-weight:bold">if</span> (buf[<span style="color:#099">0</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;c&#39;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> buf[<span style="color:#099">1</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;d&#39;</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> buf[<span style="color:#099">2</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39; &#39;</span>) {
+      <span style="color:#998;font-style:italic">// Clumsy but will have to do for now.
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#998;font-style:italic">// Chdir has no effect on the parent if run in the child.
+</span><span style="color:#998;font-style:italic"></span>      buf[strlen(buf) <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>] <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; <span style="color:#998;font-style:italic">// chop \n
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">if</span> (chdir(buf <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">3</span>) <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">0</span>)
+        fprintf(stderr, <span style="color:#d14">&#34;cannot cd %s</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, buf <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">3</span>);
+      <span style="color:#000;font-weight:bold">continue</span>;
+    }
+    <span style="color:#000;font-weight:bold">if</span> (fork1() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>)
+      runcmd(parsecmd(buf));
+    wait(<span style="color:#000;font-weight:bold">&amp;</span>r);
+  }
+  exit(<span style="color:#099">0</span>);
+}
+</code></pre></div><p><code>main</code> 函数循环调用 <code>getcmd</code>从 console 读取命令，对 <code>cd </code>命令做了特别处理。之后<code>fork</code>创建子进程，调用<code>parsecmd</code>解析命令，再调用<code>runcmd</code>执行得到的命令。最后调用<code>wait</code>等待子进程结束。<code>main</code> 的基本流程就这样。</p>
 <p><code>parsecmd</code>递归调用一系列的解析函数，先解析优先级高的（&lt;，&gt;和|）。cmd 分为三类：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">execcmd</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>            <span class="c1">// &#39; &#39;
-</span><span class="c1"></span>  <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[</span><span class="n">MAXARGS</span><span class="p">];</span> <span class="c1">// arguments to the command to be exec-ed
-</span><span class="c1"></span><span class="p">};</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">struct</span> execcmd {
+  <span style="color:#458;font-weight:bold">int</span> type;            <span style="color:#998;font-style:italic">// &#39; &#39;
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>argv[MAXARGS]; <span style="color:#998;font-style:italic">// arguments to the command to be exec-ed
+</span><span style="color:#998;font-style:italic"></span>};
 
-<span class="k">struct</span> <span class="n">redircmd</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>        <span class="c1">// &lt; or &gt;
-</span><span class="c1"></span>  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span> <span class="c1">// the command to be run (e.g., an execcmd)
-</span><span class="c1"></span>  <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>      <span class="c1">// the input/output file
-</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>       <span class="c1">// flags for open() indicating read or write
-</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>          <span class="c1">// the file descriptor number to use for the file
-</span><span class="c1"></span><span class="p">};</span>
+<span style="color:#000;font-weight:bold">struct</span> redircmd {
+  <span style="color:#458;font-weight:bold">int</span> type;        <span style="color:#998;font-style:italic">// &lt; or &gt;
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>cmd; <span style="color:#998;font-style:italic">// the command to be run (e.g., an execcmd)
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>file;      <span style="color:#998;font-style:italic">// the input/output file
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> flags;       <span style="color:#998;font-style:italic">// flags for open() indicating read or write
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> fd;          <span style="color:#998;font-style:italic">// the file descriptor number to use for the file
+</span><span style="color:#998;font-style:italic"></span>};
 
-<span class="k">struct</span> <span class="n">pipecmd</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>          <span class="c1">// |
-</span><span class="c1"></span>  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>  <span class="c1">// left side of pipe
-</span><span class="c1"></span>  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span> <span class="c1">// right side of pipe
-</span><span class="c1"></span><span class="p">};</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><code>runcmd</code>根据 cmd 的类型进行分支处理，需要去完成的核心功能也在这个函数中。</p>
+<span style="color:#000;font-weight:bold">struct</span> pipecmd {
+  <span style="color:#458;font-weight:bold">int</span> type;          <span style="color:#998;font-style:italic">// |
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>left;  <span style="color:#998;font-style:italic">// left side of pipe
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>right; <span style="color:#998;font-style:italic">// right side of pipe
+</span><span style="color:#998;font-style:italic"></span>};
+</code></pre></div><p><code>runcmd</code>根据 cmd 的类型进行分支处理，需要去完成的核心功能也在这个函数中。</p>
 <h2 id="system-interface">System interface</h2>
 <p>平时对shell的命令执行习以为常，却不曾想背后的实现。</p>
 <p>在了解shell的工作原理之前，需要对几个<code>system call</code>有所了解：fork，exec。</p>
@@ -434,175 +288,83 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 <h2 id="运行基本的命令">运行基本的命令</h2>
 <p>关键的一步是在这里调用<code>execv</code>执行命令，所谓的“执行命令”就是运行命令所指向的可执行文件，这个进程的内存会被改变，但是它的<code>file table</code>不会变。</p>
 <p>但是我们不能在主进程直接运行命令，需要<code>fork</code>，可以发现在<code>main</code>函数中已经帮我们做了。所以最简单觉得实现就是这样：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">execv</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>第一个参数是命令所在的执行文件的绝对路径。比如调用<code>ls</code>时，需要输入<code>/bin/ls</code>。每次都这样输入很麻烦，而且不一定每个命令都在<code>/bin</code> 下面。那么我们平时使用的 shell 是怎么实现的呢？</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">execv(ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>], ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv);
+</code></pre></div><p>第一个参数是命令所在的执行文件的绝对路径。比如调用<code>ls</code>时，需要输入<code>/bin/ls</code>。每次都这样输入很麻烦，而且不一定每个命令都在<code>/bin</code> 下面。那么我们平时使用的 shell 是怎么实现的呢？</p>
 <p><code>PATH</code></p>
 <h3 id="改进">改进</h3>
 <p>使用<code>getenv(&quot;PATH&quot;)</code>可以得到<code>PATH</code>，对其进行分割存在数组中，遍历数组，把路径和命令名进行组合，如果那个路径下存在那个命令，执行。</p>
 <p>有两个问题：如何分割？如何检测可以执行？</p>
 <p>两个问题的答案分蘖对应两个函数：<code>strtok_r</code>，<code>access</code>。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">access</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mode</span><span class="p">);</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>mode 可以是<code>F_OK</code>，<code>R_OK</code>，<code>W_OK</code>，<code>X_OK</code>，分别检查文件是否存在，当前进程是否有权限读，写。执行该文件。mode 也可以是它们的按位或。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">access</span>(<span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>pathname, <span style="color:#458;font-weight:bold">int</span> mode);
+</code></pre></div><p>mode 可以是<code>F_OK</code>，<code>R_OK</code>，<code>W_OK</code>，<code>X_OK</code>，分别检查文件是否存在，当前进程是否有权限读，写。执行该文件。mode 也可以是它们的按位或。</p>
 <p>所以我们可以调用<code>acess(abs_path, F_OK | X_OK)</code> 来检查该路径下是否可以执行。</p>
 <p>最终改进的版本：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c">  <span class="k">case</span> <span class="sc">&#39; &#39;</span><span class="o">:</span>
-    <span class="n">ecmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">execcmd</span> <span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-      <span class="n">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39; &#39;</span><span style="color:#000;font-weight:bold">:</span>
+    ecmd <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">struct</span> execcmd <span style="color:#000;font-weight:bold">*</span>)cmd;
+    <span style="color:#000;font-weight:bold">if</span> (ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>)
+      _exit(<span style="color:#099">0</span>);
 
-    <span class="k">if</span> <span class="p">(</span><span class="n">access</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">F_OK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// check current dir
-</span><span class="c1"></span>      <span class="n">execv</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-      <span class="kt">char</span> <span class="o">*</span><span class="n">str1</span><span class="p">,</span> <span class="o">*</span><span class="n">token</span><span class="p">,</span> <span class="o">*</span><span class="n">saveptr1</span><span class="p">;</span>
-      <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-      <span class="kt">char</span> <span class="o">*</span><span class="n">env_path</span> <span class="o">=</span> <span class="n">getenv</span><span class="p">(</span><span class="s">&#34;PATH&#34;</span><span class="p">);</span>
-      <span class="kt">char</span> <span class="o">*</span><span class="n">env_paths</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
-      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">str1</span> <span class="o">=</span> <span class="n">env_path</span><span class="p">;;</span> <span class="n">i</span><span class="o">++</span><span class="p">,</span> <span class="n">str1</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">token</span> <span class="o">=</span> <span class="n">strtok_r</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="s">&#34;:&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">saveptr1</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">token</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-          <span class="k">break</span><span class="p">;</span>
-        <span class="n">env_paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span><span class="p">;</span>
-      <span class="p">}</span>
-      <span class="kt">int</span> <span class="n">find</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="kt">char</span> <span class="o">*</span><span class="n">abs_path</span><span class="p">;</span> <span class="c1">// evn_path[i] + &#34;/&#34; + path;
-</span><span class="c1"></span>      <span class="kt">int</span> <span class="n">j</span><span class="p">;</span>
-      <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">&amp;&amp;</span> <span class="n">find</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">abs_path</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">env_paths</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="n">strlen</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-        <span class="n">strcpy</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">env_paths</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
-        <span class="n">strcat</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="s">&#34;/&#34;</span><span class="p">);</span>
-        <span class="n">strcat</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">access</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">F_OK</span> <span class="o">|</span> <span class="n">X_OK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-          <span class="n">find</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-          <span class="n">execv</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="n">free</span><span class="p">(</span><span class="n">abs_path</span><span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">find</span><span class="p">)</span>
-        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Command not find: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-    <span class="p">}</span>
-    <span class="k">break</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><h2 id="io-redirection">I/O Redirection</h2>
+    <span style="color:#000;font-weight:bold">if</span> (access(ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>], F_OK) <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) { <span style="color:#998;font-style:italic">// check current dir
+</span><span style="color:#998;font-style:italic"></span>      execv(ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>], ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv);
+    } <span style="color:#000;font-weight:bold">else</span> {
+      <span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>path <span style="color:#000;font-weight:bold">=</span> ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>];
+      <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>str1, <span style="color:#000;font-weight:bold">*</span>token, <span style="color:#000;font-weight:bold">*</span>saveptr1;
+      <span style="color:#458;font-weight:bold">int</span> i;
+      <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>env_path <span style="color:#000;font-weight:bold">=</span> getenv(<span style="color:#d14">&#34;PATH&#34;</span>);
+      <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>env_paths[<span style="color:#099">100</span>];
+      <span style="color:#000;font-weight:bold">for</span> (i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, str1 <span style="color:#000;font-weight:bold">=</span> env_path;; i<span style="color:#000;font-weight:bold">++</span>, str1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>) {
+        token <span style="color:#000;font-weight:bold">=</span> strtok_r(str1, <span style="color:#d14">&#34;:&#34;</span>, <span style="color:#000;font-weight:bold">&amp;</span>saveptr1);
+        <span style="color:#000;font-weight:bold">if</span> (token <span style="color:#000;font-weight:bold">==</span> <span style="color:#0086b3">NULL</span>)
+          <span style="color:#000;font-weight:bold">break</span>;
+        env_paths[i] <span style="color:#000;font-weight:bold">=</span> token;
+      }
+      <span style="color:#458;font-weight:bold">int</span> find <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+      <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>abs_path; <span style="color:#998;font-style:italic">// evn_path[i] + &#34;/&#34; + path;
+</span><span style="color:#998;font-style:italic"></span>      <span style="color:#458;font-weight:bold">int</span> j;
+      <span style="color:#000;font-weight:bold">for</span> (j <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; j <span style="color:#000;font-weight:bold">&lt;</span> i <span style="color:#000;font-weight:bold">&amp;&amp;</span> find <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>; j<span style="color:#000;font-weight:bold">++</span>) {
+        abs_path <span style="color:#000;font-weight:bold">=</span> (<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>)malloc(strlen(env_paths[j]) <span style="color:#000;font-weight:bold">+</span> strlen(path) <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>);
+        strcpy(abs_path, env_paths[j]);
+        strcat(abs_path, <span style="color:#d14">&#34;/&#34;</span>);
+        strcat(abs_path, path);
+        <span style="color:#000;font-weight:bold">if</span> (access(abs_path, F_OK <span style="color:#000;font-weight:bold">|</span> X_OK) <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
+          find <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
+          execv(abs_path, ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv);
+        }
+        free(abs_path);
+      }
+      <span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>find)
+        fprintf(stderr, <span style="color:#d14">&#34;Command not find: %s</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>, ecmd<span style="color:#000;font-weight:bold">-&gt;</span>argv[<span style="color:#099">0</span>]);
+    }
+    <span style="color:#000;font-weight:bold">break</span>;
+</code></pre></div><h2 id="io-redirection">I/O Redirection</h2>
 <p>在看懂 xv6 book 的第10页之后实现，输入输出重定向变得很简单：<code>fork</code>之后关闭之前的 fd，打开需要输出或输出的 fd。</p>
 <p>这里需要用到的 <code>System call</code>是 <code>open</code> 和 <code>close</code>。</p>
 <p>而且也不需要对 <code>&lt;</code> 和 <code>&gt;</code> 做分别的处理。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="nf">redircmd</span><span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">subcmd</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">redircmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">redircmd</span>(<span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>subcmd, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>file, <span style="color:#458;font-weight:bold">int</span> type) {
+  <span style="color:#000;font-weight:bold">struct</span> redircmd <span style="color:#000;font-weight:bold">*</span>cmd;
 
-  <span class="n">cmd</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
-  <span class="n">memset</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
-  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">type</span><span class="p">;</span>
-  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">=</span> <span class="n">subcmd</span><span class="p">;</span>
-  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">file</span> <span class="o">=</span> <span class="n">file</span><span class="p">;</span>
-  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="sc">&#39;&lt;&#39;</span><span class="p">)</span> <span class="o">?</span> <span class="nl">O_RDONLY</span> <span class="p">:</span> <span class="n">O_WRONLY</span> <span class="o">|</span> <span class="n">O_CREAT</span> <span class="o">|</span> <span class="n">O_TRUNC</span><span class="p">;</span>
-  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">=</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="sc">&#39;&lt;&#39;</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// stdin : stdout
-</span><span class="c1"></span>  <span class="k">return</span> <span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>当输入的命令重定向了输入，如：<code>cat &lt; t.sh</code>。那么<code>rcmd-&gt;fd</code>为0，<code>rcmd-&gt;flags</code>为<code>O_RDONLY</code>。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c">  <span class="k">case</span> <span class="sc">&#39;&gt;&#39;</span><span class="o">:</span>
-  <span class="k">case</span> <span class="sc">&#39;&lt;&#39;</span><span class="o">:</span>
-    <span class="n">rcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">redircmd</span> <span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
-    <span class="n">errno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">close</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">fd</span><span class="p">);</span>
-    <span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">file</span><span class="p">,</span> <span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">,</span> <span class="mo">0644</span><span class="p">);</span><span class="c1">//注意第三个参数是权限
-</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Error: %s&#34;</span><span class="p">,</span> <span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
-    <span class="p">}</span>
-    <span class="n">runcmd</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="p">);</span>
-    <span class="k">break</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>调用<code>close(rcmd-&gt;fd)</code>会关闭标准输入（0），此时最小可用的fd变为0,。接下来调用<code>open</code>打开<code>t.sh</code>文件，它的fd为0。这样一来这个子进程的输入就重定向为文件了。</p>
+  cmd <span style="color:#000;font-weight:bold">=</span> malloc(<span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#000;font-weight:bold">*</span>cmd));
+  memset(cmd, <span style="color:#099">0</span>, <span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#000;font-weight:bold">*</span>cmd));
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>type <span style="color:#000;font-weight:bold">=</span> type;
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>cmd <span style="color:#000;font-weight:bold">=</span> subcmd;
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>file <span style="color:#000;font-weight:bold">=</span> file;
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>flags <span style="color:#000;font-weight:bold">=</span> (type <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;&lt;&#39;</span>) <span style="color:#000;font-weight:bold">?</span> <span style="color:#900;font-weight:bold">O_RDONLY</span> : O_WRONLY <span style="color:#000;font-weight:bold">|</span> O_CREAT <span style="color:#000;font-weight:bold">|</span> O_TRUNC;
+  cmd<span style="color:#000;font-weight:bold">-&gt;</span>fd <span style="color:#000;font-weight:bold">=</span> (type <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#39;&lt;&#39;</span>) <span style="color:#000;font-weight:bold">?</span> <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#099">1</span>; <span style="color:#998;font-style:italic">// stdin : stdout
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> (<span style="color:#000;font-weight:bold">struct</span> cmd <span style="color:#000;font-weight:bold">*</span>)cmd;
+}
+</code></pre></div><p>当输入的命令重定向了输入，如：<code>cat &lt; t.sh</code>。那么<code>rcmd-&gt;fd</code>为0，<code>rcmd-&gt;flags</code>为<code>O_RDONLY</code>。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39;&gt;&#39;</span><span style="color:#000;font-weight:bold">:</span>
+  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39;&lt;&#39;</span><span style="color:#000;font-weight:bold">:</span>
+    rcmd <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">struct</span> redircmd <span style="color:#000;font-weight:bold">*</span>)cmd;
+    errno <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+    close(rcmd<span style="color:#000;font-weight:bold">-&gt;</span>fd);
+    rcmd<span style="color:#000;font-weight:bold">-&gt;</span>fd <span style="color:#000;font-weight:bold">=</span> open(rcmd<span style="color:#000;font-weight:bold">-&gt;</span>file, rcmd<span style="color:#000;font-weight:bold">-&gt;</span>flags, <span style="color:#099">0644</span>);<span style="color:#998;font-style:italic">//注意第三个参数是权限
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> (rcmd<span style="color:#000;font-weight:bold">-&gt;</span>fd <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) {
+      fprintf(stderr, <span style="color:#d14">&#34;Error: %s&#34;</span>, strerror(errno));
+    }
+    runcmd(rcmd<span style="color:#000;font-weight:bold">-&gt;</span>cmd);
+    <span style="color:#000;font-weight:bold">break</span>;
+</code></pre></div><p>调用<code>close(rcmd-&gt;fd)</code>会关闭标准输入（0），此时最小可用的fd变为0,。接下来调用<code>open</code>打开<code>t.sh</code>文件，它的fd为0。这样一来这个子进程的输入就重定向为文件了。</p>
 <h2 id="pipe">Pipe</h2>
 <p>接下来时管道的实现，也是需要调用 System call：<code>pipe</code> 和 <code>dup</code>，创建用于进程通信的管道。</p>
 <blockquote>
@@ -614,237 +376,454 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 <p>The  dup() system call creates a copy of the file descriptor oldfd, using the lowest-
 ​       numbered unused file descriptor for the new descriptor.</p>
 </blockquote>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c">  <span class="c1">//...
-</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">;</span>
-  <span class="c1">//...
-</span><span class="c1"></span>  <span class="k">case</span> <span class="sc">&#39;|&#39;</span><span class="o">:</span>
-    <span class="n">pcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pipecmd</span> <span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
-    <span class="n">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-      <span class="n">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// use 1, write left cmd&#39;s output to p[1];
-</span><span class="c1"></span>      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-      <span class="n">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span><span class="p">{</span>
-      <span class="n">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-      <span class="n">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// read right cmd&#39;s input from p[0]
-</span><span class="c1"></span>      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-      <span class="n">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="cm">/**
-</span><span class="cm">     * The wait() system call suspends execution of the calling
-</span><span class="cm">     * process  until one  of its children terminates.  The call wait(&amp;wstatus)
-</span><span class="cm">     * is equivalent to: waitpid(-1, &amp;wstatus, 0);
-</span><span class="cm">     */</span>
-    <span class="n">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
-    <span class="k">break</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>首先在子进程中执行<code>|</code>的左端命令，写入p[1]。父进程从中p[0]读入，执行右端命令。最终左端命令的输出通过管道连接到了右端命令的输入。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> p[<span style="color:#099">2</span>], r;
+  <span style="color:#998;font-style:italic">//...
+</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39;|&#39;</span><span style="color:#000;font-weight:bold">:</span>
+    pcmd <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">struct</span> pipecmd <span style="color:#000;font-weight:bold">*</span>)cmd;
+    pipe(p);
+    <span style="color:#000;font-weight:bold">if</span> (fork1() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
+      close(<span style="color:#099">1</span>);
+      dup(p[<span style="color:#099">1</span>]); <span style="color:#998;font-style:italic">// use 1, write left cmd&#39;s output to p[1];
+</span><span style="color:#998;font-style:italic"></span>      close(p[<span style="color:#099">0</span>]);
+      close(p[<span style="color:#099">1</span>]);
+      runcmd(pcmd<span style="color:#000;font-weight:bold">-&gt;</span>left);
+    } <span style="color:#000;font-weight:bold">else</span>{
+      close(<span style="color:#099">0</span>);
+      dup(p[<span style="color:#099">0</span>]); <span style="color:#998;font-style:italic">// read right cmd&#39;s input from p[0]
+</span><span style="color:#998;font-style:italic"></span>      close(p[<span style="color:#099">0</span>]);
+      close(p[<span style="color:#099">1</span>]);
+      runcmd(pcmd<span style="color:#000;font-weight:bold">-&gt;</span>right);
+    }
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * The wait() system call suspends execution of the calling
+</span><span style="color:#998;font-style:italic">     * process  until one  of its children terminates.  The call wait(&amp;wstatus)
+</span><span style="color:#998;font-style:italic">     * is equivalent to: waitpid(-1, &amp;wstatus, 0);
+</span><span style="color:#998;font-style:italic">     */</span>
+    wait(<span style="color:#000;font-weight:bold">&amp;</span>r);
+    <span style="color:#000;font-weight:bold">break</span>;
+</code></pre></div><p>首先在子进程中执行<code>|</code>的左端命令，写入p[1]。父进程从中p[0]读入，执行右端命令。最终左端命令的输出通过管道连接到了右端命令的输入。</p>
 <p><del>这种方法，经我测试有时会出现多打印了一个“6.828$”提示符。</del>
 在 mit 的讲义里发现了<code>what if sh didn't fork for pcmd-&gt;right? [try it] would user-visible behavior change? sleep 10 | echo hi</code>，这样做的结果就是打印了<code>hi</code>， shell 看上去却没有<code>sleep 10</code>。所以这种实现是错误的。</p>
 <p>所以，看 xv6 的实现：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c">  <span class="k">case</span> <span class="sc">&#39;|&#39;</span><span class="o">:</span>
-    <span class="n">pcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pipecmd</span> <span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
-    <span class="n">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-      <span class="n">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// write left cmd&#39;s output to p[1];
-</span><span class="c1"></span>      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-      <span class="n">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-      <span class="n">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// read right cmd&#39;s input from p[0]
-</span><span class="c1"></span>      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-      <span class="n">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-    <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-    <span class="n">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
-    <span class="n">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
-    <span class="k">break</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><code>fork</code> 了两次，创建了两个子进程，使用pipe管理它们之前的通信，最后也<code>wait</code>两次，等待两个子进程都结束，当然这里可以递归的创建多个子进程。使用这种方便则不会出现多打一个提示符的情况。（为什么我也不知道 啊-.-）</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  <span style="color:#000;font-weight:bold">case</span> <span style="color:#d14">&#39;|&#39;</span><span style="color:#000;font-weight:bold">:</span>
+    pcmd <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">struct</span> pipecmd <span style="color:#000;font-weight:bold">*</span>)cmd;
+    pipe(p);
+    <span style="color:#000;font-weight:bold">if</span> (fork1() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
+      close(<span style="color:#099">1</span>);
+      dup(p[<span style="color:#099">1</span>]); <span style="color:#998;font-style:italic">// write left cmd&#39;s output to p[1];
+</span><span style="color:#998;font-style:italic"></span>      close(p[<span style="color:#099">0</span>]);
+      close(p[<span style="color:#099">1</span>]);
+      runcmd(pcmd<span style="color:#000;font-weight:bold">-&gt;</span>left);
+    }
+    <span style="color:#000;font-weight:bold">if</span> (fork1() <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
+      close(<span style="color:#099">0</span>);
+      dup(p[<span style="color:#099">0</span>]); <span style="color:#998;font-style:italic">// read right cmd&#39;s input from p[0]
+</span><span style="color:#998;font-style:italic"></span>      close(p[<span style="color:#099">0</span>]);
+      close(p[<span style="color:#099">1</span>]);
+      runcmd(pcmd<span style="color:#000;font-weight:bold">-&gt;</span>right);
+    }
+    close(p[<span style="color:#099">0</span>]);
+    close(p[<span style="color:#099">1</span>]);
+    wait(<span style="color:#000;font-weight:bold">&amp;</span>r);
+    wait(<span style="color:#000;font-weight:bold">&amp;</span>r);
+    <span style="color:#000;font-weight:bold">break</span>;
+</code></pre></div><p><code>fork</code> 了两次，创建了两个子进程，使用pipe管理它们之前的通信，最后也<code>wait</code>两次，等待两个子进程都结束，当然这里可以递归的创建多个子进程。使用这种方便则不会出现多打一个提示符的情况。（为什么我也不知道 啊-.-）</p>
 <p>执行<code>a.out &lt; t.sh</code>，<code>a.out</code>是shell自己的执行文件。</p>
-<p><img src="/images/6.828-hw2-shell.png" alt="rsh"></p>
-    </div>
-
-    <div class="post-copyright">
-  <p class="copyright-item">
-    <span class="item-title">Author</span>
-    <span class="item-content">LeeReindeer</span>
-  </p>
-  <p class="copyright-item">
-    <span class="item-title">LastMod</span>
-    <span class="item-content">
-        2018-09-29
-        
-    </span>
-  </p>
-  
-  <p class="copyright-item">
-    <span class="item-title">License</span>
-    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
-  </p>
-</div>
-<footer class="post-footer">
-      <div class="post-tags">
-          <a href="/tags/os/">OS</a>
-          </div>
-      <nav class="post-nav">
-        <a class="prev" href="/post/semaphore/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">Concurrent with Semaphore</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
-        <a class="next" href="/post/javafx_main_kotlin/">
-            <span class="next-text nav-default">JavaFX与Kotlin的Main函数</span>
-            <span class="next-text nav-mobile">Next</span>
-            <i class="iconfont icon-right"></i>
-          </a>
-      </nav>
-    </footer>
-  </article>
+<p>
+<a data-fancybox="gallery" href="/images/6.828-hw2-shell.png">
+  <img class="mx-auto" alt="rsh" src="/images/6.828-hw2-shell.png" />
+</a>
+</p>
         </div>
+
         
 
-  
 
-  
-    <script src="https://utteranc.es/client.js"
-            repo="LeeReindeer/LeeReindeer.github.io"
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/os'>OS</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
-
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
-      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
-      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
-  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
-</div>
-
-<div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme -
-    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
-  </span>
-
-  
-
-  <span class="copyright-year">
-    &copy;
-    2017 -
-    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
-  </span>
-</div>
-
-<div class="copyright" id="showDays">
-
-</div>
-
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
+      </script>
     </div>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
-  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
-    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
-    timeago().render(document.querySelectorAll('.timeago'), languageCode);
-    timeago.cancel();  
-  </script>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href="/categories">分类</a></h3>
+<ul class="widget-list">
+    
+    
+    
+    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
+    
+    
+    
+    <li><a href="#">未分类
+            (3)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+
+
+
+
+
+<div class="tagcloud">
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
+        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+    <div class="container" id="showDays"></div>
+</footer>
+<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+
+
+
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
 
 
 
 
 
 
-<script src="/js/sitedate.js"></script>
 
+
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
+
 </html>

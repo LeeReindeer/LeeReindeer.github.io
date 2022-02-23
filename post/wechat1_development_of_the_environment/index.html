@@ -1,159 +1,145 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-cn">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>一个微信公众号的诞生（一）开发环境的搭建 - LeeReindeer&#39;s blog</title>
-  <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-
-<meta name="author" content="LeeReindeer" /><meta name="description" content="写在前面 最近参加一个服务外包的比赛，然后就开始了征途，试过py,之后我还是决定用熟悉一点的java.以下内容，我都是在ubuntu 16.04LTS上进行，不保证其他系统适用．(ps:我是在完成了全部功能之后写的这一系列文章，也不能算是教程了，只能算是自己对开发过程的记录)
-" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
-
-
-<link rel="canonical" href="https://leer.moe/post/wechat1_development_of_the_environment/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-
-
-
-<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
-
-
-<meta property="og:title" content="一个微信公众号的诞生（一）开发环境的搭建" />
-<meta property="og:description" content="写在前面
-最近参加一个服务外包的比赛，然后就开始了征途，试过py,之后我还是决定用熟悉一点的java.以下内容，我都是在ubuntu 16.04LTS上进行，不保证其他系统适用．(ps:我是在完成了全部功能之后写的这一系列文章，也不能算是教程了，只能算是自己对开发过程的记录)" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/post/wechat1_development_of_the_environment/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2017-04-20T20:25:34+00:00" />
-<meta property="article:modified_time" content="2017-04-20T20:25:34+00:00" />
-
-<meta itemprop="name" content="一个微信公众号的诞生（一）开发环境的搭建">
-<meta itemprop="description" content="写在前面
-最近参加一个服务外包的比赛，然后就开始了征途，试过py,之后我还是决定用熟悉一点的java.以下内容，我都是在ubuntu 16.04LTS上进行，不保证其他系统适用．(ps:我是在完成了全部功能之后写的这一系列文章，也不能算是教程了，只能算是自己对开发过程的记录)"><meta itemprop="datePublished" content="2017-04-20T20:25:34+00:00" />
-<meta itemprop="dateModified" content="2017-04-20T20:25:34+00:00" />
-<meta itemprop="wordCount" content="1604">
-<meta itemprop="keywords" content="微信,Java," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="一个微信公众号的诞生（一）开发环境的搭建"/>
-<meta name="twitter:description" content="写在前面
-最近参加一个服务外包的比赛，然后就开始了征途，试过py,之后我还是决定用熟悉一点的java.以下内容，我都是在ubuntu 16.04LTS上进行，不保证其他系统适用．(ps:我是在完成了全部功能之后写的这一系列文章，也不能算是教程了，只能算是自己对开发过程的记录)"/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-</head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <a href="/">
-        <li class="mobile-menu-item">Home</li>
-      </a><a href="/categories/newsletter/">
-        <li class="mobile-menu-item">Newsletter</li>
-      </a><a href="/post/">
-        <li class="mobile-menu-item">Archives</li>
-      </a><a href="/tags/">
-        <li class="mobile-menu-item">Tags</li>
-      </a><a href="/categories/">
-        <li class="mobile-menu-item">Categories</li>
-      </a><a href="/about/">
-        <li class="mobile-menu-item">About</li>
-      </a>
-  </ul>
-
-  
-
-
-</nav>
-
-  <div class="container" id="mobile-panel">
-    <header id="header" class="header">
-        <div class="logo-wrapper">
-  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
-</div>
-
-
-
-
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    <li class="menu-item">
-        <a class="menu-item-link" href="/">Home</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/post/">Archives</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/tags/">Tags</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/">Categories</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/about/">About</a>
-      </li>
-  </ul>
-</nav>
-
-    </header>
-
-    <main id="main" class="main">
-      <div class="content-wrapper">
-        <div id="content" class="content">
-          <article class="post">
+    <title>一个微信公众号的诞生（一）开发环境的搭建 | LeeReindeer&#39;s blog</title>
+    <meta property="og:title" content="一个微信公众号的诞生（一）开发环境的搭建 - LeeReindeer&#39;s blog">
+    <meta property="og:type" content="article">
     
-    <header class="post-header">
-      <h1 class="post-title">一个微信公众号的诞生（一）开发环境的搭建</h1>
+    <meta property="article:published_time" content='2017-04-20T20:25:34&#43;08:00'>
+    
+    
+    <meta property="article:modified_time" content='2017-04-20T20:25:34&#43;08:00'>
+    
+    <meta name="Keywords" content="">
+    <meta name="description"
+        content="写在前面
+最近参加一个服务外包的比赛，然后就开始了征途，试过py,之后我还是决定用熟悉一点的java.以下内容，我都是在ubuntu 16.04LTS上进行，不保证其他系统适用．(ps:我是在完成了全部功能之后写的这一系列文章，也不能算是教程了，只能算是自己对开发过程的记录)">
+    
+    <meta name="author" content="LeeR">
+    <meta property="og:url" content="https://leer.moe/post/wechat1_development_of_the_environment/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
-      <div class="post-meta">
-        <span class="post-time"> 2017-04-20 </span>
-        <div class="post-category">
-            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://leer.moe/">
+                        LeeReindeer&#39;s blog
+                    </a>
+                
+                <p class="description">Dive in</p>
             </div>
-          <span class="more-meta"> 1604 words </span>
-          <span class="more-meta"> 4 mins read </span>
-        
-      </div>
-    </header>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://leer.moe/">首页</a>
+                    
+                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://leer.moe/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
 
-    <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">Contents</h2>
-  <div class="post-toc-content always-active">
-    <nav id="TableOfContents">
+    <div id="body">
+        
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 260px;
+        margin-top: 1%;
+        right: 8.5%;
+         
+        margin-right: 1%;
+        padding: 5px 10px;
+        font-size: 12px;
+         
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+         
+         
+         
+        word-wrap: break-word;
+        line-height: 1.5;
+         
+         
+         
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 18px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+        color: #ba3925;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">一个微信公众号的诞生（一）开发环境的搭建</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
   <ol>
     <li><a href="#jdk配置">JDK配置</a></li>
     <li><a href="#tomcat下载">Tomcat下载</a></li>
@@ -173,15 +159,60 @@
     <li><a href="#servlet测试">Servlet测试</a></li>
   </ol>
 </nav>
-  </div>
-</div>
-  <div class="post-outdated">
-    <div class="warn">
-      <p>[NOTE] Updated <span class="timeago" datetime="2017-04-20T20:25:34" title="April 20, 2017">April 20, 2017</span>. This article may have outdated content or subject matter.</p>
     </div>
-  </div>
-    <div class="post-content">
-      <h1 id="写在前面">写在前面</h1>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            
+            
+            
+            
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">一个微信公众号的诞生（一）开发环境的搭建</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年4月20日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span>|</span>
+            <span class="meta-category">1567 words</span>
+        </div>
+        
+        
+        
+        <div class="post-content">
+            <h1 id="写在前面">写在前面</h1>
 <p>最近参加一个服务外包的比赛，然后就开始了征途，试过py,之后我还是决定用熟悉一点的java.以下内容，我都是在ubuntu 16.04LTS上进行，不保证其他系统适用．(ps:我是在完成了全部功能之后写的这一系列文章，也不能算是教程了，只能算是自己对开发过程的记录)</p>
 <p>过程中可以说是体会到了黔驴技穷之感,革命尚未成功，同志还需努力啊．</p>
 <h1 id="下载">下载</h1>
@@ -194,36 +225,18 @@
 <code>vim /etc/profile</code>
 在profile文件末尾加入：</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">export JAVA_HOME=/usr/local/jdk1.8.0_121                      //jdk安装目录
+<pre tabindex="0"><code>export JAVA_HOME=/usr/local/jdk1.8.0_121                      //jdk安装目录
 export PATH=$JAVA_HOME/bin:$PATH
 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-</code></pre></td></tr></table>
-</div>
-</div><ul>
+</code></pre><ul>
 <li>验证
 shell输入<code>java -version</code>
 出现下面的提示</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">java version &#34;1.8.0_121&#34;
+<pre tabindex="0"><code>java version &quot;1.8.0_121&quot;
 Java(TM) SE Runtime Environment (build 1.8.0_121-b13)
 Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
-</code></pre></td></tr></table>
-</div>
-</div><h2 id="tomcat下载">Tomcat下载</h2>
+</code></pre><h2 id="tomcat下载">Tomcat下载</h2>
 <blockquote>
 <p>汤姆猫和杰瑞＝＝</p>
 </blockquote>
@@ -235,119 +248,67 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 <h1 id="配置">配置</h1>
 <h2 id="tomcat">Tomcat</h2>
 <p>先来看一下安装以后的目录，
-<img src="/images/tomcat_fir.png" alt="">
+
+<a data-fancybox="gallery" href="/images/tomcat_fir.png">
+  <img class="mx-auto" alt="" src="/images/tomcat_fir.png" />
+</a>
+
 主要说一下：bin目录下是一些可执行脚本．conf目录下是tomcat的配置文件．webapps里就是放我们的java web 应用的，里面还有一大堆examples.</p>
 <ul>
 <li>启动服务.进入bin目录,执行<code>startup.sh</code>.接下来访问<code>http://localhost:8081/</code>,出现下面的界面就说明成功了．</li>
 <li>修改端口.进入conf目录，打开<code>server.xml</code>.修改Connector port后的参数，如下，默认8080d端口，我把它改成了8081.</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"> &lt;Connector port=&#34;8081&#34; protocol=&#34;HTTP/1.1&#34;
-               connectionTimeout=&#34;20000&#34;
-               redirectPort=&#34;8443&#34; /&gt;
-</code></pre></td></tr></table>
-</div>
-</div><ul>
+<pre tabindex="0"><code> &lt;Connector port=&quot;8081&quot; protocol=&quot;HTTP/1.1&quot;
+               connectionTimeout=&quot;20000&quot;
+               redirectPort=&quot;8443&quot; /&gt;
+</code></pre><ul>
 <li>Tomcat Manager配置
 <code>vim /usr/local/tomcat/conf/tomcat-users.xml</code>
 增加</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">  &lt;role rolename=&#34;tomcat&#34;/&gt;
-  &lt;role rolename=&#34;role1&#34;/&gt;
-  &lt;role rolename=&#34;manager&#34;/&gt;
-  &lt;user username=&#34;tomcat&#34; password=&#34;yourpassword&#34; roles=&#34;tomcat,manager&#34;/&gt;
-  &lt;user username=&#34;role1&#34; password=&#34;yourpassword&#34; roles=&#34;role1&#34;/&gt;
-  &lt;user username=&#34;both&#34; password=&#34;yourpassword&#34; roles=&#34;tomcat,role1&#34;/&gt;
-</code></pre></td></tr></table>
-</div>
-</div><ul>
+<pre tabindex="0"><code>  &lt;role rolename=&quot;tomcat&quot;/&gt;
+  &lt;role rolename=&quot;role1&quot;/&gt;
+  &lt;role rolename=&quot;manager&quot;/&gt;
+  &lt;user username=&quot;tomcat&quot; password=&quot;yourpassword&quot; roles=&quot;tomcat,manager&quot;/&gt;
+  &lt;user username=&quot;role1&quot; password=&quot;yourpassword&quot; roles=&quot;role1&quot;/&gt;
+  &lt;user username=&quot;both&quot; password=&quot;yourpassword&quot; roles=&quot;tomcat,role1&quot;/&gt;
+</code></pre><ul>
 <li>常见坑．启动时报错<code>Tomcat Neither the JAVA_HOME nor the JRE_HOME environment variable is defined</code>.应该是java环境变量的问题，但是系统环境的变量已经配置好了．于是又在tomcat/bin/catalina.sh
 添加</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">export JAVA_HOME=/usr/local/jdk1.8.0_121
+<pre tabindex="0"><code>export JAVA_HOME=/usr/local/jdk1.8.0_121
 export JRE_HOME=/usr/local/jdk1.8.0_121 /jre
-</code></pre></td></tr></table>
-</div>
-</div><h2 id="mysql">MySQL</h2>
+</code></pre><h2 id="mysql">MySQL</h2>
 <p>查看MySQL进程</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">ps -aux|grep mysql
+<pre tabindex="0"><code>ps -aux|grep mysql
 mysql     1379  0.0  1.9 1236388 155188 ?      Ssl  17:42   0:01 /usr/sbin/mysqld
 lee      13163  0.0  0.0  15964   960 pts/7    S+   19:04   0:00 grep --color=auto mysql
-</code></pre></td></tr></table>
-</div>
-</div><p>检查MySQL监听端口</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">netstat -nlt|grep 3306
+</code></pre><p>检查MySQL监听端口</p>
+<pre tabindex="0"><code>netstat -nlt|grep 3306
 tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
-</code></pre></td></tr></table>
-</div>
-</div><p>访问MySQL</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">msql -u root -p
-</code></pre></td></tr></table>
-</div>
-</div><p>输入安装时设置的密码．
-<img src="/images/mysqllogin.png" alt="">
+</code></pre><p>访问MySQL</p>
+<pre tabindex="0"><code>msql -u root -p
+</code></pre><p>输入安装时设置的密码．
+
+<a data-fancybox="gallery" href="/images/mysqllogin.png">
+  <img class="mx-auto" alt="" src="/images/mysqllogin.png" />
+</a>
+
 修改字符编码为utf-8
 试几个简单的命令
-<img src="/images/mysqlshow.png" alt="">
+
+<a data-fancybox="gallery" href="/images/mysqlshow.png">
+  <img class="mx-auto" alt="" src="/images/mysqlshow.png" />
+</a>
+
 接下来输入<code>show variables like '%char%';</code>查看字符编码；
 默认不是utf-8,打开MySQL服务器的配置文件my.cnf,添加</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">[client]
+<pre tabindex="0"><code>[client]
 default-character-set=utf8
 [mysqld]
 character-set-server=utf8
 collation-server=utf8_general_ci
-</code></pre></td></tr></table>
-</div>
-</div><p>重启MySQL<code>sudo /etc/init.d/mysql restart</code>,再次查看字符编码看是否生效了．</p>
+</code></pre><p>重启MySQL<code>sudo /etc/init.d/mysql restart</code>,再次查看字符编码看是否生效了．</p>
 <h2 id="intellij-idea">IntelliJ IDEA</h2>
 <h2 id="微信测试号">微信测试号</h2>
 <p><a href="https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login">测试号申请</a>,个人公众号的话，不开放很多接口，很不方便．开发阶段用测试号应该不错．而且网页回调域名也支持用ip地址.</p>
@@ -355,34 +316,41 @@ collation-server=utf8_general_ci
 <h2 id="maven">maven</h2>
 <p>maven是一个类似gradle的东西(笑).
 项目目录，resources目录下为资源文件，webapp下是网页的配置和jsp文件．pom.xml(Project Object Model),可以说是项目的配置文件吧，依赖管理也在这．然后创建并设置java目录为source folders.
-<img src="/images/mavenD.png" alt=""></p>
+
+<a data-fancybox="gallery" href="/images/mavenD.png">
+  <img class="mx-auto" alt="" src="/images/mavenD.png" />
+</a>
+</p>
 <h2 id="jsp页面">JSP页面</h2>
 <p>接下来看webapp下的引人注目的index.jsp．
-<img src="/images/indexjsp.png" alt="">
+
+<a data-fancybox="gallery" href="/images/indexjsp.png">
+  <img class="mx-auto" alt="" src="/images/indexjsp.png" />
+</a>
+
 嗯．还可以和javascript混合编程．感觉好强大．maven导出war包
-<img src="/images/war.png" alt="">
+
+<a data-fancybox="gallery" href="/images/war.png">
+  <img class="mx-auto" alt="" src="/images/war.png" />
+</a>
+
 然后放到tomcat/webapps下或者直接在Tomcat Manager里部署．
 打开网页．一个简单java web 应用差不多这样．．
-<img src="/images/hellojsp.png" alt=""></p>
+
+<a data-fancybox="gallery" href="/images/hellojsp.png">
+  <img class="mx-auto" alt="" src="/images/hellojsp.png" />
+</a>
+</p>
 <h2 id="servlet测试">Servlet测试</h2>
 <p>Servlet是最重要的一个环节，也就是响应请求和发送网页请求的．
 创建一个TestServlet继承HttpServlet，重写doGet和doPost方法．这两个方法在以后微信公众号开发中要用到多次(反正是涉及网页请求的：微信的Token验证，网页授权回调，获取用户信息．)
-<img src="/images/webxml.png" alt="">
+
+<a data-fancybox="gallery" href="/images/webxml.png">
+  <img class="mx-auto" alt="" src="/images/webxml.png" />
+</a>
+
 在web.xml里配置servlet．</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"> &lt;servlet&gt;
+<pre tabindex="0"><code> &lt;servlet&gt;
     &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
     &lt;servlet-class&gt;Servlet.TestServlet&lt;/servlet-class&gt;
   &lt;/servlet&gt;
@@ -391,128 +359,404 @@ collation-server=utf8_general_ci
     &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
     &lt;url-pattern&gt;/test1&lt;/url-pattern&gt;
   &lt;/servlet-mapping&gt;
-</code></pre></td></tr></table>
-</div>
-</div><p>也可以在TestServlet里用注释方法配置<code>@WebServlet(name = &quot;TestServlet&quot;,urlPatterns={&quot;/test1&quot;})</code>
-<img src="/images/helloservlet.png" alt=""></p>
+</code></pre><p>也可以在TestServlet里用注释方法配置<code>@WebServlet(name = &quot;TestServlet&quot;,urlPatterns={&quot;/test1&quot;})</code>
+
+<a data-fancybox="gallery" href="/images/helloservlet.png">
+  <img class="mx-auto" alt="" src="/images/helloservlet.png" />
+</a>
+</p>
 <h1 id="未完待续">未完待续．．．</h1>
-    </div>
-
-    <div class="post-copyright">
-  <p class="copyright-item">
-    <span class="item-title">Author</span>
-    <span class="item-content">LeeReindeer</span>
-  </p>
-  <p class="copyright-item">
-    <span class="item-title">LastMod</span>
-    <span class="item-content">
-        2017-04-20
-        
-    </span>
-  </p>
-  
-  <p class="copyright-item">
-    <span class="item-title">License</span>
-    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
-  </p>
-</div>
-<footer class="post-footer">
-      <div class="post-tags">
-          <a href="/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
-          <a href="/tags/java/">Java</a>
-          </div>
-      <nav class="post-nav">
-        <a class="prev" href="/post/wecaht2_docking_receipt_and_send/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">一个微信公众号的诞生（二）公众号对接和消息的接收发送</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
-        <a class="next" href="/post/peak_of_wave/">
-            <span class="next-text nav-default">浪潮之巅</span>
-            <span class="next-text nav-mobile">Next</span>
-            <i class="iconfont icon-right"></i>
-          </a>
-      </nav>
-    </footer>
-  </article>
         </div>
+
         
 
-  
 
-  
-    <script src="https://utteranc.es/client.js"
-            repo="LeeReindeer/LeeReindeer.github.io"
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='https://leer.moe/tags/%E5%BE%AE%E4%BF%A1'>微信</a></li>
+                
+                <li><a href='https://leer.moe/tags/java'>Java</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
-
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
-      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
-      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
-  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
-</div>
-
-<div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme -
-    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
-  </span>
-
-  
-
-  <span class="copyright-year">
-    &copy;
-    2017 -
-    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
-  </span>
-</div>
-
-<div class="copyright" id="showDays">
-
-</div>
-
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
+      </script>
     </div>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
-  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
-    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
-    timeago().render(document.querySelectorAll('.timeago'), languageCode);
-    timeago.cancel();  
-  </script>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://leer.moe/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
+    </li>
+    
+    <li>
+        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href="/categories">分类</a></h3>
+<ul class="widget-list">
+    
+    
+    
+    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
+    
+    
+    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
+    
+    
+    
+    <li><a href="#">未分类
+            (3)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+
+
+
+
+
+<div class="tagcloud">
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
+        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+    <div class="container" id="showDays"></div>
+</footer>
+<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+
+
+
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
 
 
 
 
 
 
-<script src="/js/sitedate.js"></script>
 
+
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
+
 </html>
