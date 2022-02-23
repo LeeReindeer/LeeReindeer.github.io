@@ -1,23 +1,47 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Android Tree2View 1-Introduction - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Android Tree2View 1-Introduction | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="Android Tree2View 1-Introduction - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2017-12-14T21:31:21&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2017-12-14T21:31:21&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="Tree2View
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content="Tree2View   See on Github
+ 主要功能 - Features    Tree2View FileManage     ①多级分层的树结构视图 基本的文件管理器布局   ②记忆展开状态 自动展开上次打开未关闭的目录   ③使用适配器设计模式，用户可自定义 TreeAdapter 对不同类型的文件显示不同的Icon   ④动态增删节点 删除和添加文件后可自动刷新状态(To-do)   ⑤选择模式 长按节点进行文件操作(Copy, Cut, Rename, Delete)    效果预览 - Preview " /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2017/12/14/my_treeview_1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Android Tree2View 1-Introduction" />
+<meta property="og:description" content="Tree2View
 
 
 See on Github
@@ -54,132 +78,190 @@ FileManage
 
 
 效果预览 - Preview
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/2017/12/14/my_treeview_1/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-12-14T21:31:21+00:00" />
+<meta property="article:modified_time" content="2017-12-14T21:31:21+00:00" />
 
+<meta itemprop="name" content="Android Tree2View 1-Introduction">
+<meta itemprop="description" content="Tree2View
+
+
+See on Github
+
+主要功能 - Features
+
+
+
+Tree2View
+FileManage
+
+
+
+
+①多级分层的树结构视图
+基本的文件管理器布局
+
+
+②记忆展开状态
+自动展开上次打开未关闭的目录
+
+
+③使用适配器设计模式，用户可自定义 TreeAdapter
+对不同类型的文件显示不同的Icon
+
+
+④动态增删节点
+删除和添加文件后可自动刷新状态(To-do)
+
+
+⑤选择模式
+长按节点进行文件操作(Copy, Cut, Rename, Delete)
+
+
+
+效果预览 - Preview
+"><meta itemprop="datePublished" content="2017-12-14T21:31:21+00:00" />
+<meta itemprop="dateModified" content="2017-12-14T21:31:21+00:00" />
+<meta itemprop="wordCount" content="841">
+<meta itemprop="keywords" content="Android,数据结构," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android Tree2View 1-Introduction"/>
+<meta name="twitter:description" content="Tree2View
+
+
+See on Github
+
+主要功能 - Features
+
+
+
+Tree2View
+FileManage
+
+
+
+
+①多级分层的树结构视图
+基本的文件管理器布局
+
+
+②记忆展开状态
+自动展开上次打开未关闭的目录
+
+
+③使用适配器设计模式，用户可自定义 TreeAdapter
+对不同类型的文件显示不同的Icon
+
+
+④动态增删节点
+删除和添加文件后可自动刷新状态(To-do)
+
+
+⑤选择模式
+长按节点进行文件操作(Copy, Cut, Rename, Delete)
+
+
+
+效果预览 - Preview
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
   
 
-">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/2017/12/14/my_treeview_1/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</nav>
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
 
-    
-    
-</head>
 
-<body>
-  <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Android Tree2View 1-Introduction</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-12-14 </span>
+        <div class="post-category">
+            <a href="/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/"> 创作集 </a>
             </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+          <span class="more-meta"> 841 words </span>
+          <span class="more-meta"> 2 mins read </span>
+        
+      </div>
+    </header>
 
-  <div id="body">
-    
-    <div class="container">
-      <div class="col-group">
-
-        <div class="col-8" id="main">
-          
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">Android Tree2View 1-Introduction</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#主要功能---features">主要功能 - Features</a></li>
     <li><a href="#效果预览---preview">效果预览 - Preview</a></li>
@@ -189,60 +271,15 @@ FileManage
     <li><a href="#后记---what">后记 - What？</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">Android Tree2View 1-Introduction</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年12月14日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86'>创作集</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">801 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <h1 id="tree2view">Tree2View</h1>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2017-12-14T21:31:21" title="December 14, 2017">December 14, 2017</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h1 id="tree2view">Tree2View</h1>
 <hr>
 <blockquote>
 <p>See on <a href="https://github.com/LeeReindeer/Tree2View">Github</a></p>
@@ -279,11 +316,7 @@ FileManage
 </tbody>
 </table>
 <h2 id="效果预览---preview">效果预览 - Preview</h2>
-<p>
-<a data-fancybox="gallery" href="/images/tree_view_product1.png">
-  <img class="mx-auto" alt="image" src="/images/tree_view_product1.png" />
-</a>
-</p>
+<p><img src="/images/tree_view_product1.png" alt="image"></p>
 <h2 id="实现---implement">实现 - Implement</h2>
 <ul>
 <li>
@@ -309,134 +342,252 @@ FileManage
 <blockquote>
 <p>未上传到 <code>jCenter()</code>，可直接clone本项目使用。</p>
 </blockquote>
-<pre tabindex="0"><code class="language-git" data-lang="git">git clone git@github.com:LeeReindeer/Tree2View.git
-</code></pre><p>Then open your project in Android Studio, then Click <code>FIle</code> -&gt; <code>New</code> -&gt; <code>Import Module</code>, to import this
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">git clone git@github.com:LeeReindeer/Tree2View.git
+</code></pre></td></tr></table>
+</div>
+</div><p>Then open your project in Android Studio, then Click <code>FIle</code> -&gt; <code>New</code> -&gt; <code>Import Module</code>, to import this
 module.</p>
 <p>And add dependence in your <code>build.gradle</code></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy"> implementation <span style="color:#900;font-weight:bold">project</span><span style="color:#000;font-weight:bold">(</span><span style="color:#900;font-weight:bold">path:</span> <span style="color:#d14">&#39;:treeview&#39;</span><span style="color:#000;font-weight:bold">)</span>
-</code></pre></div><h2 id="使用---usage">使用 - Usage</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"> <span class="n">implementation</span> <span class="nf">project</span><span class="o">(</span><span class="nl">path:</span> <span class="s1">&#39;:treeview&#39;</span><span class="o">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="使用---usage">使用 - Usage</h2>
 <p>Feel free to use it as <code>ListView</code>.</p>
 <p>XML:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#000080">&lt;xyz.leezoom.view.treeview.TreeView</span>
-        <span style="color:#008080">android:id=</span><span style="color:#d14">&#34;@+id/tree_view&#34;</span>
-        <span style="color:#008080">android:layout_marginTop=</span><span style="color:#d14">&#34;16dp&#34;</span>
-        <span style="color:#008080">android:layout_width=</span><span style="color:#d14">&#34;match_parent&#34;</span>
-        <span style="color:#008080">android:layout_height=</span><span style="color:#d14">&#34;match_parent&#34;</span>
-        <span style="color:#008080">android:divider=</span><span style="color:#d14">&#34;#ffffff&#34;</span>
-        <span style="color:#008080">android:dividerHeight=</span><span style="color:#d14">&#34;1px&#34;</span><span style="color:#000080">&gt;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml">    <span class="nt">&lt;xyz.leezoom.view.treeview.TreeView</span>
+        <span class="na">android:id=</span><span class="s">&#34;@+id/tree_view&#34;</span>
+        <span class="na">android:layout_marginTop=</span><span class="s">&#34;16dp&#34;</span>
+        <span class="na">android:layout_width=</span><span class="s">&#34;match_parent&#34;</span>
+        <span class="na">android:layout_height=</span><span class="s">&#34;match_parent&#34;</span>
+        <span class="na">android:divider=</span><span class="s">&#34;#ffffff&#34;</span>
+        <span class="na">android:dividerHeight=</span><span class="s">&#34;1px&#34;</span><span class="nt">&gt;</span>
 
-    <span style="color:#000080">&lt;/xyz.leezoom.view.treeview.TreeView&gt;</span>
-</code></pre></div><p>Kotlin(Java is similar whit it)</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#000;font-weight:bold">var</span> root :DefaultTreeNode? = DefaultTreeNode(<span style="color:#d14">&#34;Root&#34;</span>)
-  <span style="color:#000;font-weight:bold">val</span> treeView = TreeView(<span style="color:#000;font-weight:bold">this</span><span style="color:#3c5d5d;font-weight:bold">@MainActivity</span>, root)
-  <span style="color:#000;font-weight:bold">val</span> child1 = DefaultTreeNode(<span style="color:#d14">&#34;Child1&#34;</span>)
-  <span style="color:#000;font-weight:bold">val</span> child2 = DefaultTreeNode(<span style="color:#d14">&#34;Child2&#34;</span>)
-  root.addChild(child1)
-  root.addChild(child2)
-  <span style="color:#000;font-weight:bold">val</span> child3 = DefaultTreeNode(<span style="color:#d14">&#34;Child3&#34;</span>)
-  child1.addChild(child3)
-</code></pre></div><p>If you want to use customized item view, you should implement <code>TreeAapater</code>, like this:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">FileTreeAdapter</span> <span style="color:#000;font-weight:bold">extends</span> TreeAdapter<span style="color:#000;font-weight:bold">&lt;</span>FileItem<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#998;font-style:italic">//resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">FileTreeAdapter</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> DefaultTreeNode root<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> resourceId<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> root<span style="color:#000;font-weight:bold">,</span> resourceId<span style="color:#000;font-weight:bold">);</span>
-  <span style="color:#000;font-weight:bold">}</span>
+    <span class="nt">&lt;/xyz.leezoom.view.treeview.TreeView&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Kotlin(Java is similar whit it)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">  <span class="k">var</span> <span class="py">root</span> <span class="p">:</span><span class="n">DefaultTreeNode</span><span class="p">?</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Root&#34;</span><span class="p">)</span>
+  <span class="k">val</span> <span class="py">treeView</span> <span class="p">=</span> <span class="n">TreeView</span><span class="p">(</span><span class="k">this</span><span class="nd">@MainActivity</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+  <span class="k">val</span> <span class="py">child1</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Child1&#34;</span><span class="p">)</span>
+  <span class="k">val</span> <span class="py">child2</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Child2&#34;</span><span class="p">)</span>
+  <span class="n">root</span><span class="p">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child1</span><span class="p">)</span>
+  <span class="n">root</span><span class="p">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child2</span><span class="p">)</span>
+  <span class="k">val</span> <span class="py">child3</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Child3&#34;</span><span class="p">)</span>
+  <span class="n">child1</span><span class="p">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child3</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>If you want to use customized item view, you should implement <code>TreeAapater</code>, like this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileTreeAdapter</span> <span class="kd">extends</span> <span class="n">TreeAdapter</span><span class="o">&lt;</span><span class="n">FileItem</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="c1">//resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="nf">FileTreeAdapter</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">DefaultTreeNode</span> <span class="n">root</span><span class="o">,</span> <span class="kt">int</span> <span class="n">resourceId</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">root</span><span class="o">,</span> <span class="n">resourceId</span><span class="o">);</span>
+  <span class="o">}</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">public</span> View <span style="color:#900;font-weight:bold">getView</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> position<span style="color:#000;font-weight:bold">,</span> View convertView<span style="color:#000;font-weight:bold">,</span> ViewGroup parent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-     <span style="color:#998;font-style:italic">//your code here
-</span><span style="color:#998;font-style:italic"></span>     <span style="color:#998;font-style:italic">//...
-</span><span style="color:#998;font-style:italic"></span>     <span style="color:#998;font-style:italic">//call padding for a better UI
-</span><span style="color:#998;font-style:italic"></span>     setPadding<span style="color:#000;font-weight:bold">(</span>holder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">arrowIcon</span><span style="color:#000;font-weight:bold">,</span> depth<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">);</span>
-     <span style="color:#998;font-style:italic">//toggle your view&#39;s status here
-</span><span style="color:#998;font-style:italic"></span>     toggle<span style="color:#000;font-weight:bold">(</span>node<span style="color:#000;font-weight:bold">,</span> holder<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">View</span> <span class="nf">getView</span><span class="o">(</span><span class="kt">int</span> <span class="n">position</span><span class="o">,</span> <span class="n">View</span> <span class="n">convertView</span><span class="o">,</span> <span class="n">ViewGroup</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span>
+     <span class="c1">//your code here
+</span><span class="c1"></span>     <span class="c1">//...
+</span><span class="c1"></span>     <span class="c1">//call padding for a better UI
+</span><span class="c1"></span>     <span class="n">setPadding</span><span class="o">(</span><span class="n">holder</span><span class="o">.</span><span class="na">arrowIcon</span><span class="o">,</span> <span class="n">depth</span><span class="o">,</span> <span class="o">-</span><span class="n">1</span><span class="o">);</span>
+     <span class="c1">//toggle your view&#39;s status here
+</span><span class="c1"></span>     <span class="n">toggle</span><span class="o">(</span><span class="n">node</span><span class="o">,</span> <span class="n">holder</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-     <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">toggle</span><span style="color:#000;font-weight:bold">(</span>Object<span style="color:#000;font-weight:bold">...</span> objects<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-     <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>Then simply add:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">  <span style="color:#000;font-weight:bold">val</span> adapter = FileTreeAdapter(<span style="color:#000;font-weight:bold">this</span><span style="color:#3c5d5d;font-weight:bold">@MainActivity</span>, root, R.layout.layout_file_tree_item)
-  treeView.treeAdapter = adapter
-</code></pre></div><h2 id="后记---what">后记 - What？</h2>
+    <span class="nd">@Override</span>
+     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">toggle</span><span class="o">(</span><span class="n">Object</span><span class="o">...</span> <span class="n">objects</span><span class="o">)</span> <span class="o">{</span>
+     <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Then simply add:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">  <span class="k">val</span> <span class="py">adapter</span> <span class="p">=</span> <span class="n">FileTreeAdapter</span><span class="p">(</span><span class="k">this</span><span class="nd">@MainActivity</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">layout_file_tree_item</span><span class="p">)</span>
+  <span class="n">treeView</span><span class="p">.</span><span class="n">treeAdapter</span> <span class="p">=</span> <span class="n">adapter</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="后记---what">后记 - What？</h2>
 <p>虽然是数据结构的课程设计，但是设计模式好像也挺重要的。其实，实现起来很简单，但是不知道为什么自己拖拖拉拉写了那么久。为什么叫 <code>Tree2View</code> 呢？因为我一个月之前，写个一个半成品叫 <code>TreeView</code>，所以这次就叫 <code>Tree2View</code>，本意并不是 <code>Tree to View</code> 的意思，但是这样解释也不错啊。</p>
 <p>至于为什么拖了那么那么久。。。因为最近有很多考试，然后自己对设计模式和 Android 的自定义View 也不是很熟悉。这一过程中，我读了大量的 Android 和 Java Api 源码（好像没什么进步。。。）。</p>
 <p>Tree2View 的设计参考了 Javax.swing 里 的 <code>JTree</code> 的设计，<a href="http://blog.csdn.net/carrey1989/article/details/10227165">这篇博客</a> 和 <a href="https://github.com/bmelnychuk/AndroidTreeView">AndroidTreeView</a>。</p>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-12-14
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/Android/">Android</a>
+          <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2017/12/25/my_treeview_2_adapder/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Android Tree2View 2-Adapter in Tree2View</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2017/11/29/android-kotlin-style-guides/">
+            <span class="next-text nav-default">Android Kotlin 代码规范</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
         
 
+  
 
-        
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/android'>Android</a></li>
-                
-                <li><a href='https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
-                
-            </ul>
-            
-        </div>
-    </article>
-    
-    
-
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-        </div>
-        
-        
-        
-        
-      </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
   </div>
-  <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
+<script src="/js/sitedate.js"></script>
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
-
 </html>

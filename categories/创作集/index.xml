@@ -90,20 +90,39 @@
 &lt;p&gt;这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&amp;hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。&lt;/p&gt;
 &lt;h2 id=&#34;makefile&#34;&gt;Makefile&lt;/h2&gt;
 &lt;p&gt;我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;color:#008080&#34;&gt;CC&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; gcc
-&lt;span style=&#34;color:#008080&#34;&gt;CFLAGS&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; -Wall -Wextra -pedantic -std&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt;c99 -O3
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span class=&#34;nv&#34;&gt;CC&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; gcc
+&lt;span class=&#34;nv&#34;&gt;CFLAGS&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; -Wall -Wextra -pedantic -std&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;c99 -O3
 
-&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;all&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; vip
+&lt;span class=&#34;nf&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vip&lt;/span&gt;
 
-&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;debug&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;
-	&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;$(&lt;/span&gt;CC&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;$(&lt;/span&gt;CFLAGS&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt; vip.c -g -o vipd
+&lt;span class=&#34;nf&#34;&gt;debug&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;$(&lt;/span&gt;CC&lt;span class=&#34;k&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;$(&lt;/span&gt;CFLAGS&lt;span class=&#34;k&#34;&gt;)&lt;/span&gt; vip.c -g -o vipd
 
-&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;re&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;
-	make clean;make
+&lt;span class=&#34;nf&#34;&gt;re&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;
+	make clean&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;make
 
-&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;clean&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;clean&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;
 	rm -f vip vipd
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CFLAGS 里使用 c99 标准；使用&lt;code&gt; -O3&lt;/code&gt;进行编译优化，主要是对内联函数进行优化；&lt;code&gt;-Wall -Wextra -pedantic &lt;/code&gt;会打印一些额外的警告，对 debug 有帮助。&lt;/p&gt;</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;CFLAGS 里使用 c99 标准；使用&lt;code&gt; -O3&lt;/code&gt;进行编译优化，主要是对内联函数进行优化；&lt;code&gt;-Wall -Wextra -pedantic &lt;/code&gt;会打印一些额外的警告，对 debug 有帮助。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -219,19 +238,15 @@
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;h2 id=&#34;效果预览---preview&#34;&gt;效果预览 - Preview&lt;/h2&gt;
-&lt;p&gt;
-&lt;a data-fancybox=&#34;gallery&#34; href=&#34;https://leer.moe/images/tree_view_product1.png&#34;&gt;
-  &lt;img class=&#34;mx-auto&#34; alt=&#34;image&#34; src=&#34;https://leer.moe/images/tree_view_product1.png&#34; /&gt;
-&lt;/a&gt;
-&lt;/p&gt;</description>
+&lt;p&gt;&lt;img src=&#34;https://leer.moe/images/tree_view_product1.png&#34; alt=&#34;image&#34;&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>乡土中国－分崩离析的乡土社会</title>
-      <link>https://leer.moe/2017/05/18/rural_in_china/</link>
+      <link>https://leer.moe/2017/05/18/rural_in_China/</link>
       <pubDate>Thu, 18 May 2017 14:31:21 +0000</pubDate>
       
-      <guid>https://leer.moe/2017/05/18/rural_in_china/</guid>
+      <guid>https://leer.moe/2017/05/18/rural_in_China/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;今天读完了费孝通教授的&amp;lt;乡土中国&amp;gt;,读完警觉，书中所描绘的乡土社会，何曾不是我从小生活之地？书中一字一句也充满了学者的严谨和乡土社会的淳朴．但书中的乡土社会于今天的，已经不同了，在我看来书中所写的淳朴已经不再了．毕竟这本书成于 1947 年，距今已经 70 年了．&lt;/p&gt;
 &lt;/blockquote&gt;</description>

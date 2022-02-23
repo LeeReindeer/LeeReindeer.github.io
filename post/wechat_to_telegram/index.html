@@ -1,149 +1,173 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>EFB:Receive Wechat messages on Telegram - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>EFB:Receive Wechat messages on Telegram | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="EFB:Receive Wechat messages on Telegram - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2017-10-08T18:46:18&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2017-10-08T18:46:18&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" If you don&amp;rsquo;t want to waste time (, please close this page and read the offical document.This Tutorial is based on EFB1.6.0,and on Ubuntu 16.04.
+ 负担 发现自己刚好有一个闲置的云服务器,又不想再用微信了,国庆在家就随便玩了玩.我一直觉得过多的社交是负担,何况还要安装:QQ,Wechat之类的毒瘤社交软件.但是又不得不用(爸妈有微信,学校的通知在QQ),只要有这种想法一天,就觉得所有的社交都是无意的负担.
+为什么没有统一的一款软件?没有的话也可以去创造.
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/wechat_to_telegram/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="EFB:Receive Wechat messages on Telegram" />
+<meta property="og:description" content="
 If you don&rsquo;t want to waste time (, please close this page and read the offical document.This Tutorial is based on EFB1.6.0,and on Ubuntu 16.04.
 
 负担
 发现自己刚好有一个闲置的云服务器,又不想再用微信了,国庆在家就随便玩了玩.我一直觉得过多的社交是负担,何况还要安装:QQ,Wechat之类的毒瘤社交软件.但是又不得不用(爸妈有微信,学校的通知在QQ),只要有这种想法一天,就觉得所有的社交都是无意的负担.
-为什么没有统一的一款软件?没有的话也可以去创造.">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/post/wechat_to_telegram/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+为什么没有统一的一款软件?没有的话也可以去创造." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/wechat_to_telegram/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-10-08T18:46:18+00:00" />
+<meta property="article:modified_time" content="2017-10-08T18:46:18+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="EFB:Receive Wechat messages on Telegram">
+<meta itemprop="description" content="
+If you don&rsquo;t want to waste time (, please close this page and read the offical document.This Tutorial is based on EFB1.6.0,and on Ubuntu 16.04.
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+负担
+发现自己刚好有一个闲置的云服务器,又不想再用微信了,国庆在家就随便玩了玩.我一直觉得过多的社交是负担,何况还要安装:QQ,Wechat之类的毒瘤社交软件.但是又不得不用(爸妈有微信,学校的通知在QQ),只要有这种想法一天,就觉得所有的社交都是无意的负担.
+为什么没有统一的一款软件?没有的话也可以去创造."><meta itemprop="datePublished" content="2017-10-08T18:46:18+00:00" />
+<meta itemprop="dateModified" content="2017-10-08T18:46:18+00:00" />
+<meta itemprop="wordCount" content="1075">
+<meta itemprop="keywords" content="Telegram,微信," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="EFB:Receive Wechat messages on Telegram"/>
+<meta name="twitter:description" content="
+If you don&rsquo;t want to waste time (, please close this page and read the offical document.This Tutorial is based on EFB1.6.0,and on Ubuntu 16.04.
 
-    
-    
+负担
+发现自己刚好有一个闲置的云服务器,又不想再用微信了,国庆在家就随便玩了玩.我一直觉得过多的社交是负担,何况还要安装:QQ,Wechat之类的毒瘤社交软件.但是又不得不用(爸妈有微信,学校的通知在QQ),只要有这种想法一天,就觉得所有的社交都是无意的负担.
+为什么没有统一的一款软件?没有的话也可以去创造."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-    <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">EFB:Receive Wechat messages on Telegram</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-10-08 </span>
+        <div class="post-category">
+            <a href="/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/"> 实验室 </a>
+            </div>
+          <span class="more-meta"> 1075 words </span>
+          <span class="more-meta"> 3 mins read </span>
         
-        <div class="container">
-            <div class="col-group">
+      </div>
+    </header>
 
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">EFB:Receive Wechat messages on Telegram</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#负担">负担</a></li>
     <li><a href="#1-材料">1. 材料</a></li>
@@ -163,60 +187,15 @@ If you don&rsquo;t want to waste time (, please close this page and read the off
     </li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">EFB:Receive Wechat messages on Telegram</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年10月8日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4'>实验室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">1046 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2017-10-08T18:46:18" title="October 8, 2017">October 8, 2017</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>If you don&rsquo;t want to waste time (, please close this page and read the <a href="https://ehforwarderbot.readthedocs.io/en/latest/">offical document</a>.This Tutorial is based on EFB1.6.0,and on Ubuntu 16.04.</p>
 </blockquote>
 <h2 id="负担">负担</h2>
@@ -237,27 +216,57 @@ If you don&rsquo;t want to waste time (, please close this page and read the off
 <h2 id="2-配置安装">2. 配置安装</h2>
 <p>首先要在自己终端上ssh连接你的服务器.</p>
 <h3 id="21-clone-项目">2.1 Clone 项目</h3>
-<pre tabindex="0"><code>git clone https://github.com/blueset/ehForwarderBot.git
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">git clone https://github.com/blueset/ehForwarderBot.git
 
 //或者也可以用我修改过的版本(去掉一些烦人且无用的消息提醒),笑(
 
 git clone https://github.com/LeeReindeer/ehForwarderBot.git
 
 cd ehForwarderBot
-</code></pre><h3 id="22-依赖安装">2.2 依赖安装</h3>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="22-依赖安装">2.2 依赖安装</h3>
 <p>输入命令:</p>
 <ul>
 <li>其他依赖</li>
 </ul>
-<pre tabindex="0"><code class="language-shellscript" data-lang="shellscript">sudo apt-get install python3.5
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">sudo apt-get install python3.5
 sudo apt-get install python3-dev python3-setuptools
 sudo apt-get install libwebp-dev
 sudo apt-get install libmagic-dev ffmpeg
-</code></pre><ul>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
 <li>Python 依赖</li>
 </ul>
-<pre tabindex="0"><code>pip3 install -r requirements.txt
-</code></pre><p><a href="#41-%E4%B8%80%E4%BA%9B%E9%94%99%E8%AF%AF">注</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">pip3 install -r requirements.txt
+</code></pre></td></tr></table>
+</div>
+</div><p><a href="#41-%E4%B8%80%E4%BA%9B%E9%94%99%E8%AF%AF">注</a></p>
 <h3 id="23-配置telegram-bot">2.3 配置Telegram Bot</h3>
 <h4 id="231-创建bot">2.3.1 创建Bot</h4>
 <p>创建一个Bot,先向<a href="https://telegram.me/botfather">@BotFather</a>发送指令 <code>/newbot</code> .完成了对bot的基本设置后, <code>BotFather</code> 会给你一个这个Bot的Token.</p>
@@ -267,38 +276,85 @@ sudo apt-get install libmagic-dev ffmpeg
 <li><code>/setjoingroups</code> ,允许bot加入群组,设置为&quot;Enable&quot;.</li>
 <li><code>/setcommands</code> ,为bot添加指令,发送如下内容(不要修改前面的英文):</li>
 </ul>
-<pre tabindex="0"><code>link - 将会话绑定到 Telegram 群组
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">link - 将会话绑定到 Telegram 群组
 chat - 生成会话头
 recog - 回复语音消息以进行识别
 extra - 获取更多功能
-</code></pre><h4 id="获取telegram-id">获取Telegram ID</h4>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="获取telegram-id">获取Telegram ID</h4>
 <p>之后要用到你的Telegram ID,你可以通过这个bot来获取:
 <a href="https://telegram.me/mokubot">@mokubot</a>,发送 <code>/who</code> .</p>
 <h4 id="配置efb">配置EFB</h4>
 <p>回到服务器的ehForwarderBot目录,创建<code>storage</code>目录,用来作为微信图片,语言等媒体信息的存贮目录.</p>
 <p>输入:</p>
-<pre tabindex="0"><code>mkdir storage
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">mkdir storage
 chmod +rw storage
-</code></pre><p>然后复制并编辑配置文件.</p>
-<pre tabindex="0"><code>cp config.sample.py config.py
+</code></pre></td></tr></table>
+</div>
+</div><p>然后复制并编辑配置文件.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">cp config.sample.py config.py
 vi config.py
-</code></pre><p>只需要修改里面的 <code>token</code> 和 <code>admins</code> 字段即可.<code>token</code>就是刚刚bot的token,而admins里就是你的Telegram ID(可以设置多个).</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>只需要修改里面的 <code>token</code> 和 <code>admins</code> 字段即可.<code>token</code>就是刚刚bot的token,而admins里就是你的Telegram ID(可以设置多个).</p>
 <h3 id="24-启动bot">2.4 启动Bot</h3>
 <p>输入</p>
-<pre tabindex="0"><code>python3 daemon.py start
-</code></pre><p>扫描屏幕上的二维码(依赖ichat)就OK了.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">python3 daemon.py start
+</code></pre></td></tr></table>
+</div>
+</div><p>扫描屏幕上的二维码(依赖ichat)就OK了.</p>
 <h2 id="4-一些问题">4. 一些问题</h2>
 <h3 id="41-一些错误">4.1 一些错误</h3>
 <p>在执行<code>pip3 install -r requirements.txt</code>时,遇到如下错误:</p>
-<pre tabindex="0"><code>Traceback (most recent call last):
-  File &quot;/usr/bin/pip3&quot;, line 11, in &lt;module&gt;
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Traceback (most recent call last):
+  File &#34;/usr/bin/pip3&#34;, line 11, in &lt;module&gt;
     sys.exit(main())
-  File &quot;/usr/lib/python3/dist-packages/pip/__init__.py&quot;, line 215, in main
-    locale.setlocale(locale.LC_ALL, '')
-  File &quot;/usr/lib/python3.5/locale.py&quot;, line 595, in setlocale
+  File &#34;/usr/lib/python3/dist-packages/pip/__init__.py&#34;, line 215, in main
+    locale.setlocale(locale.LC_ALL, &#39;&#39;)
+  File &#34;/usr/lib/python3.5/locale.py&#34;, line 595, in setlocale
     return _setlocale(category, locale)
 locale.Error: unsupported locale setting
-</code></pre><p>解决:<a href="http://blog.topspeedsnail.com/archives/7982">设置LC_ALL环境变量</a></p>
+</code></pre></td></tr></table>
+</div>
+</div><p>解决:<a href="http://blog.topspeedsnail.com/archives/7982">设置LC_ALL环境变量</a></p>
 <p><code> export LC_ALL=C</code></p>
 <h3 id="42-缺点">4.2 缺点</h3>
 <ul>
@@ -314,419 +370,124 @@ locale.Error: unsupported locale setting
 </ul>
 <p>比起微信客户端,这些都是可以接受的.</p>
 <p>看图吧$)</p>
-<p>
-<a data-fancybox="gallery" href="/images/wechat-to-telegram2.png">
-  <img class="mx-auto" alt="" src="/images/wechat-to-telegram2.png" />
-</a>
-</p>
-        </div>
+<p><img src="/images/wechat-to-telegram2.png" alt=""></p>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-10-08
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/wechat5_web_auth_to_obtain_user_info/">一个微信公众号的诞生（五）网页授权获取用户基本信息</a></li>
-        
-        <li><a href="/post/wechat4_creat_menu_and_send_template_msg/">一个微信公众号的诞生（四）菜单的创建和模板消息的发送</a></li>
-        
-        <li><a href="/post/wechat3_access_token/">一个微信公众号的诞生（三）Access Token的获取</a></li>
-        
-        <li><a href="/post/wecaht2_docking_receipt_and_send/">一个微信公众号的诞生（二）公众号对接和消息的接收发送</a></li>
-        
-        <li><a href="/post/wechat1_development_of_the_environment/">一个微信公众号的诞生（一）开发环境的搭建</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/telegram'>Telegram</a></li>
-                
-                <li><a href='https://leer.moe/tags/%E5%BE%AE%E4%BF%A1'>微信</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/Telegram/">Telegram</a>
+          <a href="/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/ubuntu-one-year/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">入坑一年啦</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/gc/">
+            <span class="next-text nav-default">Java垃圾收集器与内存分配策略</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-                </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
 
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://leer.moe/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
+  
 
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/categories">分类</a></h3>
-<ul class="widget-list">
-    
-    
-    
-    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
-    
-    
-    
-    <li><a href="#">未分类
-            (3)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
-
-
-
-
-
-
-
-
-<div class="tagcloud">
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
-    
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
 </div>
-    </section>
 
-    
+<div class="copyright" id="showDays">
 
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
 </div>
-            </div>
-        </div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
+<script src="/js/sitedate.js"></script>
+
 
 </body>
-
 </html>

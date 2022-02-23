@@ -11,11 +11,11 @@
     <meta property="og:type" content="article">
     
     
-    <meta name="Keywords" content="">
+    <meta name="Keywords" content="[LeeReindeer Hugo even]">
     <meta name="description"
         content="">
     
-    <meta name="author" content="LeeR">
+    <meta name="author" content="LeeReindeer">
     <meta property="og:url" content="https://leer.moe/post/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
@@ -44,15 +44,23 @@
                         LeeReindeer&#39;s blog
                     </a>
                 
-                <p class="description">Dive in</p>
+                
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
                     <a class="current" href="https://leer.moe/">首页</a>
                     
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
+                    <a  href="https://leer.moe/" title="Home">Home</a>
                     
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
+                    <a  href="https://leer.moe/categories/newsletter/" title="Newsletter">Newsletter</a>
+                    
+                    <a class="current" href="https://leer.moe/post/" title="Archives">Archives</a>
+                    
+                    <a  href="https://leer.moe/tags/" title="Tags">Tags</a>
+                    
+                    <a  href="https://leer.moe/categories/" title="Categories">Categories</a>
+                    
+                    <a  href="https://leer.moe/about/" title="About">About</a>
                     
                 </nav>
             </div>
@@ -73,7 +81,7 @@
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/android-activity/" title="Android 四大组件：Activity">Android 四大组件：Activity</a>
+                <a href="https://leer.moe/2018/05/16/Android-Activity/" title="Android 四大组件：Activity">Android 四大组件：Activity</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -94,7 +102,7 @@
 <h2 id="activity-是什么">Activity 是什么</h2>
 <p>Activity 是四大组件之一，每个 Activity 有一个视图，是和用户交互的地方。一个 App 可以有零到多个 Activity，<strong>每个 Activity 都必须在 <code>AndroidManifest.xml</code> 清单文件中声明。</strong></p>
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/android-activity/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2018/05/16/Android-Activity/">阅读全文</a></p>
     </article>
     
     
@@ -102,7 +110,7 @@
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/pointer_in_c/" title="C语言-可怕的指针">C语言-可怕的指针</a>
+                <a href="https://leer.moe/2018/03/28/pointer_in_c/" title="C语言-可怕的指针">C语言-可怕的指针</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -119,36 +127,70 @@
         <div class="post-content">
             <h2 id="一重指针">一重指针</h2>
 <h3 id="简单使用">简单使用</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> a <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>p <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">&amp;</span>a; <span style="color:#998;font-style:italic">//defines an pointer to a, the address where a store.
-</span><span style="color:#998;font-style:italic"></span>printf(<span style="color:#d14">&#34;%d&#34;</span>, a);
-printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;font-weight:bold">*</span>p); <span style="color:#998;font-style:italic">//here * is poiner operator, get the value of address = a.
-</span></code></pre></div><h3 id="数组指针">数组指针</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kt">int</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">;</span> <span class="c1">//defines an pointer to a, the address where a store.
+</span><span class="c1"></span><span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">);</span> <span class="c1">//here * is poiner operator, get the value of address = a.
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="数组指针">数组指针</h3>
 <ul>
 <li>
 <p>数组名代表数组的<strong>首地址</strong>，二维数组名则是<strong>行地址</strong>。</p>
 </li>
 <li>
 <p>一维数组</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"> <span style="color:#458;font-weight:bold">int</span> a[<span style="color:#099">4</span>] <span style="color:#000;font-weight:bold">=</span> {<span style="color:#099">1</span>, <span style="color:#099">2</span>, <span style="color:#099">3</span>, <span style="color:#099">4</span>};
- <span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>p1 <span style="color:#000;font-weight:bold">=</span> a;
- printf(<span style="color:#d14">&#34;%d&#34;</span>, a[<span style="color:#099">1</span>]); <span style="color:#998;font-style:italic">//2
-</span><span style="color:#998;font-style:italic"></span> printf(<span style="color:#d14">&#34;%d&#34;</span>, (<span style="color:#000;font-weight:bold">*++</span>p1)); <span style="color:#998;font-style:italic">//2
-</span></code></pre></div></li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"> <span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">};</span>
+ <span class="kt">int</span> <span class="o">*</span><span class="n">p1</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+ <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">//2
+</span><span class="c1"></span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="p">(</span><span class="o">*++</span><span class="n">p1</span><span class="p">));</span> <span class="c1">//2
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
 <li>
 <p>二维（多维）数组</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"> <span style="color:#458;font-weight:bold">int</span> b[<span style="color:#099">2</span>][<span style="color:#099">4</span>] <span style="color:#000;font-weight:bold">=</span> {{<span style="color:#099">1</span>, <span style="color:#099">2</span>, <span style="color:#099">3</span> ,<span style="color:#099">4</span>},{<span style="color:#099">5.</span>, <span style="color:#099">6</span>, <span style="color:#099">7</span>, <span style="color:#099">8</span>}};
- <span style="color:#458;font-weight:bold">int</span> (<span style="color:#000;font-weight:bold">*</span>p2)[<span style="color:#099">4</span>] <span style="color:#000;font-weight:bold">=</span> b; <span style="color:#998;font-style:italic">//**A pointer** to a array of 4 integers,行地址
-</span><span style="color:#998;font-style:italic"></span> <span style="color:#458;font-weight:bold">int</span> (<span style="color:#000;font-weight:bold">*</span>p3)[<span style="color:#099">2</span>][<span style="color:#099">4</span>] <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">&amp;</span>b; <span style="color:#998;font-style:italic">//**A pointer** to 2d array
-</span><span style="color:#998;font-style:italic"></span> b[<span style="color:#099">1</span>][<span style="color:#099">1</span>];<span style="color:#998;font-style:italic">//5
-</span><span style="color:#998;font-style:italic"></span> <span style="color:#000;font-weight:bold">*</span>((<span style="color:#000;font-weight:bold">*</span>p2 <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>) <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>); <span style="color:#998;font-style:italic">//5,(*p + 1) == 一维数组b[1]的首地址
-</span><span style="color:#998;font-style:italic"></span> p2[<span style="color:#099">1</span>][<span style="color:#099">1</span>]; <span style="color:#998;font-style:italic">//5
-</span><span style="color:#998;font-style:italic"></span> (<span style="color:#000;font-weight:bold">*</span>p2)[<span style="color:#099">1</span>][<span style="color:#099">1</span>]; <span style="color:#998;font-style:italic">//5
-</span><span style="color:#998;font-style:italic"></span>
-</code></pre></div></li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"> <span class="kt">int</span> <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">,</span><span class="mi">4</span><span class="p">},{</span><span class="mf">5.</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">}};</span>
+ <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">p2</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span> <span class="c1">//**A pointer** to a array of 4 integers,行地址
+</span><span class="c1"></span> <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">p3</span><span class="p">)[</span><span class="mi">2</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">;</span> <span class="c1">//**A pointer** to 2d array
+</span><span class="c1"></span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span><span class="c1">//5
+</span><span class="c1"></span> <span class="o">*</span><span class="p">((</span><span class="o">*</span><span class="n">p2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">//5,(*p + 1) == 一维数组b[1]的首地址
+</span><span class="c1"></span> <span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span> <span class="c1">//5
+</span><span class="c1"></span> <span class="p">(</span><span class="o">*</span><span class="n">p2</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span> <span class="c1">//5
+</span><span class="c1"></span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
 </ul>
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/pointer_in_c/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2018/03/28/pointer_in_c/">阅读全文</a></p>
     </article>
     
     
@@ -156,7 +198,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/start_learn_japanese/" title="Ubuntuの日本語入力方法">Ubuntuの日本語入力方法</a>
+                <a href="https://leer.moe/2018/01/30/start_learn_japanese/" title="Ubuntuの日本語入力方法">Ubuntuの日本語入力方法</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -179,12 +221,26 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 <p>还学了很多很多单词啊，一下子和动漫里的情节剧情/主角的一两句中二的话联系起来了。</p>
 <p>那么地狱少女里的无数次的登录网站输入怨恨的人的名字，最近无聊就反反复复的看（不是重点），貌似终于对 PC 端的日语输入法(入力方法)起了兴趣。那么就安装一下吧。</p>
 <p>我用的是 fcitx,所以只需要安装一下输入方法。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt-get install fcitx-anthy
-</code></pre></div><p>安装好之后重启一下。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">fcitx -r
-</code></pre></div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get install fcitx-anthy
+</code></pre></td></tr></table>
+</div>
+</div><p>安装好之后重启一下。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">fcitx -r
+</code></pre></td></tr></table>
+</div>
+</div>
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/start_learn_japanese/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2018/01/30/start_learn_japanese/">阅读全文</a></p>
     </article>
     
     
@@ -192,7 +248,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/tree2view_final_report/" title="Android Tree2View 3-Core Alogrithm">Android Tree2View 3-Core Alogrithm</a>
+                <a href="https://leer.moe/2018/01/02/tree2view_final_report/" title="Android Tree2View 3-Core Alogrithm">Android Tree2View 3-Core Alogrithm</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -239,7 +295,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 <p>我本来是打算就做一个 Android 的文件管理器的，但是文件的结构本身就是树结构。所以才写了 <code>Tree2View</code> 这个自定义 View。而文件管理器只是作为用这个项目实现的例子。</p>
 <p>还有另外一个原因是：在 <code>javax.swing.JTree</code> 里是一个树状的 swing 组件，但是 <code>Android</code> 里却没有一个内置的树状组件，所以就决定造一个。那么 talking is cheap, show me the code.开始吧。</p>
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/tree2view_final_report/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2018/01/02/tree2view_final_report/">阅读全文</a></p>
     </article>
     
     
@@ -247,7 +303,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/my_treeview_2_adapder/" title="Android Tree2View 2-Adapter in Tree2View">Android Tree2View 2-Adapter in Tree2View</a>
+                <a href="https://leer.moe/2017/12/25/my_treeview_2_adapder/" title="Android Tree2View 2-Adapter in Tree2View">Android Tree2View 2-Adapter in Tree2View</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -268,7 +324,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 </blockquote>
 <p>Adapter 模式适配的是什么呢？打个很恰当的比喻（逃），电源适配器大家应该都知道，什么，其实就是充电器嘛。手机的充电器把 220v 的交流电转化成比如说 5v 的电压。所以才可以愉快的充电。适配器模式就是把本来不匹配的接口（这样用二插三插转化器做比喻是不是好点），转化为你想要的接口，Adapter 就相当于充电器了。</p>
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/my_treeview_2_adapder/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2017/12/25/my_treeview_2_adapder/">阅读全文</a></p>
     </article>
     
     
@@ -276,7 +332,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/my_treeview_1/" title="Android Tree2View 1-Introduction">Android Tree2View 1-Introduction</a>
+                <a href="https://leer.moe/2017/12/14/my_treeview_1/" title="Android Tree2View 1-Introduction">Android Tree2View 1-Introduction</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -334,7 +390,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 </a>
 </p>
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/my_treeview_1/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2017/12/14/my_treeview_1/">阅读全文</a></p>
     </article>
     
     
@@ -342,7 +398,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/android-kotlin-style-guides/" title="Android Kotlin 代码规范">Android Kotlin 代码规范</a>
+                <a href="https://leer.moe/2017/11/29/android-kotlin-style-guides/" title="Android Kotlin 代码规范">Android Kotlin 代码规范</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -392,7 +448,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 </ul>
 <hr>
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/android-kotlin-style-guides/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2017/11/29/android-kotlin-style-guides/">阅读全文</a></p>
     </article>
     
     
@@ -400,7 +456,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/what_a_fuck/" title="标点、志愿者、动物园">标点、志愿者、动物园</a>
+                <a href="https://leer.moe/2017/11/17/what_a_fuck/" title="标点、志愿者、动物园">标点、志愿者、动物园</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -420,7 +476,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 <p>不过我翻了一下自己之前的 blog ，发现一个很头疼的问题-就是标点符号的问题，我之前一直是用的英文标点（不管在英文里还是中文里），实际上我书写也是用的英文标点吧，因为我句号只画一个点，而不是中文的一个圈。不想去改以前的了，以后就改为用中文标点吧。</p>
 <p>只是突然觉得中文标点配中文更美观了（大雾</p>
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/what_a_fuck/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2017/11/17/what_a_fuck/">阅读全文</a></p>
     </article>
     
     
@@ -428,7 +484,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/read_javac_1/" title="Read source code of Javac-1">Read source code of Javac-1</a>
+                <a href="https://leer.moe/2017/10/21/read_javac_1/" title="Read source code of Javac-1">Read source code of Javac-1</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -453,7 +509,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 </blockquote>
 <p>这句话反复出现在《深入理解Java虚拟机》里.我倒是没有体会到什么发展,也可以理解为这是为了跨平台而做出的牺牲,虚拟机也为此出现.当然也有直接把 Java 源代码编译成机器码的编译器( AOT 编译器).先不管这个,从 Java 源代码到字节码到底经历了什么呢?肯定要分析处理源码的语句啊,这便是词法分析和语法分析,从而把源码变成了抽象语法树(AST).接着只要遍历语法树就得到了字节码指令流.emmm,以目前的垃圾我不可能实现的.那,先从简单的开始,这篇重点就是<strong>从源码验证一下Javac的编译结果</strong>.</p>
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/read_javac_1/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2017/10/21/read_javac_1/">阅读全文</a></p>
     </article>
     
     
@@ -461,7 +517,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="https://leer.moe/post/ubuntu-one-year/" title="入坑一年啦">入坑一年啦</a>
+                <a href="https://leer.moe/2017/10/09/ubuntu-one-year/" title="入坑一年啦">入坑一年啦</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
@@ -478,7 +534,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
         <div class="post-content">
             用Ubuntu一年了。感谢大佬带我入坑👏。 截图留念
         </div>
-        <p class="readmore"><a href="https://leer.moe/post/ubuntu-one-year/">阅读全文</a></p>
+        <p class="readmore"><a href="https://leer.moe/2017/10/09/ubuntu-one-year/">阅读全文</a></p>
     </article>
     
     
@@ -559,43 +615,43 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 <ul class="widget-list">
     
     <li>
-        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
+        <a href="https://leer.moe/2022/02/04/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
+        <a href="https://leer.moe/2022/01/23/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
+        <a href="https://leer.moe/2021/11/27/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
+        <a href="https://leer.moe/2021/05/26/pattern-of-distributed-system-1-Consistent-Core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
+        <a href="https://leer.moe/2021/02/19/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
+        <a href="https://leer.moe/2021/01/31/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
+        <a href="https://leer.moe/2020/12/16/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
+        <a href="https://leer.moe/2020/10/31/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
+        <a href="https://leer.moe/2020/08/17/doublethink/" title="「1984」读后感">「1984」读后感</a>
     </li>
     
     <li>
-        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
+        <a href="https://leer.moe/2020/05/19/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
     </li>
     
 </ul>
@@ -609,7 +665,7 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     
     
     
-    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
+    <li><a href="https://leer.moe/categories/Newsletter/">Newsletter (2)</a></li>
     
     
     <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
@@ -657,127 +713,133 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
     
     
     
-    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
+    <a href="https://leer.moe/tags/Android/" style="font-size:1.4295320036582306rem">Android</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
+    <a href="https://leer.moe/tags/C/" style="font-size:1.3796618766207391rem">C</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
+    <a href="https://leer.moe/tags/CSAPP/" style="font-size:0.8rem">CSAPP</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
+    <a href="https://leer.moe/tags/Distributed-system/" style="font-size:0.8rem">Distributed system</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
+    <a href="https://leer.moe/tags/git/" style="font-size:0.8rem">git</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
+    <a href="https://leer.moe/tags/JVM/" style="font-size:0.8rem">JVM</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
+    <a href="https://leer.moe/tags/Java/" style="font-size:1.7849500560613945rem">Java</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
+    <a href="https://leer.moe/tags/JavaFX/" style="font-size:0.8rem">JavaFX</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
+    <a href="https://leer.moe/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
+    <a href="https://leer.moe/tags/Kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
+    <a href="https://leer.moe/tags/Manjaro/" style="font-size:0.8rem">Manjaro</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
+    <a href="https://leer.moe/tags/Minecraft/" style="font-size:0.8rem">Minecraft</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
+    <a href="https://leer.moe/tags/MyBatis/" style="font-size:0.8rem">MyBatis</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
+    <a href="https://leer.moe/tags/OS/" style="font-size:1.3796618766207391rem">OS</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
+    <a href="https://leer.moe/tags/RTOS/" style="font-size:0.8rem">RTOS</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
+    <a href="https://leer.moe/tags/Spring/" style="font-size:1.2484876484351508rem">Spring</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
+    <a href="https://leer.moe/tags/Spring-Boot/" style="font-size:0.8rem">Spring Boot</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
+    <a href="https://leer.moe/tags/Telegram/" style="font-size:0.8rem">Telegram</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
+    <a href="https://leer.moe/tags/V2ray/" style="font-size:0.8rem">V2ray</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
+    <a href="https://leer.moe/tags/Work/" style="font-size:0.8rem">Work</a>
     
     
     
     
     
-    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
+    <a href="https://leer.moe/tags/git/" style="font-size:0.8rem">git</a>
+    
+    
+    
+    
+    
+    <a href="https://leer.moe/tags/macOS/" style="font-size:0.8rem">macOS</a>
     
     
     
@@ -886,8 +948,12 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 
 
 
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
 
 
+
+
+<script src='/js/sitedate.js'></script>
 
 
 

@@ -1,146 +1,162 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>【瞎折腾】饥荒服务器搭建 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>【瞎折腾】饥荒服务器搭建 | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="【瞎折腾】饥荒服务器搭建 - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2017-02-28T23:19:35&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2017-02-28T23:19:35&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 为了愉快)的玩饥荒.
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2017/02/28/DST_cloud_server/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="【瞎折腾】饥荒服务器搭建" />
+<meta property="og:description" content="
 为了愉快)的玩饥荒.
-">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/2017/02/28/dst_cloud_server/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/2017/02/28/DST_cloud_server/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-02-28T23:19:35+00:00" />
+<meta property="article:modified_time" content="2017-02-28T23:19:35+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="【瞎折腾】饥荒服务器搭建">
+<meta itemprop="description" content="
+为了愉快)的玩饥荒.
+"><meta itemprop="datePublished" content="2017-02-28T23:19:35+00:00" />
+<meta itemprop="dateModified" content="2017-02-28T23:19:35+00:00" />
+<meta itemprop="wordCount" content="1221">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="【瞎折腾】饥荒服务器搭建"/>
+<meta name="twitter:description" content="
+为了愉快)的玩饥荒.
+"/>
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
 
-    
-    
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-  <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-  <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
-    <div class="container">
-      <div class="col-group">
+    <header class="post-header">
+      <h1 class="post-title">【瞎折腾】饥荒服务器搭建</h1>
 
-        <div class="col-8" id="main">
-          
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+      <div class="post-meta">
+        <span class="post-time"> 2017-02-28 </span>
+        <div class="post-category">
+            <a href="/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/"> 实验室 </a>
+            </div>
+          <span class="more-meta"> 1221 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
 
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">【瞎折腾】饥荒服务器搭建</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#下载安装">下载＆安装</a></li>
     <li><a href="#配置文件">配置文件</a></li>
@@ -148,60 +164,15 @@
     <li><a href="#配置-clusterini-serverini">配置 cluster.ini &amp;server.ini</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">【瞎折腾】饥荒服务器搭建</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年2月28日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4'>实验室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">1195 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2017-02-28T23:19:35" title="February 28, 2017">February 28, 2017</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>为了愉快)的玩饥荒.</p>
 </blockquote>
 <h1 id="你需要一个服务器">你需要一个服务器</h1>
@@ -212,10 +183,19 @@
 <li>ssh 连接你的服务器,
 接下来会有这样的提示，就是在本地加入秘钥</li>
 </ul>
-<pre tabindex="0"><code>The authenticity of host ‘120.77.209.6 (120.77.209.6)’ can’t be established.
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">The authenticity of host ‘120.77.209.6 (120.77.209.6)’ can’t be established.
 ECDSA key fingerprint is SHA256:/C8zCZOLXgZJ+QAWjWFKAZx+BS/LlX68jBmoAPaODIE.
 Are you sure you want to continue connecting (yes/no)?
-</code></pre><p>输入 <em>yes</em>.然后依次输入下面的命令,</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输入 <em>yes</em>.然后依次输入下面的命令,</p>
 <ul>
 <li><code>apt-get update</code>　//更新一下</li>
 <li><code>apt-get install screen vim libgcc1 libcurl4-gnutls-dev:i386</code>　//安装 vim ,sreen,还有32位的库</li>
@@ -234,38 +214,35 @@ Are you sure you want to continue connecting (yes/no)?
 <li><code>export PATH=~/bin:&quot;$PATH&quot;</code></li>
 <li><code>vim startDST</code></li>
 </ul>
-<pre tabindex="0"><code>#!/bin/bash
-cd Steam/steamapps/common/Don\'t\ Starve\ Together\ Dedicated\ Server/bin/
-screen -S &quot;DST Server&quot;./dontstarve_dedicated_server_nullrenderer
-</code></pre><p>//这里建一个脚本简化一下命令，不然每次都要输入一大行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nb">cd</span> Steam/steamapps/common/Don<span class="se">\&#39;</span>t<span class="se">\ </span>Starve<span class="se">\ </span>Together<span class="se">\ </span>Dedicated<span class="se">\ </span>Server/bin/
+screen -S <span class="s2">&#34;DST Server&#34;</span>./dontstarve_dedicated_server_nullrenderer
+</code></pre></td></tr></table>
+</div>
+</div><p>//这里建一个脚本简化一下命令，不然每次都要输入一大行</p>
 <ul>
 <li>chmod 775 startDST</li>
 <li>试运行　<code>startDST</code></li>
 </ul>
 <p>接下来会出现这样的报错，此时服务并没有启动
-
-<a data-fancybox="gallery" href="/images/clustertoken.png">
-  <img class="mx-auto" alt="" src="/images/clustertoken.png" />
-</a>
-
+<img src="/images/clustertoken.png" alt="">
 一大堆英文，总之就是说缺少令牌文件（klei认证用户身份的秘钥，后面添加管理员也要用到）</p>
 <h2 id="获取令牌">获取令牌</h2>
 <ol>
 <li>
 <p>打开DST,点击右下角的account
-
-<a data-fancybox="gallery" href="/images/dst_account.png">
-  <img class="mx-auto" alt="" src="/images/dst_account.png" />
-</a>
-</p>
+<img src="/images/dst_account.png" alt=""></p>
 </li>
 <li>
 <p>打开以后点击Generate Server Token.
-
-<a data-fancybox="gallery" href="/images/takenp.png">
-  <img class="mx-auto" alt="" src="/images/takenp.png" />
-</a>
-
+<img src="/images/takenp.png" alt="">
 好丑的马赛克＝＝
 复制到Cluster_taken.txt里，放在cluster_1文件夹里 。</p>
 </li>
@@ -274,7 +251,31 @@ screen -S &quot;DST Server&quot;./dontstarve_dedicated_server_nullrenderer
 <ul>
 <li>cluster.ini</li>
 </ul>
-<pre tabindex="0"><code>[GMEPLAY]
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">[GMEPLAY]
 game_mode = survival
 max_players = 6
 pvp = false
@@ -294,7 +295,9 @@ bind_ip = 127.0.0.1
 master_ip = 127.0.0.1
 master_port = 10889
 cluster_key = supersecretkey
-</code></pre><p>放在同上的文件夹。
+</code></pre></td></tr></table>
+</div>
+</div><p>放在同上的文件夹。
 详细解释参考klei的<a href="http://forums.kleientertainment.com/topic/64743-dedicated-server-command-line-options-guide/#comment-726427">论坛</a></p>
 <ul>
 <li>server.ini
@@ -329,73 +332,120 @@ cluster_key = supersecretkey
 <p><a href="http://steamcommunity.com/sharedfiles/filedetails/?l=ukrainian&amp;id=772942647">link1</a></p>
 <p><a href="https://www.nevermoe.com/?p=695">link2</a></p>
 <p><a href="https://blog.cuican.name/?p=517">link3</a></p>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-02-28
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2017/03/13/peak_of_wave/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">浪潮之巅</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2017/02/13/2017-books/">
+            <span class="next-text nav-default">2017年书单</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
         
 
+  
 
-        
-
-
-        <div class="post-meta meta-tags">
-            
-        </div>
-    </article>
-    
-    
-
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-        </div>
-        
-        
-        
-        
-      </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
   </div>
-  <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
+<script src="/js/sitedate.js"></script>
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
-
 </html>

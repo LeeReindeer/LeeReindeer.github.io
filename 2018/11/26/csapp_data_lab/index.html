@@ -1,23 +1,53 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>CSAPP Data Lab 思路和笔记 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>CSAPP Data Lab 思路和笔记 | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="CSAPP Data Lab 思路和笔记 - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2018-11-26T15:31:21&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2018-11-26T15:31:21&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="Data Lab[Updated 11/2/18]
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content="Data Lab[Updated 11/2/18]
+ 11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。
+肝了两天还是没有全部做出来，之前很以为很简单呢（
+最近也终于买了 CS:APP3e 英文版，配合 CMU 的课程视频食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（
+解题的思路一般会写在注释里的。
+ bitXor 1 2 3 4 5 6 7 8 9 10 11 12 13  /*s * bitXor - x^y using only ~ and &amp;amp; * Example: bitXor(4, 5) = 1 * Legal ops: ~ &amp;amp; * Max ops: 14 * Rating: 1 */ int bitXor(int x, int y) { // 德摩根定律  // a xor b = (~a | ~b) &amp;amp; (a | b)  // = ~(a &amp;amp; b) &amp;amp; ~(~a &amp;amp; ~b)  return ~(~x &amp;amp; ~y) &amp;amp; ~(x &amp;amp; y); }   虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。
+利用的性质主要是：
+ a ^ b = (~a | ~b) &amp;amp; (a | b) (~a | ~b) = ~(a &amp;amp; b) " /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2018/11/26/csapp_data_lab/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="CSAPP Data Lab 思路和笔记" />
+<meta property="og:description" content="Data Lab[Updated 11/2/18]
 
 11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。
 肝了两天还是没有全部做出来，之前很以为很简单呢（
@@ -25,6 +55,23 @@
 解题的思路一般会写在注释里的。
 
 bitXor
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+
+
 /*s
  * bitXor - x^y using only ~ and &amp;
  *   Example: bitXor(4, 5) = 1
@@ -38,133 +85,213 @@ int bitXor(int x, int y) {
   // = ~(a &amp; b) &amp; ~(~a &amp; ~b)
   return ~(~x &amp; ~y) &amp; ~(x &amp; y);
 }
+
+
 虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。
 利用的性质主要是：
 
 a ^ b = (~a | ~b) &amp; (a | b)
 (~a | ~b) = ~(a &amp; b)
-">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/2018/11/26/csapp_data_lab/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/2018/11/26/csapp_data_lab/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-11-26T15:31:21+00:00" />
+<meta property="article:modified_time" content="2018-11-26T15:31:21+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="CSAPP Data Lab 思路和笔记">
+<meta itemprop="description" content="Data Lab[Updated 11/2/18]
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。
+肝了两天还是没有全部做出来，之前很以为很简单呢（
+最近也终于买了 CS:APP3e 英文版，配合 CMU 的课程视频食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（
+解题的思路一般会写在注释里的。
 
-    
-    
+bitXor
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+
+
+/*s
+ * bitXor - x^y using only ~ and &amp;
+ *   Example: bitXor(4, 5) = 1
+ *   Legal ops: ~ &amp;
+ *   Max ops: 14
+ *   Rating: 1
+ */
+int bitXor(int x, int y) {
+  // 德摩根定律
+  // a xor b = (~a | ~b) &amp; (a | b)
+  // = ~(a &amp; b) &amp; ~(~a &amp; ~b)
+  return ~(~x &amp; ~y) &amp; ~(x &amp; y);
+}
+
+
+虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。
+利用的性质主要是：
+
+a ^ b = (~a | ~b) &amp; (a | b)
+(~a | ~b) = ~(a &amp; b)
+"><meta itemprop="datePublished" content="2018-11-26T15:31:21+00:00" />
+<meta itemprop="dateModified" content="2018-11-26T15:31:21+00:00" />
+<meta itemprop="wordCount" content="3249">
+<meta itemprop="keywords" content="CSAPP,C," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CSAPP Data Lab 思路和笔记"/>
+<meta name="twitter:description" content="Data Lab[Updated 11/2/18]
+
+11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。
+肝了两天还是没有全部做出来，之前很以为很简单呢（
+最近也终于买了 CS:APP3e 英文版，配合 CMU 的课程视频食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（
+解题的思路一般会写在注释里的。
+
+bitXor
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+
+
+/*s
+ * bitXor - x^y using only ~ and &amp;
+ *   Example: bitXor(4, 5) = 1
+ *   Legal ops: ~ &amp;
+ *   Max ops: 14
+ *   Rating: 1
+ */
+int bitXor(int x, int y) {
+  // 德摩根定律
+  // a xor b = (~a | ~b) &amp; (a | b)
+  // = ~(a &amp; b) &amp; ~(~a &amp; ~b)
+  return ~(~x &amp; ~y) &amp; ~(x &amp; y);
+}
+
+
+虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。
+利用的性质主要是：
+
+a ^ b = (~a | ~b) &amp; (a | b)
+(~a | ~b) = ~(a &amp; b)
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-  <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-  <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
-    <div class="container">
-      <div class="col-group">
+    <header class="post-header">
+      <h1 class="post-title">CSAPP Data Lab 思路和笔记</h1>
 
-        <div class="col-8" id="main">
-          
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+      <div class="post-meta">
+        <span class="post-time"> 2018-11-26 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 3249 words </span>
+          <span class="more-meta"> 7 mins read </span>
+        
+      </div>
+    </header>
 
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">CSAPP Data Lab 思路和笔记</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#bitxor">bitXor</a></li>
     <li><a href="#tmin">tmin</a></li>
@@ -180,60 +307,15 @@ a ^ b = (~a | ~b) &amp; (a | b)
     <li><a href="#upercase--lowercase">Upercase &amp; Lowercase</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">CSAPP Data Lab 思路和笔记</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年11月26日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">3027 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <p><a href="http://csapp.cs.cmu.edu/3e/labs.html">Data Lab</a><em>[Updated 11/2/18]</em></p>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2018-11-26T15:31:21" title="November 26, 2018">November 26, 2018</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <p><a href="http://csapp.cs.cmu.edu/3e/labs.html">Data Lab</a><em>[Updated 11/2/18]</em></p>
 <blockquote>
 <p>11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。</p>
 <p>肝了两天还是没有全部做出来，之前很以为很简单呢（</p>
@@ -241,195 +323,435 @@ a ^ b = (~a | ~b) &amp; (a | b)
 <p>解题的思路一般会写在注释里的。</p>
 </blockquote>
 <h2 id="bitxor">bitXor</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*s
-</span><span style="color:#998;font-style:italic"> * bitXor - x^y using only ~ and &amp;
-</span><span style="color:#998;font-style:italic"> *   Example: bitXor(4, 5) = 1
-</span><span style="color:#998;font-style:italic"> *   Legal ops: ~ &amp;
-</span><span style="color:#998;font-style:italic"> *   Max ops: 14
-</span><span style="color:#998;font-style:italic"> *   Rating: 1
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">bitXor</span>(<span style="color:#458;font-weight:bold">int</span> x, <span style="color:#458;font-weight:bold">int</span> y) {
-  <span style="color:#998;font-style:italic">// 德摩根定律
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// a xor b = (~a | ~b) &amp; (a | b)
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// = ~(a &amp; b) &amp; ~(~a &amp; ~b)
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">~</span>(<span style="color:#000;font-weight:bold">~</span>x <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">~</span>y) <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">~</span>(x <span style="color:#000;font-weight:bold">&amp;</span> y);
-}
-</code></pre></div><p>虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*s
+</span><span class="cm"> * bitXor - x^y using only ~ and &amp;
+</span><span class="cm"> *   Example: bitXor(4, 5) = 1
+</span><span class="cm"> *   Legal ops: ~ &amp;
+</span><span class="cm"> *   Max ops: 14
+</span><span class="cm"> *   Rating: 1
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">bitXor</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// 德摩根定律
+</span><span class="c1"></span>  <span class="c1">// a xor b = (~a | ~b) &amp; (a | b)
+</span><span class="c1"></span>  <span class="c1">// = ~(a &amp; b) &amp; ~(~a &amp; ~b)
+</span><span class="c1"></span>  <span class="k">return</span> <span class="o">~</span><span class="p">(</span><span class="o">~</span><span class="n">x</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">y</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。</p>
 <p>利用的性质主要是：</p>
 <ul>
 <li>a ^ b = (~a | ~b) &amp; (a | b)</li>
 <li>(~a | ~b) = ~(a &amp; b)</li>
 </ul>
 <h2 id="tmin">tmin</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
-</span><span style="color:#998;font-style:italic"> * tmin - return minimum two&#39;s complement integer
-</span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
-</span><span style="color:#998;font-style:italic"> *   Max ops: 4
-</span><span style="color:#998;font-style:italic"> *   Rating: 1
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">tmin</span>(<span style="color:#458;font-weight:bold">void</span>) {
-  <span style="color:#998;font-style:italic">// minimum tow&#39;s complement is 0x80000000
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">1</span> <span style="color:#000;font-weight:bold">&lt;&lt;</span> <span style="color:#099">31</span>;
-}
-</code></pre></div><p>最简单的一题，最小的有符号数是 <code>0x80000000</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * tmin - return minimum two&#39;s complement integer
+</span><span class="cm"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span class="cm"> *   Max ops: 4
+</span><span class="cm"> *   Rating: 1
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">tmin</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// minimum tow&#39;s complement is 0x80000000
+</span><span class="c1"></span>  <span class="k">return</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最简单的一题，最小的有符号数是 <code>0x80000000</code>。</p>
 <hr>
 <h2 id="istmax">isTmax</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
-</span><span style="color:#998;font-style:italic"> * isTmax - returns 1 if x is the maximum, two&#39;s complement number,
-</span><span style="color:#998;font-style:italic"> *     and 0 otherwise
-</span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | +
-</span><span style="color:#998;font-style:italic"> *   Max ops: 10
-</span><span style="color:#998;font-style:italic"> *   Rating: 1
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">isTmax</span>(<span style="color:#458;font-weight:bold">int</span> x) {
-    <span style="color:#998;font-style:italic">// tmax = 0x7fffffff
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">!</span>(x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x7fffffff</span>);
-}
-</code></pre></div><p>我一开始是像上面这样写的，如果没有限定的话这样是对的。但是整数部分的要求比较严格：</p>
-<pre tabindex="0"><code>Integer constants 0 through 255 (0xFF), inclusive. You are
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * isTmax - returns 1 if x is the maximum, two&#39;s complement number,
+</span><span class="cm"> *     and 0 otherwise
+</span><span class="cm"> *   Legal ops: ! ~ &amp; ^ | +
+</span><span class="cm"> *   Max ops: 10
+</span><span class="cm"> *   Rating: 1
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">isTmax</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// tmax = 0x7fffffff
+</span><span class="c1"></span>    <span class="k">return</span> <span class="o">!</span><span class="p">(</span><span class="n">x</span> <span class="o">^</span> <span class="mh">0x7fffffff</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>我一开始是像上面这样写的，如果没有限定的话这样是对的。但是整数部分的要求比较严格：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Integer constants 0 through 255 (0xFF), inclusive. You are
       not allowed to use big constants such as 0xffffffff.
-</code></pre><p>而且这一题不能使用移位操作，就不能通过移位来得到 <code>0x7fffffff</code>。然后只能Google了。。。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>而且这一题不能使用移位操作，就不能通过移位来得到 <code>0x7fffffff</code>。然后只能Google了。。。</p>
 <p>这是我 Google 到的版本:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">isTmax</span>(<span style="color:#458;font-weight:bold">int</span> x) {
-  <span style="color:#998;font-style:italic">// creates i = x plus 1 then makes x = that number plus x.
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// then flips the bits of x and bangs i, adds them and returns.
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// this effectively checks if the number was tmax
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// because if it was adding 1 would result in a leading 1.
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// you flips the bits to get 1 and add either 0 or 1
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// and return the opposite of that by banging x to get 1 for true or 0 for
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// flase
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
-  x <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">+</span> i;
-  x <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">~</span>x;
-  i <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">!</span>i;
-  x <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">+</span> i;
-  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">!</span>x;
-}
-</code></pre></div><h2 id="alloddbits">allOddBits</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">isTmax</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// creates i = x plus 1 then makes x = that number plus x.
+</span><span class="c1"></span>  <span class="c1">// then flips the bits of x and bangs i, adds them and returns.
+</span><span class="c1"></span>  <span class="c1">// this effectively checks if the number was tmax
+</span><span class="c1"></span>  <span class="c1">// because if it was adding 1 would result in a leading 1.
+</span><span class="c1"></span>  <span class="c1">// you flips the bits to get 1 and add either 0 or 1
+</span><span class="c1"></span>  <span class="c1">// and return the opposite of that by banging x to get 1 for true or 0 for
+</span><span class="c1"></span>  <span class="c1">// flase
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="p">;</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="o">~</span><span class="n">x</span><span class="p">;</span>
+  <span class="n">i</span> <span class="o">=</span> <span class="o">!</span><span class="n">i</span><span class="p">;</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">return</span> <span class="o">!</span><span class="n">x</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="alloddbits">allOddBits</h2>
 <p>和上一题一样，我一开始也违反了这条规定：</p>
-<pre tabindex="0"><code>Integer constants 0 through 255 (0xFF), inclusive. You are
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Integer constants 0 through 255 (0xFF), inclusive. You are
       not allowed to use big constants such as 0xffffffff.
-</code></pre><p>幸运的是，这题可以用移位：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
-</span><span style="color:#998;font-style:italic"> * allOddBits - return 1 if all odd-numbered bits in word set to 1
-</span><span style="color:#998;font-style:italic"> *   where bits are numbered from 0 (least significant) to 31 (most significant)
-</span><span style="color:#998;font-style:italic"> *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
-</span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
-</span><span style="color:#998;font-style:italic"> *   Max ops: 12
-</span><span style="color:#998;font-style:italic"> *   Rating: 2
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">allOddBits</span>(<span style="color:#458;font-weight:bold">int</span> x) {
-  <span style="color:#998;font-style:italic">// x AND mask 0xAAAAAAAA(1010...1010), then XOR mask
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> m <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0xAA</span>;
-  m <span style="color:#000;font-weight:bold">=</span> (m <span style="color:#000;font-weight:bold">&lt;&lt;</span> <span style="color:#099">8</span>) <span style="color:#000;font-weight:bold">|</span> m;
-  m <span style="color:#000;font-weight:bold">=</span> (m <span style="color:#000;font-weight:bold">&lt;&lt;</span> <span style="color:#099">8</span>) <span style="color:#000;font-weight:bold">|</span> m;
-  m <span style="color:#000;font-weight:bold">=</span> (m <span style="color:#000;font-weight:bold">&lt;&lt;</span> <span style="color:#099">8</span>) <span style="color:#000;font-weight:bold">|</span> m;
-  m <span style="color:#000;font-weight:bold">=</span> (m <span style="color:#000;font-weight:bold">&lt;&lt;</span> <span style="color:#099">8</span>) <span style="color:#000;font-weight:bold">|</span> m;
-  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">!</span>((x <span style="color:#000;font-weight:bold">&amp;</span> m) <span style="color:#000;font-weight:bold">^</span> m);
-}
-</code></pre></div><p>主要是利用了 <code>0xAAAAAAAA</code> 这个 mask，<code>x</code> 和 mask 相与来判断是否全部的奇数位都被置1。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>幸运的是，这题可以用移位：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * allOddBits - return 1 if all odd-numbered bits in word set to 1
+</span><span class="cm"> *   where bits are numbered from 0 (least significant) to 31 (most significant)
+</span><span class="cm"> *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
+</span><span class="cm"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span class="cm"> *   Max ops: 12
+</span><span class="cm"> *   Rating: 2
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">allOddBits</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// x AND mask 0xAAAAAAAA(1010...1010), then XOR mask
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="mh">0xAA</span><span class="p">;</span>
+  <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">m</span><span class="p">;</span>
+  <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">m</span><span class="p">;</span>
+  <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">m</span><span class="p">;</span>
+  <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">m</span><span class="p">;</span>
+  <span class="k">return</span> <span class="o">!</span><span class="p">((</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">m</span><span class="p">)</span> <span class="o">^</span> <span class="n">m</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>主要是利用了 <code>0xAAAAAAAA</code> 这个 mask，<code>x</code> 和 mask 相与来判断是否全部的奇数位都被置1。</p>
 <h2 id="negate">negate</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
-</span><span style="color:#998;font-style:italic"> * negate - return -x
-</span><span style="color:#998;font-style:italic"> *   Example: negate(1) = -1.
-</span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
-</span><span style="color:#998;font-style:italic"> *   Max ops: 5
-</span><span style="color:#998;font-style:italic"> *   Rating: 2
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">negate</span>(<span style="color:#458;font-weight:bold">int</span> x) {
-  <span style="color:#998;font-style:italic">// two&#39;s complement equals ones&#39; complement + 1
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> (<span style="color:#000;font-weight:bold">~</span>x) <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
-}
-</code></pre></div><p>一个数取反加一，就是它的负数，利用了补码的性质。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * negate - return -x
+</span><span class="cm"> *   Example: negate(1) = -1.
+</span><span class="cm"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span class="cm"> *   Max ops: 5
+</span><span class="cm"> *   Rating: 2
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">negate</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// two&#39;s complement equals ones&#39; complement + 1
+</span><span class="c1"></span>  <span class="k">return</span> <span class="p">(</span><span class="o">~</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>一个数取反加一，就是它的负数，利用了补码的性质。</p>
 <hr>
 <h2 id="isasciidigit">isAsciiDigit</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
-</span><span style="color:#998;font-style:italic"> * isAsciiDigit - return 1 if 0x30 &lt;= x &lt;= 0x39 (ASCII codes for characters &#39;0&#39;
-</span><span style="color:#998;font-style:italic"> * to &#39;9&#39;) Example: isAsciiDigit(0x35) = 1. isAsciiDigit(0x3a) = 0.
-</span><span style="color:#998;font-style:italic"> *            isAsciiDigit(0x05) = 0.
-</span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
-</span><span style="color:#998;font-style:italic"> *   Max ops: 15
-</span><span style="color:#998;font-style:italic"> *   Rating: 3
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">isAsciiDigit</span>(<span style="color:#458;font-weight:bold">int</span> x) {
-  <span style="color:#998;font-style:italic">// todo flow max ops
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> _0 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x30</span>;
-  <span style="color:#458;font-weight:bold">int</span> _1 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x31</span>;
-  <span style="color:#458;font-weight:bold">int</span> _2 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x32</span>;
-  <span style="color:#458;font-weight:bold">int</span> _3 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x33</span>;
-  <span style="color:#458;font-weight:bold">int</span> _4 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x34</span>;
-  <span style="color:#458;font-weight:bold">int</span> _5 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x35</span>;
-  <span style="color:#458;font-weight:bold">int</span> _6 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x36</span>;
-  <span style="color:#458;font-weight:bold">int</span> _7 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x37</span>;
-  <span style="color:#458;font-weight:bold">int</span> _8 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x38</span>;
-  <span style="color:#458;font-weight:bold">int</span> _9 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">^</span> <span style="color:#099">0x39</span>;
-  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">!</span>_0 <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>_1 <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>_2 <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>_3 <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>_4 <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>_5 <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>_6 <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>_7 <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>_8 <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>_9;
-}
-</code></pre></div><p>这题我目前想到的解法就是这样，很明显超过了操作符个数的限制，而且看上去很蠢。就是判断这个数是否等于<code>‘0’</code>到<code>‘9’</code>中的一个。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * isAsciiDigit - return 1 if 0x30 &lt;= x &lt;= 0x39 (ASCII codes for characters &#39;0&#39;
+</span><span class="cm"> * to &#39;9&#39;) Example: isAsciiDigit(0x35) = 1. isAsciiDigit(0x3a) = 0.
+</span><span class="cm"> *            isAsciiDigit(0x05) = 0.
+</span><span class="cm"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span class="cm"> *   Max ops: 15
+</span><span class="cm"> *   Rating: 3
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">isAsciiDigit</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// todo flow max ops
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">_0</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x30</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">_1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x31</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">_2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x32</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">_3</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x33</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">_4</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x34</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">_5</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x35</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">_6</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x36</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">_7</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x37</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">_8</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x38</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">_9</span> <span class="o">=</span> <span class="n">x</span> <span class="o">^</span> <span class="mh">0x39</span><span class="p">;</span>
+  <span class="k">return</span> <span class="o">!</span><span class="n">_0</span> <span class="o">|</span> <span class="o">!</span><span class="n">_1</span> <span class="o">|</span> <span class="o">!</span><span class="n">_2</span> <span class="o">|</span> <span class="o">!</span><span class="n">_3</span> <span class="o">|</span> <span class="o">!</span><span class="n">_4</span> <span class="o">|</span> <span class="o">!</span><span class="n">_5</span> <span class="o">|</span> <span class="o">!</span><span class="n">_6</span> <span class="o">|</span> <span class="o">!</span><span class="n">_7</span> <span class="o">|</span> <span class="o">!</span><span class="n">_8</span> <span class="o">|</span> <span class="o">!</span><span class="n">_9</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这题我目前想到的解法就是这样，很明显超过了操作符个数的限制，而且看上去很蠢。就是判断这个数是否等于<code>‘0’</code>到<code>‘9’</code>中的一个。</p>
 <h2 id="conditional">conditional</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
-</span><span style="color:#998;font-style:italic"> * conditional - same as x ? y : z
-</span><span style="color:#998;font-style:italic"> *   Example: conditional(2,4,5) = 4
-</span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
-</span><span style="color:#998;font-style:italic"> *   Max ops: 16
-</span><span style="color:#998;font-style:italic"> *   Rating: 3
-</span><span style="color:#998;font-style:italic"> */</span>
-</code></pre></div><p>在 <code>15213 - Recitation 3 - Datalab</code> 中有关于这题的小提示：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">//Find an algorithm for computing the expression (cond) ? t : //f, which equals t if cond is
-</span><span style="color:#998;font-style:italic">//1 and f if cond is 0.
-</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">conditional</span>(<span style="color:#458;font-weight:bold">int</span> cond, <span style="color:#458;font-weight:bold">int</span> t, <span style="color:#458;font-weight:bold">int</span> f) {
-<span style="color:#998;font-style:italic">/* Compute a mask that equals 0x00000000 or
-</span><span style="color:#998;font-style:italic">0xFFFFFFFF depending on the value of cond */</span>
-<span style="color:#458;font-weight:bold">int</span> mask <span style="color:#000;font-weight:bold">=</span> ______________________________________;
-<span style="color:#998;font-style:italic">/* Use the mask to toggle between returning t or returning f */</span>
-<span style="color:#000;font-weight:bold">return</span> __________________________________________;
-}
-</code></pre></div><p>当 x 取 0 时，返回 z，否则，返回 y。假设 <code>x = 0</code> 时，取 <code>mask = 0xffffffff</code>，否则，<code>mask = 0x0</code>。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">conditional</span>(<span style="color:#458;font-weight:bold">int</span> x, <span style="color:#458;font-weight:bold">int</span> y, <span style="color:#458;font-weight:bold">int</span> z) {
-  <span style="color:#998;font-style:italic">// when x = 0, t1 is overflow, it&#39;s value is 0
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">~</span>x <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
-  <span style="color:#998;font-style:italic">// when x = 0, t2 =0, else its MSB is 1
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t2 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">|</span> t1;
-  <span style="color:#998;font-style:italic">// when x = 0, t3 = 0xffffffff, else t3&#39;s MSB is 0
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t3 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">~</span>t2;
-  <span style="color:#998;font-style:italic">// arithmetical shift
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// x = 0, mask = 0xffffffff, else mask = 0x0
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> mask <span style="color:#000;font-weight:bold">=</span> t3 <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>;
-  <span style="color:#998;font-style:italic">// use mask to toggle between y and z
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// x = 0, return z, else return y
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> (<span style="color:#000;font-weight:bold">~</span>mask <span style="color:#000;font-weight:bold">&amp;</span> y) <span style="color:#000;font-weight:bold">|</span> (mask <span style="color:#000;font-weight:bold">&amp;</span> z);
-}
-</code></pre></div><h2 id="islessorequal">isLessOrEqual</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
-</span><span style="color:#998;font-style:italic"> * isLessOrEqual - if x &lt;= y  then return 1, else return 0
-</span><span style="color:#998;font-style:italic"> *   Example: isLessOrEqual(4,5) = 1.
-</span><span style="color:#998;font-style:italic"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
-</span><span style="color:#998;font-style:italic"> *   Max ops: 24
-</span><span style="color:#998;font-style:italic"> *   Rating: 3
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">isLessOrEqual</span>(<span style="color:#458;font-weight:bold">int</span> x, <span style="color:#458;font-weight:bold">int</span> y) {
-  <span style="color:#998;font-style:italic">// Cases:
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// 1. x == y
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// 2. x, y has different sign, so the negative is less
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// if just do x -y, it may overflow when x,y has different sign.
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// 3. x - y &lt; 0, when x,y has same sign
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> mask <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x1</span>;
-  <span style="color:#458;font-weight:bold">int</span> equals <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">!</span>(x <span style="color:#000;font-weight:bold">^</span> y);
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * conditional - same as x ? y : z
+</span><span class="cm"> *   Example: conditional(2,4,5) = 4
+</span><span class="cm"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span class="cm"> *   Max ops: 16
+</span><span class="cm"> *   Rating: 3
+</span><span class="cm"> */</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在 <code>15213 - Recitation 3 - Datalab</code> 中有关于这题的小提示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">//Find an algorithm for computing the expression (cond) ? t : //f, which equals t if cond is
+</span><span class="c1">//1 and f if cond is 0.
+</span><span class="c1"></span><span class="kt">int</span> <span class="nf">conditional</span><span class="p">(</span><span class="kt">int</span> <span class="n">cond</span><span class="p">,</span> <span class="kt">int</span> <span class="n">t</span><span class="p">,</span> <span class="kt">int</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+<span class="cm">/* Compute a mask that equals 0x00000000 or
+</span><span class="cm">0xFFFFFFFF depending on the value of cond */</span>
+<span class="kt">int</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">______________________________________</span><span class="p">;</span>
+<span class="cm">/* Use the mask to toggle between returning t or returning f */</span>
+<span class="k">return</span> <span class="n">__________________________________________</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>当 x 取 0 时，返回 z，否则，返回 y。假设 <code>x = 0</code> 时，取 <code>mask = 0xffffffff</code>，否则，<code>mask = 0x0</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">conditional</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">z</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// when x = 0, t1 is overflow, it&#39;s value is 0
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">t1</span> <span class="o">=</span> <span class="o">~</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="c1">// when x = 0, t2 =0, else its MSB is 1
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">t2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">|</span> <span class="n">t1</span><span class="p">;</span>
+  <span class="c1">// when x = 0, t3 = 0xffffffff, else t3&#39;s MSB is 0
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">t3</span> <span class="o">=</span> <span class="o">~</span><span class="n">t2</span><span class="p">;</span>
+  <span class="c1">// arithmetical shift
+</span><span class="c1"></span>  <span class="c1">// x = 0, mask = 0xffffffff, else mask = 0x0
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">t3</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">;</span>
+  <span class="c1">// use mask to toggle between y and z
+</span><span class="c1"></span>  <span class="c1">// x = 0, return z, else return y
+</span><span class="c1"></span>  <span class="k">return</span> <span class="p">(</span><span class="o">~</span><span class="n">mask</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">mask</span> <span class="o">&amp;</span> <span class="n">z</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="islessorequal">isLessOrEqual</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * isLessOrEqual - if x &lt;= y  then return 1, else return 0
+</span><span class="cm"> *   Example: isLessOrEqual(4,5) = 1.
+</span><span class="cm"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span class="cm"> *   Max ops: 24
+</span><span class="cm"> *   Rating: 3
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">isLessOrEqual</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Cases:
+</span><span class="c1"></span>  <span class="c1">// 1. x == y
+</span><span class="c1"></span>  <span class="c1">// 2. x, y has different sign, so the negative is less
+</span><span class="c1"></span>  <span class="c1">// if just do x -y, it may overflow when x,y has different sign.
+</span><span class="c1"></span>  <span class="c1">// 3. x - y &lt; 0, when x,y has same sign
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">mask</span> <span class="o">=</span> <span class="mh">0x1</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">equals</span> <span class="o">=</span> <span class="o">!</span><span class="p">(</span><span class="n">x</span> <span class="o">^</span> <span class="n">y</span><span class="p">);</span>
 
-  <span style="color:#458;font-weight:bold">int</span> x_sign <span style="color:#000;font-weight:bold">=</span> (x <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>) <span style="color:#000;font-weight:bold">&amp;</span> mask;
-  <span style="color:#458;font-weight:bold">int</span> y_sign <span style="color:#000;font-weight:bold">=</span> (y <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>) <span style="color:#000;font-weight:bold">&amp;</span> mask;
-  <span style="color:#998;font-style:italic">// sign is diff and x_sign is 1
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> diff_sign <span style="color:#000;font-weight:bold">=</span> x_sign <span style="color:#000;font-weight:bold">^</span> y_sign;
-  <span style="color:#458;font-weight:bold">int</span> case2 <span style="color:#000;font-weight:bold">=</span> diff_sign <span style="color:#000;font-weight:bold">&amp;</span> x_sign;
+  <span class="kt">int</span> <span class="n">x_sign</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">y_sign</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">;</span>
+  <span class="c1">// sign is diff and x_sign is 1
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">diff_sign</span> <span class="o">=</span> <span class="n">x_sign</span> <span class="o">^</span> <span class="n">y_sign</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">case2</span> <span class="o">=</span> <span class="n">diff_sign</span> <span class="o">&amp;</span> <span class="n">x_sign</span><span class="p">;</span>
 
-  <span style="color:#458;font-weight:bold">int</span> neg_y <span style="color:#000;font-weight:bold">=</span> (<span style="color:#000;font-weight:bold">~</span>y) <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
-  <span style="color:#998;font-style:italic">// use logical right shift, but casting is not allowed.
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// int less =  (unsigned)(x + neg_y) &gt;&gt; 31;
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// less is MSB(sign bit): 0 -&gt; x - y &gt; 0, 1-&gt; x - y &lt; 0
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> less <span style="color:#000;font-weight:bold">=</span> ((x <span style="color:#000;font-weight:bold">+</span> neg_y) <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>) <span style="color:#000;font-weight:bold">&amp;</span> mask;
-  <span style="color:#000;font-weight:bold">return</span> equals <span style="color:#000;font-weight:bold">|</span> case2 <span style="color:#000;font-weight:bold">|</span> (<span style="color:#000;font-weight:bold">!</span>diff_sign <span style="color:#000;font-weight:bold">&amp;</span> less);
-}
-</code></pre></div><p>考虑返回 1 的 3 种情况：</p>
+  <span class="kt">int</span> <span class="n">neg_y</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="c1">// use logical right shift, but casting is not allowed.
+</span><span class="c1"></span>  <span class="c1">// int less =  (unsigned)(x + neg_y) &gt;&gt; 31;
+</span><span class="c1"></span>  <span class="c1">// less is MSB(sign bit): 0 -&gt; x - y &gt; 0, 1-&gt; x - y &lt; 0
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">less</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span> <span class="o">+</span> <span class="n">neg_y</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">equals</span> <span class="o">|</span> <span class="n">case2</span> <span class="o">|</span> <span class="p">(</span><span class="o">!</span><span class="n">diff_sign</span> <span class="o">&amp;</span> <span class="n">less</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>考虑返回 1 的 3 种情况：</p>
 <ol>
 <li>x == y</li>
 <li>x , y 不同号且 x 是负数</li>
@@ -437,71 +759,156 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </ol>
 <p>为什么需要考虑 x, y 是否同号呢？</p>
 <p>其实我一开始也只考虑了两种情况，即 x == y；x - y &lt; 0。在进行测试的时候有如下输出：</p>
-<pre tabindex="0"><code>ERROR: Test isLessOrEqual(-2147483648[0x80000000],2147483647[0x7fffffff]) failed...
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">ERROR: Test isLessOrEqual(-2147483648[0x80000000],2147483647[0x7fffffff]) failed...
 ...Gives 0[0x0]. Should be 1[0x1]
-</code></pre><p>很明显 <code>0x80000000</code> 应该小于 <code>0x7fffffff</code>，但是却输出了 0。因为 <code>0x80000000 + 0x80000001</code> 发生了负溢出，产生的结果是一个大于 0 的数。所以 <code>less</code>会是 0。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>很明显 <code>0x80000000</code> 应该小于 <code>0x7fffffff</code>，但是却输出了 0。因为 <code>0x80000000 + 0x80000001</code> 发生了负溢出，产生的结果是一个大于 0 的数。所以 <code>less</code>会是 0。</p>
 <hr>
 <h2 id="logicalneg">logicalNeg</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/*
-</span><span style="color:#998;font-style:italic"> * logicalNeg - implement the ! operator, using all of
-</span><span style="color:#998;font-style:italic"> *              the legal operators except !
-</span><span style="color:#998;font-style:italic"> *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
-</span><span style="color:#998;font-style:italic"> *   Legal ops: ~ &amp; ^ | + &lt;&lt; &gt;&gt;
-</span><span style="color:#998;font-style:italic"> *   Max ops: 12
-</span><span style="color:#998;font-style:italic"> *   Rating: 4
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">logicalNeg</span>(<span style="color:#458;font-weight:bold">int</span> x) {
-  <span style="color:#998;font-style:italic">// when x = 0, t1 is overflow, it&#39;s value is 0
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">~</span>x <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
-  <span style="color:#998;font-style:italic">// when x = 0, t2 =0, else its MSB is 1
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t2 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">|</span> t1;
-  <span style="color:#998;font-style:italic">// when x = 0, t3 = 0xffffffff, else t3&#39;s MSB is 0
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t3 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">~</span>t2;
-  <span style="color:#998;font-style:italic">// logical shift
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// return (unsigned)t3 &gt;&gt; 31;
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// x = 0, mask = 0x1, else mask = 0x0
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> (t3 <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>) <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#099">1</span>;
-}
-</code></pre></div><p>和 conditional 那题类似，不过我开始使用的是 <code>(unsigned)t3 &gt;&gt; 31;</code>，转化为 unsigned 执行逻辑右移来直接获取 MSB。但是题目是不允许使用强制类型转换的，所以改成 <code> (t3 &gt;&gt; 31) &amp; 1</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * logicalNeg - implement the ! operator, using all of
+</span><span class="cm"> *              the legal operators except !
+</span><span class="cm"> *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
+</span><span class="cm"> *   Legal ops: ~ &amp; ^ | + &lt;&lt; &gt;&gt;
+</span><span class="cm"> *   Max ops: 12
+</span><span class="cm"> *   Rating: 4
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">logicalNeg</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// when x = 0, t1 is overflow, it&#39;s value is 0
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">t1</span> <span class="o">=</span> <span class="o">~</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="c1">// when x = 0, t2 =0, else its MSB is 1
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">t2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">|</span> <span class="n">t1</span><span class="p">;</span>
+  <span class="c1">// when x = 0, t3 = 0xffffffff, else t3&#39;s MSB is 0
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">t3</span> <span class="o">=</span> <span class="o">~</span><span class="n">t2</span><span class="p">;</span>
+  <span class="c1">// logical shift
+</span><span class="c1"></span>  <span class="c1">// return (unsigned)t3 &gt;&gt; 31;
+</span><span class="c1"></span>  <span class="c1">// x = 0, mask = 0x1, else mask = 0x0
+</span><span class="c1"></span>  <span class="k">return</span> <span class="p">(</span><span class="n">t3</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>和 conditional 那题类似，不过我开始使用的是 <code>(unsigned)t3 &gt;&gt; 31;</code>，转化为 unsigned 执行逻辑右移来直接获取 MSB。但是题目是不允许使用强制类型转换的，所以改成 <code> (t3 &gt;&gt; 31) &amp; 1</code>。</p>
 <h2 id="逻辑右移和算术右移">逻辑右移和算术右移</h2>
 <p>在调试 logicalNeg 这题时，发生了一个小插曲。我想知道 C 在什么时候会用逻辑右移，什么时候会用算术右移。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">logicalNeg</span>(<span style="color:#458;font-weight:bold">int</span> x) {
-  <span style="color:#998;font-style:italic">// when x = 0, t1 is overflow, it&#39;s value is 0
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">~</span>x <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
-  <span style="color:#998;font-style:italic">// when x = 0, t2 =0, else its MSB is 1
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t2 <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">|</span> t1;
-  <span style="color:#998;font-style:italic">// when x = 0, t3 = 0xffffffff, else t3&#39;s MSB is 0
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">int</span> t3 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">~</span>t2;
-  <span style="color:#998;font-style:italic">// 怎么使用 logical shift
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> t3 <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>;
-}
-</code></pre></div><p>当 x 是 0时，t3 = 0xffffffff。此时是要使用逻辑右移就可以变成 <code>0x00000001</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">logicalNeg</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// when x = 0, t1 is overflow, it&#39;s value is 0
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">t1</span> <span class="o">=</span> <span class="o">~</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="c1">// when x = 0, t2 =0, else its MSB is 1
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">t2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">|</span> <span class="n">t1</span><span class="p">;</span>
+  <span class="c1">// when x = 0, t3 = 0xffffffff, else t3&#39;s MSB is 0
+</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">t3</span> <span class="o">=</span> <span class="o">~</span><span class="n">t2</span><span class="p">;</span>
+  <span class="c1">// 怎么使用 logical shift
+</span><span class="c1"></span>  <span class="k">return</span> <span class="n">t3</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>当 x 是 0时，t3 = 0xffffffff。此时是要使用逻辑右移就可以变成 <code>0x00000001</code>。</p>
 <p>再看下面的测试代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">*</span>argv[]) {
-  <span style="color:#458;font-weight:bold">int</span> neg_one <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0xffffffff</span>;
-  <span style="color:#458;font-weight:bold">int</span> shift <span style="color:#000;font-weight:bold">=</span> neg_one <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>;
-  <span style="color:#458;font-weight:bold">int</span> shift_inline <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0xffffffff</span> <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span>;
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">neg_one</span> <span class="o">=</span> <span class="mh">0xffffffff</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">shift</span> <span class="o">=</span> <span class="n">neg_one</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">shift_inline</span> <span class="o">=</span> <span class="mh">0xffffffff</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">;</span>
 
-  printf(<span style="color:#d14">&#34;------right shift-----</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
-  printf(<span style="color:#d14">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span>, shift);
-  printf(<span style="color:#d14">&#34; = </span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
-  show_bytes((byte_pointer)<span style="color:#000;font-weight:bold">&amp;</span>shift, <span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#458;font-weight:bold">int</span>));
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;------right shift-----</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span><span class="p">,</span> <span class="n">shift</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34; = </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="n">show_bytes</span><span class="p">((</span><span class="n">byte_pointer</span><span class="p">)</span><span class="o">&amp;</span><span class="n">shift</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 
-  printf(<span style="color:#d14">&#34;------right shift inline-----</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
-  printf(<span style="color:#d14">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span>, shift_inline);
-  printf(<span style="color:#d14">&#34; = </span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
-  show_bytes((byte_pointer)<span style="color:#000;font-weight:bold">&amp;</span>shift_inline, <span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#458;font-weight:bold">int</span>));
-  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
-}
-</code></pre></div><p>结果很奇怪，怎么两个一样的式子有不同的结果呢？第一个使用了算术右移，第二个使用了逻辑右移。唯一的区别就是 <code>0xffffffff</code> 所在的位置，第一个是被保存在 int 中的，第二个式子，则是包含在式子里面<code>int shift_inline = 0xffffffff &gt;&gt; 31;</code>。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#a61717;background-color:#e3d2d2">▶</span> .<span style="color:#000;font-weight:bold">/</span><span style="color:#d14">&#34;right_shift&#34;</span>
-<span style="color:#000;font-weight:bold">------</span>right shift<span style="color:#000;font-weight:bold">-----</span>
-<span style="color:#099">0xffffffff</span> <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span> <span style="color:#000;font-weight:bold">=</span>
- ff ff ff ff
-<span style="color:#000;font-weight:bold">------</span>right shift <span style="color:#000;font-weight:bold">inline</span><span style="color:#000;font-weight:bold">-----</span>
-<span style="color:#099">0xffffffff</span> <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">31</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span> <span style="color:#000;font-weight:bold">=</span>
- <span style="color:#099">01</span> <span style="color:#099">00</span> <span style="color:#099">00</span> <span style="color:#099">00</span>
-</code></pre></div><p>其实只要明白一点，就会茅塞顿开。（还是因为我没仔细看书吧），CSAPP上有这样一段话：</p>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;------right shift inline-----</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span><span class="p">,</span> <span class="n">shift_inline</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34; = </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="n">show_bytes</span><span class="p">((</span><span class="n">byte_pointer</span><span class="p">)</span><span class="o">&amp;</span><span class="n">shift_inline</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>结果很奇怪，怎么两个一样的式子有不同的结果呢？第一个使用了算术右移，第二个使用了逻辑右移。唯一的区别就是 <code>0xffffffff</code> 所在的位置，第一个是被保存在 int 中的，第二个式子，则是包含在式子里面<code>int shift_inline = 0xffffffff &gt;&gt; 31;</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="err">▶</span> <span class="p">.</span><span class="o">/</span><span class="s">&#34;right_shift&#34;</span>
+<span class="o">------</span><span class="n">right</span> <span class="n">shift</span><span class="o">-----</span>
+<span class="mh">0xffffffff</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">=</span>
+ <span class="n">ff</span> <span class="n">ff</span> <span class="n">ff</span> <span class="n">ff</span>
+<span class="o">------</span><span class="n">right</span> <span class="n">shift</span> <span class="kr">inline</span><span class="o">-----</span>
+<span class="mh">0xffffffff</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">=</span>
+ <span class="mo">01</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">00</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其实只要明白一点，就会茅塞顿开。（还是因为我没仔细看书吧），CSAPP上有这样一段话：</p>
 <blockquote>
 <p>The c standards do not precisely define which type of right shift should be used with signed numbers-either arithmetic or logical shifts may be used. This unfortunately means that any code assuming one form or the other will potentially encounter portability problems.<strong>In practice,however, almost all compiler/machine combinations use arithmetic right shifts for signed data, and many programmers assume this to be the case. For unsigned data, on the other hand, right shifts must be logical.</strong></p>
 </blockquote>
@@ -514,17 +921,34 @@ a ^ b = (~a | ~b) &amp; (a | b)
 <p>因为就是这样设计的，<code>C</code> 是字母表中的第3个字母，所以可能为了方便？<code>CTRL-C</code> 就是 3。</p>
 <p>想在编辑器中捕捉<code>CTRL-C</code>首先要关闭<code>CTRL-C</code>的默认功能：发出<code>SIGINT</code> 信号终止程序。之后你可以写类似这样的代码：<code>if(c == 3)</code></p>
 <p>但是为了使代码更容易理解，使用这个宏来表示<code>CTRL-KEY</code>：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#define CTRL_KEY(k) ((k)&amp;0x1f)
-</span></code></pre></div><p>这样你便可以用<code>if(c == CTRL_KEY('C'))</code> 来表示 <code>CTRL-C</code>了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define CTRL_KEY(k) ((k)&amp;0x1f)
+</span></code></pre></td></tr></table>
+</div>
+</div><p>这样你便可以用<code>if(c == CTRL_KEY('C'))</code> 来表示 <code>CTRL-C</code>了。</p>
 <p><code>CTRL</code> 键和 26 个字母组合分别对应 ASCII 表中的 1～26。最少需要用 5 位二进制表示。所以只需要用<code>0x1f</code>(0001 1111) 这个 mask 取字母的低五位便可以把字母转化成<code>CTRL+KEY</code>的组合。</p>
 <p>这个式子成立的前提还有一个，就是字母的低位必须是从1开始的，而 ASCII 表设计的恰恰满足这个条件：<code>A</code>：0x41，<code>a</code>：0x61。</p>
 <h2 id="upercase--lowercase">Upercase &amp; Lowercase</h2>
 <p>利用这个的性质，还可以用位运算完成大小写的转换。只需要变换第五位二进制数（大写字母和小写字母差32.）</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">unsigned</span> <span style="color:#458;font-weight:bold">char</span> <span style="color:#900;font-weight:bold">toggle_case</span>(<span style="color:#458;font-weight:bold">unsigned</span> <span style="color:#458;font-weight:bold">char</span> a) {
-  <span style="color:#458;font-weight:bold">int</span> mask <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x20</span>;
-  <span style="color:#000;font-weight:bold">return</span> a <span style="color:#000;font-weight:bold">^</span> mask;
-}
-</code></pre></div><!--
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="nf">toggle_case</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">mask</span> <span class="o">=</span> <span class="mh">0x20</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">a</span> <span class="o">^</span> <span class="n">mask</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><!--
 ## howManyBits
 
 > //todo
@@ -540,92 +964,123 @@ a ^ b = (~a | ~b) &amp; (a | b)
 ## floatPower2
 --><blockquote>
 </blockquote>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-11-26
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/2018/10/18/semaphore/">Concurrent with Semaphore</a></li>
-        
-        <li><a href="/2018/03/28/pointer_in_c/">C语言-可怕的指针</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/csapp'>CSAPP</a></li>
-                
-                <li><a href='https://leer.moe/tags/c'>C</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/CSAPP/">CSAPP</a>
+          <a href="/tags/C/">C</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2018/12/01/write-vip-step-by-step0/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">乞丐版Vi编辑器的实现0-想法</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2018/11/16/springboot-https/">
+            <span class="next-text nav-default">Spring Boot项目部署之开启HTTPS</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-        </div>
-        
-        
-        
-        
-      </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
   </div>
-  <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
+<script src="/js/sitedate.js"></script>
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
-
 </html>

@@ -1,148 +1,169 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Android 四大组件：Activity - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Android 四大组件：Activity | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="Android 四大组件：Activity - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2018-05-16T07:30:00&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2018-05-16T07:30:00&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 参考 Google 官方教程
+ Activity 是什么 Activity 是四大组件之一，每个 Activity 有一个视图，是和用户交互的地方。一个 App 可以有零到多个 Activity，每个 Activity 都必须在 AndroidManifest.xml 清单文件中声明。
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2018/05/16/Android-Activity/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Android 四大组件：Activity" />
+<meta property="og:description" content="
 参考 Google 官方教程
 
 Activity 是什么
-Activity 是四大组件之一，每个 Activity 有一个视图，是和用户交互的地方。一个 App 可以有零到多个 Activity，每个 Activity 都必须在 AndroidManifest.xml 清单文件中声明。">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/2018/05/16/android-activity/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+Activity 是四大组件之一，每个 Activity 有一个视图，是和用户交互的地方。一个 App 可以有零到多个 Activity，每个 Activity 都必须在 AndroidManifest.xml 清单文件中声明。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/2018/05/16/Android-Activity/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-05-16T07:30:00+00:00" />
+<meta property="article:modified_time" content="2018-05-16T07:30:00+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="Android 四大组件：Activity">
+<meta itemprop="description" content="
+参考 Google 官方教程
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+Activity 是什么
+Activity 是四大组件之一，每个 Activity 有一个视图，是和用户交互的地方。一个 App 可以有零到多个 Activity，每个 Activity 都必须在 AndroidManifest.xml 清单文件中声明。"><meta itemprop="datePublished" content="2018-05-16T07:30:00+00:00" />
+<meta itemprop="dateModified" content="2018-05-16T07:30:00+00:00" />
+<meta itemprop="wordCount" content="3049">
+<meta itemprop="keywords" content="Android," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android 四大组件：Activity"/>
+<meta name="twitter:description" content="
+参考 Google 官方教程
 
-    
-    
+Activity 是什么
+Activity 是四大组件之一，每个 Activity 有一个视图，是和用户交互的地方。一个 App 可以有零到多个 Activity，每个 Activity 都必须在 AndroidManifest.xml 清单文件中声明。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-  <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-  <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
-    <div class="container">
-      <div class="col-group">
+    <header class="post-header">
+      <h1 class="post-title">Android 四大组件：Activity</h1>
 
-        <div class="col-8" id="main">
-          
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+      <div class="post-meta">
+        <span class="post-time"> 2018-05-16 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 3049 words </span>
+          <span class="more-meta"> 7 mins read </span>
+        
+      </div>
+    </header>
 
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">Android 四大组件：Activity</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#activity-是什么">Activity 是什么</a></li>
     <li><a href="#activity-的生命周期">Activity 的生命周期</a>
@@ -166,60 +187,15 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
     </li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">Android 四大组件：Activity</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年5月16日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">2934 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2018-05-16T07:30:00" title="May 16, 2018">May 16, 2018</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>参考 <a href="https://developer.android.com/guide/components/activities">Google 官方教程</a></p>
 </blockquote>
 <h2 id="activity-是什么">Activity 是什么</h2>
@@ -242,11 +218,7 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </li>
 </ul>
 <h3 id="生命周期图">生命周期图</h3>
-<p>
-<a data-fancybox="gallery" href="/images/activity_lifecycle.png">
-  <img class="mx-auto" alt="img" src="/images/activity_lifecycle.png" />
-</a>
-</p>
+<p><img src="/images/activity_lifecycle.png" alt="img"></p>
 <p>结合这张图，Activity的生命周期可分为三个部分：</p>
 <ul>
 <li>
@@ -260,49 +232,97 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </li>
 </ul>
 <p>可以新建一个 Activity 基类来显示每个子类的生命周期：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">BaseActivity</span> : AppCompatActivity() {
-  <span style="color:#000;font-weight:bold">val</span> TAG = javaClass.simpleName
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">abstract</span> <span class="k">class</span> <span class="nc">BaseActivity</span> <span class="p">:</span> <span class="n">AppCompatActivity</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">val</span> <span class="py">TAG</span> <span class="p">=</span> <span class="n">javaClass</span><span class="p">.</span><span class="n">simpleName</span>
 
-  <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onCreate</span>(savedInstanceState: Bundle?) {
-    <span style="color:#000;font-weight:bold">super</span>.onCreate(savedInstanceState)
-    title = javaClass.simpleName
-    Log.d(TAG, <span style="color:#d14">&#34;onCreate&#34;</span>)
-  }
+  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+    <span class="n">title</span> <span class="p">=</span> <span class="n">javaClass</span><span class="p">.</span><span class="n">simpleName</span>
+    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onCreate&#34;</span><span class="p">)</span>
+  <span class="p">}</span>
 
-  <span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">initView</span>()
-  <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">initData</span>() {}
+  <span class="k">abstract</span> <span class="k">fun</span> <span class="nf">initView</span><span class="p">()</span>
+  <span class="k">fun</span> <span class="nf">initData</span><span class="p">()</span> <span class="p">{}</span>
 
-  <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onStart</span>() {
-    <span style="color:#000;font-weight:bold">super</span>.onStart()
-    Log.d(TAG, <span style="color:#d14">&#34;onStart&#34;</span>)
-  }
+  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onStart</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onStart</span><span class="p">()</span>
+    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onStart&#34;</span><span class="p">)</span>
+  <span class="p">}</span>
 
-  <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onResume</span>() {
-    <span style="color:#000;font-weight:bold">super</span>.onResume()
-    Log.d(TAG, <span style="color:#d14">&#34;onResume&#34;</span>)
-  }
+  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onResume</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onResume</span><span class="p">()</span>
+    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResume&#34;</span><span class="p">)</span>
+  <span class="p">}</span>
 
-  <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onPause</span>() {
-    <span style="color:#000;font-weight:bold">super</span>.onPause()
-    Log.d(TAG, <span style="color:#d14">&#34;onPause&#34;</span>)
-  }
+  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onPause</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onPause</span><span class="p">()</span>
+    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onPause&#34;</span><span class="p">)</span>
+  <span class="p">}</span>
 
-  <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onStop</span>() {
-    <span style="color:#000;font-weight:bold">super</span>.onStop()
-    Log.d(TAG, <span style="color:#d14">&#34;onStop&#34;</span>)
-  }
+  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onStop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onStop</span><span class="p">()</span>
+    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onStop&#34;</span><span class="p">)</span>
+  <span class="p">}</span>
 
-  <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onDestroy</span>() {
-    <span style="color:#000;font-weight:bold">super</span>.onDestroy()
-    Log.d(TAG, <span style="color:#d14">&#34;onDestroy&#34;</span>)
-  }
+  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onDestroy</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onDestroy</span><span class="p">()</span>
+    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onDestroy&#34;</span><span class="p">)</span>
+  <span class="p">}</span>
 
-  <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onRestart</span>() {
-    <span style="color:#000;font-weight:bold">super</span>.onRestart()
-    Log.d(TAG, <span style="color:#d14">&#34;onRestart&#34;</span>)
-  }
-}
-</code></pre></div><blockquote>
+  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onRestart</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onRestart</span><span class="p">()</span>
+    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onRestart&#34;</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
 <p>名为“是否能事后终止？”的列表示系统是否能在不执行另一行 Activity 代码的情况下，在<em>方法返回后</em>随时终止承载 Activity 的进程。 有三个方法带有“是”标记：(<code>onPause()</code>、<code>onStop()</code> 和 <code>onDestroy()</code>)。由于 <code>onPause()</code> 是这三个方法中的第一个，因此 Activity 创建后，<code>onPause()</code> 必定成为最后调用的方法，然后才能终止进程 — 如果系统在紧急情况下必须恢复内存，则可能不会调用 <code>onStop()</code> 和 <code>onDestroy()</code>。**因此，您应该使用 <code>onPause()</code> 向存储设备写入至关重要的持久性数据（例如用户编辑）。**不过，您应该对 <code>onPause()</code> 调用期间必须保留的信息有所选择，因为该方法中的任何阻止过程都会妨碍向下一个 Activity 的转变并拖慢用户体验。</p>
 </blockquote>
 <p>这段话可能翻译的有些问题，其实就是说，在 调用 <code>onPause()</code> 之后系统就可以结束这个 Activity。所以应该在 <code>onPause()</code> 里做持久化。</p>
@@ -311,41 +331,86 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 <ul>
 <li>
 <p>显式启动</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">startActivity(Intent(<span style="color:#000;font-weight:bold">this</span>, SecondActivity<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java)
-</code></pre></div></li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">startActivity</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">SecondActivity</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
 <li>
 <p>隐式启动</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">val</span> intent = Intent(Intent.ACTION_SEND).apply {
-    putExtra(Intent.EXTRA_EMAIL, recipientArray)
-}
-startActivity(intent)
-</code></pre></div></li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">intent</span> <span class="p">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">ACTION_SEND</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
+    <span class="n">putExtra</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">EXTRA_EMAIL</span><span class="p">,</span> <span class="n">recipientArray</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">startActivity</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
 </ul>
 <h3 id="startactivityforresult">startActivityForResult</h3>
 <p>以 <code>startActivityForResult()</code> 方式启动 Activity，可以让这个 Activity 返回结果数据给上一个应用。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">initView</span>() {
-    first_button.setOnClickListener {
-    startActivityForResult(Intent(<span style="color:#000;font-weight:bold">this</span>, SecondActivity<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java).apply {
-        <span style="color:#000;font-weight:bold">val</span> text = first_edit.text.toString()
-        putExtra(<span style="color:#d14">&#34;sendToSecond&#34;</span>, rot13(
-            <span style="color:#000;font-weight:bold">if</span> (text.isNotBlank()) text <span style="color:#000;font-weight:bold">else</span> <span style="color:#d14">&#34;Hello world&#34;</span>)
-        )
-      }, <span style="color:#099">1</span>)
-    }
-}
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">override</span> <span class="k">fun</span> <span class="nf">initView</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">first_button</span><span class="p">.</span><span class="n">setOnClickListener</span> <span class="p">{</span>
+    <span class="n">startActivityForResult</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">SecondActivity</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">text</span> <span class="p">=</span> <span class="n">first_edit</span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
+        <span class="n">putExtra</span><span class="p">(</span><span class="s2">&#34;sendToSecond&#34;</span><span class="p">,</span> <span class="n">rot13</span><span class="p">(</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">text</span><span class="p">.</span><span class="n">isNotBlank</span><span class="p">())</span> <span class="n">text</span> <span class="k">else</span> <span class="s2">&#34;Hello world&#34;</span><span class="p">)</span>
+        <span class="p">)</span>
+      <span class="p">},</span> <span class="m">1</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-<span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onActivityResult</span>(requestCode: Int, resultCode: Int, <span style="color:#000;font-weight:bold">data</span>: Intent?) {
-    <span style="color:#000;font-weight:bold">if</span> (requestCode <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {
-      <span style="color:#000;font-weight:bold">if</span> (resultCode <span style="color:#000;font-weight:bold">==</span> Activity.RESULT_OK) {
-        <span style="color:#000;font-weight:bold">val</span> decrypted = <span style="color:#000;font-weight:bold">data</span>.getStringExtra(<span style="color:#d14">&#34;fromSecond&#34;</span>)
-        toast(<span style="color:#d14">&#34;from SecondActivity: </span><span style="color:#d14">$decrypted</span><span style="color:#d14">&#34;</span>)
-        Log.d(TAG, <span style="color:#d14">&#34;onActivityResult: from SecondActivity: </span><span style="color:#d14">$decrypted</span><span style="color:#d14">&#34;</span>)
-      } <span style="color:#000;font-weight:bold">else</span> {
-        toast(<span style="color:#d14">&#34;onActivityResult: no data from SecondActivity&#34;</span>)
-      }
-    }
-}
-</code></pre></div><h2 id="保存-activity-的状态">保存 Activity 的状态</h2>
+<span class="k">override</span> <span class="k">fun</span> <span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">requestCode</span> <span class="o">==</span> <span class="m">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">resultCode</span> <span class="o">==</span> <span class="n">Activity</span><span class="p">.</span><span class="n">RESULT_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">decrypted</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="n">getStringExtra</span><span class="p">(</span><span class="s2">&#34;fromSecond&#34;</span><span class="p">)</span>
+        <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;from SecondActivity: </span><span class="si">$decrypted</span><span class="s2">&#34;</span><span class="p">)</span>
+        <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onActivityResult: from SecondActivity: </span><span class="si">$decrypted</span><span class="s2">&#34;</span><span class="p">)</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;onActivityResult: no data from SecondActivity&#34;</span><span class="p">)</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="保存-activity-的状态">保存 Activity 的状态</h2>
 <h3 id="pause-和-stop-activity">pause 和 stop Activity</h3>
 <blockquote>
 <p>当 Activity 暂停或停止时，Activity 的状态会得到保留。 确实如此，因为当 Activity 暂停或停止时，<code>Activity</code> 对象仍保留在内存中 — 有关其成员和当前状态的所有信息仍处于活动状态。 因此，用户在 Activity 内所做的任何更改都会得到保留，这样一来，当 Activity 返回前台（当它“继续”）时，这些更改仍然存在。</p>
@@ -355,70 +420,125 @@ startActivity(intent)
 <p>不过，当系统为了恢复内存而销毁某项 Activity 时（只有当内存极度不足时才会发生），<code>Activity</code> 对象也会被销毁，因此系统在继续 Activity 时根本无法让其状态保持完好，而是必须在用户返回 Activity 时重建 <code>Activity</code> 对象。但用户并不知道系统销毁 Activity 后又对其进行了重建，因此他们很可能认为 Activity 状态毫无变化。 在这种情况下，您可以实现另一个回调方法对有关 Activity 状态的信息进行保存，以确保有关 Activity 状态的重要信息得到保留：<code>onSaveInstanceState()</code>。</p>
 </blockquote>
 <p>使用 <code>Bundle</code> 来暂时保存数据，但是因为系统不保证会调用 ``onSaveInstanceState()<code>，最好不要在这里保存重要的数据，而应该在</code>onPause() 里<code>。向 </code>Bundle<code>里传数据和</code>Intent` 类似。借此，可以恢复一些 UI 的信息（比如在 EditView 里输入的文字）。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onCreate</span>(savedInstanceState: Bundle?) {
-    <span style="color:#000;font-weight:bold">super</span>.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_first)
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+    <span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">activity_first</span><span class="p">)</span>
 
-    <span style="color:#000;font-weight:bold">if</span> (savedInstanceState <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span>) {
-      first_edit.setText(savedInstanceState.getString(<span style="color:#d14">&#34;edit&#34;</span>) <span style="color:#000;font-weight:bold">?:</span> <span style="color:#d14">&#34;&#34;</span>)
-    }
-    initView()
-  }
-<span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onSaveInstanceState</span>(outState: Bundle?) {
-    <span style="color:#000;font-weight:bold">super</span>.onSaveInstanceState(outState)
-    outState<span style="color:#000;font-weight:bold">?.</span>putString(<span style="color:#d14">&#34;edit&#34;</span>, first_edit.text.toString())
-  }
-</code></pre></div><p>即使不实现 <code>onSaveInstanceState()</code> ,系统也会默认实现：为每个布局恢复状态，比如，<code>EditText</code> 小部件保存用户输入的任何文本，<code>CheckBox</code> 小部件保存复选框的选中或未选中状态。<strong>只需为想要保存其状态的每个小部件提供一个唯一的 ID（通过 <a href="https://developer.android.com/guide/topics/resources/layout-resource.html#idvalue"><code>android:id</code></a> 属性）。如果小部件没有 ID，则系统无法保存其状态。</strong></p>
+    <span class="k">if</span> <span class="p">(</span><span class="n">savedInstanceState</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">first_edit</span><span class="p">.</span><span class="n">setText</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="s2">&#34;edit&#34;</span><span class="p">)</span> <span class="o">?:</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">initView</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="k">override</span> <span class="k">fun</span> <span class="nf">onSaveInstanceState</span><span class="p">(</span><span class="n">outState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onSaveInstanceState</span><span class="p">(</span><span class="n">outState</span><span class="p">)</span>
+    <span class="n">outState</span><span class="o">?.</span><span class="n">putString</span><span class="p">(</span><span class="s2">&#34;edit&#34;</span><span class="p">,</span> <span class="n">first_edit</span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
+  <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>即使不实现 <code>onSaveInstanceState()</code> ,系统也会默认实现：为每个布局恢复状态，比如，<code>EditText</code> 小部件保存用户输入的任何文本，<code>CheckBox</code> 小部件保存复选框的选中或未选中状态。<strong>只需为想要保存其状态的每个小部件提供一个唯一的 ID（通过 <a href="https://developer.android.com/guide/topics/resources/layout-resource.html#idvalue"><code>android:id</code></a> 属性）。如果小部件没有 ID，则系统无法保存其状态。</strong></p>
 <p>这里使用 CheckBox 作为例子，只需要旋转一下屏幕就可以让 Activity 销毁并重建，可以发现有 ID 的 checkbox1 恢复了之前的选中状态，而第二个 CheckBox 则没有。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#000080">&lt;CheckBox</span>
-        <span style="color:#008080">android:id=</span><span style="color:#d14">&#34;@+id/checkbox1&#34;</span>
-        <span style="color:#008080">android:hint=</span><span style="color:#d14">&#34;check1&#34;</span>
-        <span style="color:#008080">android:layout_width=</span><span style="color:#d14">&#34;wrap_content&#34;</span>
-        <span style="color:#008080">android:layout_height=</span><span style="color:#d14">&#34;wrap_content&#34;</span>
-        <span style="color:#008080">android:layout_below=</span><span style="color:#d14">&#34;@+id/home_text&#34;</span> <span style="color:#000080">/&gt;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml">    <span class="nt">&lt;CheckBox</span>
+        <span class="na">android:id=</span><span class="s">&#34;@+id/checkbox1&#34;</span>
+        <span class="na">android:hint=</span><span class="s">&#34;check1&#34;</span>
+        <span class="na">android:layout_width=</span><span class="s">&#34;wrap_content&#34;</span>
+        <span class="na">android:layout_height=</span><span class="s">&#34;wrap_content&#34;</span>
+        <span class="na">android:layout_below=</span><span class="s">&#34;@+id/home_text&#34;</span> <span class="nt">/&gt;</span>
 
-    <span style="color:#000080">&lt;CheckBox</span>
-        <span style="color:#008080">android:hint=</span><span style="color:#d14">&#34;check2&#34;</span>
-        <span style="color:#008080">android:layout_width=</span><span style="color:#d14">&#34;wrap_content&#34;</span>
-        <span style="color:#008080">android:layout_height=</span><span style="color:#d14">&#34;wrap_content&#34;</span>
-        <span style="color:#008080">android:layout_below=</span><span style="color:#d14">&#34;@+id/check1&#34;</span> <span style="color:#000080">/&gt;</span>
-</code></pre></div><p>
-<a data-fancybox="gallery" href="/images/android_lifecycle_log.png">
-  <img class="mx-auto" alt="1526456700052" src="/images/android_lifecycle_log.png" />
-</a>
-</p>
-<p>
-<a data-fancybox="gallery" href="/images/saveInstance.png">
-  <img class="mx-auto" alt="Screenshot_1526456426" src="/images/saveInstance.png" />
-</a>
-</p>
-<p>
-<a data-fancybox="gallery" href="/images/restoreInstance.png">
-  <img class="mx-auto" alt="Screenshot_1526456686" src="/images/restoreInstance.png" />
-</a>
-</p>
+    <span class="nt">&lt;CheckBox</span>
+        <span class="na">android:hint=</span><span class="s">&#34;check2&#34;</span>
+        <span class="na">android:layout_width=</span><span class="s">&#34;wrap_content&#34;</span>
+        <span class="na">android:layout_height=</span><span class="s">&#34;wrap_content&#34;</span>
+        <span class="na">android:layout_below=</span><span class="s">&#34;@+id/check1&#34;</span> <span class="nt">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/images/android_lifecycle_log.png" alt="1526456700052"></p>
+<p><img src="/images/saveInstance.png" alt="Screenshot_1526456426"></p>
+<p><img src="/images/restoreInstance.png" alt="Screenshot_1526456686"></p>
 <h4 id="textview-的状态恢复">TextView 的状态恢复</h4>
 <p>由于 <code>onSaveInstanceState()</code> 不一定会被调用，TextView里的文本会在屏幕旋转之后初始化，比如下面的代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">MainActivity</span> : AppCompatActivity() {
-    <span style="color:#000;font-weight:bold">companion</span> <span style="color:#000;font-weight:bold">object</span> {
-        <span style="color:#000;font-weight:bold">var</span> thisCount = <span style="color:#099">0</span>;
-    }
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">MainActivity</span> <span class="p">:</span> <span class="n">AppCompatActivity</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="py">thisCount</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    <span style="color:#000;font-weight:bold">override</span> <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">onCreate</span>(savedInstanceState: Bundle?) {
-        <span style="color:#000;font-weight:bold">super</span>.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-    }
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+        <span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">activity_main</span><span class="p">)</span>
+    <span class="p">}</span>
 
-    <span style="color:#000;font-weight:bold">fun</span> <span style="color:#900;font-weight:bold">countUp</span>(view: View) {
-        thisCount<span style="color:#000;font-weight:bold">++</span>
-        show_count.text = thisCount.toString()
-    }
-}
-</code></pre></div><p>在屏幕旋转后，<code>show_count</code>显示0，但是<code>count</code>的值仍然为之前的值。要让 TextView 保存之前的状态，可以参考 <a href="https://stackoverflow.com/questions/5179686/restoring-state-of-textview-after-screen-rotation%3E">stackoverflow</a>上的解答：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;TextView</span>
-     <span style="color:#a61717;background-color:#e3d2d2">...</span>
-     <span style="color:#008080">android:freezesText=</span><span style="color:#d14">&#34;true&#34;</span> <span style="color:#000080">/&gt;</span>
-</code></pre></div><h2 id="任务和返回栈httpsdeveloperandroidcomguidecomponentsactivitiestasks-and-back-stack"><a href="https://developer.android.com/guide/components/activities/tasks-and-back-stack">任务和返回栈</a></h2>
+    <span class="k">fun</span> <span class="nf">countUp</span><span class="p">(</span><span class="n">view</span><span class="p">:</span> <span class="n">View</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">thisCount</span><span class="o">++</span>
+        <span class="n">show_count</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="n">thisCount</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在屏幕旋转后，<code>show_count</code>显示0，但是<code>count</code>的值仍然为之前的值。要让 TextView 保存之前的状态，可以参考 <a href="https://stackoverflow.com/questions/5179686/restoring-state-of-textview-after-screen-rotation%3E">stackoverflow</a>上的解答：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;TextView</span>
+     <span class="err">...</span>
+     <span class="na">android:freezesText=</span><span class="s">&#34;true&#34;</span> <span class="nt">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="任务和返回栈httpsdeveloperandroidcomguidecomponentsactivitiestasks-and-back-stack"><a href="https://developer.android.com/guide/components/activities/tasks-and-back-stack">任务和返回栈</a></h2>
 <blockquote>
 <p>翻译自 <a href="https://developer.android.com/guide/components/activities/tasks-and-back-stack">https://developer.android.com/guide/components/activities/tasks-and-back-stack</a></p>
 </blockquote>
@@ -451,19 +571,24 @@ startActivity(intent)
 </blockquote>
 <p>其实只是在 manifest 这样设置 <code>android:launchMode=&quot;singleTask&quot;</code>，Activity 也不会在新的 Task 里打开，而只有你改变 <code>ndroid:taskAffinity</code> 这个属性时，Activity 才会在新的 Task 亮丽启动。</p>
 <p>无论是在新的任务中启动 Activity 还是在新的 Activity 中启动活动，<strong>返回键</strong>总是会让界面返回上一个活动。但是如果你以 <code>singleTask</code> 模式启动，如果这个 Activity 已经存在后台的任务中，那么整个任务（栈中的所有 Activity）都会入栈。</p>
-<p>
-<a data-fancybox="gallery" href="/images/singletask_multiactivity.png">
-  <img class="mx-auto" alt="singletask_multiactivity" src="/images/singletask_multiactivity.png" />
-</a>
-</p>
+<p><img src="/images/singletask_multiactivity.png" alt="singletask_multiactivity"></p>
 <p>####singleInstance</p>
 <p>与 <code>singleTask</code> 相同，但系统不会将任何其他活动发送到持有该实例的任务中。该活动始终是其任务中唯一且唯一的成员;任何一次模式启动的活动都将在单独的任务中打开。</p>
 <h4 id="使用-intent-flag">使用 Intent flag</h4>
 <p>在向 <code>startActivity()</code>传递树立 FLAG 的 intent。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin">startActivity(Intent(<span style="color:#000;font-weight:bold">this</span>, FirstActivity<span style="color:#000;font-weight:bold">::</span><span style="color:#000;font-weight:bold">class</span>.java).apply {
-    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-})
-</code></pre></div><ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">startActivity</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">FirstActivity</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
+    <span class="n">addFlags</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">FLAG_ACTIVITY_CLEAR_TOP</span><span class="p">)</span>
+<span class="p">})</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
 <li>
 <p>FLAG_ACTIVITY_NEW_TASK</p>
 <p>与 <code>sinleTask</code>相同</p>
@@ -477,92 +602,122 @@ startActivity(intent)
 <p>如果要启动的活动已经在当前任务中运行，那么不会创建该活动的新实例，而是将其上的所有其他活动销毁（出栈），并将此意向传递给活动的恢复实例（位于栈顶），调用<code>onNewIntent（）</code>）。</p>
 </li>
 </ul>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-05-16
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/2018/01/02/tree2view_final_report/">Android Tree2View 3-Core Alogrithm</a></li>
-        
-        <li><a href="/2017/12/25/my_treeview_2_adapder/">Android Tree2View 2-Adapter in Tree2View</a></li>
-        
-        <li><a href="/2017/12/14/my_treeview_1/">Android Tree2View 1-Introduction</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/android'>Android</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/Android/">Android</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2018/05/27/LG/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">LG</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2018/03/28/pointer_in_c/">
+            <span class="next-text nav-default">C语言-可怕的指针</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-        </div>
-        
-        
-        
-        
-      </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
   </div>
-  <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
+<script src="/js/sitedate.js"></script>
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
-
 </html>

@@ -1,144 +1,156 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Java基础-Object的11个方法 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Java基础-Object的11个方法 | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="Java基础-Object的11个方法 - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2018-12-14T18:31:21&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2018-12-14T18:31:21&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="一切从对象开始。在Java中Object类是是所有类的父类，也是根类。它一共有11个方法。">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/post/java-fun-object-method/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+<meta name="author" content="LeeReindeer" /><meta name="description" content="一切从对象开始。在Java中Object类是是所有类的父类，也是根类。它一共有11个方法。
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
 
-    
-    
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/java-fun-object-method/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Java基础-Object的11个方法" />
+<meta property="og:description" content="一切从对象开始。在Java中Object类是是所有类的父类，也是根类。它一共有11个方法。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/java-fun-object-method/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-12-14T18:31:21+00:00" />
+<meta property="article:modified_time" content="2018-12-14T18:31:21+00:00" />
+
+<meta itemprop="name" content="Java基础-Object的11个方法">
+<meta itemprop="description" content="一切从对象开始。在Java中Object类是是所有类的父类，也是根类。它一共有11个方法。"><meta itemprop="datePublished" content="2018-12-14T18:31:21+00:00" />
+<meta itemprop="dateModified" content="2018-12-14T18:31:21+00:00" />
+<meta itemprop="wordCount" content="4920">
+<meta itemprop="keywords" content="Java," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java基础-Object的11个方法"/>
+<meta name="twitter:description" content="一切从对象开始。在Java中Object类是是所有类的父类，也是根类。它一共有11个方法。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-    <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Java基础-Object的11个方法</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-12-14 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 4920 words </span>
+          <span class="more-meta"> 10 mins read </span>
         
-        <div class="container">
-            <div class="col-group">
+      </div>
+    </header>
 
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">Java基础-Object的11个方法</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#getclass">getClass</a></li>
     <li><a href="#hashcode">hashCode</a></li>
@@ -158,109 +170,120 @@
     <li><a href="#finalize">finalize</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2018-12-14T18:31:21" title="December 14, 2018">December 14, 2018</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <p>一切从对象开始。在Java中Object类是是所有类的父类，也是根类。它一共有11个方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">getClass</span><span class="o">();</span>
 
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">Java基础-Object的11个方法</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年12月14日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">4673 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <p>一切从对象开始。在Java中Object类是是所有类的父类，也是根类。它一共有11个方法。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">native</span> Class<span style="color:#000;font-weight:bold">&lt;?&gt;</span> getClass<span style="color:#000;font-weight:bold">();</span>
+<span class="kd">public</span> <span class="kd">native</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">();</span>
 
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">native</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">hashCode</span><span style="color:#000;font-weight:bold">();</span>
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="o">(</span><span class="k">this</span> <span class="o">==</span> <span class="n">obj</span><span class="o">);</span>
+<span class="o">}</span>
 
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">equals</span><span style="color:#000;font-weight:bold">(</span>Object obj<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span> <span style="color:#000;font-weight:bold">==</span> obj<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
+<span class="kd">protected</span> <span class="kd">native</span> <span class="n">Object</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span><span class="o">;</span>
 
-<span style="color:#000;font-weight:bold">protected</span> <span style="color:#000;font-weight:bold">native</span> Object <span style="color:#900;font-weight:bold">clone</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> CloneNotSupportedException<span style="color:#000;font-weight:bold">;</span>
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;@&#34;</span> <span class="o">+</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="n">hashCode</span><span class="o">());</span>
+<span class="o">}</span>
 
-<span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">toString</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#000;font-weight:bold">return</span> getClass<span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;@&#34;</span> <span style="color:#000;font-weight:bold">+</span> Integer<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toHexString</span><span style="color:#000;font-weight:bold">(</span>hashCode<span style="color:#000;font-weight:bold">());</span>
-<span style="color:#000;font-weight:bold">}</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">notify</span><span class="o">();</span>
 
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">native</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">notify</span><span style="color:#000;font-weight:bold">();</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">notifyAll</span><span class="o">();</span>
 
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">native</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">notifyAll</span><span style="color:#000;font-weight:bold">();</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">wait</span><span class="o">(</span><span class="kt">long</span> <span class="n">timeout</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">;</span>
 
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">native</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">wait</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">long</span> timeout<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> InterruptedException<span style="color:#000;font-weight:bold">;</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">wait</span><span class="o">(</span><span class="kt">long</span> <span class="n">timeout</span><span class="o">,</span> <span class="kt">int</span> <span class="n">nanos</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">timeout</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;timeout value is negative&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
 
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">wait</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">long</span> timeout<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> nanos<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> InterruptedException <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>timeout <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> IllegalArgumentException<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;timeout value is negative&#34;</span><span style="color:#000;font-weight:bold">);</span>
-  <span style="color:#000;font-weight:bold">}</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">nanos</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span class="n">nanos</span> <span class="o">&gt;</span> <span class="n">999999</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;nanosecond timeout value out of range&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
 
-  <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nanos <span style="color:#000;font-weight:bold">&lt;</span> 0 <span style="color:#000;font-weight:bold">||</span> nanos <span style="color:#000;font-weight:bold">&gt;</span> 999999<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> IllegalArgumentException<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;nanosecond timeout value out of range&#34;</span><span style="color:#000;font-weight:bold">);</span>
-  <span style="color:#000;font-weight:bold">}</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">nanos</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">timeout</span><span class="o">++;</span>
+  <span class="o">}</span>
+  <span class="n">wait</span><span class="o">(</span><span class="n">timeout</span><span class="o">);</span>
+<span class="o">}</span>
 
-  <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nanos <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    timeout<span style="color:#000;font-weight:bold">++;</span>
-  <span style="color:#000;font-weight:bold">}</span>
-  wait<span style="color:#000;font-weight:bold">(</span>timeout<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">wait</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">{</span>
+  <span class="n">wait</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+<span class="o">}</span>
 
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">wait</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> InterruptedException<span style="color:#000;font-weight:bold">{</span>
-  wait<span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
-
-<span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">finalize</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> Throwable <span style="color:#000;font-weight:bold">{</span>  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>其中<code>getclass</code>，<code>hashCode</code>，<code>clone</code>，<code>notify</code>，<code>notifyAll</code>，<code>wait(long timeout)</code>是native的方法，在C/C++层实现；<code>hashCode</code>，<code>equals</code>，<code>clone</code>，<code>toString</code>，<code>finalize</code>这五个方法没有被<em>final</em>修饰，可以被子类重写，其他方法都无法重写。</p>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">finalize</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其中<code>getclass</code>，<code>hashCode</code>，<code>clone</code>，<code>notify</code>，<code>notifyAll</code>，<code>wait(long timeout)</code>是native的方法，在C/C++层实现；<code>hashCode</code>，<code>equals</code>，<code>clone</code>，<code>toString</code>，<code>finalize</code>这五个方法没有被<em>final</em>修饰，可以被子类重写，其他方法都无法重写。</p>
 <p>接下来将会一个一个的分析，主要参考了<code>Object</code>类中的Java Doc。</p>
 <h2 id="getclass">getClass</h2>
 <p><code>getClass</code>方法返回<strong>运行时</strong>的<code>Class</code>对象。更准确的返回类型应该是<code>Class&lt;? extends X&gt;</code>。注意这里是运行时，而不是编译时的。所以看一下的代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Number n <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
-Class<span style="color:#000;font-weight:bold">&lt;?</span> <span style="color:#000;font-weight:bold">extends</span> Number<span style="color:#000;font-weight:bold">&gt;</span> c <span style="color:#000;font-weight:bold">=</span> n<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">();</span>
-System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>c<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">());</span>
-System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>n<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">());</span>
-</code></pre></div><p>两个输出语句都会输出<code>java.lang,Integer</code>，很好的说明了返回的<code>Class</code>是运行时的，因为Java中数值的默认实现是Integer类型的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Number</span> <span class="n">n</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+<span class="n">Class</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">n</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>两个输出语句都会输出<code>java.lang,Integer</code>，很好的说明了返回的<code>Class</code>是运行时的，因为Java中数值的默认实现是Integer类型的。</p>
 <h2 id="hashcode">hashCode</h2>
 <p><code>hashcode</code>方法返回一个hash值，<code>HashMap</code>就是利用这个方法来构建的。</p>
 <p><code>Object</code>类中的<code>hashCode</code>保证为每一个不同的对象返回不同的hash值，它是通过把对象的内存地址转化为Integer来实现的，不同对象的内存地址当然不同，所以肯定会返回不同的hash值。但是如果子类重写了<code>hashCode</code>方法，那就不一定了。</p>
@@ -271,49 +294,110 @@ System<span style="color:#000;font-weight:bold">.</span><span style="color:#0080
 <li>如果两个对象不相等（<code>equals</code>方法判断），它们的<code>hashCode</code>返回值<strong>可以相等</strong>。但是必须意识到，返回不相等的值可以提高哈希表应用（比如<code>HashMap</code>）的性能。</li>
 </ul>
 <p>为了更加清楚的理解这些准则，我们来看一下<code>hashCode</code>在<code>HashMap</code>中应用。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Coffee</span> <span style="color:#000;font-weight:bold">{</span>
-    String name<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#458;font-weight:bold">boolean</span> hasSugar<span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Coffee</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Coffee</span><span style="color:#000;font-weight:bold">(</span>String name<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">boolean</span> hasSugar<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">name</span> <span style="color:#000;font-weight:bold">=</span> name<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hasSugar</span> <span style="color:#000;font-weight:bold">=</span> hasSugar<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="nf">Coffee</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">hasSugar</span> <span class="o">=</span> <span class="n">hasSugar</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">hashCode</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">return</span> name<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hashCode</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="na">hashCode</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
 
-  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testHashCode</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    HashMap<span style="color:#000;font-weight:bold">&lt;</span>Coffee<span style="color:#000;font-weight:bold">,</span> Integer<span style="color:#000;font-weight:bold">&gt;</span> map <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HashMap<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
-    Coffee coffee1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Coffee<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;bar&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">);</span>
-    Coffee coffee2 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Coffee<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;bar&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">);</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">testHashCode</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Coffee</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+    <span class="n">Coffee</span> <span class="n">coffee1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Coffee</span><span class="o">(</span><span class="s">&#34;bar&#34;</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+    <span class="n">Coffee</span> <span class="n">coffee2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Coffee</span><span class="o">(</span><span class="s">&#34;bar&#34;</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
 
-    map<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>coffee1<span style="color:#000;font-weight:bold">,</span> 123<span style="color:#000;font-weight:bold">);</span>
-    map<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>coffee2<span style="color:#000;font-weight:bold">,</span> 123<span style="color:#000;font-weight:bold">);</span>
-    map<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>coffee2<span style="color:#000;font-weight:bold">,</span> 124<span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>map<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">());</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>最终<code>map</code>里会有两个元素。<code>Coffee</code>类重写了<code>hashCode</code>方法，我们想要一个这样的咖啡类：如果名字相同相同，它们就是同一个对象。所以<code>hashCode</code>方法中只是取<code>name</code>的hashCode。但是<code>map</code>为什么会有两个元素呢？因为<code>HashMap</code>判断两个key是否重复的逻辑如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>p<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hash</span> <span style="color:#000;font-weight:bold">==</span> hash <span style="color:#000;font-weight:bold">&amp;&amp;</span> <span style="color:#000;font-weight:bold">((</span>k <span style="color:#000;font-weight:bold">=</span> p<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">key</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">==</span> key <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">(</span>key <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> key<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span>k<span style="color:#000;font-weight:bold">))))</span>
-</code></pre></div><p>就是key的hash值一样，并且key的内存地址相等（同一个对象）或是key的<code>equals</code>方法返回值相同。<strong>Java中没有运算符重载，<code>==</code>默认就是比较两个对象的内存地址。</strong></p>
+    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">coffee1</span><span class="o">,</span> <span class="n">123</span><span class="o">);</span>
+    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">coffee2</span><span class="o">,</span> <span class="n">123</span><span class="o">);</span>
+    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">coffee2</span><span class="o">,</span> <span class="n">124</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最终<code>map</code>里会有两个元素。<code>Coffee</code>类重写了<code>hashCode</code>方法，我们想要一个这样的咖啡类：如果名字相同相同，它们就是同一个对象。所以<code>hashCode</code>方法中只是取<code>name</code>的hashCode。但是<code>map</code>为什么会有两个元素呢？因为<code>HashMap</code>判断两个key是否重复的逻辑如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">if</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">hash</span> <span class="o">==</span> <span class="n">hash</span> <span class="o">&amp;&amp;</span> <span class="o">((</span><span class="n">k</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">key</span><span class="o">)</span> <span class="o">==</span> <span class="n">key</span> <span class="o">||</span> <span class="o">(</span><span class="n">key</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">k</span><span class="o">))))</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>就是key的hash值一样，并且key的内存地址相等（同一个对象）或是key的<code>equals</code>方法返回值相同。<strong>Java中没有运算符重载，<code>==</code>默认就是比较两个对象的内存地址。</strong></p>
 <p>上面的<code>Coffee</code>类没有重写<code>equals</code>方法，所以不同的<code>Coffee</code>对象它们的<code>equals</code>返回值肯定不同。<strong>那么上面的<code>coffee1</code>和<code>coffee2</code>虽然它们的<code>hashCode</code>相同，但是<code>equals</code>不同</strong>，所以是两个不同的<code>key</code>。同时它们还是在<code>HashMap</code>的同一个桶中的（这一部分在下次讲<code>HashMap</code>的时，还会详细的讲），也就是在同一条链表下，所以在查找的时候需要遍历链表，造成性能的损失。只要重写<code>Coffee</code>的<code>equals</code>方法即可：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">equals</span><span style="color:#000;font-weight:bold">(</span>Object o<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span> <span style="color:#000;font-weight:bold">==</span> o<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(!(</span>o <span style="color:#000;font-weight:bold">instanceof</span> Coffee<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
-      Coffee coffee <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Coffee<span style="color:#000;font-weight:bold">)</span> o<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">return</span> Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span>name<span style="color:#000;font-weight:bold">,</span> coffee<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">name</span><span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>这就是上述的第三条准则：当两个对象不相等（<code>equals</code>方法判断）时，它们的<code>hashCode</code>返回值<strong>可以相等</strong>。但是必须意识到，返回不相等的值可以提高哈希表应用（比如<code>HashMap</code>）的性能。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="k">this</span> <span class="o">==</span> <span class="n">o</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+      <span class="k">if</span> <span class="o">(!(</span><span class="n">o</span> <span class="k">instanceof</span> <span class="n">Coffee</span><span class="o">))</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+      <span class="n">Coffee</span> <span class="n">coffee</span> <span class="o">=</span> <span class="o">(</span><span class="n">Coffee</span><span class="o">)</span> <span class="n">o</span><span class="o">;</span>
+      <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">coffee</span><span class="o">.</span><span class="na">name</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这就是上述的第三条准则：当两个对象不相等（<code>equals</code>方法判断）时，它们的<code>hashCode</code>返回值<strong>可以相等</strong>。但是必须意识到，返回不相等的值可以提高哈希表应用（比如<code>HashMap</code>）的性能。</p>
 <p>还有另一种情况是，<code>equals</code>返回值相同，<code>hashCode</code>的返回值不同。这就违背了第二条准则。比如这种奇葩的<code>hashCode</code>方法：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">hashCode</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">return</span> Objects<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hash</span><span style="color:#000;font-weight:bold">(</span>name<span style="color:#000;font-weight:bold">,</span> hasSugar<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">new</span> Random<span style="color:#000;font-weight:bold">().</span><span style="color:#008080">nextInt</span><span style="color:#000;font-weight:bold">(</span>100<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>这会导致本来是两个相等的对象在<code>HashMap</code>中有两个实例，这也就不符合<code>HashMap</code>的属性了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">hash</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">hasSugar</span><span class="o">)</span> <span class="o">+</span> <span class="k">new</span> <span class="n">Random</span><span class="o">().</span><span class="na">nextInt</span><span class="o">(</span><span class="n">100</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这会导致本来是两个相等的对象在<code>HashMap</code>中有两个实例，这也就不符合<code>HashMap</code>的属性了。</p>
 <blockquote>
 <p><strong>为了有一个可以正常使用的<code>HashMap</code>，我们在编写实体类的时候，必须保证<code>equals</code>方法的返回值相同时，<code>hashCode</code>也相同。反之，最好也保证<code>hashCode</code>相同时，<code>equals</code>方法返回值也相同，这样可以提高性能。所以建议两个方法一起重写，如果没有特殊要求的话，比较和hash所有的字段。</strong></p>
 </blockquote>
@@ -342,98 +426,211 @@ performs a &ldquo;shallow copy&rdquo; of this object, not a &ldquo;deep copy&rdq
 </blockquote>
 <p>就是说，浅拷贝产生的对象的字段本身是没有被拷贝，如果字段是原始类型和不可变的类型是没有问题的（比如：int，float，String等）。如果字段包括可变的对象，那么浅拷贝产生的对象中的该字段的引用是和原对象相同的。</p>
 <p>我们接着Coffee的例子，实现<code>Cloneable</code>接口，重写<code>clone</code>方法：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Bar</span> <span style="color:#000;font-weight:bold">implements</span> Cloneable <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Bar</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Coffee</span> <span style="color:#000;font-weight:bold">implements</span> Cloneable <span style="color:#000;font-weight:bold">{</span>
-    String name<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#458;font-weight:bold">boolean</span> hasSugar<span style="color:#000;font-weight:bold">;</span>
-    Bar bar<span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">Bar</span><span class="o">()</span> <span class="o">{</span>
+      <span class="kd">super</span><span class="o">();</span>
+    <span class="o">}</span>
+	<span class="kd">static</span> <span class="kd">class</span> <span class="nc">Coffee</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">;</span>
+    <span class="n">Bar</span> <span class="n">bar</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Coffee</span><span style="color:#000;font-weight:bold">(</span>String name<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">boolean</span> hasSugar<span style="color:#000;font-weight:bold">,</span> Bar bar<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">name</span> <span style="color:#000;font-weight:bold">=</span> name<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hasSugar</span> <span style="color:#000;font-weight:bold">=</span> hasSugar<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bar</span> <span style="color:#000;font-weight:bold">=</span> bar<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="nf">Coffee</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">,</span> <span class="n">Bar</span> <span class="n">bar</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">hasSugar</span> <span class="o">=</span> <span class="n">hasSugar</span><span class="o">;</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">bar</span> <span class="o">=</span> <span class="n">bar</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">protected</span> Coffee <span style="color:#900;font-weight:bold">clone</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> CloneNotSupportedException <span style="color:#000;font-weight:bold">{</span>
-      Coffee c <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Coffee<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">();</span>
-      <span style="color:#000;font-weight:bold">return</span> c<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>编写测试方法：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testClone</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    Coffee coffee <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Coffee<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;coffee&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">new</span> Bar<span style="color:#000;font-weight:bold">());</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="n">Coffee</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span> <span class="o">{</span>
+      <span class="n">Coffee</span> <span class="n">c</span> <span class="o">=</span> <span class="o">(</span><span class="n">Coffee</span><span class="o">)</span> <span class="kd">super</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
+      <span class="k">return</span> <span class="n">c</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>编写测试方法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kt">void</span> <span class="nf">testClone</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">Coffee</span> <span class="n">coffee</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Coffee</span><span class="o">(</span><span class="s">&#34;coffee&#34;</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="k">new</span> <span class="n">Bar</span><span class="o">());</span>
 
-    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-      System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>coffee<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">==</span> coffee<span style="color:#000;font-weight:bold">);</span>
-      System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>coffee<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">==</span> coffee<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getClass</span><span style="color:#000;font-weight:bold">());</span>
-      System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>coffee<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span>coffee<span style="color:#000;font-weight:bold">));</span>
-      System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;shallow copy? &#34;</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">(((</span>Coffee<span style="color:#000;font-weight:bold">)</span> coffee<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">()).</span><span style="color:#008080">bar</span> <span style="color:#000;font-weight:bold">==</span> coffee<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getBar</span><span style="color:#000;font-weight:bold">()));</span>
-    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>CloneNotSupportedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>输出为：</p>
-<pre tabindex="0"><code>false
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">()</span> <span class="o">==</span> <span class="n">coffee</span><span class="o">);</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">().</span><span class="na">getClass</span><span class="o">()</span> <span class="o">==</span> <span class="n">coffee</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">coffee</span><span class="o">));</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;shallow copy? &#34;</span> <span class="o">+</span> <span class="o">(((</span><span class="n">Coffee</span><span class="o">)</span> <span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">()).</span><span class="na">bar</span> <span class="o">==</span> <span class="n">coffee</span><span class="o">.</span><span class="na">getBar</span><span class="o">()));</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">CloneNotSupportedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">false
 true
 true
 shallow copy? true
-</code></pre><p>前三条输出表明<code>Coffee</code>类是符合三条准则的。最后一条输出语句测试<code>Coffee</code>类是否是浅拷贝的，也就是判断<code>bar</code>对象是否为同一个引用，结果表明它们是同一个对象，所以<code>Object</code>的<code>clone</code>方法，不会拷贝对象字段，而是直接使用同一个引用。这就是浅拷贝了。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>前三条输出表明<code>Coffee</code>类是符合三条准则的。最后一条输出语句测试<code>Coffee</code>类是否是浅拷贝的，也就是判断<code>bar</code>对象是否为同一个引用，结果表明它们是同一个对象，所以<code>Object</code>的<code>clone</code>方法，不会拷贝对象字段，而是直接使用同一个引用。这就是浅拷贝了。</p>
 <h3 id="deep-copy">Deep copy</h3>
 <p>**深拷贝使得拷贝的对象和原对象没有相同的引用，而只是值相等。**要实现深拷贝很简单，只要重写创建一个<code>bar</code>对象即可，这样就是不同的引用了。也可以直接调用<code>bar</code>的<code>clone</code>方法进行拷贝。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Bar</span> <span style="color:#000;font-weight:bold">implements</span> Cloneable <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Bar</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">Bar</span><span class="o">()</span> <span class="o">{</span>
+      <span class="kd">super</span><span class="o">();</span>
+    <span class="o">}</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">protected</span> Object <span style="color:#900;font-weight:bold">clone</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> CloneNotSupportedException <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Coffee</span> <span style="color:#000;font-weight:bold">implements</span> Cloneable <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">protected</span> Coffee <span style="color:#900;font-weight:bold">clone</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">throws</span> CloneNotSupportedException <span style="color:#000;font-weight:bold">{</span>
-      Coffee c <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Coffee<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">();</span>
-      c<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bar</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Bar<span style="color:#000;font-weight:bold">)</span>bar<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clone</span><span style="color:#000;font-weight:bold">();</span>
-      <span style="color:#998;font-style:italic">//c.bar = new Bar();
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">return</span> c<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>但是这样实现的深拷贝有几个明显的缺点，如果是我们使用的是第三方库呢？怎么拷贝它们？你可能会说可以继承它们并且实现自己的<code>equals</code>方法。那么如果有<code>private</code>字段呢，如果类被<code>final</code>修饰呢？如果有泛型呢？O.O</p>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="n">Object</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+	<span class="kd">static</span> <span class="kd">class</span> <span class="nc">Coffee</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="n">Coffee</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span> <span class="o">{</span>
+      <span class="n">Coffee</span> <span class="n">c</span> <span class="o">=</span> <span class="o">(</span><span class="n">Coffee</span><span class="o">)</span> <span class="kd">super</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
+      <span class="n">c</span><span class="o">.</span><span class="na">bar</span> <span class="o">=</span> <span class="o">(</span><span class="n">Bar</span><span class="o">)</span><span class="n">bar</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
+      <span class="c1">//c.bar = new Bar();
+</span><span class="c1"></span>      <span class="k">return</span> <span class="n">c</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>但是这样实现的深拷贝有几个明显的缺点，如果是我们使用的是第三方库呢？怎么拷贝它们？你可能会说可以继承它们并且实现自己的<code>equals</code>方法。那么如果有<code>private</code>字段呢，如果类被<code>final</code>修饰呢？如果有泛型呢？O.O</p>
 <h4 id="序列化实现深拷贝">序列化实现深拷贝</h4>
 <p>执着于<code>clone</code>方法，没有什么好的解决办法。这篇<a href="http://javatechniques.com/blog/faster-deep-copies-of-java-objects/">博客</a>介绍了一种更加快速方便的实现deep clone的方法。主要是利用 Java Object Serialization 的技术，使用<code>Serializable</code>接口来帮我们完成工作。使用<code>ObjectOutPutStream</code>来序列化对象，<code>ObjectInputStream</code>反序列话对象从而得到对象的拷贝。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">DeepCopy</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DeepCopy</span> <span class="o">{</span>
 
-  <span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic">   * Returns a copy of the object, or null if the object cannot
-</span><span style="color:#998;font-style:italic">   * be serialized.
-</span><span style="color:#998;font-style:italic">   */</span>
-  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> Object <span style="color:#900;font-weight:bold">copy</span><span style="color:#000;font-weight:bold">(</span>Object orig<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    Object obj <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#998;font-style:italic">// Write the object out to a byte array
-</span><span style="color:#998;font-style:italic"></span>      ByteArrayOutputStream bos <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ByteArrayOutputStream<span style="color:#000;font-weight:bold">();</span>
-      ObjectOutputStream out <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ObjectOutputStream<span style="color:#000;font-weight:bold">(</span>bos<span style="color:#000;font-weight:bold">);</span>
-      out<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeObject</span><span style="color:#000;font-weight:bold">(</span>orig<span style="color:#000;font-weight:bold">);</span>
-      out<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">flush</span><span style="color:#000;font-weight:bold">();</span>
-      out<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">close</span><span style="color:#000;font-weight:bold">();</span>
+  <span class="cm">/**
+</span><span class="cm">   * Returns a copy of the object, or null if the object cannot
+</span><span class="cm">   * be serialized.
+</span><span class="cm">   */</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">copy</span><span class="o">(</span><span class="n">Object</span> <span class="n">orig</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="c1">// Write the object out to a byte array
+</span><span class="c1"></span>      <span class="n">ByteArrayOutputStream</span> <span class="n">bos</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
+      <span class="n">ObjectOutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="n">bos</span><span class="o">);</span>
+      <span class="n">out</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">orig</span><span class="o">);</span>
+      <span class="n">out</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+      <span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
 
-      <span style="color:#998;font-style:italic">// Make an input stream from the byte array and read
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#998;font-style:italic">// a copy of the object back in.
-</span><span style="color:#998;font-style:italic"></span>      ObjectInputStream in <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ObjectInputStream<span style="color:#000;font-weight:bold">(</span>
-          <span style="color:#000;font-weight:bold">new</span> ByteArrayInputStream<span style="color:#000;font-weight:bold">(</span>bos<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toByteArray</span><span style="color:#000;font-weight:bold">()));</span>
-      obj <span style="color:#000;font-weight:bold">=</span> in<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readObject</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>IOException <span style="color:#000;font-weight:bold">|</span> ClassNotFoundException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">return</span> obj<span style="color:#000;font-weight:bold">;</span>
-  <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>当然这种方法也是有不足的：</p>
+      <span class="c1">// Make an input stream from the byte array and read
+</span><span class="c1"></span>      <span class="c1">// a copy of the object back in.
+</span><span class="c1"></span>      <span class="n">ObjectInputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span>
+          <span class="k">new</span> <span class="n">ByteArrayInputStream</span><span class="o">(</span><span class="n">bos</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">()));</span>
+      <span class="n">obj</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="o">|</span> <span class="n">ClassNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>当然这种方法也是有不足的：</p>
 <ul>
 <li>需要实现<code>java.io.Serializable</code>接口。幸运的是，<code>Serializable</code>也是空接口，Java提供序列化的默认实现。</li>
 <li>Java对象的序列化和反序列是比较慢。</li>
@@ -441,20 +638,25 @@ shallow copy? true
 </ul>
 <p>原博中还实现了这种方便的改进，主要是实现了自己的<code>ByteArrayOutputStream</code>和<code>ByteArrayInputStream</code>来提供效率，这里不再介绍，如果对性能没有很高的要求，或者拷贝使用的不频繁的话使用没有优化的这种方法已经够了吧。</p>
 <p>下面是深拷贝（使用<code>Serializable</code>实现）和浅拷贝的速度测试：</p>
-<p>
-<a data-fancybox="gallery" href="/images/copy-time-test.png">
-  <img class="mx-auto" alt="1544861421508" src="/images/copy-time-test.png" />
-</a>
-</p>
+<p><img src="/images/copy-time-test.png" alt="1544861421508"></p>
 <blockquote>
 <p>一般情况下，我还是倾向于在<code>clone</code>方法中实现自己的深拷贝。如果对象特别复杂。字段特别多的情况下可以使用序列化的方式。</p>
 </blockquote>
 <h2 id="tostring">toString</h2>
 <p><code>Object</code>的默认实现方式为：类名+@+<code>hashCode</code>的十六进制表示。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">toString</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#000;font-weight:bold">return</span> getClass<span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;@&#34;</span> <span style="color:#000;font-weight:bold">+</span> Integer<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toHexString</span><span style="color:#000;font-weight:bold">(</span>hashCode<span style="color:#000;font-weight:bold">());</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>子类可以重写这个方法，使得以简明易读的方式展示这个对象，推荐所以子类都重写这个方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;@&#34;</span> <span class="o">+</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="n">hashCode</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>子类可以重写这个方法，使得以简明易读的方式展示这个对象，推荐所以子类都重写这个方法。</p>
 <hr>
 <blockquote>
 <p>接下来的五个方法：<code>notify</code>，<code>notifyAll</code>，<code>wait</code>，都是和多线程相关的。要执行这些方法都需要当前的线程是该对象的监视器，否则会抛出<code>java.lang.IllegalMonitorStateException</code>异常。</p>
@@ -474,505 +676,315 @@ shallow copy? true
 <h2 id="waitlong-timeout-long-nanos">wait(long timeout, long nanos)</h2>
 <h2 id="wait">wait()</h2>
 <p><code>wait</code>方法有三个变种。<code>wait</code>使当前进程阻塞，直到该对象调用<code>notify</code>或<code>notifyAll</code>方法。利用<code>notify</code>和<code>wait</code>方法可以模拟生产者消费者问题。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Factory</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> BUFFER_SIZE <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> currentNum <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Factory</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">BUFFER_SIZE</span> <span class="o">=</span> <span class="n">100</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">currentNum</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">consume</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> num<span style="color:#000;font-weight:bold">,</span> String name<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> InterruptedException <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span>currentNum <span style="color:#000;font-weight:bold">-</span> num <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-          System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>name <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;: waiting...&#34;</span><span style="color:#000;font-weight:bold">);</span>
-          <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">wait</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#998;font-style:italic">// consume num product
-</span><span style="color:#998;font-style:italic"></span>        currentNum <span style="color:#000;font-weight:bold">-=</span> num<span style="color:#000;font-weight:bold">;</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>name <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;: consume: &#34;</span> <span style="color:#000;font-weight:bold">+</span> num <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;, left: &#34;</span> <span style="color:#000;font-weight:bold">+</span> currentNum<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#998;font-style:italic">// notify producer
-</span><span style="color:#998;font-style:italic">//        this.notifyAll();
-</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">notify</span><span style="color:#000;font-weight:bold">();</span>
-      <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">consume</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+      <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">currentNum</span> <span class="o">-</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: waiting...&#34;</span><span class="o">);</span>
+          <span class="k">this</span><span class="o">.</span><span class="na">wait</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="c1">// consume num product
+</span><span class="c1"></span>        <span class="n">currentNum</span> <span class="o">-=</span> <span class="n">num</span><span class="o">;</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: consume: &#34;</span> <span class="o">+</span> <span class="n">num</span> <span class="o">+</span> <span class="s">&#34;, left: &#34;</span> <span class="o">+</span> <span class="n">currentNum</span><span class="o">);</span>
+        <span class="c1">// notify producer
+</span><span class="c1">//        this.notifyAll();
+</span><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">notify</span><span class="o">();</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">product</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> num<span style="color:#000;font-weight:bold">,</span> String name<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> InterruptedException <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span>currentNum <span style="color:#000;font-weight:bold">+</span> num <span style="color:#000;font-weight:bold">&gt;</span> BUFFER_SIZE<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-          System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>name <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;: waiting...&#34;</span><span style="color:#000;font-weight:bold">);</span>
-          <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">wait</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        currentNum <span style="color:#000;font-weight:bold">+=</span> num<span style="color:#000;font-weight:bold">;</span>
-        System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span>name <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;: product: &#34;</span> <span style="color:#000;font-weight:bold">+</span> num <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;, left: &#34;</span> <span style="color:#000;font-weight:bold">+</span> currentNum<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#998;font-style:italic">// notify consumer
-</span><span style="color:#998;font-style:italic">//        this.notifyAll();
-</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">notify</span><span style="color:#000;font-weight:bold">();</span>
-      <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>这里使用<code>synchronized</code>语句锁住<code>Factory</code>对象，使得当前调用这个方法的进程成为该对象的监视器，从而可以调用<code>wait</code>，<code>notify</code>或<code>notifyAll</code>方法。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Producer</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">private</span> Factory factory<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> num<span style="color:#000;font-weight:bold">;</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">product</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+      <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">currentNum</span> <span class="o">+</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="n">BUFFER_SIZE</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: waiting...&#34;</span><span class="o">);</span>
+          <span class="k">this</span><span class="o">.</span><span class="na">wait</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">currentNum</span> <span class="o">+=</span> <span class="n">num</span><span class="o">;</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: product: &#34;</span> <span class="o">+</span> <span class="n">num</span> <span class="o">+</span> <span class="s">&#34;, left: &#34;</span> <span class="o">+</span> <span class="n">currentNum</span><span class="o">);</span>
+        <span class="c1">// notify consumer
+</span><span class="c1">//        this.notifyAll();
+</span><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">notify</span><span class="o">();</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这里使用<code>synchronized</code>语句锁住<code>Factory</code>对象，使得当前调用这个方法的进程成为该对象的监视器，从而可以调用<code>wait</code>，<code>notify</code>或<code>notifyAll</code>方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Producer</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Factory</span> <span class="n">factory</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">num</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Producer</span><span style="color:#000;font-weight:bold">(</span>Factory factory<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> num<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">factory</span> <span style="color:#000;font-weight:bold">=</span> factory<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">num</span> <span style="color:#000;font-weight:bold">=</span> num<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">run</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-        factory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">product</span><span style="color:#000;font-weight:bold">(</span>num<span style="color:#000;font-weight:bold">,</span> Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentThread</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">());</span>
-      <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-      <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Consumer</span> <span style="color:#000;font-weight:bold">implements</span> Runnable <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">private</span> Factory factory<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> num<span style="color:#000;font-weight:bold">;</span>
+    <span class="kd">public</span> <span class="nf">Producer</span><span class="o">(</span><span class="n">Factory</span> <span class="n">factory</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">factory</span> <span class="o">=</span> <span class="n">factory</span><span class="o">;</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">try</span> <span class="o">{</span>
+        <span class="n">factory</span><span class="o">.</span><span class="na">product</span><span class="o">(</span><span class="n">num</span><span class="o">,</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Consumer</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Factory</span> <span class="n">factory</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">num</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Consumer</span><span style="color:#000;font-weight:bold">(</span>Factory factory<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> num<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">factory</span> <span style="color:#000;font-weight:bold">=</span> factory<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">num</span> <span style="color:#000;font-weight:bold">=</span> num<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="nf">Consumer</span><span class="o">(</span><span class="n">Factory</span> <span class="n">factory</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">factory</span> <span class="o">=</span> <span class="n">factory</span><span class="o">;</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">run</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-        factory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">consume</span><span style="color:#000;font-weight:bold">(</span>num<span style="color:#000;font-weight:bold">,</span> Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentThread</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">());</span>
-      <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-      <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>测试代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    Factory factory <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Factory<span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Consumer<span style="color:#000;font-weight:bold">(</span>factory<span style="color:#000;font-weight:bold">,</span> 10<span style="color:#000;font-weight:bold">),</span> <span style="color:#d14">&#34;Consumer1&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Producer<span style="color:#000;font-weight:bold">(</span>factory<span style="color:#000;font-weight:bold">,</span> 5<span style="color:#000;font-weight:bold">),</span> <span style="color:#d14">&#34;Producer1&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Producer<span style="color:#000;font-weight:bold">(</span>factory<span style="color:#000;font-weight:bold">,</span> 5<span style="color:#000;font-weight:bold">),</span> <span style="color:#d14">&#34;Producer2&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Producer<span style="color:#000;font-weight:bold">(</span>factory<span style="color:#000;font-weight:bold">,</span> 20<span style="color:#000;font-weight:bold">),</span> <span style="color:#d14">&#34;Producer3&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Producer<span style="color:#000;font-weight:bold">(</span>factory<span style="color:#000;font-weight:bold">,</span> 30<span style="color:#000;font-weight:bold">),</span> <span style="color:#d14">&#34;Producer4&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Consumer<span style="color:#000;font-weight:bold">(</span>factory<span style="color:#000;font-weight:bold">,</span> 20<span style="color:#000;font-weight:bold">),</span> <span style="color:#d14">&#34;Consumer2&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Consumer<span style="color:#000;font-weight:bold">(</span>factory<span style="color:#000;font-weight:bold">,</span> 5<span style="color:#000;font-weight:bold">),</span> <span style="color:#d14">&#34;Consumer3&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Consumer<span style="color:#000;font-weight:bold">(</span>factory<span style="color:#000;font-weight:bold">,</span> 5<span style="color:#000;font-weight:bold">),</span> <span style="color:#d14">&#34;Consumer4&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Consumer<span style="color:#000;font-weight:bold">(</span>factory<span style="color:#000;font-weight:bold">,</span> 20<span style="color:#000;font-weight:bold">),</span> <span style="color:#d14">&#34;Consumer5&#34;</span><span style="color:#000;font-weight:bold">).</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">();</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>结果如下：</p>
-<p>
-<a data-fancybox="gallery" href="/images/waitnotify-producer-consumer.png">
-  <img class="mx-auto" alt="1544867554606" src="/images/waitnotify-producer-consumer.png" />
-</a>
-</p>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">try</span> <span class="o">{</span>
+        <span class="n">factory</span><span class="o">.</span><span class="na">consume</span><span class="o">(</span><span class="n">num</span><span class="o">,</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>测试代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Factory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Factory</span><span class="o">();</span>
+    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">10</span><span class="o">),</span> <span class="s">&#34;Consumer1&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Producer1&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Producer2&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">20</span><span class="o">),</span> <span class="s">&#34;Producer3&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">30</span><span class="o">),</span> <span class="s">&#34;Producer4&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">20</span><span class="o">),</span> <span class="s">&#34;Consumer2&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Consumer3&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Consumer4&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">20</span><span class="o">),</span> <span class="s">&#34;Consumer5&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>结果如下：</p>
+<p><img src="/images/waitnotify-producer-consumer.png" alt="1544867554606"></p>
 <hr>
 <h2 id="finalize">finalize</h2>
 <p><code>finalize</code>方法会在GC发生时被调用。</p>
 <!--todo-->
 <p>在《深入理解Java虚拟机》中有对这个方法的详细讨论。不过我是大二上的时候看的，现在差不多忘光了，而且当时没有做笔记只留下练习敲的代码，很尴尬。所以就等我看到<code>JVM</code>那部分时再来补充这块吧（</p>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-12-14
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/java-fun-toc/">Java基础-目录</a></li>
-        
-        <li><a href="/post/spring_bean/">【Spring 揭秘（一）】Spring Bean DI and Instantiating</a></li>
-        
-        <li><a href="/post/mybatis_datetime/">Map DateTime to Java Date in MyBatis</a></li>
-        
-        <li><a href="/post/read_javac_1/">Read source code of Javac-1</a></li>
-        
-        <li><a href="/post/gc/">Java垃圾收集器与内存分配策略</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/java'>Java</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/Java/">Java</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/java-fun-hashmap/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Java基础-HashMap源码简析</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/java-fun-toc/">
+            <span class="next-text nav-default">Java基础-目录</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-                </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
 
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://leer.moe/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
+  
 
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/categories">分类</a></h3>
-<ul class="widget-list">
-    
-    
-    
-    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
-    
-    
-    
-    <li><a href="#">未分类
-            (3)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
-
-
-
-
-
-
-
-
-<div class="tagcloud">
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
-    
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
 </div>
-    </section>
 
-    
+<div class="copyright" id="showDays">
 
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
 </div>
-            </div>
-        </div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
+<script src="/js/sitedate.js"></script>
+
 
 </body>
-
 </html>

@@ -1,144 +1,155 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C语言-可怕的指针 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>C语言-可怕的指针 | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="C语言-可怕的指针 - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2018-03-28T07:30:00&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2018-03-28T07:30:00&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="帮你理清C语言的指针...对于 “assignment to expression with array type” 这样的错误就是没有分清字符串和字符数组的区别">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/post/pointer_in_c/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+<meta name="author" content="LeeReindeer" /><meta name="description" content="帮你理清C语言的指针...对于 “assignment to expression with array type” 这样的错误就是没有分清字符串和字符数组的区别" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
 
-    
-    
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/pointer_in_c/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C语言-可怕的指针" />
+<meta property="og:description" content="帮你理清C语言的指针...对于 “assignment to expression with array type” 这样的错误就是没有分清字符串和字符数组的区别" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/pointer_in_c/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-03-28T07:30:00+00:00" />
+<meta property="article:modified_time" content="2018-03-28T07:30:00+00:00" />
+
+<meta itemprop="name" content="C语言-可怕的指针">
+<meta itemprop="description" content="帮你理清C语言的指针...对于 “assignment to expression with array type” 这样的错误就是没有分清字符串和字符数组的区别"><meta itemprop="datePublished" content="2018-03-28T07:30:00+00:00" />
+<meta itemprop="dateModified" content="2018-03-28T07:30:00+00:00" />
+<meta itemprop="wordCount" content="2165">
+<meta itemprop="keywords" content="C," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C语言-可怕的指针"/>
+<meta name="twitter:description" content="帮你理清C语言的指针...对于 “assignment to expression with array type” 这样的错误就是没有分清字符串和字符数组的区别"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-    <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C语言-可怕的指针</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-03-28 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 2165 words </span>
+          <span class="more-meta"> 5 mins read </span>
         
-        <div class="container">
-            <div class="col-group">
+      </div>
+    </header>
 
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">C语言-可怕的指针</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#一重指针">一重指针</a>
       <ol>
@@ -157,98 +168,97 @@
     <li><a href="#函数指针">函数指针</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">C语言-可怕的指针</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年3月28日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">2062 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <h2 id="一重指针">一重指针</h2>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2018-03-28T07:30:00" title="March 28, 2018">March 28, 2018</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h2 id="一重指针">一重指针</h2>
 <h3 id="简单使用">简单使用</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> a <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>p <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">&amp;</span>a; <span style="color:#998;font-style:italic">//defines an pointer to a, the address where a store.
-</span><span style="color:#998;font-style:italic"></span>printf(<span style="color:#d14">&#34;%d&#34;</span>, a);
-printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;font-weight:bold">*</span>p); <span style="color:#998;font-style:italic">//here * is poiner operator, get the value of address = a.
-</span></code></pre></div><h3 id="数组指针">数组指针</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kt">int</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">;</span> <span class="c1">//defines an pointer to a, the address where a store.
+</span><span class="c1"></span><span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">);</span> <span class="c1">//here * is poiner operator, get the value of address = a.
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="数组指针">数组指针</h3>
 <ul>
 <li>
 <p>数组名代表数组的<strong>首地址</strong>，二维数组名则是<strong>行地址</strong>。</p>
 </li>
 <li>
 <p>一维数组</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"> <span style="color:#458;font-weight:bold">int</span> a[<span style="color:#099">4</span>] <span style="color:#000;font-weight:bold">=</span> {<span style="color:#099">1</span>, <span style="color:#099">2</span>, <span style="color:#099">3</span>, <span style="color:#099">4</span>};
- <span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>p1 <span style="color:#000;font-weight:bold">=</span> a;
- printf(<span style="color:#d14">&#34;%d&#34;</span>, a[<span style="color:#099">1</span>]); <span style="color:#998;font-style:italic">//2
-</span><span style="color:#998;font-style:italic"></span> printf(<span style="color:#d14">&#34;%d&#34;</span>, (<span style="color:#000;font-weight:bold">*++</span>p1)); <span style="color:#998;font-style:italic">//2
-</span></code></pre></div></li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"> <span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">};</span>
+ <span class="kt">int</span> <span class="o">*</span><span class="n">p1</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+ <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">//2
+</span><span class="c1"></span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="p">(</span><span class="o">*++</span><span class="n">p1</span><span class="p">));</span> <span class="c1">//2
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
 <li>
 <p>二维（多维）数组</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"> <span style="color:#458;font-weight:bold">int</span> b[<span style="color:#099">2</span>][<span style="color:#099">4</span>] <span style="color:#000;font-weight:bold">=</span> {{<span style="color:#099">1</span>, <span style="color:#099">2</span>, <span style="color:#099">3</span> ,<span style="color:#099">4</span>},{<span style="color:#099">5.</span>, <span style="color:#099">6</span>, <span style="color:#099">7</span>, <span style="color:#099">8</span>}};
- <span style="color:#458;font-weight:bold">int</span> (<span style="color:#000;font-weight:bold">*</span>p2)[<span style="color:#099">4</span>] <span style="color:#000;font-weight:bold">=</span> b; <span style="color:#998;font-style:italic">//**A pointer** to a array of 4 integers,行地址
-</span><span style="color:#998;font-style:italic"></span> <span style="color:#458;font-weight:bold">int</span> (<span style="color:#000;font-weight:bold">*</span>p3)[<span style="color:#099">2</span>][<span style="color:#099">4</span>] <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">&amp;</span>b; <span style="color:#998;font-style:italic">//**A pointer** to 2d array
-</span><span style="color:#998;font-style:italic"></span> b[<span style="color:#099">1</span>][<span style="color:#099">1</span>];<span style="color:#998;font-style:italic">//5
-</span><span style="color:#998;font-style:italic"></span> <span style="color:#000;font-weight:bold">*</span>((<span style="color:#000;font-weight:bold">*</span>p2 <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>) <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>); <span style="color:#998;font-style:italic">//5,(*p + 1) == 一维数组b[1]的首地址
-</span><span style="color:#998;font-style:italic"></span> p2[<span style="color:#099">1</span>][<span style="color:#099">1</span>]; <span style="color:#998;font-style:italic">//5
-</span><span style="color:#998;font-style:italic"></span> (<span style="color:#000;font-weight:bold">*</span>p2)[<span style="color:#099">1</span>][<span style="color:#099">1</span>]; <span style="color:#998;font-style:italic">//5
-</span><span style="color:#998;font-style:italic"></span>
-</code></pre></div></li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"> <span class="kt">int</span> <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">,</span><span class="mi">4</span><span class="p">},{</span><span class="mf">5.</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">}};</span>
+ <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">p2</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span> <span class="c1">//**A pointer** to a array of 4 integers,行地址
+</span><span class="c1"></span> <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">p3</span><span class="p">)[</span><span class="mi">2</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">;</span> <span class="c1">//**A pointer** to 2d array
+</span><span class="c1"></span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span><span class="c1">//5
+</span><span class="c1"></span> <span class="o">*</span><span class="p">((</span><span class="o">*</span><span class="n">p2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">//5,(*p + 1) == 一维数组b[1]的首地址
+</span><span class="c1"></span> <span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span> <span class="c1">//5
+</span><span class="c1"></span> <span class="p">(</span><span class="o">*</span><span class="n">p2</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span> <span class="c1">//5
+</span><span class="c1"></span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
 </ul>
 <h3 id="字符串和字符数组">字符串和字符数组</h3>
 <blockquote>
 <p>对于 “assignment to expression with array type” 这样的错误就是没有分清字符串和字符数组的区别</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">     <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>s1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Hello&#34;</span>;
-     <span style="color:#458;font-weight:bold">char</span> s2[] <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Hello&#34;</span>;
-     <span style="color:#458;font-weight:bold">char</span> s3[<span style="color:#099">5</span>];
-     s3 <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Hello&#34;</span>; <span style="color:#998;font-style:italic">//error, assignment to expression with array type
-</span></code></pre></div><ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c">     <span class="kt">char</span> <span class="o">*</span><span class="n">s1</span> <span class="o">=</span> <span class="s">&#34;Hello&#34;</span><span class="p">;</span>
+     <span class="kt">char</span> <span class="n">s2</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34;Hello&#34;</span><span class="p">;</span>
+     <span class="kt">char</span> <span class="n">s3</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+     <span class="n">s3</span> <span class="o">=</span> <span class="s">&#34;Hello&#34;</span><span class="p">;</span> <span class="c1">//error, assignment to expression with array type
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
 <li>
 <p>赋值方式不同，数组和指针都可以进行初始化，但是<strong>数组不能再次进行整体赋值</strong>。</p>
 </li>
@@ -257,70 +267,153 @@ printf(<span style="color:#d14">&#34;%d&#34;</span>, <span style="color:#000;fon
 </li>
 <li>
 <p>指针变量可以改变值（值为地址），数组则不行。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"> s1 <span style="color:#000;font-weight:bold">+=</span> <span style="color:#099">1</span>; <span style="color:#998;font-style:italic">//s1 = &#34;ello&#34;
-</span><span style="color:#998;font-style:italic"></span> s2 <span style="color:#000;font-weight:bold">+=</span> <span style="color:#099">1</span>; <span style="color:#998;font-style:italic">//error, assignment to expression with array type
-</span></code></pre></div></li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"> <span class="n">s1</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//s1 = &#34;ello&#34;
+</span><span class="c1"></span> <span class="n">s2</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//error, assignment to expression with array type
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
 </ul>
 <h3 id="指针数组">指针数组</h3>
 <ul>
 <li>
 <p>字符串指针数组</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>strings[] <span style="color:#000;font-weight:bold">=</span> {<span style="color:#d14">&#34;Hello&#34;</span>, <span style="color:#d14">&#34;world!&#34;</span>}; <span style="color:#998;font-style:italic">//a array of **two pointers**, which point to a string
-</span><span style="color:#998;font-style:italic"></span>strings[<span style="color:#099">0</span>]; <span style="color:#998;font-style:italic">//Hello
-</span><span style="color:#998;font-style:italic"></span>strings[<span style="color:#099">1</span>]; <span style="color:#998;font-style:italic">//world!
-</span></code></pre></div></li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">char</span> <span class="o">*</span><span class="n">strings</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;Hello&#34;</span><span class="p">,</span> <span class="s">&#34;world!&#34;</span><span class="p">};</span> <span class="c1">//a array of **two pointers**, which point to a string
+</span><span class="c1"></span><span class="n">strings</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">//Hello
+</span><span class="c1"></span><span class="n">strings</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span> <span class="c1">//world!
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
 </ul>
 <h2 id="二重多重指针">二重（多重）指针</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>strings[] <span style="color:#000;font-weight:bold">=</span> {<span style="color:#d14">&#34;Hello&#34;</span>, <span style="color:#d14">&#34;world!&#34;</span>};
-<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>string <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Hello world!&#34;</span>;
-<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">**</span>p_string <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">&amp;</span>string;  <span style="color:#998;font-style:italic">//a 2d pointer
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">*</span>p_string; <span style="color:#998;font-style:italic">//Hello world!
-</span><span style="color:#998;font-style:italic"></span>
-<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">**</span>cur_string <span style="color:#000;font-weight:bold">=</span> strings;
-cur_string[<span style="color:#099">0</span>] <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">*</span>cur_string; <span style="color:#998;font-style:italic">//true, Hello
-</span><span style="color:#998;font-style:italic"></span>cur_string <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>; <span style="color:#998;font-style:italic">//world!
-</span><span style="color:#998;font-style:italic">//it&#39;s coool!!
-</span></code></pre></div><p>二重指针存储的是一个指针的地址。就是指针的指针（。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">char</span> <span class="o">*</span><span class="n">strings</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;Hello&#34;</span><span class="p">,</span> <span class="s">&#34;world!&#34;</span><span class="p">};</span>
+<span class="kt">char</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="s">&#34;Hello world!&#34;</span><span class="p">;</span>
+<span class="kt">char</span> <span class="o">**</span><span class="n">p_string</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">string</span><span class="p">;</span>  <span class="c1">//a 2d pointer
+</span><span class="c1"></span><span class="o">*</span><span class="n">p_string</span><span class="p">;</span> <span class="c1">//Hello world!
+</span><span class="c1"></span>
+<span class="kt">char</span> <span class="o">**</span><span class="n">cur_string</span> <span class="o">=</span> <span class="n">strings</span><span class="p">;</span>
+<span class="n">cur_string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="o">*</span><span class="n">cur_string</span><span class="p">;</span> <span class="c1">//true, Hello
+</span><span class="c1"></span><span class="n">cur_string</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//world!
+</span><span class="c1">//it&#39;s coool!!
+</span></code></pre></td></tr></table>
+</div>
+</div><p>二重指针存储的是一个指针的地址。就是指针的指针（。</p>
 <p>上面的例子可以表示如下图：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">p_string <span style="color:#000;font-weight:bold">-&gt;</span> string <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#d14">&#34;Hello world!&#34;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">p_string</span> <span class="o">-&gt;</span> <span class="n">string</span> <span class="o">-&gt;</span> <span class="s">&#34;Hello world!&#34;</span>
 
-cur_string <span style="color:#000;font-weight:bold">-&gt;</span> strings <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#d14">&#34;Hello&#34;</span>
-					  <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#d14">&#34;world!&#34;</span>
-</code></pre></div><p>二重指针可以对一重的指针数组进行操作，如 <code>cur_string + 1</code>就和 <code>cur_string[1]</code>的值是一样的。</p>
+<span class="n">cur_string</span> <span class="o">-&gt;</span> <span class="n">strings</span> <span class="o">-&gt;</span> <span class="s">&#34;Hello&#34;</span>
+					  <span class="o">-&gt;</span> <span class="s">&#34;world!&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>二重指针可以对一重的指针数组进行操作，如 <code>cur_string + 1</code>就和 <code>cur_string[1]</code>的值是一样的。</p>
 <h3 id="一个编程中遇到的问题">一个编程中遇到的问题</h3>
 <p>在写一元多项式的按次数排序时，使用 <code>stdlib.h</code> 中的快速排序算法 <code>qsort</code> 时， 排序之后的结果总是和排序之前一模一样。</p>
 <p>结构体是长这样的：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> Node {
-  <span style="color:#458;font-weight:bold">int</span> coeff;
-  <span style="color:#458;font-weight:bold">int</span> power;
-  <span style="color:#000;font-weight:bold">struct</span> Node <span style="color:#000;font-weight:bold">*</span>next;
-} Polynomial;
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">coeff</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">power</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">Polynomial</span><span class="p">;</span>
 
-<span style="color:#000;font-weight:bold">typedef</span> Polynomial <span style="color:#000;font-weight:bold">*</span>PtrToNode;
-<span style="color:#000;font-weight:bold">typedef</span> PtrToNode Item;
-<span style="color:#000;font-weight:bold">typedef</span> PtrToNode Poly;
-</code></pre></div><p>生成多项式的函数是这样的：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">comparItem</span>(<span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>item1, <span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>item2) {
-  Item p1 <span style="color:#000;font-weight:bold">=</span> (Polynomial <span style="color:#000;font-weight:bold">*</span>)item1;
-  Item p2 <span style="color:#000;font-weight:bold">=</span> (Polynomial <span style="color:#000;font-weight:bold">*</span>)item2;
-  <span style="color:#998;font-style:italic">//printf(&#34;%d - %d\n&#34;, p1-&gt;power, p2-&gt;power);
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">return</span> (p2<span style="color:#000;font-weight:bold">-&gt;</span>power <span style="color:#000;font-weight:bold">-</span> p1<span style="color:#000;font-weight:bold">-&gt;</span>power);<span style="color:#998;font-style:italic">//from lager to smaller
-</span><span style="color:#998;font-style:italic"></span>}
+<span class="k">typedef</span> <span class="n">Polynomial</span> <span class="o">*</span><span class="n">PtrToNode</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">PtrToNode</span> <span class="n">Item</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">PtrToNode</span> <span class="n">Poly</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>生成多项式的函数是这样的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">comparItem</span><span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item1</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item2</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Item</span> <span class="n">p1</span> <span class="o">=</span> <span class="p">(</span><span class="n">Polynomial</span> <span class="o">*</span><span class="p">)</span><span class="n">item1</span><span class="p">;</span>
+  <span class="n">Item</span> <span class="n">p2</span> <span class="o">=</span> <span class="p">(</span><span class="n">Polynomial</span> <span class="o">*</span><span class="p">)</span><span class="n">item2</span><span class="p">;</span>
+  <span class="c1">//printf(&#34;%d - %d\n&#34;, p1-&gt;power, p2-&gt;power);
+</span><span class="c1"></span>  <span class="k">return</span> <span class="p">(</span><span class="n">p2</span><span class="o">-&gt;</span><span class="n">power</span> <span class="o">-</span> <span class="n">p1</span><span class="o">-&gt;</span><span class="n">power</span><span class="p">);</span><span class="c1">//from lager to smaller
+</span><span class="c1"></span><span class="p">}</span>
 
-Poly <span style="color:#900;font-weight:bold">NewPoly</span>(Item <span style="color:#000;font-weight:bold">*</span>items, size_t size) {
-  qsort(items, size, <span style="color:#000;font-weight:bold">sizeof</span>(Item), comparItem);
+<span class="n">Poly</span> <span class="nf">NewPoly</span><span class="p">(</span><span class="n">Item</span> <span class="o">*</span><span class="n">items</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">qsort</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Item</span><span class="p">),</span> <span class="n">comparItem</span><span class="p">);</span>
 
-  Poly p <span style="color:#000;font-weight:bold">=</span> malloc(<span style="color:#000;font-weight:bold">sizeof</span>(Polynomial));
-  Poly header <span style="color:#000;font-weight:bold">=</span> p;
-  ZeroPoly(p);
-  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> size; i<span style="color:#000;font-weight:bold">++</span>) {
-    p<span style="color:#000;font-weight:bold">-&gt;</span>next <span style="color:#000;font-weight:bold">=</span> items[i];
-    p <span style="color:#000;font-weight:bold">=</span> p<span style="color:#000;font-weight:bold">-&gt;</span>next;
-  }
+  <span class="n">Poly</span> <span class="n">p</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Polynomial</span><span class="p">));</span>
+  <span class="n">Poly</span> <span class="n">header</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+  <span class="n">ZeroPoly</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+  <span class="p">}</span>
 
-  <span style="color:#000;font-weight:bold">return</span> header<span style="color:#000;font-weight:bold">-&gt;</span>next; <span style="color:#998;font-style:italic">// ignore list header
-</span><span style="color:#998;font-style:italic"></span>}
-</code></pre></div><p>那么只能用佛系调试法，在第四行的地方查看输出的次数(power)。结果很明显，输出并不是次数啊，而是一长串数字。虽然也猜到是指针了， 如果 <code>item1</code> 是 <code>Item</code> 的指针的话, 那么 <code>p1-&gt;power</code> 又是什么，是 <code>p1-&gt;power</code> 的指针？</p>
+  <span class="k">return</span> <span class="n">header</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span> <span class="c1">// ignore list header
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>那么只能用佛系调试法，在第四行的地方查看输出的次数(power)。结果很明显，输出并不是次数啊，而是一长串数字。虽然也猜到是指针了， 如果 <code>item1</code> 是 <code>Item</code> 的指针的话, 那么 <code>p1-&gt;power</code> 又是什么，是 <code>p1-&gt;power</code> 的指针？</p>
 <p>这时只能面向 Stackoverflow 编程，于是乎，还真有人遇到了和我一样的问题:</p>
 <p><a href="https://stackoverflow.com/questions/23689687/sorting-an-array-of-struct-pointers-using-qsort">Sorting an array of struct pointers using qsort</a></p>
 <blockquote>
@@ -329,13 +422,25 @@ Poly <span style="color:#900;font-weight:bold">NewPoly</span>(Item <span style="
 </blockquote>
 <p>虽然验证了自己的猜测是对的，但是我没看到这个答案前并不知道怎么做，是菜鸡。</p>
 <p>于是，把比较函数改成这样就行了：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">//item1(item2) 是指向 Item, 即 (Polynomial *) 的指针。是一个二重指针。
-</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">comparItem</span>(<span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>item1, <span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>item2) {
-  Item p1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">*</span>(Polynomial <span style="color:#000;font-weight:bold">**</span>)item1;
-  Item p2 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">*</span>(Polynomial <span style="color:#000;font-weight:bold">**</span>item2;
-  <span style="color:#000;font-weight:bold">return</span> (p2<span style="color:#000;font-weight:bold">-&gt;</span>power <span style="color:#000;font-weight:bold">-</span> p1<span style="color:#000;font-weight:bold">-&gt;</span>power);
-}
-</code></pre></div><h3 id="linus-关于指针的例子">Linus 关于指针的例子</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">//item1(item2) 是指向 Item, 即 (Polynomial *) 的指针。是一个二重指针。
+</span><span class="c1"></span><span class="kt">int</span> <span class="nf">comparItem</span><span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item1</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">item2</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Item</span> <span class="n">p1</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">Polynomial</span> <span class="o">**</span><span class="p">)</span><span class="n">item1</span><span class="p">;</span>
+  <span class="n">Item</span> <span class="n">p2</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">Polynomial</span> <span class="o">**</span><span class="n">item2</span><span class="p">;</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">p2</span><span class="o">-&gt;</span><span class="n">power</span> <span class="o">-</span> <span class="n">p1</span><span class="o">-&gt;</span><span class="n">power</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="linus-关于指针的例子">Linus 关于指针的例子</h3>
 <blockquote>
 <p>For example, I&rsquo;ve seen too many people who delete a singly-linked list entry by keeping track of the &ldquo;prev&rdquo; entry, and then to delete the entry, doing something like</p>
 <p>if (prev)
@@ -348,21 +453,41 @@ list_head = entry-&gt;next;</p>
 <p>这里 Linus 在 <a href="https://meta.slashdot.org/story/12/10/11/0030249/linus-torvalds-answers-your-questions">slashdot</a> 上举的一个关于单链表的例子。</p>
 <p>对于一个单链表，在删除节点的时候，需要先得到 prev 节点，利用它判断是否 current 是否为头节点。Linus 大神说不懂指针的人才会这样做。真的也只有大神才敢这样说，不过下面的评论里也有很多人反对 Linus 这种做法。</p>
 <p>Linus 说的 <code>by just doing a &quot;*pp = entry-&gt;next&quot;.</code> 到底是什么意思呢？完整的代码可以看<a href="http://wordaligned.org/articles/two-star-programming">这里</a>。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">remove_if</span>(node <span style="color:#000;font-weight:bold">**</span> head, remove_fn rm)
-{
-    <span style="color:#000;font-weight:bold">for</span> (node<span style="color:#000;font-weight:bold">**</span> curr <span style="color:#000;font-weight:bold">=</span> head; <span style="color:#000;font-weight:bold">*</span>curr; )
-    {
-        node <span style="color:#000;font-weight:bold">*</span> entry <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">*</span>curr;
-        <span style="color:#000;font-weight:bold">if</span> (rm(entry))
-        {
-            <span style="color:#000;font-weight:bold">*</span>curr <span style="color:#000;font-weight:bold">=</span> entry<span style="color:#000;font-weight:bold">-&gt;</span>next;
-            free(entry);
-        }
-        <span style="color:#000;font-weight:bold">else</span>
-            curr <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">&amp;</span>entry<span style="color:#000;font-weight:bold">-&gt;</span>next;
-    }
-}
-</code></pre></div><p>这样做代码更加简单，但是如果不了解指针的话，貌似也更难懂了呢。两个星星就是二重指针，我第一次看到二重指针还可以这样，很惊艳。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">remove_if</span><span class="p">(</span><span class="n">node</span> <span class="o">**</span> <span class="n">head</span><span class="p">,</span> <span class="n">remove_fn</span> <span class="n">rm</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="o">**</span> <span class="n">curr</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span> <span class="o">*</span><span class="n">curr</span><span class="p">;</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">node</span> <span class="o">*</span> <span class="n">entry</span> <span class="o">=</span> <span class="o">*</span><span class="n">curr</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rm</span><span class="p">(</span><span class="n">entry</span><span class="p">))</span>
+        <span class="p">{</span>
+            <span class="o">*</span><span class="n">curr</span> <span class="o">=</span> <span class="n">entry</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+            <span class="n">free</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这样做代码更加简单，但是如果不了解指针的话，貌似也更难懂了呢。两个星星就是二重指针，我第一次看到二重指针还可以这样，很惊艳。</p>
 <ul>
 <li><code>curr</code> 是一个指向指针的指针， 也就是 <code>entry-&gt;next</code> 这个指针的指针。</li>
 <li>在下一次循环的时候， <code>entry</code> 为 <code>*curr</code>，对二重指针取值，也那么就是 <code>prev-&gt;next</code>。</li>
@@ -370,11 +495,7 @@ list_head = entry-&gt;next;</p>
 <li>最后 <code>free</code> entry。</li>
 </ul>
 <p>看图更加清楚：</p>
-<p>
-<a data-fancybox="gallery" href="https://coolshell.cn/wp-content/uploads/2013/02/linus_pointer_to_pointer.jpg">
-  <img class="mx-auto" alt="2dpointer" src="https://coolshell.cn/wp-content/uploads/2013/02/linus_pointer_to_pointer.jpg" />
-</a>
-</p>
+<p><img src="https://coolshell.cn/wp-content/uploads/2013/02/linus_pointer_to_pointer.jpg" alt="2dpointer"></p>
 <p>我也在书上看到一种删除节点方法。单链表有一个 dummy header，也就是第一个节点为 header， 从第二个节点开始才是存储用户数据的。这样的话也不需要判断是否为头节点。但还是需要一个<code>prev</code> 节点。</p>
 <p>可能你看到这里还是不理解二重指针到底是什么？有什么用处？</p>
 <p>我现在的理解是，比如说在我们希望给函数传一个值，并且在这个函数里改变它的值。如果直接传值的话（BTW，C 语言里函数之间的值传递，只是拷贝一份而不是操作原来的变量）为了解决这个问题，那么指针（一重）就出现了。可以向函数传递一个普通变量的指针（在内存中的地址），我们知道了地址就可以直接对原变量进行操作。<code>curr = entry-&gt;next</code>，仅仅是把 <code>entry-&gt;next</code> 的值复制给 <code>curr</code>;
@@ -385,415 +506,164 @@ list_head = entry-&gt;next;</p>
 <p>函数指针照说也是一重指针，但是有比较特殊。函数指针指向的是函数在内存中的入口地址，这样就可以利用函数指针来调用函数，把“函数”作为函数的参数。</p>
 </blockquote>
 <p>一个简单的例子：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">max</span>(<span style="color:#458;font-weight:bold">int</span> a, <span style="color:#458;font-weight:bold">int</span> b) {
-    <span style="color:#000;font-weight:bold">return</span> a <span style="color:#000;font-weight:bold">&gt;</span> b <span style="color:#000;font-weight:bold">?</span> <span style="color:#900;font-weight:bold">a</span> : b;
-}
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">max</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span> <span class="o">?</span> <span class="nl">a</span> <span class="p">:</span> <span class="n">b</span><span class="p">;</span>
+<span class="p">}</span>
 
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">min</span>(<span style="color:#458;font-weight:bold">int</span> a, <span style="color:#458;font-weight:bold">int</span> b) {
-    <span style="color:#000;font-weight:bold">return</span> a <span style="color:#000;font-weight:bold">&gt;</span> b <span style="color:#000;font-weight:bold">?</span> <span style="color:#900;font-weight:bold">b</span> : a;
-}
+<span class="kt">int</span> <span class="nf">min</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span> <span class="o">?</span> <span class="nl">b</span> <span class="p">:</span> <span class="n">a</span><span class="p">;</span>
+<span class="p">}</span>
 
 
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
-    <span style="color:#458;font-weight:bold">int</span> (<span style="color:#000;font-weight:bold">*</span>cmp)(<span style="color:#458;font-weight:bold">int</span> a, <span style="color:#458;font-weight:bold">int</span> b) <span style="color:#000;font-weight:bold">=</span> max;
-    printf(<span style="color:#d14">&#34;Max: %d&#34;</span>, cmp(<span style="color:#099">3</span>, <span style="color:#099">4</span>));
-    cmp <span style="color:#000;font-weight:bold">=</span> min;
-    printf(<span style="color:#d14">&#34;Min: %d&#34;</span>, cmp(<span style="color:#099">3</span>, <span style="color:#099">4</span>));
-    <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
-}
-</code></pre></div><ul>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">cmp</span><span class="p">)(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">max</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Max: %d&#34;</span><span class="p">,</span> <span class="n">cmp</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
+    <span class="n">cmp</span> <span class="o">=</span> <span class="n">min</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Min: %d&#34;</span><span class="p">,</span> <span class="n">cmp</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
 <li>函数指针的定义类似于：<code>int (*POINTER_NAME)(int a, int b)</code>， POINTER_NAME 为 指针的名字，指向函数。</li>
 <li>用 <code>typedef</code> 来简化 函数指针的申明：<code>typedef int (*POINTER_NAME)(int a, int b)</code>。</li>
 </ul>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-03-28
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/C/">C</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/Android-Activity/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Android 四大组件：Activity</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/start_learn_japanese/">
+            <span class="next-text nav-default">Ubuntuの日本語入力方法</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
         
 
+  
 
-        
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/c'>C</a></li>
-                
-            </ul>
-            
-        </div>
-    </article>
-    
-    
-
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-                </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
 
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://leer.moe/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
+  
 
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/categories">分类</a></h3>
-<ul class="widget-list">
-    
-    
-    
-    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
-    
-    
-    
-    <li><a href="#">未分类
-            (3)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
-
-
-
-
-
-
-
-
-<div class="tagcloud">
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
-    
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
 </div>
-    </section>
 
-    
+<div class="copyright" id="showDays">
 
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
 </div>
-            </div>
-        </div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
+<script src="/js/sitedate.js"></script>
+
 
 </body>
-
 </html>

@@ -1,146 +1,162 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>操作系统-电梯调度算法 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>操作系统-电梯调度算法 | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="操作系统-电梯调度算法 - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2018-12-28T18:31:21&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2018-12-28T18:31:21&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 最近在复习操作系统，老师不讲设备管理这一部分，让我们自学，期末要考电梯调度算法。这篇文章分别用自然语言，流程图，C&#43;&#43;语言来描述电梯算法，其实电梯算法真的很简单😸
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2018/12/28/os-elevator-algorithm/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="操作系统-电梯调度算法" />
+<meta property="og:description" content="
 最近在复习操作系统，老师不讲设备管理这一部分，让我们自学，期末要考电梯调度算法。这篇文章分别用自然语言，流程图，C&#43;&#43;语言来描述电梯算法，其实电梯算法真的很简单😸
-">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/2018/12/28/os-elevator-algorithm/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/2018/12/28/os-elevator-algorithm/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-12-28T18:31:21+00:00" />
+<meta property="article:modified_time" content="2018-12-28T18:31:21+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="操作系统-电梯调度算法">
+<meta itemprop="description" content="
+最近在复习操作系统，老师不讲设备管理这一部分，让我们自学，期末要考电梯调度算法。这篇文章分别用自然语言，流程图，C&#43;&#43;语言来描述电梯算法，其实电梯算法真的很简单😸
+"><meta itemprop="datePublished" content="2018-12-28T18:31:21+00:00" />
+<meta itemprop="dateModified" content="2018-12-28T18:31:21+00:00" />
+<meta itemprop="wordCount" content="1858">
+<meta itemprop="keywords" content="OS,算法," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="操作系统-电梯调度算法"/>
+<meta name="twitter:description" content="
+最近在复习操作系统，老师不讲设备管理这一部分，让我们自学，期末要考电梯调度算法。这篇文章分别用自然语言，流程图，C&#43;&#43;语言来描述电梯算法，其实电梯算法真的很简单😸
+"/>
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
 
-    
-    
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-  <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-  <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
-    <div class="container">
-      <div class="col-group">
+    <header class="post-header">
+      <h1 class="post-title">操作系统-电梯调度算法</h1>
 
-        <div class="col-8" id="main">
-          
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+      <div class="post-meta">
+        <span class="post-time"> 2018-12-28 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 1858 words </span>
+          <span class="more-meta"> 4 mins read </span>
+        
+      </div>
+    </header>
 
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">操作系统-电梯调度算法</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#背景介绍">背景介绍</a></li>
     <li><a href="#自然语言描述">自然语言描述</a></li>
@@ -149,75 +165,22 @@
     <li><a href="#参考">参考</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">操作系统-电梯调度算法</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年12月28日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">1779 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2018-12-28T18:31:21" title="December 28, 2018">December 28, 2018</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>最近在复习操作系统，老师不讲设备管理这一部分，让我们自学，期末要考<strong>电梯调度算法</strong>。这篇文章分别用自然语言，流程图，<a href="https://gist.github.com/LeeReindeer/95efbc79b18636236dca4625bb5b83d5">C++语言</a>来描述电梯算法，其实电梯算法真的很简单😸</p>
 </blockquote>
 <h2 id="背景介绍">背景介绍</h2>
 <p>在介绍电梯算法之前，我们需要了解一下，它出现的背景，它是为了解决什么问题？</p>
 <p>前面已经说过，这是设备管理的内容。对于电梯算法来说，它所管理的设备就是磁盘，而且是机械硬盘。硬盘的基本结构如下图，这里需要搞清几个概念：盘面、柱面、磁道、扇区、磁头：</p>
-<p>
-<a data-fancybox="gallery" href="/images/cylinder.gif">
-  <img class="mx-auto" alt="cylinder" src="/images/cylinder.gif" />
-</a>
-</p>
-<p>
-<a data-fancybox="gallery" href="/images/cylinder2.gif">
-  <img class="mx-auto" alt="cylinder2" src="/images/cylinder2.gif" />
-</a>
-</p>
+<p><img src="/images/cylinder.gif" alt="cylinder"></p>
+<p><img src="/images/cylinder2.gif" alt="cylinder2"></p>
 <p>一图胜千言，我看书上的文字描述，一直没搞懂柱面是什么，看了上面的两张图才恍然大悟。</p>
 <blockquote>
 <p>顺便说一下《操作系统教程》这本书就是 shit ，出到第五版还是这个样子，而且还有错别字，算式也有错的。当然，这并不能限制我去读 CSAPP。</p>
@@ -239,11 +202,7 @@
 <blockquote>
 <p>画图工具：draw.io</p>
 </blockquote>
-<p>
-<a data-fancybox="gallery" href="/images/%e7%94%b5%e6%a2%af%e7%ae%97%e6%b3%95.jpg">
-  <img class="mx-auto" alt="电梯算法" src="/images/%e7%94%b5%e6%a2%af%e7%ae%97%e6%b3%95.jpg" />
-</a>
-</p>
+<p><img src="/images/%E7%94%B5%E6%A2%AF%E7%AE%97%E6%B3%95.jpg" alt="电梯算法"></p>
 <h2 id="c">C++</h2>
 <p>有了自然语言描述和流程图，编码的实现相对变得简单了些。这里我模仿 ACM 竞赛题的格式，把电梯算法改造成一道题目，一起来 AC 吧（</p>
 <blockquote>
@@ -255,97 +214,202 @@
 <p>输出格式：</p>
 <p>访问柱面的次序和移动臂移动的柱面总数。</p>
 <p>输入样例：</p>
-<pre tabindex="0"><code>200 50 1
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">200 50 1
 7
 150 30 190 20 100 55 90
-</code></pre><p>输出样例：</p>
-<pre tabindex="0"><code>55 90 100 150 190 30 20
+</code></pre></td></tr></table>
+</div>
+</div><p>输出样例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">55 90 100 150 190 30 20
 310
-</code></pre></blockquote>
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
 <p>需要对访问的序列进行搜索，判断是否和当前所在的柱面相同，可以用二分法加快搜索速度。接下来根据它的移动方向，判断是否有比当前柱面大或这小的柱面，有的话就去处理大于当前柱面中最小的或者是小于当前柱面中最大的。这样可以一次性处理完同一个方向的请求，并且不会有重复的移动。</p>
 <p>main 函数代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">const</span> <span style="color:#458;font-weight:bold">int</span> maxn <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1000</span>;
-<span style="color:#458;font-weight:bold">int</span> N, n;
-<span style="color:#458;font-weight:bold">int</span> order[maxn], ans[maxn];
-<span style="color:#458;font-weight:bold">int</span> cylinder[maxn] <span style="color:#000;font-weight:bold">=</span> {<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>};
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">const</span> <span class="kt">int</span> <span class="n">maxn</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="n">n</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">order</span><span class="p">[</span><span class="n">maxn</span><span class="p">],</span> <span class="n">ans</span><span class="p">[</span><span class="n">maxn</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">maxn</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">};</span>
 
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
-  <span style="color:#458;font-weight:bold">int</span> cur, dir;
-  cin <span style="color:#000;font-weight:bold">&gt;&gt;</span> N <span style="color:#000;font-weight:bold">&gt;&gt;</span> cur <span style="color:#000;font-weight:bold">&gt;&gt;</span> dir <span style="color:#000;font-weight:bold">&gt;&gt;</span> n;
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">cur</span><span class="p">,</span> <span class="n">dir</span><span class="p">;</span>
+  <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">N</span> <span class="o">&gt;&gt;</span> <span class="n">cur</span> <span class="o">&gt;&gt;</span> <span class="n">dir</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="p">;</span>
 
-  <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> n; i<span style="color:#000;font-weight:bold">++</span>) {
-    cin <span style="color:#000;font-weight:bold">&gt;&gt;</span> order[i];
-  }
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="p">}</span>
 
-  sort(order, order <span style="color:#000;font-weight:bold">+</span> n);
-  <span style="color:#458;font-weight:bold">int</span> sum <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, cur_order <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
-  <span style="color:#000;font-weight:bold">while</span> (cur_order <span style="color:#000;font-weight:bold">&lt;</span> n) {
-    <span style="color:#458;font-weight:bold">int</span> index <span style="color:#000;font-weight:bold">=</span> find_same(cur);
-    <span style="color:#000;font-weight:bold">if</span> (index <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) {  <span style="color:#998;font-style:italic">// find same
-</span><span style="color:#998;font-style:italic"></span>      cylinder[order[index]] <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
-      ans[cur_order<span style="color:#000;font-weight:bold">++</span>] <span style="color:#000;font-weight:bold">=</span> order[index];
-    } <span style="color:#000;font-weight:bold">else</span> {
-      index <span style="color:#000;font-weight:bold">=</span> find_greater_less(cur, dir);  <span style="color:#998;font-style:italic">// find greater or less
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">if</span> (index <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) {
-        sum <span style="color:#000;font-weight:bold">+=</span> (abs(order[index] <span style="color:#000;font-weight:bold">-</span> cur));
-        cylinder[order[index]] <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
-        ans[cur_order<span style="color:#000;font-weight:bold">++</span>] <span style="color:#000;font-weight:bold">=</span> order[index];
-        cur <span style="color:#000;font-weight:bold">=</span> order[index];  <span style="color:#998;font-style:italic">// change cur
-</span><span style="color:#998;font-style:italic"></span>      } <span style="color:#000;font-weight:bold">else</span> {
-        <span style="color:#998;font-style:italic">// change dir
-</span><span style="color:#998;font-style:italic"></span>        dir <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">-</span>dir;
-      }
-    }
-  }
+  <span class="n">sort</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">order</span> <span class="o">+</span> <span class="n">n</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cur_order</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">cur_order</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">find_same</span><span class="p">(</span><span class="n">cur</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// find same
+</span><span class="c1"></span>      <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="n">ans</span><span class="p">[</span><span class="n">cur_order</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">index</span> <span class="o">=</span> <span class="n">find_greater_less</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">dir</span><span class="p">);</span>  <span class="c1">// find greater or less
+</span><span class="c1"></span>      <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">sum</span> <span class="o">+=</span> <span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-</span> <span class="n">cur</span><span class="p">));</span>
+        <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="n">ans</span><span class="p">[</span><span class="n">cur_order</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>  <span class="c1">// change cur
+</span><span class="c1"></span>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// change dir
+</span><span class="c1"></span>        <span class="n">dir</span> <span class="o">=</span> <span class="o">-</span><span class="n">dir</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
 
-  print_order(ans);
-  cout <span style="color:#000;font-weight:bold">&lt;&lt;</span> sum <span style="color:#000;font-weight:bold">&lt;&lt;</span> endl;
-  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
-}
-</code></pre></div><p>使用一个<code>cylinder</code> 数组来标记这个柱面是否已经访问过了，在二分查找时，如果这个柱面已经访问过了，就不记录。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * @brief  find the index of current cylinder,
-</span><span style="color:#998;font-style:italic"> * if there is no same, return the
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">find_same</span>(<span style="color:#458;font-weight:bold">int</span> cur) {
-  <span style="color:#458;font-weight:bold">int</span> L <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>, R <span style="color:#000;font-weight:bold">=</span> n <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>;
-  <span style="color:#000;font-weight:bold">while</span> (R <span style="color:#000;font-weight:bold">-</span> L <span style="color:#000;font-weight:bold">&gt;=</span> <span style="color:#099">0</span>) {
-    <span style="color:#458;font-weight:bold">int</span> m <span style="color:#000;font-weight:bold">=</span> (L <span style="color:#000;font-weight:bold">+</span> R) <span style="color:#000;font-weight:bold">/</span> <span style="color:#099">2</span>;
-    <span style="color:#998;font-style:italic">// order[m] 没有被访问并且和当前柱面相同
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> (order[m] <span style="color:#000;font-weight:bold">==</span> cur <span style="color:#000;font-weight:bold">&amp;&amp;</span> cylinder[order[m]] <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">1</span>) {
-      <span style="color:#000;font-weight:bold">return</span> m;
-    } <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> (order[m] <span style="color:#000;font-weight:bold">&gt;</span> cur)
-      R <span style="color:#000;font-weight:bold">=</span> m <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>;
-    <span style="color:#000;font-weight:bold">else</span>
-      L <span style="color:#000;font-weight:bold">=</span> m <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>;
-  }
-  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
-}
-</code></pre></div><p>对于查找大于当前柱面中最小的或者是小于当前柱面中最大的，我直接使用了顺序查找，应该也可以使用二分法来查找，但我没有过多的去优化这个实现。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">find_greater_less</span>(<span style="color:#458;font-weight:bold">int</span> current, <span style="color:#458;font-weight:bold">int</span> dir) {
-  <span style="color:#000;font-weight:bold">if</span> (dir <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">1</span>) {  <span style="color:#998;font-style:italic">//向内,查找大于当前柱面中最小的
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 从小到大搜索
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> n; i<span style="color:#000;font-weight:bold">++</span>) {
-      <span style="color:#000;font-weight:bold">if</span> (current <span style="color:#000;font-weight:bold">&lt;</span> order[i] <span style="color:#000;font-weight:bold">&amp;&amp;</span> cylinder[order[i]] <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">1</span>) {
-        <span style="color:#000;font-weight:bold">return</span> i;
-      }
-    }
-  } <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> (dir <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) {  <span style="color:#998;font-style:italic">//向外，查找小于当前柱面中最大的
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 从大到小搜索
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">for</span> (<span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> n <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>; i <span style="color:#000;font-weight:bold">&gt;=</span> <span style="color:#099">0</span>; i<span style="color:#000;font-weight:bold">--</span>) {
-      <span style="color:#000;font-weight:bold">if</span> (current <span style="color:#000;font-weight:bold">&gt;</span> order[i] <span style="color:#000;font-weight:bold">&amp;&amp;</span> cylinder[order[i]] <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">1</span>) {
-        <span style="color:#000;font-weight:bold">return</span> i;
-      }
-    }
-  }
-  <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
-}
-</code></pre></div><p>运行结果和书上的一致：</p>
-<p>
-<a data-fancybox="gallery" href="/images/elevator-result.png">
-  <img class="mx-auto" alt="elevator-result" src="/images/elevator-result.png" />
-</a>
-</p>
+  <span class="n">print_order</span><span class="p">(</span><span class="n">ans</span><span class="p">);</span>
+  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">sum</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>使用一个<code>cylinder</code> 数组来标记这个柱面是否已经访问过了，在二分查找时，如果这个柱面已经访问过了，就不记录。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
+</span><span class="cm"> * @brief  find the index of current cylinder,
+</span><span class="cm"> * if there is no same, return the
+</span><span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">find_same</span><span class="p">(</span><span class="kt">int</span> <span class="n">cur</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">L</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">L</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="c1">// order[m] 没有被访问并且和当前柱面相同
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">==</span> <span class="n">cur</span> <span class="o">&amp;&amp;</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="n">m</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cur</span><span class="p">)</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">else</span>
+      <span class="n">L</span> <span class="o">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>对于查找大于当前柱面中最小的或者是小于当前柱面中最大的，我直接使用了顺序查找，应该也可以使用二分法来查找，但我没有过多的去优化这个实现。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">find_greater_less</span><span class="p">(</span><span class="kt">int</span> <span class="n">current</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dir</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">dir</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">//向内,查找大于当前柱面中最小的
+</span><span class="c1"></span>    <span class="c1">// 从小到大搜索
+</span><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">&lt;</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">dir</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">//向外，查找小于当前柱面中最大的
+</span><span class="c1"></span>    <span class="c1">// 从大到小搜索
+</span><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">&gt;</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>运行结果和书上的一致：</p>
+<p><img src="/images/elevator-result.png" alt="elevator-result"></p>
 <p>所以总的来讲我实现的电梯算法的时间复杂度是<code>O(n^2)</code>，但是我觉得可以优化到<code>O(nlgn)</code>，等我考完试再说。。。</p>
 <h2 id="参考">参考</h2>
 <ul>
@@ -356,100 +420,130 @@
 <p><a href="https://segmentfault.com/a/1190000007392163">硬盘中磁头、扇区、柱面的概念简单介绍</a></p>
 </li>
 </ul>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-12-28
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/2018/10/18/semaphore/">Concurrent with Semaphore</a></li>
-        
-        <li><a href="/2018/09/29/6.828_hw2_shell/">6.828 Homework 2:Shell</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/os'>OS</a></li>
-                
-                <li><a href='https://leer.moe/tags/%E7%AE%97%E6%B3%95'>算法</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/OS/">OS</a>
+          <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2019/01/01/os-banker-algorithm/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">操作系统-银行家算法</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2018/12/20/java-fun-pass-by-value/">
+            <span class="next-text nav-default">Java基础-Pass by value</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-        </div>
-        
-        
-        
-        
-      </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
   </div>
-  <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script type="text/javascript">
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+  <script type="text/javascript">
     window.MathJax = {
-        tex2jax: {
-            inlineMath: [['$', '$']],
-            processEscapes: true
+      tex: {
         }
     };
-</script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
 
 
 
 
 
 
+<script src="/js/sitedate.js"></script>
 
-
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
-
 </html>

@@ -1,147 +1,166 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>RTOS设计与实现 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>RTOS设计与实现 | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="RTOS设计与实现 - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2019-05-12T18:31:21&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2019-05-12T18:31:21&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 介绍基于 AVR 的 RTOS 的设计和实现，名为 ROS。
+GitHub 地址
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2019/05/12/ros/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="RTOS设计与实现" />
+<meta property="og:description" content="
 介绍基于 AVR 的 RTOS 的设计和实现，名为 ROS。
 GitHub 地址
-">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/2019/05/12/ros/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/2019/05/12/ros/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-05-12T18:31:21+00:00" />
+<meta property="article:modified_time" content="2019-05-12T18:31:21+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="RTOS设计与实现">
+<meta itemprop="description" content="
+介绍基于 AVR 的 RTOS 的设计和实现，名为 ROS。
+GitHub 地址
+"><meta itemprop="datePublished" content="2019-05-12T18:31:21+00:00" />
+<meta itemprop="dateModified" content="2019-05-12T18:31:21+00:00" />
+<meta itemprop="wordCount" content="9961">
+<meta itemprop="keywords" content="RTOS,OS," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="RTOS设计与实现"/>
+<meta name="twitter:description" content="
+介绍基于 AVR 的 RTOS 的设计和实现，名为 ROS。
+GitHub 地址
+"/>
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
 
-    
-    
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-  <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-  <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
-    <div class="container">
-      <div class="col-group">
+    <header class="post-header">
+      <h1 class="post-title">RTOS设计与实现</h1>
 
-        <div class="col-8" id="main">
-          
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+      <div class="post-meta">
+        <span class="post-time"> 2019-05-12 </span>
+        <div class="post-category">
+            <a href="/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/"> 实验室 </a>
+            </div>
+          <span class="more-meta"> 9961 words </span>
+          <span class="more-meta"> 20 mins read </span>
+        
+      </div>
+    </header>
 
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">RTOS设计与实现</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#我想要怎么的rtos">我想要怎么的RTOS</a></li>
     <li><a href="#需求分析">需求分析</a></li>
@@ -176,60 +195,15 @@ GitHub 地址
     <li><a href="#参考文献">参考文献</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">RTOS设计与实现</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2019年5月12日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4'>实验室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">9518 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2019-05-12T18:31:21" title="May 12, 2019">May 12, 2019</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>介绍基于 AVR 的 RTOS 的设计和实现，名为 ROS。</p>
 <p><a href="https://github.com/LeeReindeer/ROS">GitHub 地址</a></p>
 </blockquote>
@@ -290,69 +264,135 @@ GitHub 地址
 <p>当一个任务主动让出 CPU，即调用系统函数 ros_delay 时，当前任务不再入队（就绪队列），而是保存在一个阻塞队列中（阻塞任务）。在ISR中检查是否有任务的delay到期，则重新将其加入就绪队列（唤醒任务）。</p>
 <p>同时我为每个函数都写了详细的英文注解，在贴代码的同时我会连着注解一起贴上来。</p>
 <p>下面简要说明ROS提供的内核API：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// 初始化系统
-</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">bool</span> <span style="color:#900;font-weight:bold">ros_init</span>();
-<span style="color:#998;font-style:italic">// 获取当前在运行的任务
-</span><span style="color:#998;font-style:italic"></span>ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">ros_current_tcb</span>();
-<span style="color:#998;font-style:italic">// 创建任务
-</span><span style="color:#998;font-style:italic"></span>status_t <span style="color:#900;font-weight:bold">ros_create_task</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb, task_func task, <span style="color:#458;font-weight:bold">uint8_t</span> priority,stack_t <span style="color:#000;font-weight:bold">*</span>stack, <span style="color:#458;font-weight:bold">int</span> stack_size);
-<span style="color:#998;font-style:italic">// 任务调度
-</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_schedule</span>();
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// 初始化系统
+</span><span class="c1"></span><span class="kt">bool</span> <span class="nf">ros_init</span><span class="p">();</span>
+<span class="c1">// 获取当前在运行的任务
+</span><span class="c1"></span><span class="n">ROS_TCB</span> <span class="o">*</span><span class="nf">ros_current_tcb</span><span class="p">();</span>
+<span class="c1">// 创建任务
+</span><span class="c1"></span><span class="n">status_t</span> <span class="nf">ros_create_task</span><span class="p">(</span><span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">tcb</span><span class="p">,</span> <span class="n">task_func</span> <span class="n">task</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">priority</span><span class="p">,</span><span class="n">stack_t</span> <span class="o">*</span><span class="n">stack</span><span class="p">,</span> <span class="kt">int</span> <span class="n">stack_size</span><span class="p">);</span>
+<span class="c1">// 任务调度
+</span><span class="c1"></span><span class="kt">void</span> <span class="nf">ros_schedule</span><span class="p">();</span>
 
-<span style="color:#998;font-style:italic">// 阻塞任务，以 System tick 为单位
-</span><span style="color:#998;font-style:italic"></span>status_t <span style="color:#900;font-weight:bold">ros_delay</span>(<span style="color:#458;font-weight:bold">uint32_t</span> ticks);
+<span class="c1">// 阻塞任务，以 System tick 为单位
+</span><span class="c1"></span><span class="n">status_t</span> <span class="nf">ros_delay</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">ticks</span><span class="p">);</span>
 
-<span style="color:#998;font-style:italic">// 下面四个函数,是移植 ROS 时需要实现的
-</span><span style="color:#998;font-style:italic">// 初始化 Timer
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">extern</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_init_timer</span>();
-<span style="color:#998;font-style:italic">// 默认任务
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">extern</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_idle_task</span>();
-<span style="color:#998;font-style:italic">// 初始化任务栈
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">extern</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_task_context_init</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb_ptr, task_func task_f,<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>stack_top);
-<span style="color:#998;font-style:italic">// 上下文切换
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">extern</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_switch_context</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>old_tcb, ROS_TCB <span style="color:#000;font-weight:bold">*</span>new_tcb);
-</code></pre></div><h2 id="数据结构">数据结构</h2>
+<span class="c1">// 下面四个函数,是移植 ROS 时需要实现的
+</span><span class="c1">// 初始化 Timer
+</span><span class="c1"></span><span class="k">extern</span> <span class="kt">void</span> <span class="nf">ros_init_timer</span><span class="p">();</span>
+<span class="c1">// 默认任务
+</span><span class="c1"></span><span class="k">extern</span> <span class="kt">void</span> <span class="nf">ros_idle_task</span><span class="p">();</span>
+<span class="c1">// 初始化任务栈
+</span><span class="c1"></span><span class="k">extern</span> <span class="kt">void</span> <span class="nf">ros_task_context_init</span><span class="p">(</span><span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">tcb_ptr</span><span class="p">,</span> <span class="n">task_func</span> <span class="n">task_f</span><span class="p">,</span><span class="kt">void</span> <span class="o">*</span><span class="n">stack_top</span><span class="p">);</span>
+<span class="c1">// 上下文切换
+</span><span class="c1"></span><span class="k">extern</span> <span class="kt">void</span> <span class="nf">ros_switch_context</span><span class="p">(</span><span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">old_tcb</span><span class="p">,</span> <span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">new_tcb</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="数据结构">数据结构</h2>
 <h3 id="就绪队列">就绪队列</h3>
 <p>根据上面的思路，我们需要两个队列：就绪队列和阻塞队列。就绪队列保存所有就绪的任务，并且按照优先级降序；阻塞队列保存阻塞的任务。</p>
 <p>首先定义任务的数据结构：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">enum</span> {
-TASK_READY <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>,
-TASK_BLOCKED,
-TASK_TERMINATED
-} Task_Status;
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+<span class="n">TASK_READY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="n">TASK_BLOCKED</span><span class="p">,</span>
+<span class="n">TASK_TERMINATED</span>
+<span class="p">}</span> <span class="n">Task_Status</span><span class="p">;</span>
 
-<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#900;font-weight:bold">void</span> (<span style="color:#000;font-weight:bold">*</span>task_func)();
-<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> ros_tcb {
-<span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>sp;
-Task_Status status;
-<span style="color:#458;font-weight:bold">uint8_t</span> priority; <span style="color:#998;font-style:italic">// 0~255
-</span><span style="color:#998;font-style:italic"></span>task_func task_entry;
-<span style="color:#000;font-weight:bold">struct</span> ros_tcb <span style="color:#000;font-weight:bold">*</span>next_tcb;
-} ROS_TCB;
-</code></pre></div><p>代码中定义了三种任务状态：READY、BLOCKED 和 TERMINATED。如图 2所示，其实还有一种 RUNNING 状态，这种状态存在，但是不需要显式的表明，因为我们会用 current_tcb 来存储当前运行的任务，所以我在编码的后期删除了 RUNNING 状态。</p>
-<p>
-<a data-fancybox="gallery" href="/images/task-status.png">
-  <img class="mx-auto" alt="图2 task status" src="/images/task-status.png" />
-</a>
-</p>
+<span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">task_func</span><span class="p">)();</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">ros_tcb</span> <span class="p">{</span>
+<span class="kt">void</span> <span class="o">*</span><span class="n">sp</span><span class="p">;</span>
+<span class="n">Task_Status</span> <span class="n">status</span><span class="p">;</span>
+<span class="kt">uint8_t</span> <span class="n">priority</span><span class="p">;</span> <span class="c1">// 0~255
+</span><span class="c1"></span><span class="n">task_func</span> <span class="n">task_entry</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">ros_tcb</span> <span class="o">*</span><span class="n">next_tcb</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">ROS_TCB</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>代码中定义了三种任务状态：READY、BLOCKED 和 TERMINATED。如图 2所示，其实还有一种 RUNNING 状态，这种状态存在，但是不需要显式的表明，因为我们会用 current_tcb 来存储当前运行的任务，所以我在编码的后期删除了 RUNNING 状态。</p>
+<p><img src="/images/task-status.png" alt="图2 task status"></p>
 <p>任务的优先级为0～255，规定0为优先级最高，255为优先级最低。所以越小的数字，表示优先级越高。</p>
 <p>sp 保存任务的栈指针，我们为每个任务都分配一个单独的栈。我们把 sp 放在结构体的首位也是别有用意的，因为在 3.3.4上下文切换 时，我们需要改变系统的栈指针，将系统栈指针指向一个 ROS_TCB 结构体，也就指向了该任务的栈指针。</p>
 <p>next_tcb 指针保存下一个任务，和FreeRTOS和AtomThreads等RTOS不同，ROS的就绪列表是一个单链表。使用双向链表的优势在这里不明显，并且会增加一个指针的内存使用。使用单链表使得链表的操作简单，不容易出错。</p>
 <p>接下来就是任务的本体，一个任务函数指针，我们的业务逻辑也是卸载这个函数中。下面是一个任务函数的例子：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">task1</span>() {
-<span style="color:#000;font-weight:bold">for</span>(;;) {
-<span style="color:#998;font-style:italic">// task code here
-</span><span style="color:#998;font-style:italic"></span>}
-<span style="color:#998;font-style:italic">// should never return, once return the task will be deleted from the ready list
-</span><span style="color:#998;font-style:italic"></span>}
-</code></pre></div><p>一个典型的任务是把逻辑写在无限循环中。当然你也可以从这个任务中 return，这样的话它就是一个 run-to-compeletion 任务，任务状态变为 TERMINATED，很快会被从就绪列表中删除，并永远不再运行。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">task1</span><span class="p">()</span> <span class="p">{</span>
+<span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span>
+<span class="c1">// task code here
+</span><span class="c1"></span><span class="p">}</span>
+<span class="c1">// should never return, once return the task will be deleted from the ready list
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>一个典型的任务是把逻辑写在无限循环中。当然你也可以从这个任务中 return，这样的话它就是一个 run-to-compeletion 任务，任务状态变为 TERMINATED，很快会被从就绪列表中删除，并永远不再运行。</p>
 <h3 id="阻塞队列">阻塞队列</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> ros_timer {
-ROS_TCB <span style="color:#000;font-weight:bold">*</span>blocked_tcb;
-<span style="color:#458;font-weight:bold">uint32_t</span> ticks;
-<span style="color:#000;font-weight:bold">struct</span> ros_timer <span style="color:#000;font-weight:bold">*</span>next_timer;
-} ROS_TIMER
-</code></pre></div><p>和就绪队列类似，阻塞队列也是一个单链表。但是阻塞队列不是有序的。Ticks 保存任务需要延迟的 System tick 数，当 ticks 数递减为 0 时，唤醒该任务。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">ros_timer</span> <span class="p">{</span>
+<span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">blocked_tcb</span><span class="p">;</span>
+<span class="kt">uint32_t</span> <span class="n">ticks</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">ros_timer</span> <span class="o">*</span><span class="n">next_timer</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">ROS_TIMER</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>和就绪队列类似，阻塞队列也是一个单链表。但是阻塞队列不是有序的。Ticks 保存任务需要延迟的 System tick 数，当 ticks 数递减为 0 时，唤醒该任务。</p>
 <h2 id="初始化">初始化</h2>
 <h3 id="初始化系统">初始化系统</h3>
 <p>初始化系统分为两步骤，初始化过程中关闭中断：</p>
@@ -364,114 +404,221 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span>blocked_tcb;
 <p>创建一个 idle（默认） 任务到 ready list，保证系统总有任务在运行</p>
 </li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * @brief  Start the os:
-</span><span style="color:#998;font-style:italic"> * 1. init the system timer, start ticking
-</span><span style="color:#998;font-style:italic"> * 2. add a idle task into the list
-</span><span style="color:#998;font-style:italic"> * @retval ture if os started
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">bool</span> <span style="color:#900;font-weight:bold">ros_init</span>() {
-  CRITICAL_STORE;
-  CRITICAL_START();
-  ros_init_timer();
-  status_t ok <span style="color:#000;font-weight:bold">=</span>
-      ros_create_task(<span style="color:#000;font-weight:bold">&amp;</span>idle_tcb, ros_idle_task, MIN_TASK_PRIORITY, idle_task_stack, ROS_IDLE_STACK_SIZE);
-  ROS_STARTED <span style="color:#000;font-weight:bold">=</span> ok <span style="color:#000;font-weight:bold">==</span> ROS_OK;
-  CRITICAL_END();
-  <span style="color:#000;font-weight:bold">return</span> ROS_STARTED;
-}
-</code></pre></div><h4 id="配置timer">配置Timer</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
+</span><span class="cm"> * @brief  Start the os:
+</span><span class="cm"> * 1. init the system timer, start ticking
+</span><span class="cm"> * 2. add a idle task into the list
+</span><span class="cm"> * @retval ture if os started
+</span><span class="cm"> */</span>
+<span class="kt">bool</span> <span class="nf">ros_init</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">CRITICAL_STORE</span><span class="p">;</span>
+  <span class="n">CRITICAL_START</span><span class="p">();</span>
+  <span class="n">ros_init_timer</span><span class="p">();</span>
+  <span class="n">status_t</span> <span class="n">ok</span> <span class="o">=</span>
+      <span class="n">ros_create_task</span><span class="p">(</span><span class="o">&amp;</span><span class="n">idle_tcb</span><span class="p">,</span> <span class="n">ros_idle_task</span><span class="p">,</span> <span class="n">MIN_TASK_PRIORITY</span><span class="p">,</span> <span class="n">idle_task_stack</span><span class="p">,</span> <span class="n">ROS_IDLE_STACK_SIZE</span><span class="p">);</span>
+  <span class="n">ROS_STARTED</span> <span class="o">=</span> <span class="n">ok</span> <span class="o">==</span> <span class="n">ROS_OK</span><span class="p">;</span>
+  <span class="n">CRITICAL_END</span><span class="p">();</span>
+  <span class="k">return</span> <span class="n">ROS_STARTED</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="配置timer">配置Timer</h4>
 <p>Timer（定时器）的配置根据平台的不同而不同，对与 Arduino Uno，它拥有三个 timer，我这里选择 Timer1 作为ROS产生 system tick 的 timer，因为使用了 Timer1，而 Timer1 也是驱动 PWM 9 和 10 号引脚的定时器。所以当你使用了ROS，就不能把 PWM 9,10做模拟输出。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">init_timer1</span>() {
-  <span style="color:#998;font-style:italic">// Set prescaler 256
-</span><span style="color:#998;font-style:italic"></span>  TCCR1B <span style="color:#000;font-weight:bold">=</span> _BV(CS12) <span style="color:#000;font-weight:bold">|</span> _BV(WGM12);
-  <span style="color:#998;font-style:italic">// For Arduino Uno CPU 16000000 HZ, so the OCR1A should count from 0 to 624
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// x * 1/16M * 256 = 10 ms = 0.01 s
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// x = 16 M / 100 / 256 = 625
-</span><span style="color:#998;font-style:italic"></span>  OCR1A <span style="color:#000;font-weight:bold">=</span> (F_CPU <span style="color:#000;font-weight:bold">/</span> <span style="color:#099">256</span> <span style="color:#000;font-weight:bold">/</span> ROS_SYS_TICK) <span style="color:#000;font-weight:bold">-</span> <span style="color:#099">1</span>;
-  <span style="color:#998;font-style:italic">// enable compare match 1A interrupt
-</span><span style="color:#998;font-style:italic"></span>  TIMSK1 <span style="color:#000;font-weight:bold">=</span> _BV(OCIE1A);
-}
-</code></pre></div><p>首先对 Timer1 进行 256 的预分频，我们设置ROS_SYS_TICK为100，表示每秒钟发出100次 System tick，即每次 tick 间隔 10 ms。我们设置Timer1的运行模式为CTC模式（Clear TImer on COmpare Match），所以每当达到这个计数值时，产生一次中断，并重新开始计数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">void</span> <span class="nf">init_timer1</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// Set prescaler 256
+</span><span class="c1"></span>  <span class="n">TCCR1B</span> <span class="o">=</span> <span class="n">_BV</span><span class="p">(</span><span class="n">CS12</span><span class="p">)</span> <span class="o">|</span> <span class="n">_BV</span><span class="p">(</span><span class="n">WGM12</span><span class="p">);</span>
+  <span class="c1">// For Arduino Uno CPU 16000000 HZ, so the OCR1A should count from 0 to 624
+</span><span class="c1"></span>  <span class="c1">// x * 1/16M * 256 = 10 ms = 0.01 s
+</span><span class="c1"></span>  <span class="c1">// x = 16 M / 100 / 256 = 625
+</span><span class="c1"></span>  <span class="n">OCR1A</span> <span class="o">=</span> <span class="p">(</span><span class="n">F_CPU</span> <span class="o">/</span> <span class="mi">256</span> <span class="o">/</span> <span class="n">ROS_SYS_TICK</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="c1">// enable compare match 1A interrupt
+</span><span class="c1"></span>  <span class="n">TIMSK1</span> <span class="o">=</span> <span class="n">_BV</span><span class="p">(</span><span class="n">OCIE1A</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>首先对 Timer1 进行 256 的预分频，我们设置ROS_SYS_TICK为100，表示每秒钟发出100次 System tick，即每次 tick 间隔 10 ms。我们设置Timer1的运行模式为CTC模式（Clear TImer on COmpare Match），所以每当达到这个计数值时，产生一次中断，并重新开始计数。</p>
 <p>计算公式： x * 1/16M * 256 = 10 ms = 0.01 s，计算得到 x=625，因为OCR1A是从 0 开始计数的，我们把OCR1A的值设定为 625 - 1 = 624。这样配置 Timer1，就可以让它每 10 ms 产生一次中断，符合我们的System tick。</p>
 <p>最后，打开“compare match 1A” 这个中断，将TIMSK1 的 OCIE1A 位 置1 即可。_BV(bit) 是一个宏定义：(1 &laquo; (bit))。</p>
 <h4 id="创建默认任务">创建默认任务</h4>
 <p>系统初始化时，创建一个idle任务，保证系统在任何时候都有一个任务在运行。Idle任务的优先级最低，为255。</p>
 <p>同时idle任务利用了Atmega328p的省电功能，在默认任务中调用睡眠模式以节省能耗。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * @brief The idle task takes advantage of atmega328p&#39;s sleep mode, sleep when
-</span><span style="color:#998;font-style:italic"> * there is no task to run
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_idle_task</span>() {
-  set_sleep_mode(SLEEP_MODE_IDLE);
-  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
-    sleep_mode();
-  }
-}
-</code></pre></div><h3 id="上下文是什么">上下文是什么？</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
+</span><span class="cm"> * @brief The idle task takes advantage of atmega328p&#39;s sleep mode, sleep when
+</span><span class="cm"> * there is no task to run
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">ros_idle_task</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">set_sleep_mode</span><span class="p">(</span><span class="n">SLEEP_MODE_IDLE</span><span class="p">);</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">sleep_mode</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="上下文是什么">上下文是什么？</h3>
 <p>在开始初始化任务的“上下文”之前，我们先介绍一下在ROS中上下文指的是什么。</p>
 <p>ROS 为每个任务都单独分配一个栈，而程序（函数）是运行在栈上的，那么它的上下文就是栈（一块连续的内存空间）。</p>
 <p>栈上都有些什么？函数运行过程中，比如我们想要相加两个数，首先这两个数会被存放在寄存器上，然后 CPU 对他们进行计算，再将结果保存在寄存器中。函数的运行实际上就是内存（栈）、寄存器、CPU三者的交互。</p>
 <p>如果我们要打断一个函数的运行，而去运行另一个函数（将系统栈指针指向另一个函数的入口）。因为另一个函数也要使用寄存器，所以我们需要在栈上保存寄存器中的值。</p>
 <h3 id="初始化上下文">初始化上下文</h3>
 <p>栈空间由用户分配和定义，栈就是一片连续的内存空间，所以可以用数组来存储。函数在栈中运行，PUSH 和 POP 指令也作用于栈。如图 3所示，因为在系统中栈是从内存地址高的位置增长到内存地址低的位置，也就是说 PUSH 指令将递减栈指针，POP指令则递增栈指针。所以在初始化栈的时候，我们传入的是<strong>数组末端的地址</strong>，这样在 PUSH 和 POP 的时候才不会越界。</p>
-<p>
-<a data-fancybox="gallery" href="/images/stack-1558505496131.png">
-  <img class="mx-auto" alt="图3 栈和数组" src="/images/stack-1558505496131.png" />
-</a>
-</p>
+<p><img src="/images/stack-1558505496131.png" alt="图3 栈和数组"></p>
 <p>需要保存的寄存器也是有讲究的，因为我们用 C 写代码，所以这和 C 编译器有关，不同的编译器规则也不同。ROS 主要针对 AVR 平台，使用avr-gcc作为 C 编译器。</p>
 <p>avr-gcc 的 <a href="https://gcc.gnu.org/wiki/avr-gcc#Call-Used_Registers">wiki</a> 中有一些规则：</p>
 <p>R18-R27，R30，R31，R0，SREG 状态寄存器的T-Flag 都是 Called-Used Register。所谓Called-Used Register在调用函数进入和结束的时候，GCC会生成保存和恢复这些寄存器的指令（PUSH 和POP）。<strong>对于ISR，在进入和退出时会保存和恢复这些寄存器。</strong></p>
 <p>R2-R17，R28，R29，R1 是Called-Saved Register。如果函数使用了这些寄存器，那么调用者需要负责保存和恢复这些寄存器。所以我们需要手动保存的寄存器就是Called-Saved Register。而 R1是 Fixed Register，GCC也会保存和恢复。</p>
 <p>因此在创建一个新任务时，初始化它的栈：留下空间给R2-R17，R28-R29，并赋值为0。因此栈的大小至少为 18 bytes。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_task_context_init</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb_ptr, task_func task_f, <span style="color:#458;font-weight:bold">void</span> <span style="color:#000;font-weight:bold">*</span>sp) {
-  <span style="color:#458;font-weight:bold">uint8_t</span> <span style="color:#000;font-weight:bold">*</span>stack_top <span style="color:#000;font-weight:bold">=</span> (<span style="color:#458;font-weight:bold">uint8_t</span> <span style="color:#000;font-weight:bold">*</span>)sp;
-  <span style="color:#998;font-style:italic">// pc
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// the function pointer is uint16_t in avr
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> (<span style="color:#458;font-weight:bold">uint8_t</span>)((<span style="color:#458;font-weight:bold">uint16_t</span>)task_shell <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#099">0xFF</span>);         <span style="color:#998;font-style:italic">// the LSB
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> (<span style="color:#458;font-weight:bold">uint8_t</span>)(((<span style="color:#458;font-weight:bold">uint16_t</span>)task_shell <span style="color:#000;font-weight:bold">&gt;&gt;</span> <span style="color:#099">8</span>) <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#099">0xFF</span>);  <span style="color:#998;font-style:italic">// THE MSB
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// Make space for R2-R17, R28-R29
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R2
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R3
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R4
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R5
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R6
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R7
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R8
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R9
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R10
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R11
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R12
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R13
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R14
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R15
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R16
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R17
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R28
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">*</span>stack_top<span style="color:#000;font-weight:bold">--</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0x00</span>; <span style="color:#998;font-style:italic">// R29
-</span><span style="color:#998;font-style:italic"></span>  tcb_ptr<span style="color:#000;font-weight:bold">-&gt;</span>sp <span style="color:#000;font-weight:bold">=</span> stack_top;
-}
-</code></pre></div><p>需要注意的是，我们在栈上最先PUSH的是task_shell的函数指针，而函数指针在AVR中一般为 16 位，所以需要两个字节，分别存储它的低8位和高8位。使用task_shell，而不直接用任务的task_entry意图很明显：我们可以在task_shell中标记结束的任务，因为ROS是支持run-to-completion的任务的；同时也可以支持传递任务函数的参数，虽然ROS的任务没有参数，但也有考虑到未来系统的扩展。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * @brief Wrapper of task function, which can pass param to task(for furture
-</span><span style="color:#998;font-style:italic"> * usage), and terminated it and re-schedule when a task run to compeletion
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">task_shell</span>() {
-  ROS_TCB <span style="color:#000;font-weight:bold">*</span>cur_tcb <span style="color:#000;font-weight:bold">=</span> ros_current_tcb();
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ros_task_context_init</span><span class="p">(</span><span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">tcb_ptr</span><span class="p">,</span> <span class="n">task_func</span> <span class="n">task_f</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">stack_top</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="n">sp</span><span class="p">;</span>
+  <span class="c1">// pc
+</span><span class="c1"></span>  <span class="c1">// the function pointer is uint16_t in avr
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="p">)((</span><span class="kt">uint16_t</span><span class="p">)</span><span class="n">task_shell</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">);</span>         <span class="c1">// the LSB
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="p">)(((</span><span class="kt">uint16_t</span><span class="p">)</span><span class="n">task_shell</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">);</span>  <span class="c1">// THE MSB
+</span><span class="c1"></span>  <span class="c1">// Make space for R2-R17, R28-R29
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R2
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R3
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R4
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R5
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R6
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R7
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R8
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R9
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R10
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R11
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R12
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R13
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R14
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R15
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R16
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R17
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R28
+</span><span class="c1"></span>  <span class="o">*</span><span class="n">stack_top</span><span class="o">--</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span> <span class="c1">// R29
+</span><span class="c1"></span>  <span class="n">tcb_ptr</span><span class="o">-&gt;</span><span class="n">sp</span> <span class="o">=</span> <span class="n">stack_top</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>需要注意的是，我们在栈上最先PUSH的是task_shell的函数指针，而函数指针在AVR中一般为 16 位，所以需要两个字节，分别存储它的低8位和高8位。使用task_shell，而不直接用任务的task_entry意图很明显：我们可以在task_shell中标记结束的任务，因为ROS是支持run-to-completion的任务的；同时也可以支持传递任务函数的参数，虽然ROS的任务没有参数，但也有考虑到未来系统的扩展。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
+</span><span class="cm"> * @brief Wrapper of task function, which can pass param to task(for furture
+</span><span class="cm"> * usage), and terminated it and re-schedule when a task run to compeletion
+</span><span class="cm"> */</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">task_shell</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">cur_tcb</span> <span class="o">=</span> <span class="n">ros_current_tcb</span><span class="p">();</span>
 
-  <span style="color:#998;font-style:italic">// enable interrupt after context switching finished.
-</span><span style="color:#998;font-style:italic"></span>  sei();
+  <span class="c1">// enable interrupt after context switching finished.
+</span><span class="c1"></span>  <span class="n">sei</span><span class="p">();</span>
 
-  <span style="color:#000;font-weight:bold">if</span> (cur_tcb <span style="color:#000;font-weight:bold">&amp;&amp;</span> cur_tcb<span style="color:#000;font-weight:bold">-&gt;</span>task_entry) {
-    cur_tcb<span style="color:#000;font-weight:bold">-&gt;</span>task_entry();
-    <span style="color:#998;font-style:italic">// when the task terminated(task return), remove it from ready list and
-</span><span style="color:#998;font-style:italic"></span>    cur_tcb<span style="color:#000;font-weight:bold">-&gt;</span>status <span style="color:#000;font-weight:bold">=</span> TASK_TERMINATED;
-  }
-  <span style="color:#998;font-style:italic">// re-schedule
-</span><span style="color:#998;font-style:italic"></span>  ros_schedule();
-}
-</code></pre></div><h2 id="任务调度算法">任务调度算法</h2>
+  <span class="k">if</span> <span class="p">(</span><span class="n">cur_tcb</span> <span class="o">&amp;&amp;</span> <span class="n">cur_tcb</span><span class="o">-&gt;</span><span class="n">task_entry</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cur_tcb</span><span class="o">-&gt;</span><span class="n">task_entry</span><span class="p">();</span>
+    <span class="c1">// when the task terminated(task return), remove it from ready list and
+</span><span class="c1"></span>    <span class="n">cur_tcb</span><span class="o">-&gt;</span><span class="n">status</span> <span class="o">=</span> <span class="n">TASK_TERMINATED</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="c1">// re-schedule
+</span><span class="c1"></span>  <span class="n">ros_schedule</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="任务调度算法">任务调度算法</h2>
 <p>ROS采用 priority-based 和 Round-robin的调度算法，代码中有三个地方会调用scheduler：</p>
 <ul>
 <li>
@@ -486,124 +633,276 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span>blocked_tcb;
 </ul>
 <h3 id="isr">ISR</h3>
 <p>当中断发生时，系统会调用ISR（Interrupt Service Routine）函数来处理中断。Scheduler的实现依赖于Timer的周期性中断和ISR，因此中断是实现Multitask的基础。每个中断名称都定义在中断向量表中，编写ISR函数的基本格式如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">ISR(interrupt_name_in_vect) {
- <span style="color:#998;font-style:italic">//your code
-</span><span style="color:#998;font-style:italic"></span>}
-</code></pre></div><p>AVR平台在进入ISR时会默认关闭中断。但是对于支持嵌套中断的平台，如果我们在嵌套的ISR中进行上下文切换，可能会破坏队列的结构，使得任务的运行顺序和期望的不同，这就和多线程中的与时间相关的错误类似。我们需要一种机制来让在所有的嵌套ISR快结束时才调用scheduler。通过一个计数就可以解决这个问题：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_int_enter</span>() { ros_int_cnt<span style="color:#000;font-weight:bold">++</span>; }
-<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_int_exit</span>() {
-	ros_int_cnt<span style="color:#000;font-weight:bold">--</span>;
-	ros_schedule();
-}
-</code></pre></div><p>如果 ros_int_cnt 不为 0，则当前处于ISR context中，为0时处于 task context。在 task context 中可以安全的进行任务调度。而这里我们需要处理的中断为Timer1的“compare match 1A”中断。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// interrupt every SYS_TICK to re-schedule tasks
-</span><span style="color:#998;font-style:italic"></span>ISR(TIMER1_COMPA_vect) {
-  ros_int_enter();
-  ros_sys_tick();
-  <span style="color:#998;font-style:italic">// exit ISR, ready to call scheduler
-</span><span style="color:#998;font-style:italic"></span>  ros_int_exit();
-}
-</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_schedule</span>() {
-	<span style="color:#000;font-weight:bold">if</span> (ros_int_cnt <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">!</span>ROS_STARTED) <span style="color:#000;font-weight:bold">return</span>
-	<span style="color:#998;font-style:italic">// core scheduler code
-</span><span style="color:#998;font-style:italic"></span>}
-</code></pre></div><h3 id="队列操作">队列操作</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">ISR</span><span class="p">(</span><span class="n">interrupt_name_in_vect</span><span class="p">)</span> <span class="p">{</span>
+ <span class="c1">//your code
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>AVR平台在进入ISR时会默认关闭中断。但是对于支持嵌套中断的平台，如果我们在嵌套的ISR中进行上下文切换，可能会破坏队列的结构，使得任务的运行顺序和期望的不同，这就和多线程中的与时间相关的错误类似。我们需要一种机制来让在所有的嵌套ISR快结束时才调用scheduler。通过一个计数就可以解决这个问题：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ros_int_enter</span><span class="p">()</span> <span class="p">{</span> <span class="n">ros_int_cnt</span><span class="o">++</span><span class="p">;</span> <span class="p">}</span>
+<span class="kt">void</span> <span class="nf">ros_int_exit</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">ros_int_cnt</span><span class="o">--</span><span class="p">;</span>
+	<span class="n">ros_schedule</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如果 ros_int_cnt 不为 0，则当前处于ISR context中，为0时处于 task context。在 task context 中可以安全的进行任务调度。而这里我们需要处理的中断为Timer1的“compare match 1A”中断。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// interrupt every SYS_TICK to re-schedule tasks
+</span><span class="c1"></span><span class="n">ISR</span><span class="p">(</span><span class="n">TIMER1_COMPA_vect</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">ros_int_enter</span><span class="p">();</span>
+  <span class="n">ros_sys_tick</span><span class="p">();</span>
+  <span class="c1">// exit ISR, ready to call scheduler
+</span><span class="c1"></span>  <span class="n">ros_int_exit</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ros_schedule</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">ros_int_cnt</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="o">!</span><span class="n">ROS_STARTED</span><span class="p">)</span> <span class="k">return</span>
+	<span class="c1">// core scheduler code
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="队列操作">队列操作</h3>
 <p>对于队列的操作只有两个：入队和出队。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_tcb_enqueue</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb);
-ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">ros_tcb_dequeue</span>(<span style="color:#458;font-weight:bold">uint8_t</span> lowest_priority);
-</code></pre></div><p>维护一个优先队列，使用排序链表实现。入队操作的时间复杂度为O(N)，因为入队时需要把TCB按优先级按序插入；而出队最高优先级的任务时间复杂度为O(1)。Round-robin（轮转调度）算法的实现也体现在入队操作中。对于相同优先级的任务，该任务会入队到其他相同优先级任务的尾部：next_ptr-&gt;priority &gt; tcb-&gt;priority，配合系统的周期性中断，实现相同优先级的任务按时间片轮转调度。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * @brief enqueue tcb to list order by priority. Do round-robin when priority is
-</span><span style="color:#998;font-style:italic"> * same.
-</span><span style="color:#998;font-style:italic"> * @param  *tcb: the tcb to insert
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_tcb_enqueue</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb) {
-  <span style="color:#000;font-weight:bold">if</span> (tcb <span style="color:#000;font-weight:bold">==</span> <span style="color:#0086b3">NULL</span>) <span style="color:#000;font-weight:bold">return</span>;
-  ROS_TCB <span style="color:#000;font-weight:bold">*</span>prev_ptr, <span style="color:#000;font-weight:bold">*</span>next_ptr;
-  prev_ptr <span style="color:#000;font-weight:bold">=</span> next_ptr <span style="color:#000;font-weight:bold">=</span> tcb_ready_list;
-  <span style="color:#000;font-weight:bold">do</span> {
-    <span style="color:#998;font-style:italic">// Insert when:
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// next == NULL
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// next tcb&#39;s priority is lower than than the one we enqueuing
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// same priority task will do round-bobin
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> ((next_ptr <span style="color:#000;font-weight:bold">==</span> <span style="color:#0086b3">NULL</span>) <span style="color:#000;font-weight:bold">||</span> (next_ptr<span style="color:#000;font-weight:bold">-&gt;</span>priority <span style="color:#000;font-weight:bold">&gt;</span> tcb<span style="color:#000;font-weight:bold">-&gt;</span>priority)) {
-      <span style="color:#998;font-style:italic">// list is empty or insert to head
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">if</span> (next_ptr <span style="color:#000;font-weight:bold">==</span> tcb_ready_list) {
-        tcb_ready_list <span style="color:#000;font-weight:bold">=</span> tcb;
-        tcb<span style="color:#000;font-weight:bold">-&gt;</span>next_tcb <span style="color:#000;font-weight:bold">=</span> next_ptr;  <span style="color:#998;font-style:italic">// next_ptr maybe NULL
-</span><span style="color:#998;font-style:italic"></span>      } <span style="color:#000;font-weight:bold">else</span> {                     <span style="color:#998;font-style:italic">// insert between tow tcb or tail
-</span><span style="color:#998;font-style:italic"></span>        tcb<span style="color:#000;font-weight:bold">-&gt;</span>next_tcb <span style="color:#000;font-weight:bold">=</span> next_ptr;  <span style="color:#998;font-style:italic">// next_ptr maybe NUL
-</span><span style="color:#998;font-style:italic"></span>        prev_ptr<span style="color:#000;font-weight:bold">-&gt;</span>next_tcb <span style="color:#000;font-weight:bold">=</span> tcb;
-      }
-      <span style="color:#000;font-weight:bold">break</span>;
-    } <span style="color:#000;font-weight:bold">else</span> {
-      prev_ptr <span style="color:#000;font-weight:bold">=</span> next_ptr;
-      next_ptr <span style="color:#000;font-weight:bold">=</span> next_ptr<span style="color:#000;font-weight:bold">-&gt;</span>next_tcb;
-    }
-  } <span style="color:#000;font-weight:bold">while</span> (prev_ptr <span style="color:#000;font-weight:bold">!=</span> <span style="color:#0086b3">NULL</span>);
-}
-</code></pre></div><p>出队操作则只需要检查队首的TCB，因为队列是有序的，所以队首的TCB总是优先级最高的，如果队首不满足条件，那么接下来的TCB更不会满足。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * @brief  dequeue a tcb to swap in, requeir its priority no lower than
-</span><span style="color:#998;font-style:italic"> * lowest_priority Because the list ordered by priority, we just check the head,
-</span><span style="color:#998;font-style:italic"> * if the head is lower than lowest_priority, return NULL. use
-</span><span style="color:#998;font-style:italic"> * ros_tcb_dequeue(MIN_TASK_PRIORITY) to dequeue head unconditionally
-</span><span style="color:#998;font-style:italic"> * @param lowest_priority: the lowest priority of dequeue tcb or NULL if no such
-</span><span style="color:#998;font-style:italic"> * tcb
-</span><span style="color:#998;font-style:italic"> */</span>
-ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">ros_tcb_dequeue</span>(<span style="color:#458;font-weight:bold">uint8_t</span> lowest_priority) {
-  <span style="color:#000;font-weight:bold">if</span> (tcb_ready_list <span style="color:#000;font-weight:bold">==</span> <span style="color:#0086b3">NULL</span> <span style="color:#000;font-weight:bold">||</span> tcb_ready_list<span style="color:#000;font-weight:bold">-&gt;</span>priority <span style="color:#000;font-weight:bold">&gt;</span> lowest_priority) {
-    <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
-  } <span style="color:#000;font-weight:bold">else</span> {
-    ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb <span style="color:#000;font-weight:bold">=</span> tcb_ready_list;
-    tcb_ready_list <span style="color:#000;font-weight:bold">=</span> tcb_ready_list<span style="color:#000;font-weight:bold">-&gt;</span>next_tcb;
-    <span style="color:#000;font-weight:bold">if</span> (tcb_ready_list) {
-      <span style="color:#998;font-style:italic">// make return tcb isolated
-</span><span style="color:#998;font-style:italic"></span>      tcb<span style="color:#000;font-weight:bold">-&gt;</span>next_tcb <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>;
-    }
-    <span style="color:#000;font-weight:bold">return</span> tcb;
-  }
-}
-</code></pre></div><h3 id="ros_schedule">ros_schedule</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ros_tcb_enqueue</span><span class="p">(</span><span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">tcb</span><span class="p">);</span>
+<span class="n">ROS_TCB</span> <span class="o">*</span><span class="nf">ros_tcb_dequeue</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">lowest_priority</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>维护一个优先队列，使用排序链表实现。入队操作的时间复杂度为O(N)，因为入队时需要把TCB按优先级按序插入；而出队最高优先级的任务时间复杂度为O(1)。Round-robin（轮转调度）算法的实现也体现在入队操作中。对于相同优先级的任务，该任务会入队到其他相同优先级任务的尾部：next_ptr-&gt;priority &gt; tcb-&gt;priority，配合系统的周期性中断，实现相同优先级的任务按时间片轮转调度。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
+</span><span class="cm"> * @brief enqueue tcb to list order by priority. Do round-robin when priority is
+</span><span class="cm"> * same.
+</span><span class="cm"> * @param  *tcb: the tcb to insert
+</span><span class="cm"> */</span>
+<span class="kt">void</span> <span class="nf">ros_tcb_enqueue</span><span class="p">(</span><span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">tcb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">tcb</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+  <span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">prev_ptr</span><span class="p">,</span> <span class="o">*</span><span class="n">next_ptr</span><span class="p">;</span>
+  <span class="n">prev_ptr</span> <span class="o">=</span> <span class="n">next_ptr</span> <span class="o">=</span> <span class="n">tcb_ready_list</span><span class="p">;</span>
+  <span class="k">do</span> <span class="p">{</span>
+    <span class="c1">// Insert when:
+</span><span class="c1"></span>    <span class="c1">// next == NULL
+</span><span class="c1"></span>    <span class="c1">// next tcb&#39;s priority is lower than than the one we enqueuing
+</span><span class="c1"></span>    <span class="c1">// same priority task will do round-bobin
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">((</span><span class="n">next_ptr</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">next_ptr</span><span class="o">-&gt;</span><span class="n">priority</span> <span class="o">&gt;</span> <span class="n">tcb</span><span class="o">-&gt;</span><span class="n">priority</span><span class="p">))</span> <span class="p">{</span>
+      <span class="c1">// list is empty or insert to head
+</span><span class="c1"></span>      <span class="k">if</span> <span class="p">(</span><span class="n">next_ptr</span> <span class="o">==</span> <span class="n">tcb_ready_list</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">tcb_ready_list</span> <span class="o">=</span> <span class="n">tcb</span><span class="p">;</span>
+        <span class="n">tcb</span><span class="o">-&gt;</span><span class="n">next_tcb</span> <span class="o">=</span> <span class="n">next_ptr</span><span class="p">;</span>  <span class="c1">// next_ptr maybe NULL
+</span><span class="c1"></span>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>                     <span class="c1">// insert between tow tcb or tail
+</span><span class="c1"></span>        <span class="n">tcb</span><span class="o">-&gt;</span><span class="n">next_tcb</span> <span class="o">=</span> <span class="n">next_ptr</span><span class="p">;</span>  <span class="c1">// next_ptr maybe NUL
+</span><span class="c1"></span>        <span class="n">prev_ptr</span><span class="o">-&gt;</span><span class="n">next_tcb</span> <span class="o">=</span> <span class="n">tcb</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">prev_ptr</span> <span class="o">=</span> <span class="n">next_ptr</span><span class="p">;</span>
+      <span class="n">next_ptr</span> <span class="o">=</span> <span class="n">next_ptr</span><span class="o">-&gt;</span><span class="n">next_tcb</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">prev_ptr</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>出队操作则只需要检查队首的TCB，因为队列是有序的，所以队首的TCB总是优先级最高的，如果队首不满足条件，那么接下来的TCB更不会满足。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
+</span><span class="cm"> * @brief  dequeue a tcb to swap in, requeir its priority no lower than
+</span><span class="cm"> * lowest_priority Because the list ordered by priority, we just check the head,
+</span><span class="cm"> * if the head is lower than lowest_priority, return NULL. use
+</span><span class="cm"> * ros_tcb_dequeue(MIN_TASK_PRIORITY) to dequeue head unconditionally
+</span><span class="cm"> * @param lowest_priority: the lowest priority of dequeue tcb or NULL if no such
+</span><span class="cm"> * tcb
+</span><span class="cm"> */</span>
+<span class="n">ROS_TCB</span> <span class="o">*</span><span class="nf">ros_tcb_dequeue</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">lowest_priority</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">tcb_ready_list</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">tcb_ready_list</span><span class="o">-&gt;</span><span class="n">priority</span> <span class="o">&gt;</span> <span class="n">lowest_priority</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">tcb</span> <span class="o">=</span> <span class="n">tcb_ready_list</span><span class="p">;</span>
+    <span class="n">tcb_ready_list</span> <span class="o">=</span> <span class="n">tcb_ready_list</span><span class="o">-&gt;</span><span class="n">next_tcb</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">tcb_ready_list</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// make return tcb isolated
+</span><span class="c1"></span>      <span class="n">tcb</span><span class="o">-&gt;</span><span class="n">next_tcb</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">tcb</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="ros_schedule">ros_schedule</h3>
 <p>ros_scheduler函数实现了调度器的主要逻辑：</p>
 <p>如果当然在 ISR 中，则直接返回。否则，关闭中断，进入临界区。</p>
 <p>如果当前的任务已经结束（run to compeletion）或者被阻塞（任务主动让出 CPU），则无条件调进下一个优先级最高的任务。</p>
 <p>否则，从链表中dequeue 一个 new_tcb，如果任务已经终结，则删除任务继续dequeue，直到一个任务符合要求或者为NULL。</p>
 <p>如果new_tcb不为 NULL， enqueue当前的任务，调用switch_context。</p>
 <p>Scheduler依赖于两个队列操作，操作队列时需要关中断。一个基于优先级的非抢占式调度器基本实现，同时还支持删除 run to complete 的任务。详细的代码和逻辑描述如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_schedule</span>() {
-  <span style="color:#998;font-style:italic">// no schedule and context switch util the very end of ISR
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">if</span> (ros_int_cnt <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">||</span> <span style="color:#000;font-weight:bold">!</span>ROS_STARTED) <span style="color:#000;font-weight:bold">return</span>;
-  CRITICAL_STORE;
-  ROS_TCB <span style="color:#000;font-weight:bold">*</span>new_tcb <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>;
-  CRITICAL_START();
-  <span style="color:#998;font-style:italic">// if current task is NULL or suspend or terminated, a new task will swap in
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// unconditionally
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">if</span> (current_tcb <span style="color:#000;font-weight:bold">==</span> <span style="color:#0086b3">NULL</span> <span style="color:#000;font-weight:bold">||</span> current_tcb<span style="color:#000;font-weight:bold">-&gt;</span>status <span style="color:#000;font-weight:bold">==</span> TASK_BLOCKED <span style="color:#000;font-weight:bold">||</span>
-      current_tcb<span style="color:#000;font-weight:bold">-&gt;</span>status <span style="color:#000;font-weight:bold">==</span> TASK_TERMINATED) {
-    <span style="color:#998;font-style:italic">// task with any priority(0~255) can be swap in
-</span><span style="color:#998;font-style:italic"></span>    new_tcb <span style="color:#000;font-weight:bold">=</span> ros_tcb_dequeue(MIN_TASK_PRIORITY);
-    <span style="color:#000;font-weight:bold">if</span> (new_tcb) {
-      <span style="color:#998;font-style:italic">// Do not enqueue curren_tcb here, when the task is blocked, it is added
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#998;font-style:italic">// to timer_queue, it will enqueue when the ticks due.
-</span><span style="color:#998;font-style:italic"></span>      ros_switch_context_shell(current_tcb, new_tcb);
-    } <span style="color:#000;font-weight:bold">else</span> {
-      <span style="color:#998;font-style:italic">// but you can&#39;t block the idle task
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">if</span> (current_tcb <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">&amp;</span>idle_tcb) current_tcb<span style="color:#000;font-weight:bold">-&gt;</span>status <span style="color:#000;font-weight:bold">=</span> TASK_READY;
-    }
-  } <span style="color:#000;font-weight:bold">else</span> {
-    <span style="color:#998;font-style:italic">// remove terminated task
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">do</span> {
-      new_tcb <span style="color:#000;font-weight:bold">=</span> ros_tcb_dequeue(current_tcb<span style="color:#000;font-weight:bold">-&gt;</span>priority);
-    } <span style="color:#000;font-weight:bold">while</span> (new_tcb <span style="color:#000;font-weight:bold">&amp;&amp;</span> new_tcb<span style="color:#000;font-weight:bold">-&gt;</span>status <span style="color:#000;font-weight:bold">==</span> TASK_TERMINATED);
-    <span style="color:#000;font-weight:bold">if</span> (new_tcb) {
-      ros_tcb_enqueue(current_tcb);
-      ros_switch_context_shell(current_tcb, new_tcb);
-    }
-  }
-  CRITICAL_END();
-}
-</code></pre></div><h3 id="上下文切换">上下文切换</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ros_schedule</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// no schedule and context switch util the very end of ISR
+</span><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">ros_int_cnt</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="o">!</span><span class="n">ROS_STARTED</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+  <span class="n">CRITICAL_STORE</span><span class="p">;</span>
+  <span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">new_tcb</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="n">CRITICAL_START</span><span class="p">();</span>
+  <span class="c1">// if current task is NULL or suspend or terminated, a new task will swap in
+</span><span class="c1"></span>  <span class="c1">// unconditionally
+</span><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">current_tcb</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">current_tcb</span><span class="o">-&gt;</span><span class="n">status</span> <span class="o">==</span> <span class="n">TASK_BLOCKED</span> <span class="o">||</span>
+      <span class="n">current_tcb</span><span class="o">-&gt;</span><span class="n">status</span> <span class="o">==</span> <span class="n">TASK_TERMINATED</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// task with any priority(0~255) can be swap in
+</span><span class="c1"></span>    <span class="n">new_tcb</span> <span class="o">=</span> <span class="n">ros_tcb_dequeue</span><span class="p">(</span><span class="n">MIN_TASK_PRIORITY</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">new_tcb</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Do not enqueue curren_tcb here, when the task is blocked, it is added
+</span><span class="c1"></span>      <span class="c1">// to timer_queue, it will enqueue when the ticks due.
+</span><span class="c1"></span>      <span class="n">ros_switch_context_shell</span><span class="p">(</span><span class="n">current_tcb</span><span class="p">,</span> <span class="n">new_tcb</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="c1">// but you can&#39;t block the idle task
+</span><span class="c1"></span>      <span class="k">if</span> <span class="p">(</span><span class="n">current_tcb</span> <span class="o">==</span> <span class="o">&amp;</span><span class="n">idle_tcb</span><span class="p">)</span> <span class="n">current_tcb</span><span class="o">-&gt;</span><span class="n">status</span> <span class="o">=</span> <span class="n">TASK_READY</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// remove terminated task
+</span><span class="c1"></span>    <span class="k">do</span> <span class="p">{</span>
+      <span class="n">new_tcb</span> <span class="o">=</span> <span class="n">ros_tcb_dequeue</span><span class="p">(</span><span class="n">current_tcb</span><span class="o">-&gt;</span><span class="n">priority</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">new_tcb</span> <span class="o">&amp;&amp;</span> <span class="n">new_tcb</span><span class="o">-&gt;</span><span class="n">status</span> <span class="o">==</span> <span class="n">TASK_TERMINATED</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">new_tcb</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">ros_tcb_enqueue</span><span class="p">(</span><span class="n">current_tcb</span><span class="p">);</span>
+      <span class="n">ros_switch_context_shell</span><span class="p">(</span><span class="n">current_tcb</span><span class="p">,</span> <span class="n">new_tcb</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="n">CRITICAL_END</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="上下文切换">上下文切换</h3>
 <p>如 初始化上下文 所述，我们在初始化时为Call-Saved Registers（R1，R2-R17,R28,R29） 预留了空间来保存和恢复他们。上下文切换的代码需要用汇编代码编写，因为需要操作指定的寄存器。方便起见，我直接使用 inline assembly 将汇编代码嵌入到 C 函数中，使用的是Intel风格的汇编，source总是在右边。</p>
 <p>上下文切换的步骤可以分为四步，如图 4所示：</p>
 <ol>
@@ -620,80 +919,146 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 <p>恢复新任务的上下文（因为我们现在已经在新任务的栈上）</p>
 </li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ros_switch_context</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>old_tcb, ROS_TCB <span style="color:#000;font-weight:bold">*</span>new_tcb) {
-  <span style="color:#998;font-style:italic">// The assembly code is in intel style, source is always on the right
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// Y-reg is R28 and R29
-</span><span style="color:#998;font-style:italic"></span>  __asm__ __volatile__(
-      <span style="color:#d14">&#34;push r2</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r3</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r4</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r5</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r6</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r7</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r8</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r9</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r10</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r11</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r12</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r13</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r14</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r15</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r16</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r17</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r28</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;push r29</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#998;font-style:italic">// r16, r17, r28 and r29 is saved, we&#39;re safe to use them
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;mov r28, %A[_old_tcb_]</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span> <span style="color:#998;font-style:italic">// move old tcb(LSB) to Y-regs
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;mov r29, %B[_old_tcb_]</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span> <span style="color:#998;font-style:italic">// MSB
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;sbiw r28, 0</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>        <span style="color:#998;font-style:italic">// subract 0 from r29:r28, we need this to set SREG-Z if result is zero
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;breq restore</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>           <span style="color:#998;font-style:italic">// if old_tcb is NULL, jump to restore
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;in r16, %[_SPL_]</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>       <span style="color:#998;font-style:italic">// get stack pointer to r17:r16
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;in r17, %[_SPH_]</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;st Y, r16</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>              <span style="color:#998;font-style:italic">// set old_tcb-&gt;sp to stack pointer
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;std Y+1, r17</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>           <span style="color:#998;font-style:italic">// because sp is the first member of the TCB struct
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;restore:&#34;</span>
-      <span style="color:#d14">&#34;mov r28, %A[_new_tcb_]</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;mov r29, %B[_new_tcb_]</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;ld r16, Y</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>              <span style="color:#998;font-style:italic">//load new_tcb-&gt;sp to r17:r16
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;ldd r17, Y+1</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;out %[_SPL_], r16</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>      <span style="color:#998;font-style:italic">//change the stack pointer to new_tcb-&gt;sp
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;out %[_SPH_], r17</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r29</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>                <span style="color:#998;font-style:italic">// restore new_tcb&#39;s context
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#d14">&#34;pop r28</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r17</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r16</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r15</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r14</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r13</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r12</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r11</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r10</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r9</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r8</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r7</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r6</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r5</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r4</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r3</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;pop r2</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;ret</span><span style="color:#d14">\n\t</span><span style="color:#d14">&#34;</span>
-      <span style="color:#d14">&#34;&#34;</span> <span style="color:#000;font-weight:bold">::</span>
-      [_SPL_] <span style="color:#d14">&#34;i&#34;</span> _SFR_IO_ADDR(SPL),
-      [_SPH_] <span style="color:#d14">&#34;i&#34;</span> _SFR_IO_ADDR(SPH),
-      [_old_tcb_] <span style="color:#d14">&#34;r&#34;</span>(old_tcb),
-      [_new_tcb_] <span style="color:#d14">&#34;r&#34;</span> (new_tcb)
-  );
-}
-</code></pre></div><p>保存和恢复寄存器的值分别使用 PUSH 和POP 指令。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ros_switch_context</span><span class="p">(</span><span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">old_tcb</span><span class="p">,</span> <span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">new_tcb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// The assembly code is in intel style, source is always on the right
+</span><span class="c1"></span>  <span class="c1">// Y-reg is R28 and R29
+</span><span class="c1"></span>  <span class="n">__asm__</span> <span class="n">__volatile__</span><span class="p">(</span>
+      <span class="s">&#34;push r2</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r3</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r4</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r5</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r6</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r7</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r8</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r9</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r10</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r11</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r12</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r13</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r14</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r15</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r16</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r17</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r28</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;push r29</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="c1">// r16, r17, r28 and r29 is saved, we&#39;re safe to use them
+</span><span class="c1"></span>      <span class="s">&#34;mov r28, %A[_old_tcb_]</span><span class="se">\n\t</span><span class="s">&#34;</span> <span class="c1">// move old tcb(LSB) to Y-regs
+</span><span class="c1"></span>      <span class="s">&#34;mov r29, %B[_old_tcb_]</span><span class="se">\n\t</span><span class="s">&#34;</span> <span class="c1">// MSB
+</span><span class="c1"></span>      <span class="s">&#34;sbiw r28, 0</span><span class="se">\n\t</span><span class="s">&#34;</span>        <span class="c1">// subract 0 from r29:r28, we need this to set SREG-Z if result is zero
+</span><span class="c1"></span>      <span class="s">&#34;breq restore</span><span class="se">\n\t</span><span class="s">&#34;</span>           <span class="c1">// if old_tcb is NULL, jump to restore
+</span><span class="c1"></span>      <span class="s">&#34;in r16, %[_SPL_]</span><span class="se">\n\t</span><span class="s">&#34;</span>       <span class="c1">// get stack pointer to r17:r16
+</span><span class="c1"></span>      <span class="s">&#34;in r17, %[_SPH_]</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;st Y, r16</span><span class="se">\n\t</span><span class="s">&#34;</span>              <span class="c1">// set old_tcb-&gt;sp to stack pointer
+</span><span class="c1"></span>      <span class="s">&#34;std Y+1, r17</span><span class="se">\n\t</span><span class="s">&#34;</span>           <span class="c1">// because sp is the first member of the TCB struct
+</span><span class="c1"></span>      <span class="s">&#34;restore:&#34;</span>
+      <span class="s">&#34;mov r28, %A[_new_tcb_]</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;mov r29, %B[_new_tcb_]</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;ld r16, Y</span><span class="se">\n\t</span><span class="s">&#34;</span>              <span class="c1">//load new_tcb-&gt;sp to r17:r16
+</span><span class="c1"></span>      <span class="s">&#34;ldd r17, Y+1</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;out %[_SPL_], r16</span><span class="se">\n\t</span><span class="s">&#34;</span>      <span class="c1">//change the stack pointer to new_tcb-&gt;sp
+</span><span class="c1"></span>      <span class="s">&#34;out %[_SPH_], r17</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r29</span><span class="se">\n\t</span><span class="s">&#34;</span>                <span class="c1">// restore new_tcb&#39;s context
+</span><span class="c1"></span>      <span class="s">&#34;pop r28</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r17</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r16</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r15</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r14</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r13</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r12</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r11</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r10</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r9</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r8</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r7</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r6</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r5</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r4</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r3</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;pop r2</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;ret</span><span class="se">\n\t</span><span class="s">&#34;</span>
+      <span class="s">&#34;&#34;</span> <span class="o">::</span>
+      <span class="p">[</span><span class="n">_SPL_</span><span class="p">]</span> <span class="s">&#34;i&#34;</span> <span class="n">_SFR_IO_ADDR</span><span class="p">(</span><span class="n">SPL</span><span class="p">),</span>
+      <span class="p">[</span><span class="n">_SPH_</span><span class="p">]</span> <span class="s">&#34;i&#34;</span> <span class="n">_SFR_IO_ADDR</span><span class="p">(</span><span class="n">SPH</span><span class="p">),</span>
+      <span class="p">[</span><span class="n">_old_tcb_</span><span class="p">]</span> <span class="s">&#34;r&#34;</span><span class="p">(</span><span class="n">old_tcb</span><span class="p">),</span>
+      <span class="p">[</span><span class="n">_new_tcb_</span><span class="p">]</span> <span class="s">&#34;r&#34;</span> <span class="p">(</span><span class="n">new_tcb</span><span class="p">)</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>保存和恢复寄存器的值分别使用 PUSH 和POP 指令。</p>
 <p>在更新当前任务的栈指针时，如果是第一个进行任务调度，那么old_tcb会是 NULL，所以我用了sbiw 和 breq 指令进行判断和跳转。使用 sbiw 从 Y 寄存器中减去0，这样Y寄存器中的值不变，但是如果结果为0的话，就说明Y寄存器是NULL，即old_tcb是NULL。那么SREG的Z标记会被置0。而breq指令会在Z标记置零时，进行跳转。</p>
 <p>获取和更新系统栈指针（ _SFR_IO_ADDR(SPL) 和 _SFR_IO_ADDR(SPH)）时，同样的，因为栈指针有16位，所以需要两个寄存器来保存它的值。又因系统栈指针在IO地址空间内，所以要用in和out指令来获取和更新。</p>
 <p>st指令用来把数据从寄存器存回内存，ld则是把内存地址上的数据加载到寄存器。因为我们的old_tcb和new_tcb都是指针（即内存地址），所以要用st和ld指令来读写任务的栈指针。</p>
 <p>图 4为从 task1 切换到 task2 的栈示意图：</p>
-<p>
-<a data-fancybox="gallery" href="/images/switch-context.png">
-  <img class="mx-auto" alt="图4 switch context" src="/images/switch-context.png" />
-</a>
-</p>
+<p><img src="/images/switch-context.png" alt="图4 switch context"></p>
 <h2 id="ros_delay">ros_delay</h2>
 <p>到此，我们已经完成了scheduler的核心功能，ROS已经具备运行多任务的能力，但是现在还不能运行多个任务。如果一个高优先级的任务存在，那么其他低优先级的任务永远不会运行，这种行为对于非抢占式调度器是正确的。通过定时中断进行任务调度，而因为任务是有优先级的，如图 2ROS的任务四态模型 所示，只有将高优先级的任务设置为不可调度的状态<code>Blocked</code>，那么低优先级的任务才能调入。</p>
 <p>阻塞和唤醒任务的思路如下：</p>
@@ -704,165 +1069,343 @@ ROS_TCB <span style="color:#000;font-weight:bold">*</span><span style="color:#90
 <li>从<code>timer_queue</code>中遍历出 tick 等于 0 的任务，更新任务状态为<code>TASK_READY</code>，并重新<code>enqueue</code>。</li>
 </ol>
 <p>阻塞任务：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">// delay current tcb
-</span><span style="color:#998;font-style:italic"></span>status_t <span style="color:#900;font-weight:bold">ros_delay</span>(<span style="color:#458;font-weight:bold">uint32_t</span> ticks) {
-  ROS_TIMER timer;
-  ROS_TCB <span style="color:#000;font-weight:bold">*</span>cur_tcb;
-  <span style="color:#458;font-weight:bold">uint8_t</span> status;
-  CRITICAL_STORE;
-  cur_tcb <span style="color:#000;font-weight:bold">=</span> ros_current_tcb();
-  <span style="color:#000;font-weight:bold">if</span> (ticks <span style="color:#000;font-weight:bold">==</span> <span style="color:#099">0</span>) {
-    status <span style="color:#000;font-weight:bold">=</span> ROS_ERR_PARAM;
-  } <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> (cur_tcb <span style="color:#000;font-weight:bold">==</span> <span style="color:#0086b3">NULL</span>) {
-    status <span style="color:#000;font-weight:bold">=</span> ROS_ERR_CONTEXT;
-  } <span style="color:#000;font-weight:bold">else</span> {
-    CRITICAL_START();
-    cur_tcb<span style="color:#000;font-weight:bold">-&gt;</span>status <span style="color:#000;font-weight:bold">=</span> TASK_BLOCKED;
-    timer.ticks <span style="color:#000;font-weight:bold">=</span> ticks;
-    timer.blocked_tcb <span style="color:#000;font-weight:bold">=</span> cur_tcb;
-    <span style="color:#000;font-weight:bold">if</span> (ros_register_timer(<span style="color:#000;font-weight:bold">&amp;</span>timer) <span style="color:#000;font-weight:bold">!=</span> ROS_OK) {
-      status <span style="color:#000;font-weight:bold">=</span> ROS_ERR_TIMER;
-      CRITICAL_END();
-    } <span style="color:#000;font-weight:bold">else</span> {
-      status <span style="color:#000;font-weight:bold">=</span> ROS_OK;
-      CRITICAL_END();
-      <span style="color:#998;font-style:italic">// call scheduler to swap out current task
-</span><span style="color:#998;font-style:italic"></span>      ros_schedule();
-    }
-  }
-  <span style="color:#000;font-weight:bold">return</span> status;
-}
-</code></pre></div><p>唤醒任务：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">wakeup_task</span>(ROS_TCB <span style="color:#000;font-weight:bold">*</span>tcb) {
-  CRITICAL_STORE;
-  CRITICAL_START();
-  tcb<span style="color:#000;font-weight:bold">-&gt;</span>status <span style="color:#000;font-weight:bold">=</span> TASK_READY;
-  ros_tcb_enqueue(tcb);
-  CRITICAL_END();
-}
-</code></pre></div><h2 id="构建">构建</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// delay current tcb
+</span><span class="c1"></span><span class="n">status_t</span> <span class="nf">ros_delay</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">ticks</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">ROS_TIMER</span> <span class="n">timer</span><span class="p">;</span>
+  <span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">cur_tcb</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">status</span><span class="p">;</span>
+  <span class="n">CRITICAL_STORE</span><span class="p">;</span>
+  <span class="n">cur_tcb</span> <span class="o">=</span> <span class="n">ros_current_tcb</span><span class="p">();</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">ticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">ROS_ERR_PARAM</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">cur_tcb</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">ROS_ERR_CONTEXT</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">CRITICAL_START</span><span class="p">();</span>
+    <span class="n">cur_tcb</span><span class="o">-&gt;</span><span class="n">status</span> <span class="o">=</span> <span class="n">TASK_BLOCKED</span><span class="p">;</span>
+    <span class="n">timer</span><span class="p">.</span><span class="n">ticks</span> <span class="o">=</span> <span class="n">ticks</span><span class="p">;</span>
+    <span class="n">timer</span><span class="p">.</span><span class="n">blocked_tcb</span> <span class="o">=</span> <span class="n">cur_tcb</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ros_register_timer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">timer</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ROS_OK</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">status</span> <span class="o">=</span> <span class="n">ROS_ERR_TIMER</span><span class="p">;</span>
+      <span class="n">CRITICAL_END</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">status</span> <span class="o">=</span> <span class="n">ROS_OK</span><span class="p">;</span>
+      <span class="n">CRITICAL_END</span><span class="p">();</span>
+      <span class="c1">// call scheduler to swap out current task
+</span><span class="c1"></span>      <span class="n">ros_schedule</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">status</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>唤醒任务：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">void</span> <span class="nf">wakeup_task</span><span class="p">(</span><span class="n">ROS_TCB</span> <span class="o">*</span><span class="n">tcb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">CRITICAL_STORE</span><span class="p">;</span>
+  <span class="n">CRITICAL_START</span><span class="p">();</span>
+  <span class="n">tcb</span><span class="o">-&gt;</span><span class="n">status</span> <span class="o">=</span> <span class="n">TASK_READY</span><span class="p">;</span>
+  <span class="n">ros_tcb_enqueue</span><span class="p">(</span><span class="n">tcb</span><span class="p">);</span>
+  <span class="n">CRITICAL_END</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="构建">构建</h2>
 <p>我使用make来构建ROS。对于一个比较大的C项目，如果每次做一点修改，都要去一个个编译，链接，而且编译和链接是有顺序的，每次如此就很繁琐。</p>
 <p>使用make，编写Makefile来构建整个项目，只要编写一次Makefile，接下来就可以实现自动构建。Makefile的基本格式如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#998;font-style:italic"># comment
-</span><span style="color:#998;font-style:italic"># (note: the &lt;tab&gt; in the command line is necessary for make to work)
-</span><span style="color:#998;font-style:italic"></span><span style="color:#900;font-weight:bold">target</span><span style="color:#000;font-weight:bold">:</span>  dependency1 dependency2 ...
-      &lt;tab&gt; <span style="color:#0086b3">command</span>
-</code></pre></div><p>一个构建的目标分为依赖和命令。下面贴上ROS的Makefile：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-makefile" data-lang="makefile"><span style="color:#008080">CC</span><span style="color:#000;font-weight:bold">=</span>avr-gcc
-<span style="color:#008080">OBJCOPY</span><span style="color:#000;font-weight:bold">=</span>avr-objcopy
-<span style="color:#008080">SIZE</span><span style="color:#000;font-weight:bold">=</span>avr-size
-<span style="color:#008080">DUDE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>ARDUINO_DIR<span style="color:#000;font-weight:bold">)</span>/hardware/tools/avr/bin/avrdude
-<span style="color:#008080">SIMAVR</span><span style="color:#000;font-weight:bold">=</span>simavr
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="c"># comment
+</span><span class="c"># (note: the &lt;tab&gt; in the command line is necessary for make to work)
+</span><span class="c"></span><span class="nf">target</span><span class="o">:</span>  <span class="n">dependency</span>1 <span class="n">dependency</span>2 ...
+      &lt;tab&gt; <span class="nb">command</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>一个构建的目标分为依赖和命令。下面贴上ROS的Makefile：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="nv">CC</span><span class="o">=</span>avr-gcc
+<span class="nv">OBJCOPY</span><span class="o">=</span>avr-objcopy
+<span class="nv">SIZE</span><span class="o">=</span>avr-size
+<span class="nv">DUDE</span><span class="o">=</span><span class="k">$(</span>ARDUINO_DIR<span class="k">)</span>/hardware/tools/avr/bin/avrdude
+<span class="nv">SIMAVR</span><span class="o">=</span>simavr
 
-<span style="color:#008080">MCU</span><span style="color:#000;font-weight:bold">=</span>atmega328p
-<span style="color:#008080">FCPU</span><span style="color:#000;font-weight:bold">=</span>16000000L
+<span class="nv">MCU</span><span class="o">=</span>atmega328p
+<span class="nv">FCPU</span><span class="o">=</span>16000000L
 
-<span style="color:#008080">ARDUINO_DIR</span><span style="color:#000;font-weight:bold">=</span>/home/leer/program/arduino-1.8.9
-<span style="color:#008080">DUDE_CONF</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>ARDUINO_DIR<span style="color:#000;font-weight:bold">)</span>/hardware/tools/avr/etc/avrdude.conf
-<span style="color:#008080">BUILD_DIR</span><span style="color:#000;font-weight:bold">=</span>build
+<span class="nv">ARDUINO_DIR</span><span class="o">=</span>/home/leer/program/arduino-1.8.9
+<span class="nv">DUDE_CONF</span><span class="o">=</span><span class="k">$(</span>ARDUINO_DIR<span class="k">)</span>/hardware/tools/avr/etc/avrdude.conf
+<span class="nv">BUILD_DIR</span><span class="o">=</span>build
 
-<span style="color:#008080">CFLAGS</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>INCLUDES<span style="color:#000;font-weight:bold">)</span> -g -Wall -Werror -Os -mmcu<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>MCU<span style="color:#000;font-weight:bold">)</span> -DF_CPU<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>FCPU<span style="color:#000;font-weight:bold">)</span> -DARDUINO<span style="color:#000;font-weight:bold">=</span><span style="color:#099">10809</span> -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR
+<span class="nv">CFLAGS</span><span class="o">=</span><span class="k">$(</span>INCLUDES<span class="k">)</span> -g -Wall -Werror -Os -mmcu<span class="o">=</span><span class="k">$(</span>MCU<span class="k">)</span> -DF_CPU<span class="o">=</span><span class="k">$(</span>FCPU<span class="k">)</span> -DARDUINO<span class="o">=</span><span class="m">10809</span> -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR
 
-<span style="color:#008080">TARGET</span><span style="color:#000;font-weight:bold">=</span>ros
-<span style="color:#008080">SOURCE</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>wildcard *.c<span style="color:#000;font-weight:bold">)</span>
-<span style="color:#998;font-style:italic"># *.c -&gt; build/*.o
-</span><span style="color:#998;font-style:italic"></span><span style="color:#008080">OBJS</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>addprefix <span style="color:#000;font-weight:bold">$(</span>BUILD_DIR<span style="color:#000;font-weight:bold">)</span>/,<span style="color:#000;font-weight:bold">$(</span>SOURCE:.c<span style="color:#000;font-weight:bold">=</span>.o<span style="color:#000;font-weight:bold">))</span>
+<span class="nv">TARGET</span><span class="o">=</span>ros
+<span class="nv">SOURCE</span><span class="o">=</span><span class="k">$(</span>wildcard *.c<span class="k">)</span>
+<span class="c"># *.c -&gt; build/*.o
+</span><span class="c"></span><span class="nv">OBJS</span><span class="o">=</span><span class="k">$(</span>addprefix <span class="k">$(</span>BUILD_DIR<span class="k">)</span>/,<span class="k">$(</span>SOURCE:.c<span class="o">=</span>.o<span class="k">))</span>
 
-<span style="color:#900;font-weight:bold">all</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">BUILD_DIR</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">BUILD_DIR</span><span style="color:#000;font-weight:bold">)</span>/<span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">TARGET</span><span style="color:#000;font-weight:bold">)</span>.hex
+<span class="nf">all</span><span class="o">:</span> <span class="k">$(</span><span class="nv">BUILD_DIR</span><span class="k">)</span> <span class="k">$(</span><span class="nv">BUILD_DIR</span><span class="k">)</span>/<span class="k">$(</span><span class="nv">TARGET</span><span class="k">)</span>.<span class="n">hex</span>
 
-<span style="color:#900;font-weight:bold">$(BUILD_DIR)/%.o</span><span style="color:#000;font-weight:bold">:</span> %.c
-  <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">CC</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">CFLAGS</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#a61717;background-color:#e3d2d2">-c</span> <span style="color:#000;font-weight:bold">$&lt;</span> <span style="color:#a61717;background-color:#e3d2d2">-o</span> <span style="color:#000;font-weight:bold">$@</span>
+<span class="nf">$(BUILD_DIR)/%.o</span><span class="o">:</span> %.<span class="n">c</span>
+  <span class="k">$(</span><span class="nv">CC</span><span class="k">)</span> <span class="k">$(</span><span class="nv">CFLAGS</span><span class="k">)</span> <span class="err">-c</span> <span class="k">$&lt;</span> <span class="err">-o</span> <span class="k">$@</span>
 
-<span style="color:#900;font-weight:bold">$(BUILD_DIR)</span><span style="color:#000;font-weight:bold">:</span>
-  <span style="color:#a61717;background-color:#e3d2d2">mkdir</span> <span style="color:#a61717;background-color:#e3d2d2">-p</span> <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">BUILD_DIR</span><span style="color:#000;font-weight:bold">)</span>
+<span class="nf">$(BUILD_DIR)</span><span class="o">:</span>
+  <span class="err">mkdir</span> <span class="err">-p</span> <span class="k">$(</span><span class="nv">BUILD_DIR</span><span class="k">)</span>
 
-<span style="color:#998;font-style:italic"># Build elf, depends on *.o
-</span><span style="color:#998;font-style:italic"></span><span style="color:#900;font-weight:bold">$(BUILD_DIR)/$(TARGET).elf</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">OBJS</span><span style="color:#000;font-weight:bold">)</span>
-  <span style="color:#a61717;background-color:#e3d2d2">@echo</span> <span style="color:#a61717;background-color:#e3d2d2">Building</span> <span style="color:#000;font-weight:bold">$@</span><span style="color:#a61717;background-color:#e3d2d2">...</span>
-  <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">CC</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">CFLAGS</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">OBJS</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#a61717;background-color:#e3d2d2">-o</span> <span style="color:#000;font-weight:bold">$@</span>
-  <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">SIZE</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#a61717;background-color:#e3d2d2">-C</span> <span style="color:#008080">--mcu</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">$(</span>MCU<span style="color:#000;font-weight:bold">)</span> <span style="color:#008080">$@</span>
+<span class="c"># Build elf, depends on *.o
+</span><span class="c"></span><span class="nf">$(BUILD_DIR)/$(TARGET).elf</span><span class="o">:</span> <span class="k">$(</span><span class="nv">OBJS</span><span class="k">)</span>
+  <span class="err">@echo</span> <span class="err">Building</span> <span class="k">$@</span><span class="err">...</span>
+  <span class="k">$(</span><span class="nv">CC</span><span class="k">)</span> <span class="k">$(</span><span class="nv">CFLAGS</span><span class="k">)</span> <span class="k">$(</span><span class="nv">OBJS</span><span class="k">)</span> <span class="err">-o</span> <span class="k">$@</span>
+  <span class="k">$(</span><span class="nv">SIZE</span><span class="k">)</span> <span class="err">-C</span> <span class="nv">--mcu</span><span class="o">=</span><span class="k">$(</span>MCU<span class="k">)</span> <span class="nv">$@</span>
 
-<span style="color:#998;font-style:italic"># Build hex, depends on elf
-</span><span style="color:#998;font-style:italic"></span><span style="color:#900;font-weight:bold">$(BUILD_DIR)/$(TARGET).hex</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">BUILD_DIR</span><span style="color:#000;font-weight:bold">)</span>/<span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">TARGET</span><span style="color:#000;font-weight:bold">)</span>.elf
-  <span style="color:#a61717;background-color:#e3d2d2">@echo</span> <span style="color:#a61717;background-color:#e3d2d2">Building</span> <span style="color:#000;font-weight:bold">$@</span><span style="color:#a61717;background-color:#e3d2d2">...</span>
-  <span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">OBJCOPY</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#a61717;background-color:#e3d2d2">-j</span> <span style="color:#a61717;background-color:#e3d2d2">.text</span> <span style="color:#a61717;background-color:#e3d2d2">-j</span> <span style="color:#a61717;background-color:#e3d2d2">.data</span> <span style="color:#a61717;background-color:#e3d2d2">-O</span> <span style="color:#a61717;background-color:#e3d2d2">ihex</span> <span style="color:#000;font-weight:bold">$&lt;</span> <span style="color:#000;font-weight:bold">$@</span>
+<span class="c"># Build hex, depends on elf
+</span><span class="c"></span><span class="nf">$(BUILD_DIR)/$(TARGET).hex</span><span class="o">:</span> <span class="k">$(</span><span class="nv">BUILD_DIR</span><span class="k">)</span>/<span class="k">$(</span><span class="nv">TARGET</span><span class="k">)</span>.<span class="n">elf</span>
+  <span class="err">@echo</span> <span class="err">Building</span> <span class="k">$@</span><span class="err">...</span>
+  <span class="k">$(</span><span class="nv">OBJCOPY</span><span class="k">)</span> <span class="err">-j</span> <span class="err">.text</span> <span class="err">-j</span> <span class="err">.data</span> <span class="err">-O</span> <span class="err">ihex</span> <span class="k">$&lt;</span> <span class="k">$@</span>
 
-<span style="color:#900;font-weight:bold">upload</span><span style="color:#000;font-weight:bold">:</span>
-  <span style="color:#a61717;background-color:#e3d2d2">@echo</span> <span style="color:#a61717;background-color:#e3d2d2">Upload</span> <span style="color:#a61717;background-color:#e3d2d2">ROS</span> <span style="color:#a61717;background-color:#e3d2d2">to</span> <span style="color:#a61717;background-color:#e3d2d2">board...</span>
-  <span style="color:#900;font-weight:bold">$(DUDE) -C $(DUDE_CONF) -v -p $(MCU) -c arduino -P /dev/ttyACM0 -b 115200 -D -U flash</span><span style="color:#000;font-weight:bold">:</span>w:<span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">BUILD_DIR</span><span style="color:#000;font-weight:bold">)</span>/<span style="color:#000;font-weight:bold">$(</span><span style="color:#008080">TARGET</span><span style="color:#000;font-weight:bold">)</span>.hex:i
-<span style="color:#900;font-weight:bold">.PHONY</span><span style="color:#000;font-weight:bold">:</span> clean
-<span style="color:#900;font-weight:bold">clean</span><span style="color:#000;font-weight:bold">:</span>
-  <span style="color:#a61717;background-color:#e3d2d2">rm</span> <span style="color:#a61717;background-color:#e3d2d2">-rf</span> <span style="color:#a61717;background-color:#e3d2d2">build</span>
-</code></pre></div><p>其中的默认目标 all 将构建 <code>$(BUILD_DIR)/$(TARGET).hex</code> 而其依赖于<code>$(BUILD_DIR)/$(TARGET).elf</code>，而它又依赖于 OBJS，所以最终的构建顺序为：</p>
+<span class="nf">upload</span><span class="o">:</span>
+  <span class="err">@echo</span> <span class="err">Upload</span> <span class="err">ROS</span> <span class="err">to</span> <span class="err">board...</span>
+  <span class="nf">$(DUDE) -C $(DUDE_CONF) -v -p $(MCU) -c arduino -P /dev/ttyACM0 -b 115200 -D -U flash</span><span class="o">:</span><span class="n">w</span>:<span class="k">$(</span><span class="nv">BUILD_DIR</span><span class="k">)</span>/<span class="k">$(</span><span class="nv">TARGET</span><span class="k">)</span>.<span class="n">hex</span>:<span class="n">i</span>
+<span class="nf">.PHONY</span><span class="o">:</span> <span class="n">clean</span>
+<span class="nf">clean</span><span class="o">:</span>
+  <span class="err">rm</span> <span class="err">-rf</span> <span class="err">build</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其中的默认目标 all 将构建 <code>$(BUILD_DIR)/$(TARGET).hex</code> 而其依赖于<code>$(BUILD_DIR)/$(TARGET).elf</code>，而它又依赖于 OBJS，所以最终的构建顺序为：</p>
 <p><code>OBJS -&gt; $(BUILD_DIR)/$(TARGET).elf -&gt; $(BUILD_DIR)/$(TARGET).hex</code></p>
 <p>Upload 将构建好的 hex 文件通过 avrdude 工具上传到 avr开发板上，这里为atmega328p的Arduino Uno。同时也可以自定义 MCU 变量来为不同的开发板构建和上传。</p>
 <h2 id="示例">示例</h2>
 <p>下面的代码是使用ROS来以不同的频率闪烁两个LED的例子：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * Blink example in ROS, DO NOT use any function in Arduino.h
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;avr/io.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
-</span><span style="color:#999;font-weight:bold;font-style:italic">#include</span> <span style="color:#999;font-weight:bold;font-style:italic">&#34;ros.h&#34;</span><span style="color:#999;font-weight:bold;font-style:italic">
-</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
-<span style="color:#998;font-style:italic">// include for simavr
-</span><span style="color:#998;font-style:italic">// #include &#34;avr_mcu_section.h&#34;
-</span><span style="color:#998;font-style:italic">// AVR_MCU(F_CPU, &#34;atmega328p&#34;);
-</span><span style="color:#998;font-style:italic"></span>ROS_TCB task1;
-ROS_TCB task2;
-<span style="color:#458;font-weight:bold">uint8_t</span> task1_stack[ROS_DEFAULT_STACK_SIZE];
-<span style="color:#458;font-weight:bold">uint8_t</span> task2_stack[ROS_DEFAULT_STACK_SIZE];
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
+</span><span class="cm"> * Blink example in ROS, DO NOT use any function in Arduino.h
+</span><span class="cm"> */</span>
+<span class="cp">#include</span> <span class="cpf">&lt;avr/io.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;ros.h&#34;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="c1">// include for simavr
+</span><span class="c1">// #include &#34;avr_mcu_section.h&#34;
+</span><span class="c1">// AVR_MCU(F_CPU, &#34;atmega328p&#34;);
+</span><span class="c1"></span><span class="n">ROS_TCB</span> <span class="n">task1</span><span class="p">;</span>
+<span class="n">ROS_TCB</span> <span class="n">task2</span><span class="p">;</span>
+<span class="kt">uint8_t</span> <span class="n">task1_stack</span><span class="p">[</span><span class="n">ROS_DEFAULT_STACK_SIZE</span><span class="p">];</span>
+<span class="kt">uint8_t</span> <span class="n">task2_stack</span><span class="p">[</span><span class="n">ROS_DEFAULT_STACK_SIZE</span><span class="p">];</span>
 
-<span style="color:#999;font-weight:bold;font-style:italic">#define LED1 13
-</span><span style="color:#999;font-weight:bold;font-style:italic">#define LED2 12
-</span><span style="color:#999;font-weight:bold;font-style:italic">#define bitSet(value, bit) ((value) |= (1UL &lt;&lt; (bit)))
-</span><span style="color:#999;font-weight:bold;font-style:italic">#define bitClear(value, bit) ((value) &amp;= ~(1UL &lt;&lt; (bit)))
-</span><span style="color:#999;font-weight:bold;font-style:italic"></span>
-<span style="color:#999;font-weight:bold;font-style:italic">#define TASK1_PRIORITY 1
-</span><span style="color:#999;font-weight:bold;font-style:italic">#define TASK2_PRIORITY 0  </span><span style="color:#998;font-style:italic">// max priority
-</span><span style="color:#998;font-style:italic"></span>
-<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">t1</span>() {
-  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
-    <span style="color:#998;font-style:italic">// set LED1 high
-</span><span style="color:#998;font-style:italic"></span>    bitSet(PORTB, <span style="color:#099">5</span>);
-    ros_delay(<span style="color:#099">200</span>);
-    bitClear(PORTB, <span style="color:#099">5</span>);
-    ros_delay(<span style="color:#099">200</span>);
-  }
-}
+<span class="cp">#define LED1 13
+</span><span class="cp">#define LED2 12
+</span><span class="cp">#define bitSet(value, bit) ((value) |= (1UL &lt;&lt; (bit)))
+</span><span class="cp">#define bitClear(value, bit) ((value) &amp;= ~(1UL &lt;&lt; (bit)))
+</span><span class="cp"></span>
+<span class="cp">#define TASK1_PRIORITY 1
+</span><span class="cp">#define TASK2_PRIORITY 0  </span><span class="c1">// max priority
+</span><span class="c1"></span>
+<span class="kt">void</span> <span class="nf">t1</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// set LED1 high
+</span><span class="c1"></span>    <span class="n">bitSet</span><span class="p">(</span><span class="n">PORTB</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="n">ros_delay</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+    <span class="n">bitClear</span><span class="p">(</span><span class="n">PORTB</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="n">ros_delay</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
-<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">t2</span>() {
-  <span style="color:#000;font-weight:bold">while</span> (<span style="color:#099">1</span>) {
-    bitSet(PORTB, <span style="color:#099">4</span>);
-    <span style="color:#998;font-style:italic">// delay a second
-</span><span style="color:#998;font-style:italic"></span>    ros_delay(<span style="color:#099">100</span>);
-    bitClear(PORTB, <span style="color:#099">4</span>);
-    ros_delay(<span style="color:#099">100</span>);
-  }
-}
+<span class="kt">void</span> <span class="nf">t2</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">bitSet</span><span class="p">(</span><span class="n">PORTB</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+    <span class="c1">// delay a second
+</span><span class="c1"></span>    <span class="n">ros_delay</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+    <span class="n">bitClear</span><span class="p">(</span><span class="n">PORTB</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+    <span class="n">ros_delay</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
-<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setup</span>() {
-  <span style="color:#998;font-style:italic">// set LED 13 and LED 12 as output
-</span><span style="color:#998;font-style:italic"></span>  bitSet(DDRB, <span style="color:#099">5</span>);
-  bitSet(DDRB, <span style="color:#099">4</span>);
-  <span style="color:#458;font-weight:bold">bool</span> os_started <span style="color:#000;font-weight:bold">=</span> ros_init();
-  <span style="color:#000;font-weight:bold">if</span> (os_started) {
-    ros_create_task(<span style="color:#000;font-weight:bold">&amp;</span>task1, t1, TASK1_PRIORITY, task1_stack, ROS_DEFAULT_STACK_SIZE);
-    ros_create_task(<span style="color:#000;font-weight:bold">&amp;</span>task2, t2, TASK2_PRIORITY, task2_stack, ROS_DEFAULT_STACK_SIZE);
-    ros_schedule();
-  }
-}
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// set LED 13 and LED 12 as output
+</span><span class="c1"></span>  <span class="n">bitSet</span><span class="p">(</span><span class="n">DDRB</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+  <span class="n">bitSet</span><span class="p">(</span><span class="n">DDRB</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="n">os_started</span> <span class="o">=</span> <span class="n">ros_init</span><span class="p">();</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">os_started</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ros_create_task</span><span class="p">(</span><span class="o">&amp;</span><span class="n">task1</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">TASK1_PRIORITY</span><span class="p">,</span> <span class="n">task1_stack</span><span class="p">,</span> <span class="n">ROS_DEFAULT_STACK_SIZE</span><span class="p">);</span>
+    <span class="n">ros_create_task</span><span class="p">(</span><span class="o">&amp;</span><span class="n">task2</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">TASK2_PRIORITY</span><span class="p">,</span> <span class="n">task2_stack</span><span class="p">,</span> <span class="n">ROS_DEFAULT_STACK_SIZE</span><span class="p">);</span>
+    <span class="n">ros_schedule</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
-<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">loop</span>() {
-  <span style="color:#998;font-style:italic">// nothing
-</span><span style="color:#998;font-style:italic"></span>}
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// nothing
+</span><span class="c1"></span><span class="p">}</span>
 
-<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
-  setup();
-  <span style="color:#998;font-style:italic">// never call loop
-</span><span style="color:#998;font-style:italic"></span>  loop();
-  <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
-}
-</code></pre></div><p>两个任务运行流程如下：</p>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">setup</span><span class="p">();</span>
+  <span class="c1">// never call loop
+</span><span class="c1"></span>  <span class="n">loop</span><span class="p">();</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>两个任务运行流程如下：</p>
 <ol>
 <li>系统初始化和创建任务之后，Task1，Task2和默认任务都在就绪队列中，最高优先级的Task2被选中运行，将LED2 点亮，然后遇到ros_delay(100)，Task2将被阻塞1秒。</li>
 <li>Task1得以运行，将LED1点亮，然后调用ros_delay(200)，将阻塞两秒。</li>
@@ -877,11 +1420,7 @@ ROS_TCB task2;
 <p>在两个方面和FreeRTOS进行比较：比较ROS和FreeRTOS的代码量（不包括注释）；使用FreeRTOS写出和以上示例相同功能的代码，比较它们二进制文件的大小。</p>
 <p>对于内存有限的嵌入式系统来说，二进制文件的大小也是一个重要的考虑因素。如 图表 2 所示。FreeRTOS在编译时不包含semaphores、queues、mutexs，只包含了设计任务调度的代码，并且两者编译时使用相同的编译器参数。ROS和FreeRTOS的二进制文件，在数据存储空间相差不大；在程序存储空间ROS占用3484字节，占总空间的10.6%，而FreeRTOS占用8424字节，占总空间的25.7%。</p>
 <p>两者在代码量上的比较，FreeRTOS为4722行，ROS为677行。FreeRTOS的代码量是ROS的7倍，这是因为FreeRTOS有很多的功能和为通用性考虑的代码。ROS显得更加简洁，适合小型项目和个人学习。</p>
-<p>
-<a data-fancybox="gallery" href="/images/ros-compare-with-freertos.png">
-  <img class="mx-auto" alt="ros-compare-with-freertos" src="/images/ros-compare-with-freertos.png" />
-</a>
-</p>
+<p><img src="/images/ros-compare-with-freertos.png" alt="ros-compare-with-freertos"></p>
 <h2 id="总结">总结</h2>
 <p>ROS拥有一个非抢占式的任务调度器，对于优先级相同的任务，使用 round-robin算法。</p>
 <p>在实现系统时，架构往往比写代码更加重要，如果一开始的程序设计和思路是错误的，那么接下来做的都是徒劳。架构是为了理清思路，而不去纠结细节。ROS的架构和FreeRTOS类似：利用 timer 产生周期性中断，在ISR中调用 scheduler，选择优先级最高的任务（对于相同优先级的任务，使用 round-robin），之后进行上下文切换。同时任务可以主动让出 CPU，让其他低优先级的任务切入。</p>
@@ -898,98 +1437,123 @@ ROS_TCB task2;
 <p>[6]朱迪. FreeRTOS实时操作系统任务调度优化的研究与实现[D].南京邮电大学,2015.</p>
 <p>[7]<a href="https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html">AVR Assembly Instruction</a></p>
 <p>[8]<a href="https://gcc.gnu.org/wiki/avr-gcc#Call-Used_Registers">Avr-gcc wiki</a></p>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-05-12
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/2019/01/02/os-review-map/">操作系统-复习提纲</a></li>
-        
-        <li><a href="/2019/01/01/os-banker-algorithm/">操作系统-银行家算法</a></li>
-        
-        <li><a href="/2018/12/28/os-elevator-algorithm/">操作系统-电梯调度算法</a></li>
-        
-        <li><a href="/2018/10/18/semaphore/">Concurrent with Semaphore</a></li>
-        
-        <li><a href="/2018/09/29/6.828_hw2_shell/">6.828 Homework 2:Shell</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/rtos'>RTOS</a></li>
-                
-                <li><a href='https://leer.moe/tags/os'>OS</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/RTOS/">RTOS</a>
+          <a href="/tags/OS/">OS</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2019/06/25/install_manjaro/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Manjaro安装小记&amp;使用体验</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2019/04/25/java-concurrent-aqs/">
+            <span class="next-text nav-default">AbstractQueuedSynchronizer</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-        </div>
-        
-        
-        
-        
-      </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
   </div>
-  <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
+<script src="/js/sitedate.js"></script>
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
-
 </html>

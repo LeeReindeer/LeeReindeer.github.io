@@ -1,148 +1,170 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Google Java 代码规范 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Google Java 代码规范 | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="Google Java 代码规范 - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2017-09-18T20:31:21&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2017-09-18T20:31:21&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" Translation of Google Java Style Guide,by Lee.
+ 转载请注明出处.This Translation is under CC BY-NC-SA 3.0 CN License.
+下载pdf
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/google-java-style-guide/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Google Java 代码规范" />
+<meta property="og:description" content="
 Translation of Google Java Style Guide,by Lee.
 
 转载请注明出处.This Translation is under CC BY-NC-SA 3.0 CN License.
-下载pdf">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/post/google-java-style-guide/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+下载pdf" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/google-java-style-guide/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-09-18T20:31:21+00:00" />
+<meta property="article:modified_time" content="2017-09-18T20:31:21+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="Google Java 代码规范">
+<meta itemprop="description" content="
+Translation of Google Java Style Guide,by Lee.
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+转载请注明出处.This Translation is under CC BY-NC-SA 3.0 CN License.
+下载pdf"><meta itemprop="datePublished" content="2017-09-18T20:31:21+00:00" />
+<meta itemprop="dateModified" content="2017-09-18T20:31:21+00:00" />
+<meta itemprop="wordCount" content="9184">
+<meta itemprop="keywords" content="翻译,Java," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Google Java 代码规范"/>
+<meta name="twitter:description" content="
+Translation of Google Java Style Guide,by Lee.
 
-    
-    
+转载请注明出处.This Translation is under CC BY-NC-SA 3.0 CN License.
+下载pdf"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-    <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Google Java 代码规范</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-09-18 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/"> 翻译集 </a>
+            </div>
+          <span class="more-meta"> 9184 words </span>
+          <span class="more-meta"> 19 mins read </span>
         
-        <div class="container">
-            <div class="col-group">
+      </div>
+    </header>
 
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">Google Java 代码规范</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#11-术语说明">1.1 术语说明</a></li>
     <li><a href="#12-指南说明">1.2 指南说明</a></li>
@@ -269,60 +291,15 @@ Translation of Google Java Style Guide,by Lee.
     </li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">Google Java 代码规范</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年9月18日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86'>翻译集</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">9059 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2017-09-18T20:31:21" title="September 18, 2017">September 18, 2017</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>Translation of <a href="https://google.github.io/styleguide/javaguide.html">Google Java Style Guide</a>,by <a href="http://leezoom.xyz">Lee</a>.</p>
 </blockquote>
 <p>转载请注明出处.This Translation is under <code>CC BY-NC-SA 3.0 CN</code> License.</p>
@@ -591,43 +568,92 @@ Translation of Google Java Style Guide,by Lee.
 </li>
 </ol>
 <p>例子:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span>condition<span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
-    method<span style="color:#000;font-weight:bold">();</span>
-  <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">};</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">return</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+  <span class="k">while</span> <span class="o">(</span><span class="n">condition</span><span class="o">())</span> <span class="o">{</span>
+    <span class="n">method</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">};</span>
 
-<span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> MyClass<span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#3c5d5d;font-weight:bold">@Override</span> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">method</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>condition<span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-        something<span style="color:#000;font-weight:bold">();</span>
-      <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>ProblemException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        recover<span style="color:#000;font-weight:bold">();</span>
-      <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>otherCondition<span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
-      somethingElse<span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-      lastThing<span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">};</span>
-</code></pre></div><p>枚举类的几个例外在 第4.8.1节,<a href="#481-%E6%9E%9A%E4%B8%BE%E7%B1%BB">枚举类</a>.</p>
+<span class="k">return</span> <span class="k">new</span> <span class="n">MyClass</span><span class="o">()</span> <span class="o">{</span>
+  <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">condition</span><span class="o">())</span> <span class="o">{</span>
+      <span class="k">try</span> <span class="o">{</span>
+        <span class="n">something</span><span class="o">();</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ProblemException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">recover</span><span class="o">();</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">otherCondition</span><span class="o">())</span> <span class="o">{</span>
+      <span class="n">somethingElse</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="n">lastThing</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">};</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>枚举类的几个例外在 第4.8.1节,<a href="#481-%E6%9E%9A%E4%B8%BE%E7%B1%BB">枚举类</a>.</p>
 <h3 id="413-空块简洁">4.1.3 空块:简洁</h3>
 <p>一个空块状结构或类块状结构可以用K &amp; R 风格(在第<a href="#412-%E9%9D%9E%E7%A9%BA%E5%9D%97:K&amp;R%E9%A3%8E%E6%A0%BC">4.1.2</a>
 节中).或者,大括号可以在打开后马上关闭,在<code>{}</code>之间没有字符或换行符，除非它是多块语句(直接包含多个块：<code>if/else</code>或<code>try/catch/finally</code>)的一部分.</p>
 <p>例子:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#998;font-style:italic">// 这是可接受的
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">doNothing</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{}</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="c1">// 这是可接受的
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="nf">doNothing</span><span class="o">()</span> <span class="o">{}</span>
 
-  <span style="color:#998;font-style:italic">// 这也可以接受
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">doNothingElse</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#998;font-style:italic">//这是不可以的,因为多块语句的大括号不能简化
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-    doSomething<span style="color:#000;font-weight:bold">();</span>
-  <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>Exception e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{}</span>
-</code></pre></div><h2 id="42-块缩进2空格">4.2 块缩进:+2空格</h2>
+  <span class="c1">// 这也可以接受
+</span><span class="c1"></span>  <span class="kt">void</span> <span class="nf">doNothingElse</span><span class="o">()</span> <span class="o">{</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="c1">//这是不可以的,因为多块语句的大括号不能简化
+</span><span class="c1"></span>  <span class="k">try</span> <span class="o">{</span>
+    <span class="n">doSomething</span><span class="o">();</span>
+  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="42-块缩进2空格">4.2 块缩进:+2空格</h2>
 <p>每当一个空块状结构或类块状结构被打开时,缩进就增加2个空格.当块结构结束时,缩进有回到和之前一样.(当然这些IDE都帮你做了.译者注)缩进级别适用于整个块中的代码和注释(参见第4.1.2节中的示例，<a href="#412-%E9%9D%9E%E7%A9%BA%E5%9D%97:K%EF%BC%86R%E6%A0%B7%E5%BC%8F">非空块:K＆R样式</a>)</p>
 <h2 id="43-一行一句">4.3 一行一句</h2>
 <p>每个语句独占一行.</p>
@@ -681,14 +707,27 @@ Translation of Google Java Style Guide,by Lee.
 <p>Lambda表达式的箭头处一般不会换行,除非lambda表达式只包含一个单独的无大括号的语句.例子:</p>
 </li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">MyLambda<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">,</span> Long<span style="color:#000;font-weight:bold">,</span> Object<span style="color:#000;font-weight:bold">&gt;</span> lambda <span style="color:#000;font-weight:bold">=</span>
-    <span style="color:#000;font-weight:bold">(</span>String label<span style="color:#000;font-weight:bold">,</span> Long value<span style="color:#000;font-weight:bold">,</span> Object obj<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">...</span>
-    <span style="color:#000;font-weight:bold">};</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">MyLambda</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">lambda</span> <span class="o">=</span>
+    <span class="o">(</span><span class="n">String</span> <span class="n">label</span><span class="o">,</span> <span class="n">Long</span> <span class="n">value</span><span class="o">,</span> <span class="n">Object</span> <span class="n">obj</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+        <span class="o">...</span>
+    <span class="o">};</span>
 
-Predicate<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> predicate <span style="color:#000;font-weight:bold">=</span> str <span style="color:#000;font-weight:bold">-&gt;</span>
-    longExpressionInvolving<span style="color:#000;font-weight:bold">(</span>str<span style="color:#000;font-weight:bold">);</span>
-</code></pre></div><blockquote>
+<span class="n">Predicate</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">predicate</span> <span class="o">=</span> <span class="n">str</span> <span class="o">-&gt;</span>
+    <span class="n">longExpressionInvolving</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
 <p>注意:换行的主要目的是使代码清晰,不一定是最小行数的代码.</p>
 </blockquote>
 <h3 id="452-换行的语句至少4空格">4.5.2 换行的语句至少+4空格</h3>
@@ -779,12 +818,23 @@ Predicate<span style="color:#000;font-weight:bold">&lt;</span>String<span style=
 <p><strong>术语解释</strong>:*水平对齐(Horizontal alignment )*是在代码中添加可变数量空格的做法，目的是使某些内容与先前行的内容对齐.</p>
 <p>这个做法是被允许,但是不作要求.甚至不需要在已经使用的地方保持水平对齐.</p>
 <p>例子:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> x<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 这很好
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">private</span> Color color<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 这也是
-</span><span style="color:#998;font-style:italic"></span>
-<span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span>   x<span style="color:#000;font-weight:bold">;</span>      <span style="color:#998;font-style:italic">// 允许的, 但以后的编辑
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">private</span> Color color<span style="color:#000;font-weight:bold">;</span>  <span style="color:#998;font-style:italic">// 可能导致它不再对齐.
-</span></code></pre></div><blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span> <span class="c1">// 这很好
+</span><span class="c1"></span><span class="kd">private</span> <span class="n">Color</span> <span class="n">color</span><span class="o">;</span> <span class="c1">// 这也是
+</span><span class="c1"></span>
+<span class="kd">private</span> <span class="kt">int</span>   <span class="n">x</span><span class="o">;</span>      <span class="c1">// 允许的, 但以后的编辑
+</span><span class="c1"></span><span class="kd">private</span> <span class="n">Color</span> <span class="n">color</span><span class="o">;</span>  <span class="c1">// 可能导致它不再对齐.
+</span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
 <p>提示:对齐可增加代码的可读性,但也造成以后维护的麻烦.考虑以后,我们需要修改一堆对齐代码中的一行.这种变化可能会使代码不再对齐,但这是<strong>允许</strong>的.很多时候,这会促使你去调整附近行的空格,可能会触发一连串的修改.这一行代码的改变造成了连环反应.这最坏时将会导致无用功,但是它至少也造成了历史版本的破坏,减慢了审查人员的速度，并增加了合并冲突的可能。</p>
 </blockquote>
 <h2 id="47-括号分组推荐">4.7 括号分组:推荐</h2>
@@ -792,21 +842,46 @@ Predicate<span style="color:#000;font-weight:bold">&lt;</span>String<span style=
 <h2 id="48-具体构造">4.8 具体构造</h2>
 <h3 id="481-枚举类">4.8.1 枚举类</h3>
 <p>在每个逗号后,紧跟这一个枚举常量,也可以选择换行.额外的空行（通常只有一个）也是允许的。这是一种可能:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
-<span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">enum</span> Answer <span style="color:#000;font-weight:bold">{</span>
-  YES <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span> <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">toString</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">return</span> <span style="color:#d14">&#34;yes&#34;</span><span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">},</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">
+<span class="kd">private</span> <span class="kd">enum</span> <span class="n">Answer</span> <span class="o">{</span>
+  <span class="n">YES</span> <span class="o">{</span>
+    <span class="nd">@Override</span> <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="s">&#34;yes&#34;</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">},</span>
 
-  NO<span style="color:#000;font-weight:bold">,</span>
-  MAYBE
-<span style="color:#000;font-weight:bold">}</span>
+  <span class="n">NO</span><span class="o">,</span>
+  <span class="n">MAYBE</span>
+<span class="o">}</span>
 
-</code></pre></div><p>一个没有方法和文档的枚举类,可以选择像声明数组一样的格式(详见:第4.8.3.1节 <a href="#4831-%E6%95%B0%E7%BB%84%E5%88%9D%E5%A7%8B%E5%8C%96">数组初始化</a> ):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">enum</span> Suit <span style="color:#000;font-weight:bold">{</span> CLUBS<span style="color:#000;font-weight:bold">,</span> HEARTS<span style="color:#000;font-weight:bold">,</span> SPADES<span style="color:#000;font-weight:bold">,</span> DIAMONDS <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>枚举类也是类，因此适用于类的所有其他规则都适用.</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>一个没有方法和文档的枚举类,可以选择像声明数组一样的格式(详见:第4.8.3.1节 <a href="#4831-%E6%95%B0%E7%BB%84%E5%88%9D%E5%A7%8B%E5%8C%96">数组初始化</a> ):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kd">enum</span> <span class="n">Suit</span> <span class="o">{</span> <span class="n">CLUBS</span><span class="o">,</span> <span class="n">HEARTS</span><span class="o">,</span> <span class="n">SPADES</span><span class="o">,</span> <span class="n">DIAMONDS</span> <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>枚举类也是类，因此适用于类的所有其他规则都适用.</p>
 <h3 id="482-变量声明">4.8.2 变量声明</h3>
 <h3 id="4821-每次只声明一个变量">4.8.2.1 每次只声明一个变量</h3>
 <p>每次只声明一个变量,像 <code>int a, b;</code> 这样是不允许的.</p>
@@ -815,16 +890,31 @@ Predicate<span style="color:#000;font-weight:bold">&lt;</span>String<span style=
 <h3 id="483-数组">4.8.3 数组</h3>
 <h3 id="4831-数组可以块状初始化">4.8.3.1 数组可以&quot;块状&quot;初始化</h3>
 <p>任何数组都可以块状结构一样初始化.比如下面的例子都是合法的(不是详尽的列表):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">new</span> <span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">[]</span> <span style="color:#000;font-weight:bold">{</span>           <span style="color:#000;font-weight:bold">new</span> <span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">[]</span> <span style="color:#000;font-weight:bold">{</span>
-  0<span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3            0<span style="color:#000;font-weight:bold">,</span>
-<span style="color:#000;font-weight:bold">}</span>                       1<span style="color:#000;font-weight:bold">,</span>
-                        2<span style="color:#000;font-weight:bold">,</span>
-<span style="color:#000;font-weight:bold">new</span> <span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">[]</span> <span style="color:#000;font-weight:bold">{</span>             3<span style="color:#000;font-weight:bold">,</span>
-  0<span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">,</span>               <span style="color:#000;font-weight:bold">}</span>
-  2<span style="color:#000;font-weight:bold">,</span> 3
-<span style="color:#000;font-weight:bold">}</span>                     <span style="color:#000;font-weight:bold">new</span> <span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">[]</span>
-                          <span style="color:#000;font-weight:bold">{</span>0<span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h3 id="4832-非c风格的数组声明">4.8.3.2 非C风格的数组声明</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span>           <span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span>
+  <span class="n">0</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">3</span>            <span class="n">0</span><span class="o">,</span>
+<span class="o">}</span>                       <span class="n">1</span><span class="o">,</span>
+                        <span class="n">2</span><span class="o">,</span>
+<span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span>             <span class="n">3</span><span class="o">,</span>
+  <span class="n">0</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span>               <span class="o">}</span>
+  <span class="n">2</span><span class="o">,</span> <span class="n">3</span>
+<span class="o">}</span>                     <span class="k">new</span> <span class="kt">int</span><span class="o">[]</span>
+                          <span class="o">{</span><span class="n">0</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">3</span><span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="4832-非c风格的数组声明">4.8.3.2 非C风格的数组声明</h3>
 <p>方括号是类型的一部分,而不是变量名.采用 <code>String[] args</code> 而不是 <code>String args[]</code>.</p>
 <h3 id="484-switch语句">4.8.4 Switch语句</h3>
 <p><strong>术语解释</strong>:<code>switch</code>大括号内是一个或多个语句组.每个语句组包含一个或多个的<code>switch</code> 标签(<code>case</code> 和 <code>default</code>),跟这一个或多个语句(如果是最后一个语句组,则是零个或多个).</p>
@@ -833,46 +923,103 @@ Predicate<span style="color:#000;font-weight:bold">&lt;</span>String<span style=
 <p>在switch标签后需要换行,并且再+2的缩进.下一个标签返回之前的缩进级别.</p>
 <h3 id="4842-注释fall-through">4.8.4.2 注释<code>Fall-through</code></h3>
 <p>在switch块中,每个语句组那么通过 <code>break</code>, <code>continue</code>,<code>return</code>或者抛出异常来结束语句,要么写明注释来表明它会进入下一个语句组.任何表达这个意思的注释都可以.(一般用 <code>// fall through</code> )这个特殊的注释在最后一个语句组时不需要.比如:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>input<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#000;font-weight:bold">case</span> 1<span style="color:#000;font-weight:bold">:</span>
-  <span style="color:#000;font-weight:bold">case</span> 2<span style="color:#000;font-weight:bold">:</span>
-    prepareOneOrTwo<span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#998;font-style:italic">// fall through
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">case</span> 3<span style="color:#000;font-weight:bold">:</span>
-    handleOneTwoOrThree<span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
-  <span style="color:#000;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span>
-    handleLargeNumber<span style="color:#000;font-weight:bold">(</span>input<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h3 id="4843-default-要写出">4.8.4.3 <code>default</code> 要写出</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">switch</span> <span class="o">(</span><span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="n">1</span><span class="o">:</span>
+  <span class="k">case</span> <span class="n">2</span><span class="o">:</span>
+    <span class="n">prepareOneOrTwo</span><span class="o">();</span>
+    <span class="c1">// fall through
+</span><span class="c1"></span>  <span class="k">case</span> <span class="n">3</span><span class="o">:</span>
+    <span class="n">handleOneTwoOrThree</span><span class="o">();</span>
+    <span class="k">break</span><span class="o">;</span>
+  <span class="k">default</span><span class="o">:</span>
+    <span class="n">handleLargeNumber</span><span class="o">(</span><span class="n">input</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="4843-default-要写出">4.8.4.3 <code>default</code> 要写出</h3>
 <p>每个switch语句都要包含 <code>default</code> 语句组,即使它是空的.</p>
 <p>例外:一个对枚举常量的Switch语句,如果写出了所有的情况,则可以省略 <code>default</code>语句组.</p>
 <h3 id="485-注解annotations">4.8.5 注解(Annotations)</h3>
 <p>用于类,方法和构造方法的注解,应该立即出现在文档后面,并且每个注解占一行,这不属于换行( <a href="#45-%E6%8D%A2%E8%A1%8C">line-wrapping</a> )所以缩进不增加.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Override</span>
-<span style="color:#3c5d5d;font-weight:bold">@Nullable</span>
-<span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">getNameIfPresent</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000;font-weight:bold">...</span> <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>例外:单个无参的注解可以和语句同行,比如:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Override</span> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">hashCode</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000;font-weight:bold">...</span> <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>对于字段的注解也要立即出现在文档之后,但是这种情况下,多个注释可以在同一行.比如:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Partial</span> <span style="color:#3c5d5d;font-weight:bold">@Mock</span> DataLoader loader<span style="color:#000;font-weight:bold">;</span>
-</code></pre></div><p>参数,局部变量和类型的注解没有特定规则。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Override</span>
+<span class="nd">@Nullable</span>
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getNameIfPresent</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>例外:单个无参的注解可以和语句同行,比如:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>对于字段的注解也要立即出现在文档之后,但是这种情况下,多个注释可以在同一行.比如:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Partial</span> <span class="nd">@Mock</span> <span class="n">DataLoader</span> <span class="n">loader</span><span class="o">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>参数,局部变量和类型的注解没有特定规则。</p>
 <h3 id="486-注释comment">4.8.6 注释(Comment)</h3>
 <p>这节讲<code>implementation comments</code>,Javadoc在第7节<a href="#7-javadoc%E6%A0%87%E8%AE%B0">Javadoc标记</a>单独讲.</p>
 <h3 id="4861-块状注释风格">4.8.6.1 块状注释风格</h3>
 <p>注释块的缩进和周围的代码保持一致.可以写成 <code>/*...*/</code>或 <code>//...</code>.多行注释中,子行必须以<code>*</code>开头和前一行对齐.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">/*
-</span><span style="color:#998;font-style:italic"> * This is          // And so           /* Or you can
-</span><span style="color:#998;font-style:italic"> * okay.            // is this.          * even do this. */</span>
- <span style="color:#000;font-weight:bold">*/</span>
-</code></pre></div><p>注释不包含在带有星号或其他字符的框框中.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="cm">/*
+</span><span class="cm"> * This is          // And so           /* Or you can
+</span><span class="cm"> * okay.            // is this.          * even do this. */</span>
+ <span class="o">*/</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>注释不包含在带有星号或其他字符的框框中.</p>
 <blockquote>
 <p>提示: 如果你希望自动代码格式化程序在必要时换行，则编写多行注释时，请使用<code>/*...*/</code>. 大多数格式化程序不会在<code>//</code>样式的注释块中重新换行</p>
 </blockquote>
 <h3 id="487-修饰符">4.8.7 修饰符</h3>
 <p>类和成员的修饰符,以下面推荐的顺序出现:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">protected</span> <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">default</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">transient</span> <span style="color:#000;font-weight:bold">volatile</span> <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">native</span> <span style="color:#000;font-weight:bold">strictfp</span>
-</code></pre></div><h3 id="488-数字">4.8.8 数字</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">protected</span> <span class="kd">private</span> <span class="kd">abstract</span> <span class="k">default</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kd">transient</span> <span class="kd">volatile</span> <span class="kd">synchronized</span> <span class="kd">native</span> <span class="kd">strictfp</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="488-数字">4.8.8 数字</h3>
 <p>long类型的整型数字,使用大写L后缀(不要以小写l后缀,为了不和数字1混淆).比如:使用 <code>3000000000L</code> 而不是 <code>3000000000l</code>.</p>
 <br>
 <h1 id="5-命名规则">5. 命名规则</h1>
@@ -895,24 +1042,47 @@ Predicate<span style="color:#000;font-weight:bold">&lt;</span>String<span style=
 <h3 id="524-常量的命名">5.2.4 常量的命名</h3>
 <p>常量的命名可以使用 <code>CONSTANT_CASE</code> 规则:全部大写,包含下划线.但是讲真的,什么是常量?</p>
 <p>常量是以 <code>static final</code> 修饰的,并且其内容永远不变,其方法没有可察觉的副作用.这包括 <code>primitives</code>, <code>String</code>, 不变的类型和不可变类型的不可变集合.如果任意的可观察的实例发生变化,那么它就不是常量.仅仅表现为改变的对象是远远不够的,比如:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// 常量
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> NUMBER <span style="color:#000;font-weight:bold">=</span> 5<span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> ImmutableList<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> NAMES <span style="color:#000;font-weight:bold">=</span> ImmutableList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">of</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Ed&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Ann&#34;</span><span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> ImmutableMap<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">,</span> Integer<span style="color:#000;font-weight:bold">&gt;</span> AGES <span style="color:#000;font-weight:bold">=</span> ImmutableMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">of</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Ed&#34;</span><span style="color:#000;font-weight:bold">,</span> 35<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Ann&#34;</span><span style="color:#000;font-weight:bold">,</span> 32<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> Joiner COMMA_JOINER <span style="color:#000;font-weight:bold">=</span> Joiner<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">on</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#39;,&#39;</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#998;font-style:italic">// because Joiner is immutable
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> SomeMutableType<span style="color:#000;font-weight:bold">[]</span> EMPTY_ARRAY <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{};</span>
-<span style="color:#000;font-weight:bold">enum</span> SomeEnum <span style="color:#000;font-weight:bold">{</span> ENUM_CONSTANT <span style="color:#000;font-weight:bold">}</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">// 常量
+</span><span class="c1"></span><span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">NUMBER</span> <span class="o">=</span> <span class="n">5</span><span class="o">;</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">NAMES</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&#34;Ed&#34;</span><span class="o">,</span> <span class="s">&#34;Ann&#34;</span><span class="o">);</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">ImmutableMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">AGES</span> <span class="o">=</span> <span class="n">ImmutableMap</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&#34;Ed&#34;</span><span class="o">,</span> <span class="n">35</span><span class="o">,</span> <span class="s">&#34;Ann&#34;</span><span class="o">,</span> <span class="n">32</span><span class="o">);</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">Joiner</span> <span class="n">COMMA_JOINER</span> <span class="o">=</span> <span class="n">Joiner</span><span class="o">.</span><span class="na">on</span><span class="o">(</span><span class="sc">&#39;,&#39;</span><span class="o">);</span> <span class="c1">// because Joiner is immutable
+</span><span class="c1"></span><span class="kd">static</span> <span class="kd">final</span> <span class="n">SomeMutableType</span><span class="o">[]</span> <span class="n">EMPTY_ARRAY</span> <span class="o">=</span> <span class="o">{};</span>
+<span class="kd">enum</span> <span class="n">SomeEnum</span> <span class="o">{</span> <span class="n">ENUM_CONSTANT</span> <span class="o">}</span>
 
-<span style="color:#998;font-style:italic">// 不是常量
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">static</span> String nonFinal <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;non-final&#34;</span><span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">final</span> String nonStatic <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;non-static&#34;</span><span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> Set<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> mutableCollection <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> HashSet<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;();</span>
-<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> ImmutableSet<span style="color:#000;font-weight:bold">&lt;</span>SomeMutableType<span style="color:#000;font-weight:bold">&gt;</span> mutableElements <span style="color:#000;font-weight:bold">=</span> ImmutableSet<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">of</span><span style="color:#000;font-weight:bold">(</span>mutable<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> ImmutableMap<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">,</span> SomeMutableType<span style="color:#000;font-weight:bold">&gt;</span> mutableValues <span style="color:#000;font-weight:bold">=</span>
-    ImmutableMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">of</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Ed&#34;</span><span style="color:#000;font-weight:bold">,</span> mutableInstance<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Ann&#34;</span><span style="color:#000;font-weight:bold">,</span> mutableInstance2<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> Logger logger <span style="color:#000;font-weight:bold">=</span> Logger<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLogger</span><span style="color:#000;font-weight:bold">(</span>MyClass<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getName</span><span style="color:#000;font-weight:bold">());</span>
-<span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String<span style="color:#000;font-weight:bold">[]</span> nonEmptyArray <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#d14">&#34;these&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;can&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;change&#34;</span><span style="color:#000;font-weight:bold">};</span>
-</code></pre></div><p>这些常量名一般都是名词或名词短语.</p>
+<span class="c1">// 不是常量
+</span><span class="c1"></span><span class="kd">static</span> <span class="n">String</span> <span class="n">nonFinal</span> <span class="o">=</span> <span class="s">&#34;non-final&#34;</span><span class="o">;</span>
+<span class="kd">final</span> <span class="n">String</span> <span class="n">nonStatic</span> <span class="o">=</span> <span class="s">&#34;non-static&#34;</span><span class="o">;</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">mutableCollection</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">ImmutableSet</span><span class="o">&lt;</span><span class="n">SomeMutableType</span><span class="o">&gt;</span> <span class="n">mutableElements</span> <span class="o">=</span> <span class="n">ImmutableSet</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">mutable</span><span class="o">);</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">ImmutableMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">SomeMutableType</span><span class="o">&gt;</span> <span class="n">mutableValues</span> <span class="o">=</span>
+    <span class="n">ImmutableMap</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&#34;Ed&#34;</span><span class="o">,</span> <span class="n">mutableInstance</span><span class="o">,</span> <span class="s">&#34;Ann&#34;</span><span class="o">,</span> <span class="n">mutableInstance2</span><span class="o">);</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">MyClass</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">nonEmptyArray</span> <span class="o">=</span> <span class="o">{</span><span class="s">&#34;these&#34;</span><span class="o">,</span> <span class="s">&#34;can&#34;</span><span class="o">,</span> <span class="s">&#34;change&#34;</span><span class="o">};</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这些常量名一般都是名词或名词短语.</p>
 <h3 id="525-非常量字段的命名">5.2.5 非常量字段的命名</h3>
 <p>非常量字段(不论是static的或其他的)是以<a href="#53-%E9%A9%BC%E5%B3%B0%E5%91%BD%E5%90%8D%E6%B3%95">驼峰命名法</a>命名的.</p>
 <p>这些名称一般都是名词或名词短语.比如 <code>computedValues</code>或 <code>index</code>.</p>
@@ -998,26 +1168,60 @@ Predicate<span style="color:#000;font-weight:bold">&lt;</span>String<span style=
 <h2 id="62-捕捉的异常不要忽视">6.2 捕捉的异常:不要忽视</h2>
 <p>除了下面的例外以外,对一个被捕捉的异常什么也不做是不对的.(一般的做法是去打印异常,),如果被认为是<code>impossible</code>,则重新抛出<code>AssertionError</code>异常.</p>
 <p>下面的例子是真正可以在catch块中不采取任何行动的，理由应该在注释中解释.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> Integer<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">parseInt</span><span style="color:#000;font-weight:bold">(</span>response<span style="color:#000;font-weight:bold">);</span>
-  <span style="color:#000;font-weight:bold">return</span> handleNumericResponse<span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>NumberFormatException ok<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#998;font-style:italic">// it&#39;s not numeric; that&#39;s fine, just continue
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">return</span> handleTextResponse<span style="color:#000;font-weight:bold">(</span>response<span style="color:#000;font-weight:bold">);</span>
-</code></pre></div><p>例外:在测试中，如果其名称是或以<code>expected</code>开头，则可以忽略捕获的异常，而无需注释。以下是一个非常常见的例子，用于确保正在测试的代码会抛出预期类型的​​异常，因此在此处不需要注释.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-  emptyStack<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">pop</span><span style="color:#000;font-weight:bold">();</span>
-  fail<span style="color:#000;font-weight:bold">();</span>
-<span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>NoSuchElementException expected<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h2 id="63-静态成员使用类进行调用">6.3 静态成员:使用类进行调用</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">try</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">response</span><span class="o">);</span>
+  <span class="k">return</span> <span class="n">handleNumericResponse</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NumberFormatException</span> <span class="n">ok</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// it&#39;s not numeric; that&#39;s fine, just continue
+</span><span class="c1"></span><span class="o">}</span>
+<span class="k">return</span> <span class="n">handleTextResponse</span><span class="o">(</span><span class="n">response</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>例外:在测试中，如果其名称是或以<code>expected</code>开头，则可以忽略捕获的异常，而无需注释。以下是一个非常常见的例子，用于确保正在测试的代码会抛出预期类型的​​异常，因此在此处不需要注释.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">try</span> <span class="o">{</span>
+  <span class="n">emptyStack</span><span class="o">.</span><span class="na">pop</span><span class="o">();</span>
+  <span class="n">fail</span><span class="o">();</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchElementException</span> <span class="n">expected</span><span class="o">)</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="63-静态成员使用类进行调用">6.3 静态成员:使用类进行调用</h2>
 <p>使用类名调用静态方法,而不是具体对象或表达式.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Foo aFoo <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">...;</span>
-Foo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">aStaticMethod</span><span style="color:#000;font-weight:bold">();</span> <span style="color:#998;font-style:italic">// 好
-</span><span style="color:#998;font-style:italic"></span>aFoo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">aStaticMethod</span><span style="color:#000;font-weight:bold">();</span> <span style="color:#998;font-style:italic">// 糟糕
-</span><span style="color:#998;font-style:italic"></span>somethingThatYieldsAFoo<span style="color:#000;font-weight:bold">().</span><span style="color:#008080">aStaticMethod</span><span style="color:#000;font-weight:bold">();</span> <span style="color:#998;font-style:italic">// 垃圾
-</span></code></pre></div><h2 id="64-finalizers禁用">6.4 Finalizers:禁用</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Foo</span> <span class="n">aFoo</span> <span class="o">=</span> <span class="o">...;</span>
+<span class="n">Foo</span><span class="o">.</span><span class="na">aStaticMethod</span><span class="o">();</span> <span class="c1">// 好
+</span><span class="c1"></span><span class="n">aFoo</span><span class="o">.</span><span class="na">aStaticMethod</span><span class="o">();</span> <span class="c1">// 糟糕
+</span><span class="c1"></span><span class="n">somethingThatYieldsAFoo</span><span class="o">().</span><span class="na">aStaticMethod</span><span class="o">();</span> <span class="c1">// 垃圾
+</span></code></pre></td></tr></table>
+</div>
+</div><h2 id="64-finalizers禁用">6.4 Finalizers:禁用</h2>
 <p>真的非常少有人回去重载<code>Object.finalize</code>.</p>
 <blockquote>
 <p>提示:不要这样做.如果你铁了心要去做,请先仔细阅读并理解<a href="https://www.google.com/search?hl=zh-CN&amp;tbo=p&amp;tbm=bks&amp;q=isbn:8131726592">Effective Java Item 7</a>中的&quot;Avoid Finalizers&quot;.然后你会放弃这个想法的.XD</p>
@@ -1028,14 +1232,32 @@ Foo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080"
 <h2 id="71-格式">7.1 格式</h2>
 <h3 id="711-一般格式">7.1.1 一般格式</h3>
 <p>通常的Javadoc格式就像例子中的那样:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * Multiple lines of Javadoc text are written here,
-</span><span style="color:#998;font-style:italic"> * wrapped normally...
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">method</span><span style="color:#000;font-weight:bold">(</span>String p1<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000;font-weight:bold">...</span> <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>或者单行的Javadoc:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">/** An especially short bit of Javadoc. */</span>
-</code></pre></div><p>基本格式总是可行的.在Javadoc的内容(包括评论标记)可以包含在一行之内时,可以使用单行的Javadoc.注意这只能在没有块标记(例如,<code>@return</code>)时使用.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="cm">/**
+</span><span class="cm"> * Multiple lines of Javadoc text are written here,
+</span><span class="cm"> * wrapped normally...
+</span><span class="cm"> */</span>
+<span class="kd">public</span> <span class="kt">int</span> <span class="nf">method</span><span class="o">(</span><span class="n">String</span> <span class="n">p1</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>或者单行的Javadoc:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="cm">/** An especially short bit of Javadoc. */</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>基本格式总是可行的.在Javadoc的内容(包括评论标记)可以包含在一行之内时,可以使用单行的Javadoc.注意这只能在没有块标记(例如,<code>@return</code>)时使用.</p>
 <h3 id="712-段落">7.1.2 段落</h3>
 <p>一个空行(也就是除了行最左边的<code>*</code>外没有内容的),应该的段落之间,块标记(如果有的话)之前出现.每个段落,第一个但此前要有 <code>&lt;p&gt;</code>,并且之后没有空格.</p>
 <h3 id="713-块标记">7.1.3 块标记</h3>
@@ -1060,414 +1282,123 @@ Foo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080"
 <p>其他类和成员根据需要或你的意愿写上Javadoc.</p>
 <p>每当一个<code>implementation comment</code>用来描述类或类成员的目的或行为时,该注释要用Javadoc(用<code>/**</code>取代).</p>
 <p>可选的Javadoc对以下的格式要求不严格(第7.1.2节,第7.1.3节和第7.2节),当然建议你遵守.</p>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-09-18
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/wechat5_web_auth_to_obtain_user_info/">一个微信公众号的诞生（五）网页授权获取用户基本信息</a></li>
-        
-        <li><a href="/post/wechat4_creat_menu_and_send_template_msg/">一个微信公众号的诞生（四）菜单的创建和模板消息的发送</a></li>
-        
-        <li><a href="/post/wechat3_access_token/">一个微信公众号的诞生（三）Access Token的获取</a></li>
-        
-        <li><a href="/post/wecaht2_docking_receipt_and_send/">一个微信公众号的诞生（二）公众号对接和消息的接收发送</a></li>
-        
-        <li><a href="/post/wechat1_development_of_the_environment/">一个微信公众号的诞生（一）开发环境的搭建</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/%E7%BF%BB%E8%AF%91'>翻译</a></li>
-                
-                <li><a href='https://leer.moe/tags/java'>Java</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E7%BF%BB%E8%AF%91/">翻译</a>
+          <a href="/tags/Java/">Java</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/gc/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Java垃圾收集器与内存分配策略</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/new-theme-shell/">
+            <span class="next-text nav-default">一个无聊的theme</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-                </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
 
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://leer.moe/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
+  
 
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/categories">分类</a></h3>
-<ul class="widget-list">
-    
-    
-    
-    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
-    
-    
-    
-    <li><a href="#">未分类
-            (3)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
-
-
-
-
-
-
-
-
-<div class="tagcloud">
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
-    
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
 </div>
-    </section>
 
-    
+<div class="copyright" id="showDays">
 
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
 </div>
-            </div>
-        </div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
+<script src="/js/sitedate.js"></script>
+
 
 </body>
-
 </html>

@@ -1,147 +1,166 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>AbstractQueuedSynchronizer - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>AbstractQueuedSynchronizer | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="AbstractQueuedSynchronizer - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2019-04-25T19:31:21&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2019-04-25T19:31:21&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*The java.util.concurrent Synchronizer Framework* 和 JDK 1.8 的文档。
+Java并发-目录
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2019/04/25/java-concurrent-aqs/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="AbstractQueuedSynchronizer" />
+<meta property="og:description" content="
 AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*The java.util.concurrent Synchronizer Framework* 和 JDK 1.8 的文档。
 Java并发-目录
-">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/2019/04/25/java-concurrent-aqs/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/2019/04/25/java-concurrent-aqs/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-04-25T19:31:21+00:00" />
+<meta property="article:modified_time" content="2019-04-25T19:31:21+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="AbstractQueuedSynchronizer">
+<meta itemprop="description" content="
+AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*The java.util.concurrent Synchronizer Framework* 和 JDK 1.8 的文档。
+Java并发-目录
+"><meta itemprop="datePublished" content="2019-04-25T19:31:21+00:00" />
+<meta itemprop="dateModified" content="2019-04-25T19:31:21+00:00" />
+<meta itemprop="wordCount" content="2455">
+<meta itemprop="keywords" content="Java,Java并发," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="AbstractQueuedSynchronizer"/>
+<meta name="twitter:description" content="
+AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*The java.util.concurrent Synchronizer Framework* 和 JDK 1.8 的文档。
+Java并发-目录
+"/>
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
 
-    
-    
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-  <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-  <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
-    <div class="container">
-      <div class="col-group">
+    <header class="post-header">
+      <h1 class="post-title">AbstractQueuedSynchronizer</h1>
 
-        <div class="col-8" id="main">
-          
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+      <div class="post-meta">
+        <span class="post-time"> 2019-04-25 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 2455 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
 
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">AbstractQueuedSynchronizer</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#设计要求">设计要求</a></li>
     <li><a href="#实现">实现</a>
@@ -168,60 +187,15 @@ Java并发-目录
     <li><a href="#参考">参考</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">AbstractQueuedSynchronizer</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2019年4月25日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">2343 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2019-04-25T19:31:21" title="April 25, 2019">April 25, 2019</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>AQS 是用来构建锁和同步工具的基本框架。本文主要基于 AQS 作者 Doug Lea 的论文*<a href="http://gee.cs.oswego.edu/dl/papers/aqs.pdf">The java.util.concurrent Synchronizer Framework</a>* 和 JDK 1.8 的文档。</p>
 <p><a href="/2019/01/06/java-concurrent-toc/">Java并发-目录</a></p>
 </blockquote>
@@ -245,16 +219,36 @@ Java并发-目录
 <h2 id="实现">实现</h2>
 <p>同步器的基本思想很直接简洁，用伪代码表示如下：</p>
 <p>acquire</p>
-<pre tabindex="0"><code>while (syncronization state does not allow acquire) {
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">while (syncronization state does not allow acquire) {
   enqueue current thread if not already queued;
   possiblly block current thread;
 }
-</code></pre><p>release</p>
-<pre tabindex="0"><code>update synchronization state;
+</code></pre></td></tr></table>
+</div>
+</div><p>release</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">update synchronization state;
 if (state may premit a blocked thread acuire) {
   unblock one or more queued thread;
 }
-</code></pre><p>要实现这两个操作，需要三个基本模块的配合：</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>要实现这两个操作，需要三个基本模块的配合：</p>
 <ul>
 <li>以原子操作管理<em>同步状态</em></li>
 <li>block 和 unblock 线程</li>
@@ -279,31 +273,70 @@ if (state may premit a blocked thread acuire) {
 </blockquote>
 <p>这样我可以用更加详细的伪代码来描述<code>acquire</code>和<code>release</code>，这里只考虑exclusive mode，不可中断的、没有超时功能的情况：</p>
 <p>acquire：</p>
-<pre tabindex="0"><code>if (!tryAcquire(arg)) {
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (!tryAcquire(arg)) {
   node = create and enqueue new node;
-  pred = node's effective predecessor;
+  pred = node&#39;s effective predecessor;
   while (pred is not head node || !tryAcquire(arg)) {
-    if (pred's signal bit is set)
+    if (pred&#39;s signal bit is set)
     	park();
     else
-    	compareAndSet pred's signal bit to ture
-    pred = node's effective predecessor;
+    	compareAndSet pred&#39;s signal bit to ture
+    pred = node&#39;s effective predecessor;
   }
   head = node;
 }
-</code></pre><p>release:</p>
-<pre tabindex="0"><code>if (tryRelease(arg) &amp;&amp; head node's signal bit is set) {
-  compareAndSet head's signal bit to false;
-  unpack head's successor, if one exists
+</code></pre></td></tr></table>
+</div>
+</div><p>release:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (tryRelease(arg) &amp;&amp; head node&#39;s signal bit is set) {
+  compareAndSet head&#39;s signal bit to false;
+  unpack head&#39;s successor, if one exists
 }s
-</code></pre><h2 id="使用">使用</h2>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="使用">使用</h2>
 <p>实现一个同步器需要实现下面的方法：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">tryAcquire<span style="color:#000;font-weight:bold">()</span>
-tryRelease<span style="color:#000;font-weight:bold">()</span>
-tryAcquireShared<span style="color:#000;font-weight:bold">()</span>
-tryReleaseShared<span style="color:#000;font-weight:bold">()</span>
-isHeldExclusively<span style="color:#000;font-weight:bold">()</span>
-</code></pre></div><p>以上方法不需要全部实现，根据获取的锁的种类可以选择实现不同的方法.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">tryAcquire</span><span class="o">()</span>
+<span class="n">tryRelease</span><span class="o">()</span>
+<span class="n">tryAcquireShared</span><span class="o">()</span>
+<span class="n">tryReleaseShared</span><span class="o">()</span>
+<span class="n">isHeldExclusively</span><span class="o">()</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>以上方法不需要全部实现，根据获取的锁的种类可以选择实现不同的方法.</p>
 <ul>
 <li>支持独占 (排他) 获取锁的同步器应该实现<code>tryAcquire</code>、 <code>tryRelease</code>、<code>isHeldExclusively</code></li>
 <li>支持共享获取的同步器应该实现<code>tryAcquireShared</code>、<code>tryReleaseShared</code>、<code>isHeldExclusively</code></li>
@@ -313,62 +346,122 @@ isHeldExclusively<span style="color:#000;font-weight:bold">()</span>
 <p>实现一个同步器最好的设计模式是把功能委托给一个AQS的私有内部子类，而不是直接继承 AQS 来实现（这样会破坏同步器的简洁性，调用者可能会调用 AQS 的其他方法破坏同步状态）。</p>
 </blockquote>
 <h3 id="例子">例子</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">java.util.concurrent.locks.AbstractQueuedSynchronizer</span><span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.util.concurrent.locks.AbstractQueuedSynchronizer</span><span class="o">;</span>
 
-<span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * @author leer
-</span><span style="color:#998;font-style:italic"> * Created at 4/25/19 6:24 PM
-</span><span style="color:#998;font-style:italic"> * 一个不可重入的互斥锁
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Mutex</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Sync</span> <span style="color:#000;font-weight:bold">extends</span> AbstractQueuedSynchronizer <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">tryAcquire</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> ignore<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">return</span> compareAndSetState<span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+<span class="cm">/**
+</span><span class="cm"> * @author leer
+</span><span class="cm"> * Created at 4/25/19 6:24 PM
+</span><span class="cm"> * 一个不可重入的互斥锁
+</span><span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Mutex</span> <span class="o">{</span>
+  <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Sync</span> <span class="kd">extends</span> <span class="n">AbstractQueuedSynchronizer</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryAcquire</span><span class="o">(</span><span class="kt">int</span> <span class="n">ignore</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">compareAndSetState</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">tryRelease</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> ignore<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      setState<span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">);</span>
-      <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> Sync sync <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Sync<span style="color:#000;font-weight:bold">();</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryRelease</span><span class="o">(</span><span class="kt">int</span> <span class="n">ignore</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">setState</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Sync</span> <span class="n">sync</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Sync</span><span class="o">();</span>
 
-  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">lock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    sync<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">acquire</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">);</span>
-  <span style="color:#000;font-weight:bold">}</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">lock</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">sync</span><span class="o">.</span><span class="na">acquire</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+  <span class="o">}</span>
 
-  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">unlock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    sync<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">release</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">);</span>
-  <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h2 id="aqs-在-synchronizers-中的具体实现">AQS 在 Synchronizers 中的具体实现</h2>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">unlock</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">sync</span><span class="o">.</span><span class="na">release</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="aqs-在-synchronizers-中的具体实现">AQS 在 Synchronizers 中的具体实现</h2>
 <h3 id="reentrantlock">ReentrantLock</h3>
 <ul>
 <li>ReentrantLock 是可重入的：所以需要记录当前线程获取原子状态的次数，如果次数为零，那么就说明这个线程放弃了锁（也有可能其他线程占据着锁从而需要等待），如果次数大于 1，也就是获得了重进入的效果，而其他线程只能被 park 住，直到这个线程重进入锁次数变成 0 而释放原子状态</li>
 <li>ReentrantLock 有公平锁和非公平锁两种模式：对应的， ReentrantLock 内部有两个 AQS 的子类。（the fair one disabling barging）</li>
 </ul>
 <p>非公平锁的<code>tryAcquire</code>实现：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">       <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">nonfairTryAcquire</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">final</span> Thread current <span style="color:#000;font-weight:bold">=</span> Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentThread</span><span style="color:#000;font-weight:bold">();</span>
-            <span style="color:#458;font-weight:bold">int</span> c <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
-            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>c <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>compareAndSetState<span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">,</span> acquires<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
-                    setExclusiveOwnerThread<span style="color:#000;font-weight:bold">(</span>current<span style="color:#000;font-weight:bold">);</span>
-                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>current <span style="color:#000;font-weight:bold">==</span> getExclusiveOwnerThread<span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#458;font-weight:bold">int</span> nextc <span style="color:#000;font-weight:bold">=</span> c <span style="color:#000;font-weight:bold">+</span> acquires<span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nextc <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">// overflow
-</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> Error<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Maximum lock count exceeded&#34;</span><span style="color:#000;font-weight:bold">);</span>
-                setState<span style="color:#000;font-weight:bold">(</span>nextc<span style="color:#000;font-weight:bold">);</span>
-                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
-            <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h3 id="reentrantreadwritelock">ReentrantReadWriteLock</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">       <span class="kd">final</span> <span class="kt">boolean</span> <span class="nf">nonfairTryAcquire</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">Thread</span> <span class="n">current</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">acquires</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="n">setExclusiveOwnerThread</span><span class="o">(</span><span class="n">current</span><span class="o">);</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">current</span> <span class="o">==</span> <span class="n">getExclusiveOwnerThread</span><span class="o">())</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">nextc</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">acquires</span><span class="o">;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">nextc</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="c1">// overflow
+</span><span class="c1"></span>                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Error</span><span class="o">(</span><span class="s">&#34;Maximum lock count exceeded&#34;</span><span class="o">);</span>
+                <span class="n">setState</span><span class="o">(</span><span class="n">nextc</span><span class="o">);</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="reentrantreadwritelock">ReentrantReadWriteLock</h3>
 <p>ReentrantReadWriteLock 使用 同步状态的 16 位来存放读锁计数，另外的 16 位存放写锁计数。</p>
 <ul>
 <li>写锁和<code>ReentrantLock</code>类似</li>
@@ -376,44 +469,91 @@ isHeldExclusively<span style="color:#000;font-weight:bold">()</span>
 </ul>
 <h3 id="semaphore">Semaphore</h3>
 <p><code>Semaphore</code>使用同步状态来保存当前可用许可数量。它重写<code>tryAcquireShared</code>来减少计数来模拟获取资源，如果计数小于 0 则会阻塞线程；重写<code>tryReleaseShared</code>来模拟释放资源。同时它也有公平模式和非公平模式。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">nonfairTryAcquireShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(;;)</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#458;font-weight:bold">int</span> available <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
-                <span style="color:#458;font-weight:bold">int</span> remaining <span style="color:#000;font-weight:bold">=</span> available <span style="color:#000;font-weight:bold">-</span> acquires<span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>remaining <span style="color:#000;font-weight:bold">&lt;</span> 0 <span style="color:#000;font-weight:bold">||</span>
-                    compareAndSetState<span style="color:#000;font-weight:bold">(</span>available<span style="color:#000;font-weight:bold">,</span> remaining<span style="color:#000;font-weight:bold">))</span>
-                    <span style="color:#000;font-weight:bold">return</span> remaining<span style="color:#000;font-weight:bold">;</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">        <span class="kd">final</span> <span class="kt">int</span> <span class="nf">nonfairTryAcquireShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">available</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+                <span class="kt">int</span> <span class="n">remaining</span> <span class="o">=</span> <span class="n">available</span> <span class="o">-</span> <span class="n">acquires</span><span class="o">;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">remaining</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span>
+                    <span class="n">compareAndSetState</span><span class="o">(</span><span class="n">available</span><span class="o">,</span> <span class="n">remaining</span><span class="o">))</span>
+                    <span class="k">return</span> <span class="n">remaining</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
 
-        <span style="color:#000;font-weight:bold">protected</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">tryReleaseShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> releases<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(;;)</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#458;font-weight:bold">int</span> current <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
-                <span style="color:#458;font-weight:bold">int</span> next <span style="color:#000;font-weight:bold">=</span> current <span style="color:#000;font-weight:bold">+</span> releases<span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>next <span style="color:#000;font-weight:bold">&lt;</span> current<span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">// overflow
-</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> Error<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Maximum permit count exceeded&#34;</span><span style="color:#000;font-weight:bold">);</span>
-                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>compareAndSetState<span style="color:#000;font-weight:bold">(</span>current<span style="color:#000;font-weight:bold">,</span> next<span style="color:#000;font-weight:bold">))</span>
-                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h3 id="countdownlatch">CountDownLatch</h3>
+        <span class="kd">protected</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="nf">tryReleaseShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">releases</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">current</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+                <span class="kt">int</span> <span class="n">next</span> <span class="o">=</span> <span class="n">current</span> <span class="o">+</span> <span class="n">releases</span><span class="o">;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">next</span> <span class="o">&lt;</span> <span class="n">current</span><span class="o">)</span> <span class="c1">// overflow
+</span><span class="c1"></span>                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Error</span><span class="o">(</span><span class="s">&#34;Maximum permit count exceeded&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">current</span><span class="o">,</span> <span class="n">next</span><span class="o">))</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="countdownlatch">CountDownLatch</h3>
 <p>和<code>Semaphore</code>类似，同步状态保存当前的计数值。<code>countDown()</code>调用<code>releaseShared()</code>，<code>await()</code>方法调用<code>acquireShared()</code>，等待计数器到零。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">tryAcquireShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> acquires<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>getState<span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">?</span> 1 <span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#000;font-weight:bold">}</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">        <span class="kd">protected</span> <span class="kt">int</span> <span class="nf">tryAcquireShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="o">(</span><span class="n">getState</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">?</span> <span class="n">1</span> <span class="o">:</span> <span class="o">-</span><span class="n">1</span><span class="o">;</span>
+        <span class="o">}</span>
 
-        <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">tryReleaseShared</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> releases<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#998;font-style:italic">// Decrement count; signal when transition to zero
-</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(;;)</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#458;font-weight:bold">int</span> c <span style="color:#000;font-weight:bold">=</span> getState<span style="color:#000;font-weight:bold">();</span>
-                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>c <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span>
-                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#458;font-weight:bold">int</span> nextc <span style="color:#000;font-weight:bold">=</span> c<span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">;</span>
-                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>compareAndSetState<span style="color:#000;font-weight:bold">(</span>c<span style="color:#000;font-weight:bold">,</span> nextc<span style="color:#000;font-weight:bold">))</span>
-                    <span style="color:#000;font-weight:bold">return</span> nextc <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">;</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h3 id="futuretask">FutureTask</h3>
+        <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryReleaseShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">releases</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// Decrement count; signal when transition to zero
+</span><span class="c1"></span>            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span>
+                    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+                <span class="kt">int</span> <span class="n">nextc</span> <span class="o">=</span> <span class="n">c</span><span class="o">-</span><span class="n">1</span><span class="o">;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="n">nextc</span><span class="o">))</span>
+                    <span class="k">return</span> <span class="n">nextc</span> <span class="o">==</span> <span class="n">0</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="futuretask">FutureTask</h3>
 <blockquote>
 <p>Only when JDK version &lt; JDK1.7</p>
 </blockquote>
@@ -425,98 +565,123 @@ isHeldExclusively<span style="color:#000;font-weight:bold">()</span>
 <li>《Java并发编程实战》第14章</li>
 <li><a href="https://bigbully.github.io/FutureTask">新版FutureTask</a></li>
 </ul>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-04-25
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/2019/03/11/concurrentmodificationexception/">单线程和多线程下的ConcurrentModificationException</a></li>
-        
-        <li><a href="/2019/01/07/java-concurrent-synchronized-reentrantlock/">Java并发-Synchronized和Reentrantlock</a></li>
-        
-        <li><a href="/2019/01/06/java-concurrent-toc/">Java并发-目录</a></li>
-        
-        <li><a href="/2019/03/18/binary-tree/">数据结构-二叉树</a></li>
-        
-        <li><a href="/2018/12/20/java-fun-pass-by-value/">Java基础-Pass by value</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/java'>Java</a></li>
-                
-                <li><a href='https://leer.moe/tags/java%E5%B9%B6%E5%8F%91'>Java并发</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/Java/">Java</a>
+          <a href="/tags/Java%E5%B9%B6%E5%8F%91/">Java并发</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2019/05/12/ros/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">RTOS设计与实现</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2019/04/17/k-th/">
+            <span class="next-text nav-default">K-th 问题</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-        </div>
-        
-        
-        
-        
-      </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
   </div>
-  <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
+<script src="/js/sitedate.js"></script>
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
-
 </html>

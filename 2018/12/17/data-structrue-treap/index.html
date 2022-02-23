@@ -1,151 +1,179 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>数据结构-Treap - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>数据结构-Treap | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="数据结构-Treap - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2018-12-17T18:31:21&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2018-12-17T18:31:21&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 今天的算法课上，老师讲了一个比较有意思的数据结构：Treap。它的名字就比较有意思，为什么叫Treap呢？是Tree &#43; Heap两个单词的结合，所以这个数据结构也就是二叉树和二叉堆的结合了。
+ 简介 Treap也是平衡二叉搜索树的一种。
+ Balanced Binary Search Tree 也可以简称为 Balanced Search Tree，为了方便区分我下面会简称为BBST。
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2018/12/17/data-structrue-treap/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="数据结构-Treap" />
+<meta property="og:description" content="
 今天的算法课上，老师讲了一个比较有意思的数据结构：Treap。它的名字就比较有意思，为什么叫Treap呢？是Tree &#43; Heap两个单词的结合，所以这个数据结构也就是二叉树和二叉堆的结合了。
 
 简介
 Treap也是平衡二叉搜索树的一种。
 
 Balanced Binary Search Tree 也可以简称为 Balanced Search Tree，为了方便区分我下面会简称为BBST。
-">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/2018/12/17/data-structrue-treap/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/2018/12/17/data-structrue-treap/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-12-17T18:31:21+00:00" />
+<meta property="article:modified_time" content="2018-12-17T18:31:21+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="数据结构-Treap">
+<meta itemprop="description" content="
+今天的算法课上，老师讲了一个比较有意思的数据结构：Treap。它的名字就比较有意思，为什么叫Treap呢？是Tree &#43; Heap两个单词的结合，所以这个数据结构也就是二叉树和二叉堆的结合了。
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+简介
+Treap也是平衡二叉搜索树的一种。
 
-    
-    
+Balanced Binary Search Tree 也可以简称为 Balanced Search Tree，为了方便区分我下面会简称为BBST。
+"><meta itemprop="datePublished" content="2018-12-17T18:31:21+00:00" />
+<meta itemprop="dateModified" content="2018-12-17T18:31:21+00:00" />
+<meta itemprop="wordCount" content="2558">
+<meta itemprop="keywords" content="Java,数据结构," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="数据结构-Treap"/>
+<meta name="twitter:description" content="
+今天的算法课上，老师讲了一个比较有意思的数据结构：Treap。它的名字就比较有意思，为什么叫Treap呢？是Tree &#43; Heap两个单词的结合，所以这个数据结构也就是二叉树和二叉堆的结合了。
+
+简介
+Treap也是平衡二叉搜索树的一种。
+
+Balanced Binary Search Tree 也可以简称为 Balanced Search Tree，为了方便区分我下面会简称为BBST。
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-  <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-  <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
-    <div class="container">
-      <div class="col-group">
+    <header class="post-header">
+      <h1 class="post-title">数据结构-Treap</h1>
 
-        <div class="col-8" id="main">
-          
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+      <div class="post-meta">
+        <span class="post-time"> 2018-12-17 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 2558 words </span>
+          <span class="more-meta"> 6 mins read </span>
+        
+      </div>
+    </header>
 
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">数据结构-Treap</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#简介">简介</a></li>
     <li><a href="#实现">实现</a></li>
@@ -160,60 +188,15 @@ Balanced Binary Search Tree 也可以简称为 Balanced Search Tree，为了方�
     <li><a href="#参考">参考</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">数据结构-Treap</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年12月17日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">2398 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2018-12-17T18:31:21" title="December 17, 2018">December 17, 2018</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>今天的算法课上，老师讲了一个比较有意思的数据结构：<code>Treap</code>。它的名字就比较有意思，为什么叫<code>Treap</code>呢？是Tree + Heap两个单词的结合，所以这个数据结构也就是二叉树和二叉堆的结合了。</p>
 </blockquote>
 <h2 id="简介">简介</h2>
@@ -235,282 +218,511 @@ Balanced Binary Search Tree 也可以简称为 Balanced Search Tree，为了方�
 </blockquote>
 <h2 id="treap节点">Treap节点</h2>
 <p>Treap的节点定义如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Node</span><span style="color:#000;font-weight:bold">&lt;</span>K <span style="color:#000;font-weight:bold">extends</span> Comparable<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">implements</span> Comparable<span style="color:#000;font-weight:bold">&lt;</span>Node<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
-    Node<span style="color:#000;font-weight:bold">[]</span> children <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Node<span style="color:#000;font-weight:bold">[</span>2<span style="color:#000;font-weight:bold">];</span> <span style="color:#998;font-style:italic">// left child, right child
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">int</span> priority<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//优先级
-</span><span style="color:#998;font-style:italic"></span>    K key<span style="color:#000;font-weight:bold">;</span>
-    V value<span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Node</span><span class="o">&lt;</span><span class="n">K</span> <span class="kd">extends</span> <span class="n">Comparable</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="n">Node</span><span class="o">[]</span> <span class="n">children</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">[</span><span class="n">2</span><span class="o">];</span> <span class="c1">// left child, right child
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">priority</span><span class="o">;</span> <span class="c1">//优先级
+</span><span class="c1"></span>    <span class="n">K</span> <span class="n">key</span><span class="o">;</span>
+    <span class="n">V</span> <span class="n">value</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Node</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> priority<span style="color:#000;font-weight:bold">,</span> K k<span style="color:#000;font-weight:bold">,</span> V v<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">priority</span> <span style="color:#000;font-weight:bold">=</span> priority<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">key</span> <span style="color:#000;font-weight:bold">=</span> k<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">value</span> <span style="color:#000;font-weight:bold">=</span> v<span style="color:#000;font-weight:bold">;</span>
-      children<span style="color:#000;font-weight:bold">[</span>0<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> children<span style="color:#000;font-weight:bold">[</span>1<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="nf">Node</span><span class="o">(</span><span class="kt">int</span> <span class="n">priority</span><span class="o">,</span> <span class="n">K</span> <span class="n">k</span><span class="o">,</span> <span class="n">V</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">priority</span> <span class="o">=</span> <span class="n">priority</span><span class="o">;</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">k</span><span class="o">;</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">v</span><span class="o">;</span>
+      <span class="n">children</span><span class="o">[</span><span class="n">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">children</span><span class="o">[</span><span class="n">1</span><span class="o">]</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    Node <span style="color:#900;font-weight:bold">getLeftChild</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">return</span> children<span style="color:#000;font-weight:bold">[</span>0<span style="color:#000;font-weight:bold">];</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="n">Node</span> <span class="nf">getLeftChild</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">children</span><span class="o">[</span><span class="n">0</span><span class="o">];</span>
+    <span class="o">}</span>
 
-    Node <span style="color:#900;font-weight:bold">getRightChild</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">return</span> children<span style="color:#000;font-weight:bold">[</span>1<span style="color:#000;font-weight:bold">];</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="n">Node</span> <span class="nf">getRightChild</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">children</span><span class="o">[</span><span class="n">1</span><span class="o">];</span>
+    <span class="o">}</span>
 
-    <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">directionFor</span><span style="color:#000;font-weight:bold">(</span>K anotherKey<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>anotherKey <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">key</span> <span style="color:#000;font-weight:bold">||</span> anotherKey<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">key</span><span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#998;font-style:italic">// compareTo return negative integer when this object is less than another,
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#998;font-style:italic">// that is another is greater then this, so it should be in right child(children[1])
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">key</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">compareTo</span><span style="color:#000;font-weight:bold">(</span>anotherKey<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&lt;</span> 0 <span style="color:#000;font-weight:bold">?</span> 1 <span style="color:#000;font-weight:bold">:</span> 0<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kt">int</span> <span class="nf">directionFor</span><span class="o">(</span><span class="n">K</span> <span class="n">anotherKey</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">anotherKey</span> <span class="o">==</span> <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">||</span> <span class="n">anotherKey</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">key</span><span class="o">))</span> <span class="k">return</span> <span class="o">-</span><span class="n">1</span><span class="o">;</span>
+      <span class="c1">// compareTo return negative integer when this object is less than another,
+</span><span class="c1"></span>      <span class="c1">// that is another is greater then this, so it should be in right child(children[1])
+</span><span class="c1"></span>      <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">key</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">anotherKey</span><span class="o">)</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">?</span> <span class="n">1</span> <span class="o">:</span> <span class="n">0</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">compareTo</span><span style="color:#000;font-weight:bold">(</span>Node another<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">key</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">compareTo</span><span style="color:#000;font-weight:bold">(</span>another<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">key</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&lt;</span> 0 <span style="color:#000;font-weight:bold">?</span> 0 <span style="color:#000;font-weight:bold">:</span> 1<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>模仿算法竞赛入门经典上的代码，采用数组来存放左右孩子。这样在比较key的时候，可以通过返回0或1，来确定是在左孩子还是右孩子，主要逻辑在<code>directionFor</code>方法中。我已经写了一些注释，为了方便这里的<code>key</code>必须实现<code>Comparable</code>接口，这样才能比较，比较的时候，如果当前对象比另一个对象小，<code>compareTo</code>返回小于0的数，也就是另一个对象比当前对象大，所以在当前对象的右孩子，即返回1。</p>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="n">Node</span> <span class="n">another</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">key</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">another</span><span class="o">.</span><span class="na">key</span><span class="o">)</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">?</span> <span class="n">0</span> <span class="o">:</span> <span class="n">1</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>模仿算法竞赛入门经典上的代码，采用数组来存放左右孩子。这样在比较key的时候，可以通过返回0或1，来确定是在左孩子还是右孩子，主要逻辑在<code>directionFor</code>方法中。我已经写了一些注释，为了方便这里的<code>key</code>必须实现<code>Comparable</code>接口，这样才能比较，比较的时候，如果当前对象比另一个对象小，<code>compareTo</code>返回小于0的数，也就是另一个对象比当前对象大，所以在当前对象的右孩子，即返回1。</p>
 <h3 id="旋转">旋转</h3>
 <p>当插入后，如果新节点违反了堆的性质，即子节点的优先级小于父节点（最大堆）。这时候，需要旋转一下来调整。也因为这样的旋转使得它成为一棵BBST，因为节点的优先级是随机生成的，通过旋转可以使得树更加平衡。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic">   * d ^ 1 equals 1 -d, when d must be 1 or 0.
-</span><span style="color:#998;font-style:italic">   * So this method handles both left rotate and right rotate
-</span><span style="color:#998;font-style:italic">   *
-</span><span style="color:#998;font-style:italic">   * @param parent parent node to rotate
-</span><span style="color:#998;font-style:italic">   * @param d      rotate direction
-</span><span style="color:#998;font-style:italic">   * @return parent node after rotate
-</span><span style="color:#998;font-style:italic">   */</span>
-  <span style="color:#000;font-weight:bold">private</span> Node <span style="color:#900;font-weight:bold">rotate</span><span style="color:#000;font-weight:bold">(</span>Node parent<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>d <span style="color:#000;font-weight:bold">!=</span> 1 <span style="color:#000;font-weight:bold">&amp;&amp;</span> d <span style="color:#000;font-weight:bold">!=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> ArrayIndexOutOfBoundsException<span style="color:#000;font-weight:bold">();</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="cm">/**
+</span><span class="cm">   * d ^ 1 equals 1 -d, when d must be 1 or 0.
+</span><span class="cm">   * So this method handles both left rotate and right rotate
+</span><span class="cm">   *
+</span><span class="cm">   * @param parent parent node to rotate
+</span><span class="cm">   * @param d      rotate direction
+</span><span class="cm">   * @return parent node after rotate
+</span><span class="cm">   */</span>
+  <span class="kd">private</span> <span class="n">Node</span> <span class="nf">rotate</span><span class="o">(</span><span class="n">Node</span> <span class="n">parent</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">d</span> <span class="o">!=</span> <span class="n">1</span> <span class="o">&amp;&amp;</span> <span class="n">d</span> <span class="o">!=</span> <span class="n">0</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">ArrayIndexOutOfBoundsException</span><span class="o">();</span>
 
-    Node k <span style="color:#000;font-weight:bold">=</span> parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d <span style="color:#000;font-weight:bold">^</span> 1<span style="color:#000;font-weight:bold">];</span>
-    parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d <span style="color:#000;font-weight:bold">^</span> 1<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> k<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d<span style="color:#000;font-weight:bold">];</span>
-    k<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> parent<span style="color:#000;font-weight:bold">;</span>
-    parent <span style="color:#000;font-weight:bold">=</span> k<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">return</span> parent<span style="color:#000;font-weight:bold">;</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>上面这个方法同时处理了左旋和右旋。你可以分别验证这两种情况，是完全没有问题的，书上的那一小段C++代码实在是妙啊。并且使用<code>d ^ 1</code>来取代<code>1 - d</code>来提高效率。旋转结束后，要返回旋转后的父节点，在调用者那里进行赋值，改变父节点的引用。比如插入的时候要这样做：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> insert<span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d<span style="color:#000;font-weight:bold">],</span> key<span style="color:#000;font-weight:bold">,</span> value<span style="color:#000;font-weight:bold">);</span>
-</code></pre></div><p>如果不进行赋值，那么这个父节点还是没有改变的，因为Java的函数是传值的，这里就没有C/C++来的方便了。</p>
+    <span class="n">Node</span> <span class="n">k</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span> <span class="o">^</span> <span class="n">1</span><span class="o">];</span>
+    <span class="n">parent</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span> <span class="o">^</span> <span class="n">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span><span class="o">];</span>
+    <span class="n">k</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span><span class="o">]</span> <span class="o">=</span> <span class="n">parent</span><span class="o">;</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">k</span><span class="o">;</span>
+    <span class="k">return</span> <span class="n">parent</span><span class="o">;</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面这个方法同时处理了左旋和右旋。你可以分别验证这两种情况，是完全没有问题的，书上的那一小段C++代码实在是妙啊。并且使用<code>d ^ 1</code>来取代<code>1 - d</code>来提高效率。旋转结束后，要返回旋转后的父节点，在调用者那里进行赋值，改变父节点的引用。比如插入的时候要这样做：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">parent</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span><span class="o">]</span> <span class="o">=</span> <span class="n">insert</span><span class="o">(</span><span class="n">parent</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span><span class="o">],</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如果不进行赋值，那么这个父节点还是没有改变的，因为Java的函数是传值的，这里就没有C/C++来的方便了。</p>
 <h3 id="插入">插入</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> Node<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">insert</span><span style="color:#000;font-weight:bold">(</span>Node parent<span style="color:#000;font-weight:bold">,</span> K key<span style="color:#000;font-weight:bold">,</span> V value<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>parent <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      parent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Node<span style="color:#000;font-weight:bold">&lt;&gt;(</span>getRandomPriority<span style="color:#000;font-weight:bold">(),</span> key<span style="color:#000;font-weight:bold">,</span> value<span style="color:#000;font-weight:bold">);</span>
-      modeTime<span style="color:#000;font-weight:bold">++;</span>
-    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#458;font-weight:bold">int</span> d <span style="color:#000;font-weight:bold">=</span> parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">directionFor</span><span style="color:#000;font-weight:bold">(</span>key<span style="color:#000;font-weight:bold">);</span>
-      <span style="color:#998;font-style:italic">// key重复，直接覆盖value
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>d <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">value</span> <span style="color:#000;font-weight:bold">=</span> value<span style="color:#000;font-weight:bold">;</span>
-      <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-        parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d<span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> insert<span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d<span style="color:#000;font-weight:bold">],</span> key<span style="color:#000;font-weight:bold">,</span> value<span style="color:#000;font-weight:bold">);</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">insert</span><span class="o">(</span><span class="n">Node</span> <span class="n">parent</span><span class="o">,</span> <span class="n">K</span> <span class="n">key</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">parent</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">parent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;&gt;(</span><span class="n">getRandomPriority</span><span class="o">(),</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+      <span class="n">modeTime</span><span class="o">++;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="na">directionFor</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+      <span class="c1">// key重复，直接覆盖value
+</span><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">d</span> <span class="o">==</span> <span class="o">-</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">parent</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">parent</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span><span class="o">]</span> <span class="o">=</span> <span class="n">insert</span><span class="o">(</span><span class="n">parent</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span><span class="o">],</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
 
-        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d<span style="color:#000;font-weight:bold">].</span><span style="color:#008080">priority</span> <span style="color:#000;font-weight:bold">&gt;</span> parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">priority</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-          <span style="color:#998;font-style:italic">// 插入后，如果子节点的优先级大于父节点的优先级，进行旋转
-</span><span style="color:#998;font-style:italic"></span>          parent <span style="color:#000;font-weight:bold">=</span> rotate<span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">,</span> d <span style="color:#000;font-weight:bold">^</span> 1<span style="color:#000;font-weight:bold">);</span>
-          modeTime<span style="color:#000;font-weight:bold">++;</span>
-        <span style="color:#000;font-weight:bold">}</span>
-      <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">return</span> parent<span style="color:#000;font-weight:bold">;</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>上述代码使用递归实现，同样的每次递归都需要改变父节点的引用。当key重复时，我们直接覆盖原来的value；否则，根据键值大小选择左节点或右节点继续递归下去，直到叶子节点或者key重复为止。</p>
+        <span class="k">if</span> <span class="o">(</span><span class="n">parent</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span><span class="o">].</span><span class="na">priority</span> <span class="o">&gt;</span> <span class="n">parent</span><span class="o">.</span><span class="na">priority</span><span class="o">)</span> <span class="o">{</span>
+          <span class="c1">// 插入后，如果子节点的优先级大于父节点的优先级，进行旋转
+</span><span class="c1"></span>          <span class="n">parent</span> <span class="o">=</span> <span class="n">rotate</span><span class="o">(</span><span class="n">parent</span><span class="o">,</span> <span class="n">d</span> <span class="o">^</span> <span class="n">1</span><span class="o">);</span>
+          <span class="n">modeTime</span><span class="o">++;</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">parent</span><span class="o">;</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上述代码使用递归实现，同样的每次递归都需要改变父节点的引用。当key重复时，我们直接覆盖原来的value；否则，根据键值大小选择左节点或右节点继续递归下去，直到叶子节点或者key重复为止。</p>
 <p>TreapMap对外值提供一个<code>put</code>方法来插入元素：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">put</span><span style="color:#000;font-weight:bold">(</span>K key<span style="color:#000;font-weight:bold">,</span> V value<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#458;font-weight:bold">int</span> oldMod <span style="color:#000;font-weight:bold">=</span> modeTime<span style="color:#000;font-weight:bold">;</span>
-    root <span style="color:#000;font-weight:bold">=</span> insert<span style="color:#000;font-weight:bold">(</span>root<span style="color:#000;font-weight:bold">,</span> key<span style="color:#000;font-weight:bold">,</span> value<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>oldMod <span style="color:#000;font-weight:bold">!=</span> modeTime<span style="color:#000;font-weight:bold">)</span> size<span style="color:#000;font-weight:bold">++;</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h3 id="删除">删除</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">private</span> Node<span style="color:#000;font-weight:bold">&lt;</span>K<span style="color:#000;font-weight:bold">,</span> V<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">delete</span><span style="color:#000;font-weight:bold">(</span>Node parent<span style="color:#000;font-weight:bold">,</span> K key<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    V v <span style="color:#000;font-weight:bold">=</span> get<span style="color:#000;font-weight:bold">(</span>key<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#998;font-style:italic">// key not exists
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>v <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#000;font-weight:bold">return</span> parent<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    v <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">put</span><span class="o">(</span><span class="n">K</span> <span class="n">key</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">oldMod</span> <span class="o">=</span> <span class="n">modeTime</span><span class="o">;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">insert</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">oldMod</span> <span class="o">!=</span> <span class="n">modeTime</span><span class="o">)</span> <span class="n">size</span><span class="o">++;</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="删除">删除</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">delete</span><span class="o">(</span><span class="n">Node</span> <span class="n">parent</span><span class="o">,</span> <span class="n">K</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">V</span> <span class="n">v</span> <span class="o">=</span> <span class="n">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="c1">// key not exists
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">v</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">parent</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
 
-    <span style="color:#458;font-weight:bold">int</span> d <span style="color:#000;font-weight:bold">=</span> parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">directionFor</span><span style="color:#000;font-weight:bold">(</span>key<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>d <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#998;font-style:italic">// 待删除的节点只有一个子节点或没有子节点
-</span><span style="color:#998;font-style:italic"></span>      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLeftChild</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        parent <span style="color:#000;font-weight:bold">=</span> parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getRightChild</span><span style="color:#000;font-weight:bold">();</span>
-        modeTime<span style="color:#000;font-weight:bold">++;</span>
-      <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getRightChild</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        parent <span style="color:#000;font-weight:bold">=</span> parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLeftChild</span><span style="color:#000;font-weight:bold">();</span>
-        modeTime<span style="color:#000;font-weight:bold">++;</span>
-      <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#998;font-style:italic">//待删除的节点有两个子节点，把优先级高的子节点旋转的父节点，再递归删除待删除的节点
-</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//如果左节点的优先级高于右节点，右旋，接着在右子树中递归删除。
-</span><span style="color:#998;font-style:italic"></span>        <span style="color:#458;font-weight:bold">int</span> d2 <span style="color:#000;font-weight:bold">=</span> parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLeftChild</span><span style="color:#000;font-weight:bold">().</span><span style="color:#008080">compareTo</span><span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getRightChild</span><span style="color:#000;font-weight:bold">());</span>
-        parent <span style="color:#000;font-weight:bold">=</span> rotate<span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">,</span> d2<span style="color:#000;font-weight:bold">);</span>
-        delete<span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d2<span style="color:#000;font-weight:bold">],</span> key<span style="color:#000;font-weight:bold">);</span>
-      <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-      parent <span style="color:#000;font-weight:bold">=</span> delete<span style="color:#000;font-weight:bold">(</span>parent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">children</span><span style="color:#000;font-weight:bold">[</span>d<span style="color:#000;font-weight:bold">],</span> key<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">return</span> parent<span style="color:#000;font-weight:bold">;</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>上面的Java代码完善了书中的代码，在key不存在的时候直接返回。如果待删除的节点只有一个子节点或没有子节点，就比较方便，直接用改子节点替代待删除的节点即可；如果待删除的节点有两个子节点，情况就复杂了一点。先把优先级高的子节点旋转的父节点，再递归删除待删除的节点。</p>
+    <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="na">directionFor</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">d</span> <span class="o">==</span> <span class="o">-</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// 待删除的节点只有一个子节点或没有子节点
+</span><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">parent</span><span class="o">.</span><span class="na">getLeftChild</span><span class="o">()</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="na">getRightChild</span><span class="o">();</span>
+        <span class="n">modeTime</span><span class="o">++;</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">parent</span><span class="o">.</span><span class="na">getRightChild</span><span class="o">()</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="na">getLeftChild</span><span class="o">();</span>
+        <span class="n">modeTime</span><span class="o">++;</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="c1">//待删除的节点有两个子节点，把优先级高的子节点旋转的父节点，再递归删除待删除的节点
+</span><span class="c1"></span>        <span class="c1">//如果左节点的优先级高于右节点，右旋，接着在右子树中递归删除。
+</span><span class="c1"></span>        <span class="kt">int</span> <span class="n">d2</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="na">getLeftChild</span><span class="o">().</span><span class="na">compareTo</span><span class="o">(</span><span class="n">parent</span><span class="o">.</span><span class="na">getRightChild</span><span class="o">());</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">rotate</span><span class="o">(</span><span class="n">parent</span><span class="o">,</span> <span class="n">d2</span><span class="o">);</span>
+        <span class="n">delete</span><span class="o">(</span><span class="n">parent</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d2</span><span class="o">],</span> <span class="n">key</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="n">parent</span> <span class="o">=</span> <span class="n">delete</span><span class="o">(</span><span class="n">parent</span><span class="o">.</span><span class="na">children</span><span class="o">[</span><span class="n">d</span><span class="o">],</span> <span class="n">key</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">parent</span><span class="o">;</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的Java代码完善了书中的代码，在key不存在的时候直接返回。如果待删除的节点只有一个子节点或没有子节点，就比较方便，直接用改子节点替代待删除的节点即可；如果待删除的节点有两个子节点，情况就复杂了一点。先把优先级高的子节点旋转的父节点，再递归删除待删除的节点。</p>
 <p>最后也是提供一个<code>public</code>的方法用于删除：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">remove</span><span style="color:#000;font-weight:bold">(</span>K key<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#458;font-weight:bold">int</span> oldMod <span style="color:#000;font-weight:bold">=</span> modeTime<span style="color:#000;font-weight:bold">;</span>
-    root <span style="color:#000;font-weight:bold">=</span> delete<span style="color:#000;font-weight:bold">(</span>root<span style="color:#000;font-weight:bold">,</span> key<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>modeTime <span style="color:#000;font-weight:bold">!=</span> oldMod<span style="color:#000;font-weight:bold">)</span> size<span style="color:#000;font-weight:bold">--;</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h2 id="测试">测试</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">remove</span><span class="o">(</span><span class="n">K</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">oldMod</span> <span class="o">=</span> <span class="n">modeTime</span><span class="o">;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">delete</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">);</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">modeTime</span> <span class="o">!=</span> <span class="n">oldMod</span><span class="o">)</span> <span class="n">size</span><span class="o">--;</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="测试">测试</h2>
 <p>分别对<code>TreapMap</code>和<code>TreeMap</code>进行插入和删除的测试，并且比较两者的性能：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#3c5d5d;font-weight:bold">@org.junit.Test</span>
-  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testTreap</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;----------TreapMap test start----------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    TreapMap<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;</span> treap <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> TreapMap<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
-    treap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;hello&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    treap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;world&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;treap[1] = &#34;</span> <span style="color:#000;font-weight:bold">+</span> treap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">));</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="nd">@org.junit.Test</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testTreap</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;----------TreapMap test start----------&#34;</span><span class="o">);</span>
+    <span class="n">TreapMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">treap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TreapMap</span><span class="o">&lt;&gt;();</span>
+    <span class="n">treap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;hello&#34;</span><span class="o">);</span>
+    <span class="n">treap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">2</span><span class="o">,</span> <span class="s">&#34;world&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;treap[1] = &#34;</span> <span class="o">+</span> <span class="n">treap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">));</span>
 
-    <span style="color:#458;font-weight:bold">long</span> time <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
-    Random random <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Random<span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> 1e6<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#458;font-weight:bold">long</span> start <span style="color:#000;font-weight:bold">=</span> System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">();</span>
-      treap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">,</span> i <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;test&#34;</span> <span style="color:#000;font-weight:bold">+</span> random<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">nextInt</span><span style="color:#000;font-weight:bold">(</span>Integer<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MAX_VALUE</span><span style="color:#000;font-weight:bold">));</span>
-      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">%</span> 5 <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        treap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">remove</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">);</span>
-      <span style="color:#000;font-weight:bold">}</span>
-      time <span style="color:#000;font-weight:bold">+=</span> <span style="color:#000;font-weight:bold">(</span>System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">-</span> start<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kt">long</span> <span class="n">time</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+    <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">1e6</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+      <span class="n">treap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">i</span> <span class="o">+</span> <span class="s">&#34;test&#34;</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">));</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">%</span> <span class="n">5</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">treap</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="n">time</span> <span class="o">+=</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">-</span> <span class="n">start</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;size: &#34;</span> <span style="color:#000;font-weight:bold">+</span> treap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSize</span><span style="color:#000;font-weight:bold">());</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;treap[1] = &#34;</span> <span style="color:#000;font-weight:bold">+</span> treap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">));</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;TreapMap time: &#34;</span> <span style="color:#000;font-weight:bold">+</span> time<span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;----------TreapMap test end----------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-  <span style="color:#000;font-weight:bold">}</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;size: &#34;</span> <span class="o">+</span> <span class="n">treap</span><span class="o">.</span><span class="na">getSize</span><span class="o">());</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;treap[1] = &#34;</span> <span class="o">+</span> <span class="n">treap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;TreapMap time: &#34;</span> <span class="o">+</span> <span class="n">time</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;----------TreapMap test end----------&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
   
-  <span style="color:#3c5d5d;font-weight:bold">@org.junit.Test</span>
-  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testTreeMap</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;----------TreeMap test start----------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    TreeMap<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">,</span> String<span style="color:#000;font-weight:bold">&gt;</span> treeMap <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> TreeMap<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
-    treeMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;hello&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    treeMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;world&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;treeMap[1] = &#34;</span> <span style="color:#000;font-weight:bold">+</span> treeMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">));</span>
+  <span class="nd">@org.junit.Test</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testTreeMap</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;----------TreeMap test start----------&#34;</span><span class="o">);</span>
+    <span class="n">TreeMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">treeMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TreeMap</span><span class="o">&lt;&gt;();</span>
+    <span class="n">treeMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;hello&#34;</span><span class="o">);</span>
+    <span class="n">treeMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">2</span><span class="o">,</span> <span class="s">&#34;world&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;treeMap[1] = &#34;</span> <span class="o">+</span> <span class="n">treeMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">));</span>
 
-    Random random <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Random<span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#458;font-weight:bold">long</span> time <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> 1e6<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
-      <span style="color:#458;font-weight:bold">long</span> start <span style="color:#000;font-weight:bold">=</span> System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">();</span>
-      treeMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">put</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">,</span> i <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;test&#34;</span> <span style="color:#000;font-weight:bold">+</span> random<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">nextInt</span><span style="color:#000;font-weight:bold">(</span>Integer<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MAX_VALUE</span><span style="color:#000;font-weight:bold">));</span>
-      <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">%</span> 5 <span style="color:#000;font-weight:bold">==</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        treeMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">remove</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">);</span>
-      <span style="color:#000;font-weight:bold">}</span>
-      time <span style="color:#000;font-weight:bold">+=</span> <span style="color:#000;font-weight:bold">(</span>System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">-</span> start<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+    <span class="kt">long</span> <span class="n">time</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">1e6</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+      <span class="n">treeMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">i</span> <span class="o">+</span> <span class="s">&#34;test&#34;</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">));</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">%</span> <span class="n">5</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">treeMap</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="n">time</span> <span class="o">+=</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">-</span> <span class="n">start</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;size: &#34;</span> <span style="color:#000;font-weight:bold">+</span> treeMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">());</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;treeMap[1] = &#34;</span> <span style="color:#000;font-weight:bold">+</span> treeMap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">));</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;TreeMap time: &#34;</span> <span style="color:#000;font-weight:bold">+</span> time<span style="color:#000;font-weight:bold">);</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;----------TreeMap test end----------&#34;</span><span style="color:#000;font-weight:bold">);</span>
-  <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>最终的结果<code>TreapMap</code>的速度比<code>TreeMap</code>的快两倍多。但是我发现一个<code>TreapMap</code>删除时候的🐛bug，这样即使速度再快没有正确性也没用。测试结果如下：</p>
-<p>
-<a data-fancybox="gallery" href="/images/treap-test.png">
-  <img class="mx-auto" alt="test" src="/images/treap-test.png" />
-</a>
-</p>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;size: &#34;</span> <span class="o">+</span> <span class="n">treeMap</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;treeMap[1] = &#34;</span> <span class="o">+</span> <span class="n">treeMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">1</span><span class="o">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;TreeMap time: &#34;</span> <span class="o">+</span> <span class="n">time</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;----------TreeMap test end----------&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最终的结果<code>TreapMap</code>的速度比<code>TreeMap</code>的快两倍多。但是我发现一个<code>TreapMap</code>删除时候的🐛bug，这样即使速度再快没有正确性也没用。测试结果如下：</p>
+<p><img src="/images/treap-test.png" alt="test"></p>
 <p><code>treapMap.get(1)</code>的值是不应该为null的，但是结果确实null，目前我还没发现自己错在哪里（有哪位大佬发现了告诉我一声啊。完整的代码在<a href="https://gist.github.com/LeeReindeer/34d17c96f1acff333712d39dee217f2a#file-treapmap-java">Gist</a>上可以看到。</p>
 <h2 id="参考">参考</h2>
 <ul>
 <li>算法竞赛入门经典-训练指南</li>
 </ul>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-12-17
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/2018/12/17/java-fun-arraylist-linkedlist/">Java基础-ArrayList和LinkedList</a></li>
-        
-        <li><a href="/2018/12/16/java-fun-hashmap/">Java基础-HashMap源码简析</a></li>
-        
-        <li><a href="/2018/12/14/java-fun-object-method/">Java基础-Object的11个方法</a></li>
-        
-        <li><a href="/2018/12/12/java-fun-toc/">Java基础-目录</a></li>
-        
-        <li><a href="/2018/11/10/spring_bean/">【Spring 揭秘（一）】Spring Bean DI and Instantiating</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/java'>Java</a></li>
-                
-                <li><a href='https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/Java/">Java</a>
+          <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2018/12/20/java-fun-pass-by-value/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Java基础-Pass by value</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2018/12/17/java-fun-arraylist-linkedlist/">
+            <span class="next-text nav-default">Java基础-ArrayList和LinkedList</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-        </div>
-        
-        
-        
-        
-      </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
   </div>
-  <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
+<script src="/js/sitedate.js"></script>
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
-
 </html>

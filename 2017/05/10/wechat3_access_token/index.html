@@ -1,206 +1,177 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>一个微信公众号的诞生（三）Access Token的获取 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>一个微信公众号的诞生（三）Access Token的获取 | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="一个微信公众号的诞生（三）Access Token的获取 - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2017-05-10T22:46:24&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2017-05-10T22:46:24&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" access_token是微信公众号开发中比较重要的数据，因为公众号的许多接口都要使用access_token来验证.具体请参考文档(RTFM).
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2017/05/10/wechat3_Access_Token/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="一个微信公众号的诞生（三）Access Token的获取" />
+<meta property="og:description" content="
 access_token是微信公众号开发中比较重要的数据，因为公众号的许多接口都要使用access_token来验证.具体请参考文档(RTFM).
-">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/2017/05/10/wechat3_access_token/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/2017/05/10/wechat3_Access_Token/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-05-10T22:46:24+00:00" />
+<meta property="article:modified_time" content="2017-05-10T22:46:24+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="一个微信公众号的诞生（三）Access Token的获取">
+<meta itemprop="description" content="
+access_token是微信公众号开发中比较重要的数据，因为公众号的许多接口都要使用access_token来验证.具体请参考文档(RTFM).
+"><meta itemprop="datePublished" content="2017-05-10T22:46:24+00:00" />
+<meta itemprop="dateModified" content="2017-05-10T22:46:24+00:00" />
+<meta itemprop="wordCount" content="1113">
+<meta itemprop="keywords" content="微信,Java," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="一个微信公众号的诞生（三）Access Token的获取"/>
+<meta name="twitter:description" content="
+access_token是微信公众号开发中比较重要的数据，因为公众号的许多接口都要使用access_token来验证.具体请参考文档(RTFM).
+"/>
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
 
-    
-    
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-  <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-  <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
     
-    <div class="container">
-      <div class="col-group">
+    <header class="post-header">
+      <h1 class="post-title">一个微信公众号的诞生（三）Access Token的获取</h1>
 
-        <div class="col-8" id="main">
-          
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+      <div class="post-meta">
+        <span class="post-time"> 2017-05-10 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 1113 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
 
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">一个微信公众号的诞生（三）Access Token的获取</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#数据结构分析">数据结构分析</a></li>
     <li><a href="#具体实现">具体实现</a></li>
     <li><a href="#本地持久化todo">本地持久化(todo)</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">一个微信公众号的诞生（三）Access Token的获取</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年5月10日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">1035 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2017-05-10T22:46:24" title="May 10, 2017">May 10, 2017</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>access_token是微信公众号开发中比较重要的数据，因为公众号的许多接口都要使用access_token来验证.具体请参考文档(RTFM).</p>
 </blockquote>
 <h1 id="access-token的获取">Access Token的获取</h1>
@@ -234,184 +205,313 @@ access_token是微信公众号开发中比较重要的数据，因为公众号�
 </table>
 <h2 id="具体实现">具体实现</h2>
 <p>首先当然是写一个acess_token的实体类</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">AccessToken</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">private</span> String access_token<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> expires_in<span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AccessToken</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">access_token</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">expires_in</span><span class="o">;</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getExpires_in</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">return</span> expires_in<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getExpires_in</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">expires_in</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setExpires_in</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> expires_in<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">expires_in</span> <span style="color:#000;font-weight:bold">=</span> expires_in<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setExpires_in</span><span class="o">(</span><span class="kt">int</span> <span class="n">expires_in</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">expires_in</span> <span class="o">=</span> <span class="n">expires_in</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">getAccess_token</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getAccess_token</span><span class="o">()</span> <span class="o">{</span>
 
-        <span style="color:#000;font-weight:bold">return</span> access_token<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
+        <span class="k">return</span> <span class="n">access_token</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setAccess_token</span><span style="color:#000;font-weight:bold">(</span>String access_token<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">access_token</span> <span style="color:#000;font-weight:bold">=</span> access_token<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>接着新建一个WechatUtil类（主要用来和微信服务器交互）,上面说过，获取access_token的http的请求方式为get．写一个doGet()方法．</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> JSONObject <span style="color:#900;font-weight:bold">doGet</span><span style="color:#000;font-weight:bold">(</span>String url<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        HttpURLConnection connection <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
-        BufferedReader reader <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
-        JSONObject jsonObject <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAccess_token</span><span class="o">(</span><span class="n">String</span> <span class="n">access_token</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">access_token</span> <span class="o">=</span> <span class="n">access_token</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>接着新建一个WechatUtil类（主要用来和微信服务器交互）,上面说过，获取access_token的http的请求方式为get．写一个doGet()方法．</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="n">JSONObject</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">String</span> <span class="n">url</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">HttpURLConnection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">BufferedReader</span> <span class="n">reader</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">JSONObject</span> <span class="n">jsonObject</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
 
-            URL url1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> URL<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">);</span>
-            connection <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>HttpURLConnection<span style="color:#000;font-weight:bold">)</span> url1<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">openConnection</span><span style="color:#000;font-weight:bold">();</span>
-            connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setRequestMethod</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;GET&#34;</span><span style="color:#000;font-weight:bold">);</span>
-            connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setConnectTimeout</span><span style="color:#000;font-weight:bold">(</span>8000<span style="color:#000;font-weight:bold">);</span>
-            connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setReadTimeout</span><span style="color:#000;font-weight:bold">(</span>8000<span style="color:#000;font-weight:bold">);</span>
-            InputStream in <span style="color:#000;font-weight:bold">=</span> connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInputStream</span><span style="color:#000;font-weight:bold">();</span>
-            <span style="color:#998;font-style:italic">//读取输入流
-</span><span style="color:#998;font-style:italic"></span>            reader <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> BufferedReader<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> InputStreamReader<span style="color:#000;font-weight:bold">(</span>in<span style="color:#000;font-weight:bold">));</span>
-            StringBuilder response <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> StringBuilder<span style="color:#000;font-weight:bold">();</span>
-            String line<span style="color:#000;font-weight:bold">;</span>
-            <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">((</span>line <span style="color:#000;font-weight:bold">=</span> reader<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readLine</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-                response<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">append</span><span style="color:#000;font-weight:bold">(</span>line<span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">}</span>
-            jsonObject <span style="color:#000;font-weight:bold">=</span> JSONObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">fromObject</span><span style="color:#000;font-weight:bold">(</span>response<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">());</span>
-        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>Exception e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">finally</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>reader <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-                    reader<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">close</span><span style="color:#000;font-weight:bold">();</span>
-                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>IOException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-                    e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-                <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>connection <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-                connection<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">disconnect</span><span style="color:#000;font-weight:bold">();</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">return</span> jsonObject<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>可以看到这是一个很简单的发送HTTP请求代码，然后返回的是一个jsonObject.接着只要处理这个jsonObject就可以了．继续修改WechatUtil的代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> AccessToken <span style="color:#900;font-weight:bold">getAcessToken</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        AccessToken token <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> AccessToken<span style="color:#000;font-weight:bold">();</span>
-        String url <span style="color:#000;font-weight:bold">=</span> ACCESS_TOKEN_URL<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;APPID&#34;</span><span style="color:#000;font-weight:bold">,</span> APPID<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;APPSECRET&#34;</span><span style="color:#000;font-weight:bold">,</span> APPSECRET<span style="color:#000;font-weight:bold">);</span>
-        JSONObject jsonObject <span style="color:#000;font-weight:bold">=</span> doGet<span style="color:#000;font-weight:bold">(</span>url<span style="color:#000;font-weight:bold">);</span>
-        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>jsonObject <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-            token<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAccess_token</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;access_token&#34;</span><span style="color:#000;font-weight:bold">));</span>
-            token<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setExpires_in</span><span style="color:#000;font-weight:bold">(</span>jsonObject<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;expires_in&#34;</span><span style="color:#000;font-weight:bold">));</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">return</span> token<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>getAcessToken()方法调用了doGet()方法，并把含有appid和appsercet的URL传入，最终得到access_token.新建一个测试类，WechatInitial.代码如下</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">main</span><span style="color:#000;font-weight:bold">(</span>String<span style="color:#000;font-weight:bold">[]</span> args<span style="color:#000;font-weight:bold">){</span>
-        <span style="color:#000;font-weight:bold">try</span><span style="color:#000;font-weight:bold">{</span>
-            WechatUtil wechatUtil<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> WechatUtil<span style="color:#000;font-weight:bold">();</span>
-            AccessToken token<span style="color:#000;font-weight:bold">=</span>wechatUtil<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAcessToken</span><span style="color:#000;font-weight:bold">();</span>
-            String access_token<span style="color:#000;font-weight:bold">=</span>token<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAccess_token</span><span style="color:#000;font-weight:bold">();</span>
-            <span style="color:#458;font-weight:bold">int</span> expires_in<span style="color:#000;font-weight:bold">=</span>token<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getExpires_in</span><span style="color:#000;font-weight:bold">();</span>
-            System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Access_token:&#34;</span><span style="color:#000;font-weight:bold">+</span>access_token<span style="color:#000;font-weight:bold">);</span>
-            <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>Exception e<span style="color:#000;font-weight:bold">){</span>
-            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-        <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>结果如图：
-
-<a data-fancybox="gallery" href="/images/access_token.png">
-  <img class="mx-auto" alt="" src="/images/access_token.png" />
-</a>
-</p>
+            <span class="n">URL</span> <span class="n">url1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+            <span class="n">connection</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpURLConnection</span><span class="o">)</span> <span class="n">url1</span><span class="o">.</span><span class="na">openConnection</span><span class="o">();</span>
+            <span class="n">connection</span><span class="o">.</span><span class="na">setRequestMethod</span><span class="o">(</span><span class="s">&#34;GET&#34;</span><span class="o">);</span>
+            <span class="n">connection</span><span class="o">.</span><span class="na">setConnectTimeout</span><span class="o">(</span><span class="n">8000</span><span class="o">);</span>
+            <span class="n">connection</span><span class="o">.</span><span class="na">setReadTimeout</span><span class="o">(</span><span class="n">8000</span><span class="o">);</span>
+            <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+            <span class="c1">//读取输入流
+</span><span class="c1"></span>            <span class="n">reader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">in</span><span class="o">));</span>
+            <span class="n">StringBuilder</span> <span class="n">response</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">line</span><span class="o">;</span>
+            <span class="k">while</span> <span class="o">((</span><span class="n">line</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="na">readLine</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">jsonObject</span> <span class="o">=</span> <span class="n">JSONObject</span><span class="o">.</span><span class="na">fromObject</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">reader</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">reader</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">connection</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">connection</span><span class="o">.</span><span class="na">disconnect</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">jsonObject</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到这是一个很简单的发送HTTP请求代码，然后返回的是一个jsonObject.接着只要处理这个jsonObject就可以了．继续修改WechatUtil的代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="n">AccessToken</span> <span class="nf">getAcessToken</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">AccessToken</span> <span class="n">token</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AccessToken</span><span class="o">();</span>
+        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">ACCESS_TOKEN_URL</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;APPID&#34;</span><span class="o">,</span> <span class="n">APPID</span><span class="o">).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;APPSECRET&#34;</span><span class="o">,</span> <span class="n">APPSECRET</span><span class="o">);</span>
+        <span class="n">JSONObject</span> <span class="n">jsonObject</span> <span class="o">=</span> <span class="n">doGet</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">jsonObject</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">token</span><span class="o">.</span><span class="na">setAccess_token</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;access_token&#34;</span><span class="o">));</span>
+            <span class="n">token</span><span class="o">.</span><span class="na">setExpires_in</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&#34;expires_in&#34;</span><span class="o">));</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">token</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>getAcessToken()方法调用了doGet()方法，并把含有appid和appsercet的URL传入，最终得到access_token.新建一个测试类，WechatInitial.代码如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">WechatUtil</span> <span class="n">wechatUtil</span><span class="o">=</span><span class="k">new</span> <span class="n">WechatUtil</span><span class="o">();</span>
+            <span class="n">AccessToken</span> <span class="n">token</span><span class="o">=</span><span class="n">wechatUtil</span><span class="o">.</span><span class="na">getAcessToken</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">access_token</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="na">getAccess_token</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">expires_in</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="na">getExpires_in</span><span class="o">();</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Access_token:&#34;</span><span class="o">+</span><span class="n">access_token</span><span class="o">);</span>
+            <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>结果如图：
+<img src="/images/access_token.png" alt=""></p>
 <h2 id="本地持久化todo">本地持久化(todo)</h2>
 <blockquote>
 <p>由于acess_token的有效期是两个小时，而且一天的获取上限是2000次，当用户较多是，重复获取可以会造成超过次数上限，而影响业务．
 目前我的想法是将access_token保存到本地，并且定时刷新．（也可以保存到本地，调用替他接口是根据微信全局返回码判断是否过期，如过期，则主动刷新．</p>
 </blockquote>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-05-10
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/2017/05/04/wecaht2_docking_receipt_and_send/">一个微信公众号的诞生（二）公众号对接和消息的接收发送</a></li>
-        
-        <li><a href="/2017/04/20/wechat1_development_of_the_environment/">一个微信公众号的诞生（一）开发环境的搭建</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/%E5%BE%AE%E4%BF%A1'>微信</a></li>
-                
-                <li><a href='https://leer.moe/tags/java'>Java</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E5%BE%AE%E4%BF%A1/">微信</a>
+          <a href="/tags/Java/">Java</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2017/05/11/wechat4_creat_menu_and_send_template_msg/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">一个微信公众号的诞生（四）菜单的创建和模板消息的发送</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2017/05/04/wecaht2_docking_receipt_and_send/">
+            <span class="next-text nav-default">一个微信公众号的诞生（二）公众号对接和消息的接收发送</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-        </div>
-        
-        
-        
-        
-      </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
   </div>
-  <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
+<script src="/js/sitedate.js"></script>
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
 
 </body>
-
 </html>

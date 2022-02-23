@@ -2,11 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>C on LeeReindeer&#39;s blog</title>
-    <link>https://leer.moe/tags/c/</link>
+    <link>https://leer.moe/tags/C/</link>
     <description>Recent content in C on LeeReindeer&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 04 Dec 2018 18:31:21 +0000</lastBuildDate><atom:link href="https://leer.moe/tags/c/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 04 Dec 2018 18:31:21 +0000</lastBuildDate><atom:link href="https://leer.moe/tags/C/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>乞丐版Vi编辑器的实现2-原始输入输出</title>
       <link>https://leer.moe/2018/12/04/write-vip-step-by-step2/</link>
@@ -33,20 +33,39 @@
 &lt;p&gt;这一节的内容可能比较枯燥，是一些底层的 Terminal 的属性：canonical mode，回显（echoing），键盘按键对应的 ASCII 码（可以发现一些按键不止对应一个编码，还有些按键对应的是同一个编码）和一些杂项设置&amp;hellip;通过改变这些设置，让 Terminal 进入所谓的 “raw mode”。&lt;/p&gt;
 &lt;h2 id=&#34;makefile&#34;&gt;Makefile&lt;/h2&gt;
 &lt;p&gt;我使用 make 来构建 VIP，因为只有两个源文件，所以 Makefile 很简单：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;color:#008080&#34;&gt;CC&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; gcc
-&lt;span style=&#34;color:#008080&#34;&gt;CFLAGS&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; -Wall -Wextra -pedantic -std&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt;c99 -O3
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span class=&#34;nv&#34;&gt;CC&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; gcc
+&lt;span class=&#34;nv&#34;&gt;CFLAGS&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; -Wall -Wextra -pedantic -std&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;c99 -O3
 
-&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;all&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; vip
+&lt;span class=&#34;nf&#34;&gt;all&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vip&lt;/span&gt;
 
-&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;debug&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;
-	&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;$(&lt;/span&gt;CC&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;$(&lt;/span&gt;CFLAGS&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;)&lt;/span&gt; vip.c -g -o vipd
+&lt;span class=&#34;nf&#34;&gt;debug&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;$(&lt;/span&gt;CC&lt;span class=&#34;k&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;$(&lt;/span&gt;CFLAGS&lt;span class=&#34;k&#34;&gt;)&lt;/span&gt; vip.c -g -o vipd
 
-&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;re&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;
-	make clean;make
+&lt;span class=&#34;nf&#34;&gt;re&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;
+	make clean&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;make
 
-&lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;clean&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt;
+&lt;span class=&#34;nf&#34;&gt;clean&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;
 	rm -f vip vipd
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CFLAGS 里使用 c99 标准；使用&lt;code&gt; -O3&lt;/code&gt;进行编译优化，主要是对内联函数进行优化；&lt;code&gt;-Wall -Wextra -pedantic &lt;/code&gt;会打印一些额外的警告，对 debug 有帮助。&lt;/p&gt;</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;CFLAGS 里使用 c99 标准；使用&lt;code&gt; -O3&lt;/code&gt;进行编译优化，主要是对内联函数进行优化；&lt;code&gt;-Wall -Wextra -pedantic &lt;/code&gt;会打印一些额外的警告，对 debug 有帮助。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -72,20 +91,39 @@
 &lt;p&gt;解题的思路一般会写在注释里的。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2 id=&#34;bitxor&#34;&gt;bitXor&lt;/h2&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;/*s
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt; * bitXor - x^y using only ~ and &amp;amp;
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt; *   Example: bitXor(4, 5) = 1
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt; *   Legal ops: ~ &amp;amp;
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt; *   Max ops: 14
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt; *   Rating: 1
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt; */&lt;/span&gt;
-&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;bitXor&lt;/span&gt;(&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; x, &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; y) {
-  &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// 德摩根定律
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// a xor b = (~a | ~b) &amp;amp; (a | b)
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// = ~(a &amp;amp; b) &amp;amp; ~(~a &amp;amp; ~b)
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;~&lt;/span&gt;(&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;~&lt;/span&gt;x &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;~&lt;/span&gt;y) &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;~&lt;/span&gt;(x &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;amp;&lt;/span&gt; y);
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span class=&#34;cm&#34;&gt;/*s
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * bitXor - x^y using only ~ and &amp;amp;
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *   Example: bitXor(4, 5) = 1
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *   Legal ops: ~ &amp;amp;
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *   Max ops: 14
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *   Rating: 1
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; */&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;bitXor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+  &lt;span class=&#34;c1&#34;&gt;// 德摩根定律
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// a xor b = (~a | ~b) &amp;amp; (a | b)
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// = ~(a &amp;amp; b) &amp;amp; ~(~a &amp;amp; ~b)
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;~&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;~&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;~&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;~&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。&lt;/p&gt;
 &lt;p&gt;利用的性质主要是：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;a ^ b = (~a | ~b) &amp;amp; (a | b)&lt;/li&gt;
@@ -105,24 +143,50 @@
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;P(s)&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;P(s) {
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;if&lt;/span&gt; (p &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;0&lt;/span&gt;) {
-    	s&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;--&lt;/span&gt;;
-    } &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;else&lt;/span&gt; {
-    	append this &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;thread&lt;/span&gt; to list;
-    	sleep();
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span class=&#34;n&#34;&gt;P&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    	&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;--&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    	&lt;span class=&#34;n&#34;&gt;append&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;this&lt;/span&gt; &lt;span class=&#34;kr&#34;&gt;thread&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    	&lt;span class=&#34;n&#34;&gt;sleep&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;V(s)&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;V(s) {
-    s&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;++&lt;/span&gt;;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;if&lt;/span&gt; (list is no empty) {
-        list.pop().wakeup();
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span class=&#34;n&#34;&gt;V&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;list&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;no&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;empty&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;wakeup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。&lt;/p&gt;</description>
     </item>
@@ -135,33 +199,67 @@
       <guid>https://leer.moe/2018/03/28/pointer_in_c/</guid>
       <description>&lt;h2 id=&#34;一重指针&#34;&gt;一重指针&lt;/h2&gt;
 &lt;h3 id=&#34;简单使用&#34;&gt;简单使用&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; a &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;;
-&lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;amp;&lt;/span&gt;a; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//defines an pointer to a, the address where a store.
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, a);
-printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//here * is poiner operator, get the value of address = a.
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;数组指针&#34;&gt;数组指针&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//defines an pointer to a, the address where a store.
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;printf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;printf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//here * is poiner operator, get the value of address = a.
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;数组指针&#34;&gt;数组指针&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;数组名代表数组的&lt;strong&gt;首地址&lt;/strong&gt;，二维数组名则是&lt;strong&gt;行地址&lt;/strong&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;一维数组&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt; &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; a[&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;};
- &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p1 &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; a;
- printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, a[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;]); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//2
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; printf(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;, (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*++&lt;/span&gt;p1)); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//2
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+ &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+ &lt;span class=&#34;n&#34;&gt;printf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]);&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//2
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;printf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;%d&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*++&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;二维（多维）数组&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt; &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; b[&lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; {{&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;3&lt;/span&gt; ,&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;},{&lt;span style=&#34;color:#099&#34;&gt;5.&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;6&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;7&lt;/span&gt;, &lt;span style=&#34;color:#099&#34;&gt;8&lt;/span&gt;}};
- &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p2)[&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; b; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//**A pointer** to a array of 4 integers,行地址
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; &lt;span style=&#34;color:#458;font-weight:bold&#34;&gt;int&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p3)[&lt;span style=&#34;color:#099&#34;&gt;2&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;4&lt;/span&gt;] &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;amp;&lt;/span&gt;b; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//**A pointer** to 2d array
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; b[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;];&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;((&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p2 &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5,(*p + 1) == 一维数组b[1]的首地址
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; p2[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;]; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;*&lt;/span&gt;p2)[&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;][&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;]; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;//5
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{{&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;},{&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;5.&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}};&lt;/span&gt;
+ &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//**A pointer** to a array of 4 integers,行地址
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//**A pointer** to 2d array
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//5
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;((&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//5,(*p + 1) == 一维数组b[1]的首地址
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//5
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//5
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     

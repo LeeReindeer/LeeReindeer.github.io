@@ -1,146 +1,162 @@
-<!doctype html>
-<html lang="zh-cn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Java基础-ArrayList和LinkedList - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Java基础-ArrayList和LinkedList | LeeReindeer&#39;s blog</title>
-    <meta property="og:title" content="Java基础-ArrayList和LinkedList - LeeReindeer&#39;s blog">
-    <meta property="og:type" content="article">
-    
-    <meta property="article:published_time" content='2018-12-17T15:31:21&#43;08:00'>
-    
-    
-    <meta property="article:modified_time" content='2018-12-17T15:31:21&#43;08:00'>
-    
-    <meta name="Keywords" content="">
-    <meta name="description"
-        content="
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 相对与HashMap，ArrayList和LinkedList都算比较简单的数据结构，通过这篇文章分别的了解一下它们。
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.1 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/post/java-fun-arraylist-linkedlist/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Java基础-ArrayList和LinkedList" />
+<meta property="og:description" content="
 相对与HashMap，ArrayList和LinkedList都算比较简单的数据结构，通过这篇文章分别的了解一下它们。
-">
-    
-    <meta name="author" content="LeeR">
-    <meta property="og:url" content="https://leer.moe/post/java-fun-arraylist-linkedlist/">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leer.moe/post/java-fun-arraylist-linkedlist/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-12-17T15:31:21+00:00" />
+<meta property="article:modified_time" content="2018-12-17T15:31:21+00:00" />
 
-    <link rel="stylesheet" href='/css/normalize.css'>
-    <link rel="stylesheet" href='/css/style.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<meta itemprop="name" content="Java基础-ArrayList和LinkedList">
+<meta itemprop="description" content="
+相对与HashMap，ArrayList和LinkedList都算比较简单的数据结构，通过这篇文章分别的了解一下它们。
+"><meta itemprop="datePublished" content="2018-12-17T15:31:21+00:00" />
+<meta itemprop="dateModified" content="2018-12-17T15:31:21+00:00" />
+<meta itemprop="wordCount" content="1449">
+<meta itemprop="keywords" content="Java," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java基础-ArrayList和LinkedList"/>
+<meta name="twitter:description" content="
+相对与HashMap，ArrayList和LinkedList都算比较简单的数据结构，通过这篇文章分别的了解一下它们。
+"/>
 
-    
-    
-    <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
 
-    
-    
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
 <body>
-    <header id="header" class="clearfix">
-    <div class="container">
-        <div class="col-group">
-            <div class="site-name ">
-                
-                    <a id="logo" href="https://leer.moe/">
-                        LeeReindeer&#39;s blog
-                    </a>
-                
-                <p class="description">Dive in</p>
-            </div>
-            <div>
-                <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://leer.moe/">首页</a>
-                    
-                    <a  href="https://leer.moe/archives/" title="归档">归档</a>
-                    
-                    <a  href="https://leer.moe/about/" title="关于">关于</a>
-                    
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/newsletter/">
+        <li class="mobile-menu-item">Newsletter</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
 
-    <div id="body">
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/newsletter/">Newsletter</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Java基础-ArrayList和LinkedList</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-12-17 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
+            </div>
+          <span class="more-meta"> 1449 words </span>
+          <span class="more-meta"> 3 mins read </span>
         
-        <div class="container">
-            <div class="col-group">
+      </div>
+    </header>
 
-                <div class="col-8" id="main">
-                    
-<div class="res-cons">
-    <style type="text/css">
-    .post-toc {
-        position: fixed;
-        width: 260px;
-        margin-top: 1%;
-        right: 8.5%;
-         
-        margin-right: 1%;
-        padding: 5px 10px;
-        font-size: 12px;
-         
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.98);
-         
-         
-         
-        word-wrap: break-word;
-        line-height: 1.5;
-         
-         
-         
-        z-index: 999;
-        cursor: pointer;
-        max-height: 70%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .post-toc .post-toc-title {
-        width: 100%;
-        margin: 0 auto;
-        font-size: 18px;
-        font-weight: 400;
-        text-transform: uppercase;
-        text-align: center;
-        color: #ba3925;
-    }
-
-    .post-toc .post-toc-content {
-        font-size: 15px;
-    }
-
-    .post-toc .post-toc-content>nav>ul {
-        margin: 10px 0;
-    }
-
-    .post-toc .post-toc-content ul {
-        padding-left: 20px;
-        list-style: square;
-        margin: 0.5em;
-        line-height: 1.8em;
-    }
-
-    .post-toc .post-toc-content ul ul {
-        padding-left: 15px;
-        display: none;
-    }
-
-    @media print,
-    screen and (max-width:1057px) {
-        .post-toc {
-            display: none;
-        }
-    }
-</style>
-<div class="post-toc" style="position: absolute; top: 188px;">
-    <h2 class="post-toc-title">Java基础-ArrayList和LinkedList</h2>
-    <div class="post-toc-content">
-        <nav id="TableOfContents">
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
   <ol>
     <li><a href="#arraylist">ArrayList</a>
       <ol>
@@ -157,60 +173,15 @@
     <li><a href="#区别和联系">区别和联系</a></li>
   </ol>
 </nav>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var postToc = $(".post-toc");
-        if (postToc.length) {
-            
-            
-            
-            
-
-            var t = postToc.offset().top - 20,
-                a = {
-                    start: {
-                        position: "absolute",
-                        top: t
-                    },
-                    process: {
-                        position: "fixed",
-                        top: 20
-                    },
-                };
-            $(window).scroll(function () {
-                var e = $(window).scrollTop();
-                e < t ? postToc.css(a.start) : postToc.css(a.process)
-            })
-        }
-    })
-</script>
-    <article class="post">
-        <header>
-            <h1 class="post-title">Java基础-ArrayList和LinkedList</h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年12月17日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category"><a href='https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4'>自习室</a></span>
-            
-        </div>
-        
-        
-        <div class="post-meta">
-            <span>|</span>
-            <span class="meta-category">1351 words</span>
-        </div>
-        
-        
-        
-        <div class="post-content">
-            <blockquote>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>[NOTE] Updated <span class="timeago" datetime="2018-12-17T15:31:21" title="December 17, 2018">December 17, 2018</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
 <p>相对与<code>HashMap</code>，<code>ArrayList</code>和<code>LinkedList</code>都算比较简单的数据结构，通过这篇文章分别的了解一下它们。</p>
 </blockquote>
 <h2 id="arraylist">ArrayList</h2>
@@ -226,95 +197,188 @@
 <li>和<code>Vector</code>类似，但<code>ArrayList</code><strong>不是</strong>线程安全的</li>
 </ul>
 <h3 id="add方法">add方法</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">add</span><span style="color:#000;font-weight:bold">(</span>E e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    ensureCapacityInternal<span style="color:#000;font-weight:bold">(</span>size <span style="color:#000;font-weight:bold">+</span> 1<span style="color:#000;font-weight:bold">);</span>  <span style="color:#998;font-style:italic">// Increments modCount!!
-</span><span style="color:#998;font-style:italic"></span>    elementData<span style="color:#000;font-weight:bold">[</span>size<span style="color:#000;font-weight:bold">++]</span> <span style="color:#000;font-weight:bold">=</span> e<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>可以看到<code>add</code>方法直接将元素放到数组的最后，如果<code>size + 1</code>超过了数组的长度，会进行扩容。下面来看一下核心的扩容机制。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">add</span><span class="o">(</span><span class="n">E</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">ensureCapacityInternal</span><span class="o">(</span><span class="n">size</span> <span class="o">+</span> <span class="n">1</span><span class="o">);</span>  <span class="c1">// Increments modCount!!
+</span><span class="c1"></span>    <span class="n">elementData</span><span class="o">[</span><span class="n">size</span><span class="o">++]</span> <span class="o">=</span> <span class="n">e</span><span class="o">;</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到<code>add</code>方法直接将元素放到数组的最后，如果<code>size + 1</code>超过了数组的长度，会进行扩容。下面来看一下核心的扩容机制。</p>
 <h3 id="扩容机制">扩容机制</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ensureCapacityInternal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> minCapacity<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>elementData <span style="color:#000;font-weight:bold">==</span> DEFAULTCAPACITY_EMPTY_ELEMENTDATA<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        minCapacity <span style="color:#000;font-weight:bold">=</span> Math<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">max</span><span style="color:#000;font-weight:bold">(</span>DEFAULT_CAPACITY<span style="color:#000;font-weight:bold">,</span> minCapacity<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    ensureExplicitCapacity<span style="color:#000;font-weight:bold">(</span>minCapacity<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ensureExplicitCapacity</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> minCapacity<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    modCount<span style="color:#000;font-weight:bold">++;</span>
-    <span style="color:#998;font-style:italic">// overflow-conscious code
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>minCapacity <span style="color:#000;font-weight:bold">-</span> elementData<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">length</span> <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">)</span>
-        grow<span style="color:#000;font-weight:bold">(</span>minCapacity<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">grow</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> minCapacity<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">// overflow-conscious code
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">int</span> oldCapacity <span style="color:#000;font-weight:bold">=</span> elementData<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">length</span><span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#998;font-style:italic">// 扩容为原来的1.5倍
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">int</span> newCapacity <span style="color:#000;font-weight:bold">=</span> oldCapacity <span style="color:#000;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">(</span>oldCapacity <span style="color:#000;font-weight:bold">&gt;&gt;</span> 1<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#998;font-style:italic">// 如果扩为1.5倍还不满足需求，直接扩为最小可以满足容量的值
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>newCapacity <span style="color:#000;font-weight:bold">-</span> minCapacity <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span>
-        newCapacity <span style="color:#000;font-weight:bold">=</span> minCapacity<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>newCapacity <span style="color:#000;font-weight:bold">-</span> MAX_ARRAY_SIZE <span style="color:#000;font-weight:bold">&gt;</span> 0<span style="color:#000;font-weight:bold">)</span>
-        newCapacity <span style="color:#000;font-weight:bold">=</span> hugeCapacity<span style="color:#000;font-weight:bold">(</span>minCapacity<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#998;font-style:italic">// minCapacity is usually close to size, so this is a win:
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 拷贝数组
-</span><span style="color:#998;font-style:italic"></span>    elementData <span style="color:#000;font-weight:bold">=</span> Arrays<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">copyOf</span><span style="color:#000;font-weight:bold">(</span>elementData<span style="color:#000;font-weight:bold">,</span> newCapacity<span style="color:#000;font-weight:bold">);</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>当添加数据的时候，如果ArrayList的大小已经不满足需求时，<strong>那么就将数组变为原长度的1.5倍，如果还是不能满足直接扩容为需要的容量（主要是对于<code>addAll</code>函数）</strong>。之后的操作就是把老的数组拷到新的数组里面。例如，默认的数组大小是10，也就是说当我们<code>add</code>10个元素之后，再进行一次add时，就会发生自动扩容，数组长度由10变为了15。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">ensureCapacityInternal</span><span class="o">(</span><span class="kt">int</span> <span class="n">minCapacity</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">elementData</span> <span class="o">==</span> <span class="n">DEFAULTCAPACITY_EMPTY_ELEMENTDATA</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">minCapacity</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">DEFAULT_CAPACITY</span><span class="o">,</span> <span class="n">minCapacity</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="n">ensureExplicitCapacity</span><span class="o">(</span><span class="n">minCapacity</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">ensureExplicitCapacity</span><span class="o">(</span><span class="kt">int</span> <span class="n">minCapacity</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">modCount</span><span class="o">++;</span>
+    <span class="c1">// overflow-conscious code
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">minCapacity</span> <span class="o">-</span> <span class="n">elementData</span><span class="o">.</span><span class="na">length</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span>
+        <span class="n">grow</span><span class="o">(</span><span class="n">minCapacity</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">grow</span><span class="o">(</span><span class="kt">int</span> <span class="n">minCapacity</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// overflow-conscious code
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">oldCapacity</span> <span class="o">=</span> <span class="n">elementData</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+    <span class="c1">// 扩容为原来的1.5倍
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">newCapacity</span> <span class="o">=</span> <span class="n">oldCapacity</span> <span class="o">+</span> <span class="o">(</span><span class="n">oldCapacity</span> <span class="o">&gt;&gt;</span> <span class="n">1</span><span class="o">);</span>
+    <span class="c1">// 如果扩为1.5倍还不满足需求，直接扩为最小可以满足容量的值
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">newCapacity</span> <span class="o">-</span> <span class="n">minCapacity</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span>
+        <span class="n">newCapacity</span> <span class="o">=</span> <span class="n">minCapacity</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">newCapacity</span> <span class="o">-</span> <span class="n">MAX_ARRAY_SIZE</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span>
+        <span class="n">newCapacity</span> <span class="o">=</span> <span class="n">hugeCapacity</span><span class="o">(</span><span class="n">minCapacity</span><span class="o">);</span>
+    <span class="c1">// minCapacity is usually close to size, so this is a win:
+</span><span class="c1"></span>    <span class="c1">// 拷贝数组
+</span><span class="c1"></span>    <span class="n">elementData</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">copyOf</span><span class="o">(</span><span class="n">elementData</span><span class="o">,</span> <span class="n">newCapacity</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>当添加数据的时候，如果ArrayList的大小已经不满足需求时，<strong>那么就将数组变为原长度的1.5倍，如果还是不能满足直接扩容为需要的容量（主要是对于<code>addAll</code>函数）</strong>。之后的操作就是把老的数组拷到新的数组里面。例如，默认的数组大小是10，也就是说当我们<code>add</code>10个元素之后，再进行一次add时，就会发生自动扩容，数组长度由10变为了15。</p>
 <p>测试用例如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">/**
-</span><span style="color:#998;font-style:italic"> * @author leer
-</span><span style="color:#998;font-style:italic"> * Created at 12/17/18 11:51 AM
-</span><span style="color:#998;font-style:italic"> */</span>
-<span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ArrayListTest</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="cm">/**
+</span><span class="cm"> * @author leer
+</span><span class="cm"> * Created at 12/17/18 11:51 AM
+</span><span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ArrayListTest</span> <span class="o">{</span>
 
-  <span style="color:#998;font-style:italic">// 反射获取数组的长度
-</span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getArrayListCapacity</span><span style="color:#000;font-weight:bold">(</span>ArrayList list<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#458;font-weight:bold">int</span> cap <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
-      Field array <span style="color:#000;font-weight:bold">=</span> ArrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDeclaredField</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;elementData&#34;</span><span style="color:#000;font-weight:bold">);</span>
-      array<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAccessible</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">);</span>
-      cap <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">((</span>Object<span style="color:#000;font-weight:bold">[])</span> array<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>list<span style="color:#000;font-weight:bold">)).</span><span style="color:#008080">length</span><span style="color:#000;font-weight:bold">;</span>
-      array<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAccessible</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>NoSuchFieldException <span style="color:#000;font-weight:bold">|</span> IllegalAccessException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-      e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">();</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000;font-weight:bold">return</span> cap<span style="color:#000;font-weight:bold">;</span>
-  <span style="color:#000;font-weight:bold">}</span>
+  <span class="c1">// 反射获取数组的长度
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">getArrayListCapacity</span><span class="o">(</span><span class="n">ArrayList</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">cap</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">Field</span> <span class="n">array</span> <span class="o">=</span> <span class="n">ArrayList</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;elementData&#34;</span><span class="o">);</span>
+      <span class="n">array</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+      <span class="n">cap</span> <span class="o">=</span> <span class="o">((</span><span class="n">Object</span><span class="o">[])</span> <span class="n">array</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">list</span><span class="o">)).</span><span class="na">length</span><span class="o">;</span>
+      <span class="n">array</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchFieldException</span> <span class="o">|</span> <span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">cap</span><span class="o">;</span>
+  <span class="o">}</span>
 
-  <span style="color:#3c5d5d;font-weight:bold">@Test</span>
-  <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">testArrayList</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    ArrayList<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> arrayList <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
-    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> 10<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
-      arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;test&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;size before resize: &#34;</span> <span style="color:#000;font-weight:bold">+</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>arrayList<span style="color:#000;font-weight:bold">));</span>
+  <span class="nd">@Test</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testArrayList</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">arrayList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="n">arrayList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">&#34;test&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;size before resize: &#34;</span> <span class="o">+</span> <span class="n">getArrayListCapacity</span><span class="o">(</span><span class="n">arrayList</span><span class="o">));</span>
 
-    arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;resize it!&#34;</span><span style="color:#000;font-weight:bold">);</span>
+    <span class="n">arrayList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&#34;resize it!&#34;</span><span class="o">);</span>
 
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;size after resize: &#34;</span> <span style="color:#000;font-weight:bold">+</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>arrayList<span style="color:#000;font-weight:bold">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;size after resize: &#34;</span> <span class="o">+</span> <span class="n">getArrayListCapacity</span><span class="o">(</span><span class="n">arrayList</span><span class="o">));</span>
 
-    ArrayList<span style="color:#000;font-weight:bold">&lt;</span>String<span style="color:#000;font-weight:bold">&gt;</span> anotherList <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;&gt;();</span>
-    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> 30<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span> <span style="color:#000;font-weight:bold">{</span>
-      anotherList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">+</span> <span style="color:#d14">&#34;another&#34;</span><span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">}</span>
+    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">anotherList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">30</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="n">anotherList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">&#34;another&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;another list capacity: &#34;</span> <span style="color:#000;font-weight:bold">+</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>anotherList<span style="color:#000;font-weight:bold">));</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;another list size: &#34;</span> <span style="color:#000;font-weight:bold">+</span> anotherList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">());</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;arrayList size: &#34;</span> <span style="color:#000;font-weight:bold">+</span> arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">());</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;another list capacity: &#34;</span> <span class="o">+</span> <span class="n">getArrayListCapacity</span><span class="o">(</span><span class="n">anotherList</span><span class="o">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;another list size: &#34;</span> <span class="o">+</span> <span class="n">anotherList</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;arrayList size: &#34;</span> <span class="o">+</span> <span class="n">arrayList</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
 
-    <span style="color:#458;font-weight:bold">int</span> originSize <span style="color:#000;font-weight:bold">=</span> arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">();</span>
-    arrayList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addAll</span><span style="color:#000;font-weight:bold">(</span>anotherList<span style="color:#000;font-weight:bold">);</span>
+    <span class="kt">int</span> <span class="n">originSize</span> <span class="o">=</span> <span class="n">arrayList</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>
+    <span class="n">arrayList</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">anotherList</span><span class="o">);</span>
 
-    org<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">junit</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Assert</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">assertEquals</span><span style="color:#000;font-weight:bold">(</span>anotherList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">+</span> originSize<span style="color:#000;font-weight:bold">,</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>arrayList<span style="color:#000;font-weight:bold">));</span>
-    System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">out</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;size after addAll = anotherList.size() + arrayList.size() = &#34;</span> <span style="color:#000;font-weight:bold">+</span> getArrayListCapacity<span style="color:#000;font-weight:bold">(</span>arrayList<span style="color:#000;font-weight:bold">));</span>
-  <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>结果如下：</p>
-<p>
-<a data-fancybox="gallery" href="/images/arraylist-test.png">
-  <img class="mx-auto" alt="arraylist-test" src="/images/arraylist-test.png" />
-</a>
-</p>
+    <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="n">anotherList</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">+</span> <span class="n">originSize</span><span class="o">,</span> <span class="n">getArrayListCapacity</span><span class="o">(</span><span class="n">arrayList</span><span class="o">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;size after addAll = anotherList.size() + arrayList.size() = &#34;</span> <span class="o">+</span> <span class="n">getArrayListCapacity</span><span class="o">(</span><span class="n">arrayList</span><span class="o">));</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>结果如下：</p>
+<p><img src="/images/arraylist-test.png" alt="arraylist-test"></p>
 <h3 id="线程安全">线程安全</h3>
 <p>todo</p>
 <!--todo-->
@@ -338,26 +402,51 @@ the beginning or the end, whichever is closer to the specified index.</p>
 <h3 id="get方法">get方法</h3>
 <p>我们知道链表的头部或尾部插入，删除数据的时间复杂度为O(1)，同时也不需要扩容。而如果我们想要按下标遍历链表，时间复杂性度就变成了O(N)。</p>
 <p><code>LinkedList</code>采用双链表，可使按下标访问的时间复杂度变为<strong>O(N/2)</strong>。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> E <span style="color:#900;font-weight:bold">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> index<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    checkElementIndex<span style="color:#000;font-weight:bold">(</span>index<span style="color:#000;font-weight:bold">);</span>
-    <span style="color:#000;font-weight:bold">return</span> node<span style="color:#000;font-weight:bold">(</span>index<span style="color:#000;font-weight:bold">).</span><span style="color:#008080">item</span><span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">}</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="n">E</span> <span class="nf">get</span><span class="o">(</span><span class="kt">int</span> <span class="n">index</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">checkElementIndex</span><span class="o">(</span><span class="n">index</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">node</span><span class="o">(</span><span class="n">index</span><span class="o">).</span><span class="na">item</span><span class="o">;</span>
+<span class="o">}</span>
 
-Node<span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">node</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> index<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#998;font-style:italic">// assert isElementIndex(index);
-</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>index <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#000;font-weight:bold">(</span>size <span style="color:#000;font-weight:bold">&gt;&gt;</span> 1<span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
-        Node<span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> x <span style="color:#000;font-weight:bold">=</span> first<span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> index<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">++)</span>
-            x <span style="color:#000;font-weight:bold">=</span> x<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">next</span><span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#000;font-weight:bold">return</span> x<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-        Node<span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#000;font-weight:bold">&gt;</span> x <span style="color:#000;font-weight:bold">=</span> last<span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> size <span style="color:#000;font-weight:bold">-</span> 1<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&gt;</span> index<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">--)</span>
-            x <span style="color:#000;font-weight:bold">=</span> x<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">prev</span><span style="color:#000;font-weight:bold">;</span>
-        <span style="color:#000;font-weight:bold">return</span> x<span style="color:#000;font-weight:bold">;</span>
-    <span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><p>在<code>node</code>方法中得到特定下标的节点：当下标小于长度的1/2时，从头部开始遍历，否则从尾部开始遍历。</p>
+<span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="nf">node</span><span class="o">(</span><span class="kt">int</span> <span class="n">index</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// assert isElementIndex(index);
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">index</span> <span class="o">&lt;</span> <span class="o">(</span><span class="n">size</span> <span class="o">&gt;&gt;</span> <span class="n">1</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">first</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">index</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">Node</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">last</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="n">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">index</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="na">prev</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在<code>node</code>方法中得到特定下标的节点：当下标小于长度的1/2时，从头部开始遍历，否则从尾部开始遍历。</p>
 <h2 id="区别和联系">区别和联系</h2>
 <ul>
 <li>
@@ -376,412 +465,122 @@ Node<span style="color:#000;font-weight:bold">&lt;</span>E<span style="color:#00
 <p>LinkedList的优势：对在头部或尾部插入和删除操作，时间复杂度为O(1)；而ArrayList也为O(1)，但是可能需要复制数据。</p>
 </li>
 </ul>
-        </div>
+    </div>
 
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-12-17
         
-
-
-        
-
-<div class="post-archive">
-    <h2>See Also</h2>
-    <ul class="listing">
-        
-        <li><a href="/post/java-fun-hashmap/">Java基础-HashMap源码简析</a></li>
-        
-        <li><a href="/post/java-fun-object-method/">Java基础-Object的11个方法</a></li>
-        
-        <li><a href="/post/java-fun-toc/">Java基础-目录</a></li>
-        
-        <li><a href="/post/spring_bean/">【Spring 揭秘（一）】Spring Bean DI and Instantiating</a></li>
-        
-        <li><a href="/post/mybatis_datetime/">Map DateTime to Java Date in MyBatis</a></li>
-        
-    </ul>
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
-
-
-        <div class="post-meta meta-tags">
-            
-            <ul class="clearfix">
-                
-                <li><a href='https://leer.moe/tags/java'>Java</a></li>
-                
-            </ul>
-            
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/Java/">Java</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/data-structrue-treap/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">数据结构-Treap</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/java-fun-hashmap/">
+            <span class="next-text nav-default">Java基础-HashMap源码简析</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
         </div>
-    </article>
-    
-    
+        
 
-    
-    
-    <div class="post bg-white">
-      <script src="https://utteranc.es/client.js"
-            repo= "LeeReindeer/LeeReindeer.github.io"
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
             issue-term="pathname"
             theme="github-light"
             crossorigin="anonymous"
             async>
-      </script>
-    </div>
-    
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/Reindeer000ooo" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
-                </div>
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
 
-                <div id="secondary">
-    <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
-      
-      <input type="text" name="q" maxlength="20" placeholder="Search">
-      <input type="hidden" name="sitesearch" value="https://leer.moe/">
-      <button type="submit" class="submit icon-search"></button>
-</form>
-    </section>
+  
 
-    <section class="widget">
-        <h3 class="widget-title">最近文章</h3>
-<ul class="widget-list">
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter2/" title="Newsletter 002.「虎年快乐」">Newsletter 002.「虎年快乐」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/newsletter1/" title="Newsletter 001.「温故知新」">Newsletter 001.「温故知新」</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/byte-pingan-hi-alipay/" title="再见平安，你好支付宝">再见平安，你好支付宝</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distributed-system-1-consistent-core/" title="分布式系统设计模式-分布式共识核心">分布式系统设计模式-分布式共识核心</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/intro-macos/" title="macOS 入门 😁">macOS 入门 😁</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/pattern-of-distribeted-system-0/" title="分布式系统设计模式-综述">分布式系统设计模式-综述</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/consumer_less_create_more/" title="少消费，多创造，更快乐">少消费，多创造，更快乐</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/plague/" title="「鼠疫」读后感">「鼠疫」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/doublethink/" title="「1984」读后感">「1984」读后感</a>
-    </li>
-    
-    <li>
-        <a href="https://leer.moe/post/6.824_mapreduce/" title="MapReduce 6.824">MapReduce 6.824</a>
-    </li>
-    
-</ul>
-    </section>
-
-    
-
-    <section class="widget">
-        <h3 class="widget-title"><a href="/categories">分类</a></h3>
-<ul class="widget-list">
-    
-    
-    
-    <li><a href="https://leer.moe/categories/newsletter/">Newsletter (2)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/">创作集 (14)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/">实验室 (11)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E7%BF%BB%E8%AF%91%E9%9B%86/">翻译集 (6)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/">自习室 (36)</a></li>
-    
-    
-    <li><a href="https://leer.moe/categories/%E9%9A%8F%E7%AC%94%E9%9B%86/">随笔集 (13)</a></li>
-    
-    
-    
-    <li><a href="#">未分类
-            (3)</a>
-    </li>
-    
-</ul>
-    </section>
-
-    <section class="widget">
-        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
-
-
-
-
-
-
-
-
-<div class="tagcloud">
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/6.824/" style="font-size:0.8rem">6.824</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/android/" style="font-size:1.4295320036582306rem">Android</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/c/" style="font-size:1.3796618766207391rem">C</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/csapp/" style="font-size:0.8rem">CSAPP</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/distributed-system/" style="font-size:0.8rem">Distributed system</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/git/" style="font-size:1.0242438242175755rem">git</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java/" style="font-size:1.7849500560613945rem">Java</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/javafx/" style="font-size:0.8rem">JavaFX</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/java%E5%B9%B6%E5%8F%91/" style="font-size:1.2484876484351508rem">Java并发</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/jvm/" style="font-size:0.8rem">JVM</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/kotlin/" style="font-size:1.0242438242175755rem">Kotlin</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/macos/" style="font-size:0.8rem">macOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/manjaro/" style="font-size:0.8rem">Manjaro</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/minecraft/" style="font-size:0.8rem">Minecraft</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/mybatis/" style="font-size:0.8rem">MyBatis</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/os/" style="font-size:1.3796618766207391rem">OS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/rtos/" style="font-size:0.8rem">RTOS</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring/" style="font-size:1.2484876484351508rem">Spring</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/spring-boot/" style="font-size:0.8rem">Spring Boot</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/telegram/" style="font-size:0.8rem">Telegram</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/v2ray/" style="font-size:0.8rem">V2ray</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/work/" style="font-size:0.8rem">Work</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size:1.0242438242175755rem">分布式系统</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size:0.8rem">年终总结</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E5%BE%AE%E4%BF%A1/" style="font-size:1.3796618766207391rem">微信</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%8A%80%E5%B7%A7/" style="font-size:0.8rem">技巧</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size:1.2484876484351508rem">数据结构</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/" style="font-size:1.3796618766207391rem">瞎折腾</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%AE%97%E6%B3%95/" style="font-size:1.2484876484351508rem">算法</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size:0.8rem">编译原理</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E7%BF%BB%E8%AF%91/" style="font-size:1.1554180524031636rem">翻译</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size:1.2484876484351508rem">设计模式</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E8%AF%BB%E4%B9%A6/" style="font-size:1.3796618766207391rem">读书</a>
-    
-    
-    
-    
-    
-    <a href="https://leer.moe/tags/%E9%9A%8F%E7%AC%94/" style="font-size:1.2484876484351508rem">随笔</a>
-    
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
 </div>
-    </section>
 
-    
+<div class="copyright" id="showDays">
 
-    <section class="widget">
-        <h3 class="widget-title">其它</h3>
-        <ul class="widget-list">
-            <li><a href="https://leer.moe/index.xml">文章 RSS</a></li>
-        </ul>
-    </section>
 </div>
-            </div>
-        </div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
     </div>
-    <footer id="footer">
-    <div class="container">
-        &copy; 2022 <a href="https://leer.moe/">LeeReindeer&#39;s blog</a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>
-        <a href="https://github.com/LeeReindeer/maupassant-hugo" target="_blank">maupassant</a>.
-        
-    </div>
-    <div class="container" id="showDays"></div>
-</footer>
-<script type="text/javascript" src='/js/sitedate.js' async=""></script>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
 
 
 
-
-
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
-
-
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
 
 
 
 
 
 
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
+<script src="/js/sitedate.js"></script>
+
 
 </body>
-
 </html>
