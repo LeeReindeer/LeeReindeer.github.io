@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CSAPP on LeeReindeer&#39;s blog</title>
+    <link>https://leer.moe/tags/CSAPP/</link>
+    <description>Recent content in CSAPP on LeeReindeer&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 26 Nov 2018 15:31:21 +0000</lastBuildDate><atom:link href="https://leer.moe/tags/CSAPP/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CSAPP Data Lab 思路和笔记</title>
+      <link>https://leer.moe/2018/11/26/csapp_data_lab/</link>
+      <pubDate>Mon, 26 Nov 2018 15:31:21 +0000</pubDate>
+      
+      <guid>https://leer.moe/2018/11/26/csapp_data_lab/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://csapp.cs.cmu.edu/3e/labs.html&#34;&gt;Data Lab&lt;/a&gt;&lt;em&gt;[Updated 11/2/18]&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。&lt;/p&gt;
+&lt;p&gt;肝了两天还是没有全部做出来，之前很以为很简单呢（&lt;/p&gt;
+&lt;p&gt;最近也终于买了 CS:APP3e 英文版，配合 CMU 的&lt;a href=&#34;https://www.bilibili.com/video/av20304787&#34;&gt;课程视频&lt;/a&gt;食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（&lt;/p&gt;
+&lt;p&gt;解题的思路一般会写在注释里的。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;bitxor&#34;&gt;bitXor&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span class=&#34;cm&#34;&gt;/*s
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; * bitXor - x^y using only ~ and &amp;amp;
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *   Example: bitXor(4, 5) = 1
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *   Legal ops: ~ &amp;amp;
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *   Max ops: 14
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; *   Rating: 1
+&lt;/span&gt;&lt;span class=&#34;cm&#34;&gt; */&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;bitXor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+  &lt;span class=&#34;c1&#34;&gt;// 德摩根定律
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// a xor b = (~a | ~b) &amp;amp; (a | b)
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// = ~(a &amp;amp; b) &amp;amp; ~(~a &amp;amp; ~b)
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;~&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;~&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;~&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;~&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。&lt;/p&gt;
+&lt;p&gt;利用的性质主要是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a ^ b = (~a | ~b) &amp;amp; (a | b)&lt;/li&gt;
+&lt;li&gt;(~a | ~b) = ~(a &amp;amp; b)&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
