@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="LeeReindeer" /><meta name="description" content="目录-Content  目录-Content 1. 介绍-Introduction 2. 主要功能-Features  2.1 功能展示-Preview   3. 源码分析-Source-code  3.1 树结构-Tree-Data-structure 3.2 主要算法-Alogrithm-in-Tree2View 3.3 适配器模式-Adapter-pattern-in-Tree2View 3.4 文件管理器-FileExplorer   4.使用-Usage  4.1 下载 4.2 简单使用 4.3 进阶使用   5. Open-Source 6. Liscense  1. 介绍-Introduction 我本来是打算就做一个 Android 的文件管理器的，但是文件的结构本身就是树结构。所以才写了 Tree2View 这个自定义 View。而文件管理器只是作为用这个项目实现的例子。
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 目录-Content 目录-Content 1. 介绍-Introduction 2. 主要功能-Features 2.1 功能展示-Preview 3. 源码分析-Source-code 3.1 树结构-Tree-Data-structure 3.2 主要算法-Alogrithm-in-Tree2View 3.3 适配器模式-Adapter-pattern-in-Tree2View 3.4 文件管理器-FileExplorer 4.使用-Usage 4.1 下载 4.2 简单使用 4.3 进阶使用 5. Open-Source 6. Liscense 1. 介绍-Introduction 我本来是打算就做一个 Android 的文件管理器的，但是文件的结构本身就是树结构。所以才写了 Tree2View 这个自定义 View。而文件管理器只是作为用这个项目实现的例子。
 还有另外一个原因是：在 javax.swing.JTree 里是一个树状的 swing 组件，但是 Android 里却没有一个内置的树状组件，所以就决定造一个。那么 talking is cheap, show me the code.开始吧。
 " /><meta name="keywords" content="LeeReindeer, Hugo, even" />
 
@@ -25,7 +25,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/01/02/tree2view_final_report/" />
@@ -111,7 +111,7 @@
 我本来是打算就做一个 Android 的文件管理器的，但是文件的结构本身就是树结构。所以才写了 Tree2View 这个自定义 View。而文件管理器只是作为用这个项目实现的例子。
 还有另外一个原因是：在 javax.swing.JTree 里是一个树状的 swing 组件，但是 Android 里却没有一个内置的树状组件，所以就决定造一个。那么 talking is cheap, show me the code.开始吧。"><meta itemprop="datePublished" content="2018-01-02T21:31:21+00:00" />
 <meta itemprop="dateModified" content="2018-01-02T21:31:21+00:00" />
-<meta itemprop="wordCount" content="3218">
+<meta itemprop="wordCount" content="3217">
 <meta itemprop="keywords" content="Android,设计模式," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Android Tree2View 3-Core Alogrithm"/>
 <meta name="twitter:description" content="
@@ -232,7 +232,7 @@
         <div class="post-category">
             <a href="/categories/%E5%88%9B%E4%BD%9C%E9%9B%86/"> 创作集 </a>
             </div>
-          <span class="more-meta"> 3218 words </span>
+          <span class="more-meta"> 3217 words </span>
           <span class="more-meta"> 7 mins read </span>
         
       </div>
@@ -395,31 +395,31 @@
 </span><span class="lnt">24
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DefaultTreeNode</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kd">implements</span>
-    <span class="n">TreeNode</span><span class="o">,</span> <span class="n">Serializable</span><span class="o">,</span> <span class="n">Cloneabl</span><span class="o">{</span>
-  <span class="c1">//max = 1 &lt;&lt; 31
-</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
-  <span class="kd">private</span> <span class="kt">int</span> <span class="n">lastId</span><span class="o">;</span>
-
-  <span class="c1">//The content of this node
-</span><span class="c1"></span>  <span class="kd">private</span> <span class="kd">transient</span> <span class="n">E</span> <span class="n">element</span><span class="o">;</span>
-  <span class="kd">private</span> <span class="n">DefaultTreeNode</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-
-  <span class="c1">//array of node&#39;s child
-</span><span class="c1"></span>  <span class="kd">private</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="n">children</span><span class="o">;</span>
-
-  <span class="c1">//just a mark, even node has children,
-</span><span class="c1"></span>  <span class="c1">//this value can still be false.
-</span><span class="c1"></span>  <span class="kt">boolean</span> <span class="n">hasChildren</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
-  <span class="c1">//same as hasChildren, but it&#39;s default value is true.
-</span><span class="c1"></span>  <span class="c1">//it let an expandable node can add children, after add the hasChildren will be true
-</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">mExpandable</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
-  <span class="c1">//whether this node is expanded, always false when (mExpandable == false)
-</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isExpanded</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
-  <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">mSelectable</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
-  <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isSelected</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DefaultTreeNode</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kd">implements</span>
+</span></span><span class="line"><span class="cl">    <span class="n">TreeNode</span><span class="o">,</span> <span class="n">Serializable</span><span class="o">,</span> <span class="n">Cloneabl</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//max = 1 &lt;&lt; 31
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="kt">int</span> <span class="n">lastId</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">//The content of this node
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="kd">transient</span> <span class="n">E</span> <span class="n">element</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="n">DefaultTreeNode</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">//array of node&#39;s child
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="n">children</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">//just a mark, even node has children,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//this value can still be false.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">boolean</span> <span class="n">hasChildren</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//same as hasChildren, but it&#39;s default value is true.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//it let an expandable node can add children, after add the hasChildren will be true
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">mExpandable</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//whether this node is expanded, always false when (mExpandable == false)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isExpanded</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">mSelectable</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isSelected</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>上面是 <code>DefaultTreeNode</code> 的字段，需要注意的点我都写进了注释里。<code>DefaultTreeNode</code> 持有她的父节点，子节点们和用户的数据。为了让用户可以更方便的自定义，这里还有一个 <code>TreeNode</code> 接口。如果你想自己写一个节点，也是可以的，只要实现了 <code>TreeNode</code>。。。</p>
 <h3 id="32-主要算法-alogrithm-in-tree2view">3.2 主要算法-Alogrithm-in-Tree2View</h3>
@@ -460,39 +460,39 @@
 </span><span class="lnt">32
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="cm">/**
-</span><span class="cm">   * DFS use &lt;code&gt;Stack&lt;/code&gt;
-</span><span class="cm">   */</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="nf">getVisibleNodesD</span><span class="o">(</span><span class="n">DefaultTreeNode</span> <span class="n">aRoot</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
-    <span class="n">Stack</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="n">stack</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="o">&lt;&gt;();</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">aRoot</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="n">stack</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="n">aRoot</span><span class="o">);</span>
-    <span class="k">while</span> <span class="o">(!</span><span class="n">stack</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
-      <span class="n">DefaultTreeNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="na">pop</span><span class="o">();</span>
-      <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
-      <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="n">children</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="na">getChildren</span><span class="o">();</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">children</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">continue</span><span class="o">;</span>
-      <span class="o">}</span>
-      <span class="c1">//add children in reversed order
-</span><span class="c1"></span>      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">children</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">-</span> <span class="n">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">isExpanded</span><span class="o">())</span> <span class="o">{</span>
-          <span class="n">stack</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
-        <span class="o">}</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="n">list</span><span class="o">;</span>
-  <span class="o">}</span>
-
-  <span class="cm">/**
-</span><span class="cm">   * BFS use &lt;code&gt;Queue&lt;/code&gt;
-</span><span class="cm">   * @return ArrayList of &lt;code&gt;DefaultTreeNode&lt;/code&gt;
-</span><span class="cm">   */</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="nf">getVisibleNodesB</span><span class="o">(</span><span class="n">DefaultTreeNode</span> <span class="n">aRoot</span><span class="o">){}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * DFS use &lt;code&gt;Stack&lt;/code&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kd">static</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="nf">getVisibleNodesD</span><span class="o">(</span><span class="n">DefaultTreeNode</span> <span class="n">aRoot</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Stack</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="n">stack</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">aRoot</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stack</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="n">aRoot</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="o">(!</span><span class="n">stack</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">DefaultTreeNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="na">pop</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="n">children</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="na">getChildren</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(</span><span class="n">children</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">//add children in reversed order
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">children</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">-</span> <span class="n">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">isExpanded</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">stack</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">list</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * BFS use &lt;code&gt;Queue&lt;/code&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @return ArrayList of &lt;code&gt;DefaultTreeNode&lt;/code&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kd">static</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">DefaultTreeNode</span><span class="o">&gt;</span> <span class="nf">getVisibleNodesB</span><span class="o">(</span><span class="n">DefaultTreeNode</span> <span class="n">aRoot</span><span class="o">){}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>DefaultTreeNode 的 <code>isExpanded</code> 标记就是用来表示这个节点的子节点们是否需要加载的，所以默认设置了根节点的 <code>isExpanded = true</code>。如果需要加载就通过 <code>getVisibleNodesD(DefaultTreeNode)</code> 这个方法DFS遍历把他们转化为数组，这里为什么需要是数组呢？因为 ListView 内部的子 View 们是存储在数组里的，为了方便需要加载的数据就也用数组了。</p>
 <p>动态加载节点：</p>
@@ -518,25 +518,25 @@
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">      <span class="k">if</span> <span class="o">(!</span><span class="n">node</span><span class="o">.</span><span class="na">isHasChildren</span><span class="o">())</span> <span class="o">{</span>
-        <span class="n">Log</span><span class="o">.</span><span class="na">w</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&#34;onItemClick: not Expandable&#34;</span><span class="o">);</span>
-      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-        <span class="c1">//toggle
-</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">isExpanded</span><span class="o">())</span> <span class="o">{</span>
-          <span class="n">node</span><span class="o">.</span><span class="na">setExpanded</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
-          <span class="n">adapter</span><span class="o">.</span><span class="na">setNodesList</span><span class="o">(</span><span class="n">TreeUtils</span><span class="o">.</span><span class="na">getVisibleNodesD</span><span class="o">(</span><span class="n">root</span><span class="o">));</span>
-          <span class="n">TreeView</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">refresh</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-          <span class="n">node</span><span class="o">.</span><span class="na">setExpanded</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-          <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&#34;onItemClick: open&#34;</span><span class="o">);</span>
-          <span class="c1">//create children
-</span><span class="c1"></span>          <span class="n">createNode</span><span class="o">(</span><span class="n">node</span><span class="o">)</span>
-          <span class="c1">//update view
-</span><span class="c1"></span>          <span class="n">adapter</span><span class="o">.</span><span class="na">setNodesList</span><span class="o">(</span><span class="n">TreeUtils</span><span class="o">.</span><span class="na">getVisibleNodesD</span><span class="o">(</span><span class="n">root</span><span class="o">));</span>
-          <span class="n">TreeView</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">refresh</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
-        <span class="o">}</span>
-      <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(!</span><span class="n">node</span><span class="o">.</span><span class="na">isHasChildren</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Log</span><span class="o">.</span><span class="na">w</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&#34;onItemClick: not Expandable&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//toggle
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">isExpanded</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">node</span><span class="o">.</span><span class="na">setExpanded</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">          <span class="n">adapter</span><span class="o">.</span><span class="na">setNodesList</span><span class="o">(</span><span class="n">TreeUtils</span><span class="o">.</span><span class="na">getVisibleNodesD</span><span class="o">(</span><span class="n">root</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">          <span class="n">TreeView</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">refresh</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">node</span><span class="o">.</span><span class="na">setExpanded</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">          <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&#34;onItemClick: open&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">//create children
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="n">createNode</span><span class="o">(</span><span class="n">node</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">//update view
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="n">adapter</span><span class="o">.</span><span class="na">setNodesList</span><span class="o">(</span><span class="n">TreeUtils</span><span class="o">.</span><span class="na">getVisibleNodesD</span><span class="o">(</span><span class="n">root</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">          <span class="n">TreeView</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">refresh</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="33-适配器模式-adapter-pattern-in-tree2view">3.3 适配器模式-Adapter-pattern-in-Tree2View</h3>
 <p>到这里，节点已经遍历出来了，接下来解释如何显示出来。<code>ListView</code> 本身使用的就是适配器模式，
@@ -602,61 +602,61 @@
 </span><span class="lnt">54
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTreeAdapter</span>
-  <span class="kd">extends</span> <span class="n">TreeAdapter</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="o">{</span>
-
-  <span class="kd">public</span> <span class="nf">SimpleTreeAdapter</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span>
-       <span class="n">DefaultTreeNode</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">root</span><span class="o">,</span> <span class="kt">int</span> <span class="n">resourceId</span><span class="o">)</span> <span class="o">{</span>
-    <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">root</span><span class="o">,</span> <span class="n">resourceId</span><span class="o">);</span>
-  <span class="o">}</span>
-
-  <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="n">View</span> <span class="nf">getView</span><span class="o">(</span><span class="kt">int</span> <span class="n">position</span><span class="o">,</span>
-       <span class="n">View</span> <span class="n">convertView</span><span class="o">,</span> <span class="n">ViewGroup</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span>
-    <span class="c1">//dfs travel when first time called
-</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">mNodesList</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">mNodesList</span> <span class="o">=</span> <span class="n">TreeUtils</span><span class="o">.</span><span class="na">getVisibleNodesD</span><span class="o">(</span><span class="kd">super</span><span class="o">.</span><span class="na">mRoot</span><span class="o">);</span>
-    <span class="o">}</span>
-    <span class="n">DefaultTreeNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">mNodesList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">position</span><span class="o">);</span>
-    <span class="n">ViewHolder</span> <span class="n">holder</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-
-    <span class="k">if</span> <span class="o">(</span><span class="n">convertView</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">convertView</span> <span class="o">=</span> <span class="n">LayoutInflater</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">mContext</span><span class="o">).</span><span class="na">inflate</span><span class="o">(</span><span class="n">mResourceId</span><span class="o">,</span> <span class="n">parent</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
-      <span class="n">holder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ViewHolder</span><span class="o">();</span>
-      <span class="n">holder</span><span class="o">.</span><span class="na">tv</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextView</span><span class="o">)</span> <span class="n">convertView</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">default_tree_item</span><span class="o">);</span>
-      <span class="n">convertView</span><span class="o">.</span><span class="na">setTag</span><span class="o">(</span><span class="n">holder</span><span class="o">);</span>
-    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-      <span class="n">holder</span> <span class="o">=</span> <span class="o">(</span><span class="n">ViewHolder</span><span class="o">)</span> <span class="n">convertView</span><span class="o">.</span><span class="na">getTag</span><span class="o">();</span>
-    <span class="o">}</span>
-    <span class="n">holder</span><span class="o">.</span><span class="na">tv</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">getElement</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
-    <span class="kt">int</span> <span class="n">depth</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="na">getDepth</span><span class="o">();</span>
-    <span class="c1">//set view indent
-</span><span class="c1"></span>    <span class="n">setPadding</span><span class="o">(</span><span class="n">holder</span><span class="o">.</span><span class="na">tv</span><span class="o">,</span> <span class="n">depth</span><span class="o">,</span> <span class="o">-</span><span class="n">1</span><span class="o">);</span>
-    <span class="c1">//toggle
-</span><span class="c1"></span>    <span class="n">toggle</span><span class="o">(</span><span class="n">holder</span><span class="o">,</span> <span class="n">node</span><span class="o">);</span>
-    <span class="k">return</span> <span class="n">convertView</span><span class="o">;</span>
-  <span class="o">}</span>
-
-  <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">toggle</span><span class="o">(</span><span class="n">Object</span><span class="o">...</span> <span class="n">objects</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">try</span> <span class="o">{</span>
-      <span class="n">DefaultTreeNode</span> <span class="n">node</span> <span class="o">=</span> <span class="o">(</span><span class="n">DefaultTreeNode</span><span class="o">)</span> <span class="n">objects</span><span class="o">[</span><span class="n">0</span><span class="o">];</span>
-      <span class="n">ViewHolder</span> <span class="n">holder</span> <span class="o">=</span> <span class="o">(</span><span class="n">ViewHolder</span><span class="o">)</span> <span class="n">objects</span><span class="o">[</span><span class="n">1</span><span class="o">];</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">isHasChildren</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">node</span><span class="o">.</span><span class="na">isExpanded</span><span class="o">())</span> <span class="o">{</span>
-        <span class="c1">//set your icon
-</span><span class="c1"></span>      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">isHasChildren</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">node</span><span class="o">.</span><span class="na">isExpanded</span><span class="o">())</span> <span class="o">{</span>
-        <span class="c1">//set your icon
-</span><span class="c1"></span>      <span class="o">}</span>
-    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ClassCastException</span> <span class="n">e</span> <span class="o">)</span> <span class="o">{</span>
-      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-
-  <span class="kd">class</span> <span class="nc">ViewHolder</span> <span class="o">{</span>
-    <span class="n">TextView</span> <span class="n">tv</span><span class="o">;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTreeAdapter</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">extends</span> <span class="n">TreeAdapter</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="nf">SimpleTreeAdapter</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">       <span class="n">DefaultTreeNode</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">root</span><span class="o">,</span> <span class="kt">int</span> <span class="n">resourceId</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">root</span><span class="o">,</span> <span class="n">resourceId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="n">View</span> <span class="nf">getView</span><span class="o">(</span><span class="kt">int</span> <span class="n">position</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">       <span class="n">View</span> <span class="n">convertView</span><span class="o">,</span> <span class="n">ViewGroup</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//dfs travel when first time called
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">mNodesList</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">mNodesList</span> <span class="o">=</span> <span class="n">TreeUtils</span><span class="o">.</span><span class="na">getVisibleNodesD</span><span class="o">(</span><span class="kd">super</span><span class="o">.</span><span class="na">mRoot</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DefaultTreeNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">mNodesList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">position</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ViewHolder</span> <span class="n">holder</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">convertView</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">convertView</span> <span class="o">=</span> <span class="n">LayoutInflater</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">mContext</span><span class="o">).</span><span class="na">inflate</span><span class="o">(</span><span class="n">mResourceId</span><span class="o">,</span> <span class="n">parent</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">holder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ViewHolder</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">holder</span><span class="o">.</span><span class="na">tv</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextView</span><span class="o">)</span> <span class="n">convertView</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">default_tree_item</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">convertView</span><span class="o">.</span><span class="na">setTag</span><span class="o">(</span><span class="n">holder</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">holder</span> <span class="o">=</span> <span class="o">(</span><span class="n">ViewHolder</span><span class="o">)</span> <span class="n">convertView</span><span class="o">.</span><span class="na">getTag</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">holder</span><span class="o">.</span><span class="na">tv</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">getElement</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">depth</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="na">getDepth</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//set view indent
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">setPadding</span><span class="o">(</span><span class="n">holder</span><span class="o">.</span><span class="na">tv</span><span class="o">,</span> <span class="n">depth</span><span class="o">,</span> <span class="o">-</span><span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//toggle
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">toggle</span><span class="o">(</span><span class="n">holder</span><span class="o">,</span> <span class="n">node</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">convertView</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">toggle</span><span class="o">(</span><span class="n">Object</span><span class="o">...</span> <span class="n">objects</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">DefaultTreeNode</span> <span class="n">node</span> <span class="o">=</span> <span class="o">(</span><span class="n">DefaultTreeNode</span><span class="o">)</span> <span class="n">objects</span><span class="o">[</span><span class="n">0</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ViewHolder</span> <span class="n">holder</span> <span class="o">=</span> <span class="o">(</span><span class="n">ViewHolder</span><span class="o">)</span> <span class="n">objects</span><span class="o">[</span><span class="n">1</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">isHasChildren</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">node</span><span class="o">.</span><span class="na">isExpanded</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//set your icon
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">isHasChildren</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">node</span><span class="o">.</span><span class="na">isExpanded</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//set your icon
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ClassCastException</span> <span class="n">e</span> <span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">class</span> <span class="nc">ViewHolder</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">TextView</span> <span class="n">tv</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>最核心的方法：通过对不同深度的节点设置不同的缩进，</p>
 <div class="highlight"><div class="chroma">
@@ -678,22 +678,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">TreeAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span>
-     <span class="kd">extends</span> <span class="n">BaseAdapter</span> <span class="o">{</span>
-  <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">setPadding</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">,</span> <span class="kt">int</span> <span class="n">depth</span><span class="o">,</span> <span class="kt">int</span> <span class="n">indent</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">v</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">depth</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;illegal params&#34;</span><span class="o">);</span>
-    <span class="o">}</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">indent</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">indent</span> <span class="o">=</span> <span class="n">baseIndent</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="n">v</span><span class="o">.</span><span class="na">setPadding</span><span class="o">(</span><span class="n">indent</span> <span class="o">*</span> <span class="o">(</span><span class="n">depth</span> <span class="o">+</span> <span class="n">1</span><span class="o">),</span>
-            <span class="n">v</span><span class="o">.</span><span class="na">getPaddingTop</span><span class="o">(),</span>
-            <span class="n">v</span><span class="o">.</span><span class="na">getPaddingRight</span><span class="o">(),</span>
-            <span class="n">v</span><span class="o">.</span><span class="na">getPaddingBottom</span><span class="o">());</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">TreeAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">     <span class="kd">extends</span> <span class="n">BaseAdapter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">setPadding</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">,</span> <span class="kt">int</span> <span class="n">depth</span><span class="o">,</span> <span class="kt">int</span> <span class="n">indent</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">v</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">depth</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;illegal params&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">indent</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">indent</span> <span class="o">=</span> <span class="n">baseIndent</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v</span><span class="o">.</span><span class="na">setPadding</span><span class="o">(</span><span class="n">indent</span> <span class="o">*</span> <span class="o">(</span><span class="n">depth</span> <span class="o">+</span> <span class="n">1</span><span class="o">),</span>
+</span></span><span class="line"><span class="cl">            <span class="n">v</span><span class="o">.</span><span class="na">getPaddingTop</span><span class="o">(),</span>
+</span></span><span class="line"><span class="cl">            <span class="n">v</span><span class="o">.</span><span class="na">getPaddingRight</span><span class="o">(),</span>
+</span></span><span class="line"><span class="cl">            <span class="n">v</span><span class="o">.</span><span class="na">getPaddingBottom</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>那么从一开始的创建节点到现在加载数据到 View，<code>Tree2View</code>就这样实现了，用到了适配器模式，数据结构的链表，队列，栈，DFS和 BFS遍历。不过应该还有许多可以改进的地方，于是我也在 <code>Github</code> 上开源了，欢迎提 issuse 和 pull request</strong></p>
 <h3 id="34-文件管理器-fileexplorer">3.4 文件管理器-FileExplorer</h3>
@@ -756,60 +756,60 @@
 </span><span class="lnt">53
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-Kotlin" data-lang="Kotlin">    <span class="n">tree_view</span><span class="p">.</span><span class="n">setTreeItemSelectedListener</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">pos</span> <span class="o">-&gt;</span>
-      <span class="k">val</span> <span class="py">list</span> <span class="p">=</span> <span class="n">TreeUtils</span><span class="p">.</span><span class="n">getVisibleNodesD</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
-      <span class="k">val</span> <span class="py">fileItem</span><span class="p">:</span> <span class="n">FileItem</span> <span class="p">=</span> <span class="n">list</span><span class="p">[</span><span class="n">pos</span><span class="p">].</span><span class="n">element</span> <span class="k">as</span> <span class="n">FileItem</span>
-      <span class="k">val</span> <span class="py">file</span> <span class="p">=</span> <span class="n">File</span><span class="p">(</span><span class="n">fileItem</span><span class="p">.</span><span class="n">absName</span><span class="p">)</span>
-      <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;You selected &#34;</span> <span class="p">+</span> <span class="n">fileItem</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="n">isSelectable</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">when</span> <span class="p">(</span><span class="n">selectedMod</span><span class="p">)</span> <span class="p">{</span>
-          <span class="m">0</span> <span class="o">-&gt;</span> <span class="p">{</span>
-            <span class="n">selector</span><span class="p">(</span><span class="s2">&#34;File operations&#34;</span><span class="p">,</span> <span class="n">fileOps</span><span class="p">,</span> <span class="p">{</span> <span class="n">dialogInterface</span><span class="p">,</span> <span class="n">i</span> <span class="o">-&gt;</span>
-              <span class="n">run</span> <span class="p">{</span>
-                <span class="n">lastSelectedNode</span> <span class="p">=</span> <span class="n">node</span>
-                    <span class="k">as</span> <span class="n">DefaultTreeNode</span><span class="p">&lt;</span><span class="n">FileItem</span><span class="p">&gt;?</span>
-                <span class="k">when</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-                  <span class="m">0</span> <span class="o">-&gt;</span> <span class="p">{</span>
-                    <span class="c1">//复制文件
-</span><span class="c1"></span>                    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Copy&#34;</span><span class="p">)</span>
-                    <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;Selected a folder to copy to.&#34;</span><span class="p">)</span>
-                    <span class="n">selectedMod</span> <span class="p">=</span> <span class="m">1</span>
-                    <span class="n">lastClickedFileName</span> <span class="p">=</span> <span class="n">fileItem</span><span class="p">.</span><span class="n">absName</span>
-                  <span class="p">}</span>
-                  <span class="m">1</span> <span class="o">-&gt;</span> <span class="p">{</span>
-                    <span class="c1">//剪贴文件
-</span><span class="c1"></span>                    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Cut&#34;</span><span class="p">)</span>
-                    <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;Selected a folder to move to.&#34;</span><span class="p">)</span>
-                    <span class="n">selectedMod</span> <span class="p">=</span> <span class="m">2</span>
-                    <span class="n">lastClickedFileName</span> <span class="p">=</span> <span class="n">fileItem</span><span class="p">.</span><span class="n">absName</span>
-                  <span class="p">}</span>
-                  <span class="m">2</span> <span class="o">-&gt;</span> <span class="p">{</span>
-                    <span class="c1">//重命名文件，省略代码
-</span><span class="c1"></span>                    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Rename&#34;</span><span class="p">)</span>
-                  <span class="p">}</span>
-                  <span class="m">3</span> <span class="o">-&gt;</span> <span class="p">{</span>
-                    <span class="c1">//删除文件，省略代码
-</span><span class="c1"></span>                    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Delete&#34;</span><span class="p">)</span>
-                  <span class="p">}</span>
-                  <span class="k">else</span> <span class="o">-&gt;</span> <span class="p">{</span>
-                  <span class="p">}</span>
-                <span class="p">}</span>
-              <span class="p">}</span>
-            <span class="p">})</span>
-          <span class="p">}</span>
-
-          <span class="m">1</span> <span class="o">-&gt;</span> <span class="p">{</span>
-            <span class="c1">//select copy dest dir，省略代码
-</span><span class="c1"></span>          <span class="p">}</span>
-
-          <span class="m">2</span> <span class="o">-&gt;</span> <span class="p">{</span>
-            <span class="c1">//select cut dest dir，省略代码
-</span><span class="c1"></span>          <span class="p">}</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-      <span class="k">false</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-Kotlin" data-lang="Kotlin"><span class="line"><span class="cl">    <span class="n">tree_view</span><span class="p">.</span><span class="n">setTreeItemSelectedListener</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">pos</span> <span class="o">-&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">val</span> <span class="py">list</span> <span class="p">=</span> <span class="n">TreeUtils</span><span class="p">.</span><span class="n">getVisibleNodesD</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">val</span> <span class="py">fileItem</span><span class="p">:</span> <span class="n">FileItem</span> <span class="p">=</span> <span class="n">list</span><span class="p">[</span><span class="n">pos</span><span class="p">].</span><span class="n">element</span> <span class="k">as</span> <span class="n">FileItem</span>
+</span></span><span class="line"><span class="cl">      <span class="k">val</span> <span class="py">file</span> <span class="p">=</span> <span class="n">File</span><span class="p">(</span><span class="n">fileItem</span><span class="p">.</span><span class="n">absName</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;You selected &#34;</span> <span class="p">+</span> <span class="n">fileItem</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="n">isSelectable</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">when</span> <span class="p">(</span><span class="n">selectedMod</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="m">0</span> <span class="o">-&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">selector</span><span class="p">(</span><span class="s2">&#34;File operations&#34;</span><span class="p">,</span> <span class="n">fileOps</span><span class="p">,</span> <span class="p">{</span> <span class="n">dialogInterface</span><span class="p">,</span> <span class="n">i</span> <span class="o">-&gt;</span>
+</span></span><span class="line"><span class="cl">              <span class="n">run</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">lastSelectedNode</span> <span class="p">=</span> <span class="n">node</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">as</span> <span class="n">DefaultTreeNode</span><span class="p">&lt;</span><span class="n">FileItem</span><span class="p">&gt;?</span>
+</span></span><span class="line"><span class="cl">                <span class="k">when</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                  <span class="m">0</span> <span class="o">-&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">//复制文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Copy&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;Selected a folder to copy to.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">selectedMod</span> <span class="p">=</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">lastClickedFileName</span> <span class="p">=</span> <span class="n">fileItem</span><span class="p">.</span><span class="n">absName</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                  <span class="m">1</span> <span class="o">-&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">//剪贴文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Cut&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;Selected a folder to move to.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">selectedMod</span> <span class="p">=</span> <span class="m">2</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">lastClickedFileName</span> <span class="p">=</span> <span class="n">fileItem</span><span class="p">.</span><span class="n">absName</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                  <span class="m">2</span> <span class="o">-&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">//重命名文件，省略代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Rename&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                  <span class="m">3</span> <span class="o">-&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">//删除文件，省略代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;Delete&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                  <span class="k">else</span> <span class="o">-&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">          <span class="m">1</span> <span class="o">-&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//select copy dest dir，省略代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">          <span class="m">2</span> <span class="o">-&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//select cut dest dir，省略代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">false</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="4使用-usage">4.使用-Usage</h2>
 <h3 id="41-下载">4.1 下载</h3>
@@ -821,8 +821,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"> git clone git@github.com:LeeReindeer/Tree2View.git
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> git clone git@github.com:LeeReindeer/Tree2View.git
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Then open your project in Android Studio, and Click <code>FIle</code> -&gt; <code>New</code> -&gt; <code>Import Module</code>, to import this module.</p>
 <p>Finally, add dependence in your <code>build.gradle</code></p>
@@ -831,8 +831,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"> <span class="n">implementation</span> <span class="nf">project</span><span class="o">(</span><span class="nl">path:</span> <span class="s1">&#39;:treeview&#39;</span><span class="o">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"> <span class="n">implementation</span> <span class="nf">project</span><span class="o">(</span><span class="nl">path:</span> <span class="s1">&#39;:treeview&#39;</span><span class="o">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="42-简单使用">4.2 简单使用</h3>
 <p>Feel free to use it as <code>ListView</code>.</p>
@@ -851,44 +851,42 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml">
-    <span class="nt">&lt;xyz.leezoom.view.treeview.TreeView</span>
-        <span class="na">android:id=</span><span class="s">&#34;@+id/tree_view&#34;</span>
-        <span class="na">android:layout_marginTop=</span><span class="s">&#34;16dp&#34;</span>
-        <span class="na">android:layout_width=</span><span class="s">&#34;match_parent&#34;</span>
-        <span class="na">android:layout_height=</span><span class="s">&#34;match_parent&#34;</span>
-        <span class="na">android:divider=</span><span class="s">&#34;#ffffff&#34;</span>
-        <span class="na">android:dividerHeight=</span><span class="s">&#34;1px&#34;</span><span class="nt">&gt;</span>
-
-    <span class="nt">&lt;/xyz.leezoom.view.treeview.TreeView&gt;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;xyz.leezoom.view.treeview.TreeView</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:id=</span><span class="s">&#34;@+id/tree_view&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:layout_marginTop=</span><span class="s">&#34;16dp&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:layout_width=</span><span class="s">&#34;match_parent&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:layout_height=</span><span class="s">&#34;match_parent&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:divider=</span><span class="s">&#34;#ffffff&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:dividerHeight=</span><span class="s">&#34;1px&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/xyz.leezoom.view.treeview.TreeView&gt;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Kotlin(Java is similar whit it):</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">
-  <span class="k">var</span> <span class="py">root</span> <span class="p">:</span><span class="n">DefaultTreeNode</span><span class="p">?</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Root&#34;</span><span class="p">)</span>
-  <span class="k">val</span> <span class="py">treeView</span> <span class="p">=</span> <span class="n">TreeView</span><span class="p">(</span><span class="k">this</span><span class="nd">@MainActivity</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
-  <span class="k">val</span> <span class="py">child1</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Child1&#34;</span><span class="p">)</span>
-  <span class="k">val</span> <span class="py">child2</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Child2&#34;</span><span class="p">)</span>
-  <span class="n">root</span><span class="p">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child1</span><span class="p">)</span>
-  <span class="n">root</span><span class="p">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child2</span><span class="p">)</span>
-  <span class="k">val</span> <span class="py">child3</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Child3&#34;</span><span class="p">)</span>
-  <span class="n">child1</span><span class="p">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child3</span><span class="p">)</span>
-
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">var</span> <span class="py">root</span> <span class="p">:</span><span class="n">DefaultTreeNode</span><span class="p">?</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Root&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">val</span> <span class="py">treeView</span> <span class="p">=</span> <span class="n">TreeView</span><span class="p">(</span><span class="k">this</span><span class="nd">@MainActivity</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">val</span> <span class="py">child1</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Child1&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">val</span> <span class="py">child2</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Child2&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">root</span><span class="p">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">root</span><span class="p">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">val</span> <span class="py">child3</span> <span class="p">=</span> <span class="n">DefaultTreeNode</span><span class="p">(</span><span class="s2">&#34;Child3&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">child1</span><span class="p">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child3</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>So above code will create a tree like this:</p>
 <h3 id="43-进阶使用">4.3 进阶使用</h3>
@@ -916,26 +914,26 @@
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileTreeAdapter</span> <span class="kd">extends</span> <span class="n">TreeAdapter</span><span class="o">&lt;</span><span class="n">FileItem</span><span class="o">&gt;</span> <span class="o">{</span>
-  <span class="c1">//resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.
-</span><span class="c1"></span>  <span class="kd">public</span> <span class="nf">FileTreeAdapter</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">DefaultTreeNode</span> <span class="n">root</span><span class="o">,</span> <span class="kt">int</span> <span class="n">resourceId</span><span class="o">)</span> <span class="o">{</span>
-    <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">root</span><span class="o">,</span> <span class="n">resourceId</span><span class="o">);</span>
-  <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="n">View</span> <span class="nf">getView</span><span class="o">(</span><span class="kt">int</span> <span class="n">position</span><span class="o">,</span> <span class="n">View</span> <span class="n">convertView</span><span class="o">,</span> <span class="n">ViewGroup</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span>
-     <span class="c1">//your code here
-</span><span class="c1"></span>     <span class="c1">//...
-</span><span class="c1"></span>     <span class="c1">//call padding for a better UI
-</span><span class="c1"></span>     <span class="n">setPadding</span><span class="o">(</span><span class="n">holder</span><span class="o">.</span><span class="na">arrowIcon</span><span class="o">,</span> <span class="n">depth</span><span class="o">,</span> <span class="o">-</span><span class="n">1</span><span class="o">);</span>
-     <span class="c1">//toggle your view&#39;s status here
-</span><span class="c1"></span>     <span class="n">toggle</span><span class="o">(</span><span class="n">node</span><span class="o">,</span> <span class="n">holder</span><span class="o">);</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">toggle</span><span class="o">(</span><span class="n">Object</span><span class="o">...</span> <span class="n">objects</span><span class="o">)</span> <span class="o">{</span>
-     <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileTreeAdapter</span> <span class="kd">extends</span> <span class="n">TreeAdapter</span><span class="o">&lt;</span><span class="n">FileItem</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">public</span> <span class="nf">FileTreeAdapter</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">DefaultTreeNode</span> <span class="n">root</span><span class="o">,</span> <span class="kt">int</span> <span class="n">resourceId</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">root</span><span class="o">,</span> <span class="n">resourceId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">View</span> <span class="nf">getView</span><span class="o">(</span><span class="kt">int</span> <span class="n">position</span><span class="o">,</span> <span class="n">View</span> <span class="n">convertView</span><span class="o">,</span> <span class="n">ViewGroup</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">     <span class="c1">//your code here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="c1">//call padding for a better UI
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="n">setPadding</span><span class="o">(</span><span class="n">holder</span><span class="o">.</span><span class="na">arrowIcon</span><span class="o">,</span> <span class="n">depth</span><span class="o">,</span> <span class="o">-</span><span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">     <span class="c1">//toggle your view&#39;s status here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="n">toggle</span><span class="o">(</span><span class="n">node</span><span class="o">,</span> <span class="n">holder</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">toggle</span><span class="o">(</span><span class="n">Object</span><span class="o">...</span> <span class="n">objects</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">     <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Then simply add:</p>
 <div class="highlight"><div class="chroma">
@@ -944,9 +942,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">  <span class="k">val</span> <span class="py">adapter</span> <span class="p">=</span> <span class="n">FileTreeAdapter</span><span class="p">(</span><span class="k">this</span><span class="nd">@MainActivity</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">layout_file_tree_item</span><span class="p">)</span>
-  <span class="n">treeView</span><span class="p">.</span><span class="n">treeAdapter</span> <span class="p">=</span> <span class="n">adapter</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">  <span class="k">val</span> <span class="py">adapter</span> <span class="p">=</span> <span class="n">FileTreeAdapter</span><span class="p">(</span><span class="k">this</span><span class="nd">@MainActivity</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">layout_file_tree_item</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">treeView</span><span class="p">.</span><span class="n">treeAdapter</span> <span class="p">=</span> <span class="n">adapter</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="5-open-source">5. Open-Source</h2>
 <ul>
@@ -971,20 +969,20 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt">  Copyright 2017 LeeReindeer &lt;reindeerlee.work@gmail.com&gt;
-
-  Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">  Copyright 2017 LeeReindeer &lt;reindeerlee.work@gmail.com&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+</span></span><span class="line"><span class="cl">  you may not use this file except in compliance with the License.
+</span></span><span class="line"><span class="cl">  You may obtain a copy of the License at
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  http://www.apache.org/licenses/LICENSE-2.0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Unless required by applicable law or agreed to in writing, software
+</span></span><span class="line"><span class="cl">  distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+</span></span><span class="line"><span class="cl">  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span></span><span class="line"><span class="cl">  See the License for the specific language governing permissions and
+</span></span><span class="line"><span class="cl">  limitations under the License.
+</span></span></code></pre></td></tr></table>
 </div>
 </div>
     </div>
@@ -1094,7 +1092,7 @@
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

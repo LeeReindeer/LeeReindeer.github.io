@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2019/10/26/reclone/" />
@@ -54,7 +54,7 @@
 解决 GitHub 仓库 clone 缓慢或断连的问题
 "><meta itemprop="datePublished" content="2019-10-26T20:37:02+00:00" />
 <meta itemprop="dateModified" content="2019-10-26T20:37:02+00:00" />
-<meta itemprop="wordCount" content="437">
+<meta itemprop="wordCount" content="442">
 <meta itemprop="keywords" content="Git," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="解决 git clone 缓慢的问题"/>
 <meta name="twitter:description" content="
@@ -147,7 +147,7 @@
         <div class="post-category">
             <a href="/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/"> 实验室 </a>
             </div>
-          <span class="more-meta"> 437 words </span>
+          <span class="more-meta"> 442 words </span>
           <span class="more-meta"> 1 min read </span>
         
       </div>
@@ -181,9 +181,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">git config --global http.proxy <span class="s1">&#39;socks5://127.0.0.1:1081&#39;</span>
-git config --global https.proxy <span class="s1">&#39;socks5://127.0.0.1:1081&#39;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git config --global http.proxy <span class="s1">&#39;socks5://127.0.0.1:1081&#39;</span>
+</span></span><span class="line"><span class="cl">git config --global https.proxy <span class="s1">&#39;socks5://127.0.0.1:1081&#39;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="方法-2-远程克隆">方法 2 远程克隆</h2>
 <p>这是我自创的一个办法：既然本地网络环境连接 GitHub 很慢，那么可以借助一台服务器进行 clone（一般服务器上都比较快的哦），然后再下载到本地。思路是很简单，接下来就是 bash 脚本大显身手的时候了。</p>
@@ -216,32 +216,32 @@ git config --global https.proxy <span class="s1">&#39;socks5://127.0.0.1:1081&#3
 </span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/bin/bash
-</span><span class="cp"></span>
-<span class="nv">git_url</span><span class="o">=</span><span class="nv">$1</span>
-<span class="nv">dir</span><span class="o">=</span><span class="nv">$2</span>
-
-remote_clone<span class="o">()</span> <span class="o">{</span>
-  <span class="nb">echo</span> <span class="s2">&#34;git clone </span><span class="nv">$1</span><span class="s2"> </span><span class="nv">$2</span><span class="s2"> on remote&#34;</span>
-  ssh -t root@1.2.3.4 <span class="s2">&#34;git clone </span><span class="nv">$1</span><span class="s2"> </span><span class="nv">$2</span><span class="s2">&#34;</span>
-<span class="o">}</span>
-
-download<span class="o">()</span> <span class="o">{</span>
-  <span class="nb">echo</span> <span class="s2">&#34;Downloading </span><span class="nv">$dir</span><span class="s2"> to local...&#34;</span>
-  scp -q -r root@1.2.3.4:/root/<span class="nv">$dir</span>/ <span class="nv">$dir</span>
-<span class="o">}</span>
-
-rm_clone<span class="o">()</span> <span class="o">{</span>
-  <span class="nb">echo</span> <span class="s2">&#34;Remove </span><span class="nv">$dir</span><span class="s2"> on remote machine...&#34;</span>
-  ssh -q -t root@1.2.3.4 <span class="s2">&#34;rm -rf </span><span class="nv">$dir</span><span class="s2">&#34;</span>
-<span class="o">}</span>
-
-
-remote_clone <span class="nv">$git_url</span> <span class="nv">$dir</span>
-download
-rm_clone
-<span class="nb">echo</span> <span class="s2">&#34;Finish!!!&#34;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="nv">git_url</span><span class="o">=</span><span class="nv">$1</span>
+</span></span><span class="line"><span class="cl"><span class="nv">dir</span><span class="o">=</span><span class="nv">$2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">remote_clone<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;git clone </span><span class="nv">$1</span><span class="s2"> </span><span class="nv">$2</span><span class="s2"> on remote&#34;</span>
+</span></span><span class="line"><span class="cl">  ssh -t root@1.2.3.4 <span class="s2">&#34;git clone </span><span class="nv">$1</span><span class="s2"> </span><span class="nv">$2</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">download<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;Downloading </span><span class="nv">$dir</span><span class="s2"> to local...&#34;</span>
+</span></span><span class="line"><span class="cl">  scp -q -r root@1.2.3.4:/root/<span class="nv">$dir</span>/ <span class="nv">$dir</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">rm_clone<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;Remove </span><span class="nv">$dir</span><span class="s2"> on remote machine...&#34;</span>
+</span></span><span class="line"><span class="cl">  ssh -q -t root@1.2.3.4 <span class="s2">&#34;rm -rf </span><span class="nv">$dir</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">remote_clone <span class="nv">$git_url</span> <span class="nv">$dir</span>
+</span></span><span class="line"><span class="cl">download
+</span></span><span class="line"><span class="cl">rm_clone
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;Finish!!!&#34;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>ssh</code> 加上 <code>-t</code> flag 将登录并运行指定的命令，然后退出，它不会与远程服务器保持连接。比如 <code>ssh -t root@1.2.3.4 &quot;ls&quot;</code> 就会在远程执行 ls 命令，并将结果打印在本地终端上，这也符合我们的预期。</p>
 <p>我们使用 root 用户登录服务器，也可以使用拥有<code>rm</code>命令权限的用户登录。脚本会在下载完成后，使用<code>rm</code>命令删除服务器上的文件。</p>
@@ -353,7 +353,7 @@ rm_clone
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

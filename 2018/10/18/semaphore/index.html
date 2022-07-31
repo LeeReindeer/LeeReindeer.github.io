@@ -18,9 +18,9 @@
 
 <meta name="author" content="LeeReindeer" /><meta name="description" content="Semaphore Dijkstra 大佬提出了一种解决不同线程之前同步和互斥问题的方法。这种方法就是 PV 操作，它基于 Semaphore（信号量）。
 可以把信号量简单看成一个非负整数，只能使用两种操作来改变它的值，这两种操作就是 P 和 V，用伪代码描述如下（与教材《操作系统教程》上不同，这里的信号量不能为负值）。PV 操作的伪代码实现如下：
-  P(s)
-1 2 3 4 5 6 7 8  P(s) { if (p != 0) { s--; } else { append this thread to list; sleep(); } }     V(s)
-1 2 3 4 5 6  V(s) { s&#43;&#43;; if (list is no empty) { list.pop().wakeup(); } }     P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。
+P(s)
+1 2 3 4 5 6 7 8 P(s) { if (p != 0) { s--; } else { append this thread to list; sleep(); } } V(s)
+1 2 3 4 5 6 V(s) { s&#43;&#43;; if (list is no empty) { list.pop().wakeup(); } } P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。
 " /><meta name="keywords" content="LeeReindeer, Hugo, even" />
 
 
@@ -28,7 +28,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/10/18/semaphore/" />
@@ -156,7 +156,7 @@ V(s) {
 
 P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现。这样就保证了程序不可能进入信号量为负值的状态，可以利用这个特性实现进程之间的互斥和同步。"><meta itemprop="datePublished" content="2018-10-18T16:31:21+00:00" />
 <meta itemprop="dateModified" content="2018-10-18T16:31:21+00:00" />
-<meta itemprop="wordCount" content="5311">
+<meta itemprop="wordCount" content="5310">
 <meta itemprop="keywords" content="C,OS," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Concurrent with Semaphore"/>
 <meta name="twitter:description" content="Semaphore
@@ -298,7 +298,7 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
         <div class="post-category">
             <a href="/categories/%E8%87%AA%E4%B9%A0%E5%AE%A4/"> 自习室 </a>
             </div>
-          <span class="more-meta"> 5311 words </span>
+          <span class="more-meta"> 5310 words </span>
           <span class="more-meta"> 11 mins read </span>
         
       </div>
@@ -347,15 +347,15 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">P</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    	<span class="n">s</span><span class="o">--</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    	<span class="n">append</span> <span class="n">this</span> <span class="kr">thread</span> <span class="n">to</span> <span class="n">list</span><span class="p">;</span>
-    	<span class="n">sleep</span><span class="p">();</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">P</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    	<span class="n">s</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    	<span class="n">append</span> <span class="n">this</span> <span class="kr">thread</span> <span class="n">to</span> <span class="n">list</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    	<span class="n">sleep</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
@@ -370,13 +370,13 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">V</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">s</span><span class="o">++</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">list</span> <span class="n">is</span> <span class="n">no</span> <span class="n">empty</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">list</span><span class="p">.</span><span class="n">pop</span><span class="p">().</span><span class="n">wakeup</span><span class="p">();</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">V</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">list</span> <span class="n">is</span> <span class="n">no</span> <span class="n">empty</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">list</span><span class="p">.</span><span class="n">pop</span><span class="p">().</span><span class="n">wakeup</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
@@ -406,23 +406,23 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">thread1</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">vargp</span><span class="p">);</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="c1">//平时编写的C程序只有一个线程--主线程
-</span><span class="c1"></span>  <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">;</span>
-  <span class="c1">//创建线程，同时开始运行
-</span><span class="c1"></span>  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="c1">//阻塞主线程，直到tid1线程结束
-</span><span class="c1"></span>  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="o">*</span><span class="nf">thread1</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">vargp</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello world</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">thread1</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">vargp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//平时编写的C程序只有一个线程--主线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//创建线程，同时开始运行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//阻塞主线程，直到tid1线程结束
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">thread1</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">vargp</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello world</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>对 pthread 不再过多介绍，还不如去看<code>man page</code>。</p>
 <p>如果两个并发的进程，在访问同一个个共享变量的时候不加限制，可能会造成结果与预期不同。比如下面的计数器例子：</p>
@@ -462,39 +462,39 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">32
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&#34;csapp.h&#34;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="kt">void</span> <span class="o">*</span><span class="nf">thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-<span class="k">volatile</span> <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// shared counter
-</span><span class="c1"></span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Usage: %s &lt;n&gt;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-  <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">,</span> <span class="n">tid2</span><span class="p">;</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="kr">thread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">);</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="kr">thread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-
-  <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">))</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;BOOM! cnt=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">cnt</span><span class="p">);</span>
-  <span class="k">else</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;OK cnt=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">cnt</span><span class="p">);</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="o">*</span><span class="nf">thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">cnt</span><span class="o">++</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;csapp.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">volatile</span> <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// shared counter
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Usage: %s &lt;n&gt;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">,</span> <span class="n">tid2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="kr">thread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="kr">thread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;BOOM! cnt=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">cnt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;OK cnt=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">cnt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cnt</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>cnt</code>变量被两个进程同时访问，在访问它的过程中随时可能被打断，即使<code>cnt++</code>看起来是不会被打断的操作，但是当它被编译成汇编语言时：</p>
 <div class="highlight"><div class="chroma">
@@ -504,10 +504,10 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="nf">movl</span> <span class="no">cnt</span><span class="p">,</span> <span class="nv">%eax</span>
-<span class="nf">incl</span> <span class="nv">%eax</span>
-<span class="nf">movl</span> <span class="nv">%eax</span><span class="p">,</span> <span class="no">cnt</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">movl</span> <span class="no">cnt</span><span class="p">,</span> <span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl"><span class="nf">incl</span> <span class="nv">%eax</span>
+</span></span><span class="line"><span class="cl"><span class="nf">movl</span> <span class="nv">%eax</span><span class="p">,</span> <span class="no">cnt</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这样看来，机器在执行的时候可能会有问题。具体一点，一开始 cnt 为 0 ，一个进程如果在第二条指令被另一个进程打断，%eax 已经加一，而 cnt 的值还未保存。另一个进程完成操作后， cnt 为 1。接着原先的进程继续运行， cnt 也为 1。所以结果应该会比两倍的 n 要小。</p>
 <p>为了解决这个问题，就可以使用二元信号量，对 临界区（critical section）加锁,来保证同时只有一个进程访问它。在上面的例子里，临界区就是那三条汇编指令，即  <code>cnt++</code>。</p>
@@ -533,25 +533,25 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="c1">//...
-</span><span class="c1"></span>	<span class="c1">// init mutex with 1
-</span><span class="c1"></span>    <span class="n">sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="c1">//...
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="kt">void</span> <span class="o">*</span><span class="nf">thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span> <span class="c1">// sem_wait(sem_t *s)
-</span><span class="c1"></span>    <span class="n">cnt</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span> <span class="c1">// sem_post(sem_t *s)
-</span><span class="c1"></span>  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// init mutex with 1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span> <span class="c1">// sem_wait(sem_t *s)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">cnt</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span> <span class="c1">// sem_post(sem_t *s)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>其中的<code>P()</code>，<code>V()</code>两个函数分别是对 Linux 下信号量函数的简单封装</strong>：</p>
 <div class="highlight"><div class="chroma">
@@ -567,16 +567,16 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">P</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">sem_wait</span><span class="p">(</span><span class="n">sem</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">unix_error</span><span class="p">(</span><span class="s">&#34;P error&#34;</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">V</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">sem_post</span><span class="p">(</span><span class="n">sem</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">unix_error</span><span class="p">(</span><span class="s">&#34;V error&#34;</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">P</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">sem_wait</span><span class="p">(</span><span class="n">sem</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">unix_error</span><span class="p">(</span><span class="s">&#34;P error&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">V</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">sem_post</span><span class="p">(</span><span class="n">sem</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">unix_error</span><span class="p">(</span><span class="s">&#34;V error&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>接下来讨论几个老师上课讲到的和没讲到的😢几个进程同步问题，分别为<strong>生产者-消费者问题</strong>，<strong>读者-写者问题</strong>，<strong>睡眠理发师问题</strong>，<strong>吸烟者问题</strong>，<strong>和尚吃水问题</strong>，<strong>吃水果问题</strong>。顺便可以写写代码（</p>
 <h2 id="producer-consumer">Producer-Consumer</h2>
@@ -626,18 +626,18 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="o">*</span><span class="n">buf</span><span class="p">;</span> <span class="c1">// buffer array
-</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">n</span><span class="p">;</span> <span class="c1">// size of solts, the buffer size is n - 1, because index 0 will not be
-</span><span class="c1"></span>         <span class="c1">// filled.
-</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">front</span><span class="p">;</span>     <span class="c1">// buf[(front+1)%n] is the first item
-</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">rear</span><span class="p">;</span>      <span class="c1">// buf[rear%n] is the last item
-</span><span class="c1"></span>  <span class="n">sem_t</span> <span class="n">mutex_p</span><span class="p">;</span> <span class="c1">// protect access to buf for prodecter
-</span><span class="c1"></span>  <span class="n">sem_t</span> <span class="n">mutex_c</span><span class="p">;</span>
-  <span class="n">sem_t</span> <span class="n">slots</span><span class="p">;</span> <span class="c1">// counts available solts
-</span><span class="c1"></span>  <span class="n">sem_t</span> <span class="n">items</span><span class="p">;</span> <span class="c1">// counts available items;
-</span><span class="c1"></span><span class="p">}</span> <span class="n">sbuf_t</span><span class="p">;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="o">*</span><span class="n">buf</span><span class="p">;</span> <span class="c1">// buffer array
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">int</span> <span class="n">n</span><span class="p">;</span> <span class="c1">// size of solts, the buffer size is n - 1, because index 0 will not be
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>         <span class="c1">// filled.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">int</span> <span class="n">front</span><span class="p">;</span>     <span class="c1">// buf[(front+1)%n] is the first item
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">int</span> <span class="n">rear</span><span class="p">;</span>      <span class="c1">// buf[rear%n] is the last item
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">sem_t</span> <span class="n">mutex_p</span><span class="p">;</span> <span class="c1">// protect access to buf for prodecter
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">sem_t</span> <span class="n">mutex_c</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sem_t</span> <span class="n">slots</span><span class="p">;</span> <span class="c1">// counts available solts
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">sem_t</span> <span class="n">items</span><span class="p">;</span> <span class="c1">// counts available items;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">sbuf_t</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>我们使用两个互斥锁来保证缓存区的访问是互斥，同时使用信号量：slots 和 items 来对缓存区中的空位和数据进行计数。</p>
 <div class="highlight"><div class="chroma">
@@ -726,89 +726,89 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">82
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">;</span>
-
-<span class="n">sem_t</span> <span class="n">mutex_c</span><span class="p">,</span> <span class="n">mutex_p</span><span class="p">;</span>
-<span class="kt">int</span> <span class="n">p_cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">c_cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-<span class="kt">void</span> <span class="o">*</span><span class="nf">producter_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;produce: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
-    <span class="n">sbuf_insert</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_p</span><span class="p">);</span>
-    <span class="n">p_cnt</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_p</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="o">*</span><span class="nf">consumer_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;consume: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">sbuf_remove</span><span class="p">(</span><span class="n">sp</span><span class="p">));</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_c</span><span class="p">);</span>
-    <span class="n">c_cnt</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_c</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">sp</span> <span class="o">=</span> <span class="n">Calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">sbuf_t</span><span class="p">));</span>
-  <span class="n">sbuf_init</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_c</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-
-  <span class="n">pthread_t</span> <span class="n">tids</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
-
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">producter_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-    <span class="k">else</span>
-      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">consumer_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-    <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">sbuf_deinit</span><span class="p">(</span><span class="n">sp</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;producters run: %d times</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p_cnt</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;consumers run: %d times</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">c_cnt</span><span class="p">);</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="c1">// Create an empty, bounded, shared FIFO buffer with n slots
-</span><span class="c1"></span><span class="kt">void</span> <span class="nf">sbuf_init</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span> <span class="o">=</span> <span class="n">Calloc</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span>                    <span class="cm">/* Buffer holds max of n items */</span>
-  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>     <span class="cm">/* Empty buffer iff front == rear */</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="cm">/* Binary semaphore for locking */</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="cm">/* Binary semaphore for locking */</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>   <span class="cm">/* Initially, buf has n empty slots */</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>   <span class="cm">/* Initially, buf has zero data items */</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">sbuf_deinit</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">Free</span><span class="p">(</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">);</span>
-  <span class="n">Free</span><span class="p">(</span><span class="n">sp</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="c1">// add to rear
-</span><span class="c1"></span><span class="kt">void</span> <span class="nf">sbuf_insert</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>  		<span class="c1">// Request solts
-</span><span class="c1"></span>  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span> 		<span class="c1">// Lock buf for producter
-</span><span class="c1"></span>  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span>
-  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span>  	<span class="c1">// unlock
-</span><span class="c1"></span>  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span> 		<span class="c1">// Make a item
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="c1">// remove from head
-</span><span class="c1"></span><span class="kt">int</span> <span class="nf">sbuf_remove</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">item</span><span class="p">;</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
-  <span class="n">item</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">];</span>
-  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
-  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">mutex_c</span><span class="p">,</span> <span class="n">mutex_p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">p_cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">c_cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">producter_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;produce: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sbuf_insert</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p_cnt</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">consumer_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;consume: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">sbuf_remove</span><span class="p">(</span><span class="n">sp</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c_cnt</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sp</span> <span class="o">=</span> <span class="n">Calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">sbuf_t</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sbuf_init</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex_c</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">pthread_t</span> <span class="n">tids</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">producter_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">consumer_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sbuf_deinit</span><span class="p">(</span><span class="n">sp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;producters run: %d times</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p_cnt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;consumers run: %d times</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">c_cnt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create an empty, bounded, shared FIFO buffer with n slots
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">sbuf_init</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span> <span class="o">=</span> <span class="n">Calloc</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span>                    <span class="cm">/* Buffer holds max of n items */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>     <span class="cm">/* Empty buffer iff front == rear */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="cm">/* Binary semaphore for locking */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="cm">/* Binary semaphore for locking */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>   <span class="cm">/* Initially, buf has n empty slots */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>   <span class="cm">/* Initially, buf has zero data items */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">sbuf_deinit</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Free</span><span class="p">(</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Free</span><span class="p">(</span><span class="n">sp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// add to rear
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">sbuf_insert</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>  		<span class="c1">// Request solts
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span> 		<span class="c1">// Lock buf for producter
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span>  	<span class="c1">// unlock
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span> 		<span class="c1">// Make a item
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// remove from head
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">sbuf_remove</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">item</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">item</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>从 main 函数 看起，初始化信号量和缓存区，接着我们创建 10 个进程：5 个消费者,5 个生产者。</p>
 <p>在生产者进程中，我们模拟生产10条数据便结束进程。消费者进程相同地取走10条数据也就结束了。同时引入 <code>c_cnt, p_cnt</code>来验证我们的结果是否正确，对他们的访问也需要加锁。</p>
@@ -843,32 +843,32 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// add to rear
-</span><span class="c1"></span><span class="kt">void</span> <span class="nf">sbuf_insert</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">tmp</span><span class="p">;</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span>
-  <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">;</span>
-  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span>
-  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[</span><span class="n">tmp</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span> <span class="c1">// assume this operation consume too much time,
-</span><span class="c1"></span>                       <span class="c1">// so put it out of the lock of the buffer, make
-</span><span class="c1"></span>                       <span class="c1">// producters more concurrent.
-</span><span class="c1"></span>  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="c1">// remove from head
-</span><span class="c1"></span><span class="kt">int</span> <span class="nf">sbuf_remove</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">item</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">tmp</span><span class="p">;</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
-  <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">;</span>
-  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
-  <span class="n">item</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[</span><span class="n">tmp</span><span class="p">];</span> <span class="c1">// same as productor
-</span><span class="c1"></span>  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// add to rear
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">sbuf_insert</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">tmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[</span><span class="n">tmp</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span> <span class="c1">// assume this operation consume too much time,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                       <span class="c1">// so put it out of the lock of the buffer, make
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                       <span class="c1">// producters more concurrent.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// remove from head
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">sbuf_remove</span><span class="p">(</span><span class="n">sbuf_t</span> <span class="o">*</span><span class="n">sp</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">item</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">tmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">items</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="o">++</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">)</span> <span class="o">%</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">mutex_c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">item</span> <span class="o">=</span> <span class="n">sp</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">[</span><span class="n">tmp</span><span class="p">];</span> <span class="c1">// same as productor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sp</span><span class="o">-&gt;</span><span class="n">slots</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="reader-writer">Reader-Writer</h2>
 <p>读者-写者问题的描述如下：</p>
@@ -913,13 +913,13 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define THREAD_SIZE 10
-</span><span class="cp"></span>
-<span class="kt">char</span> <span class="n">file</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;Init file&#34;</span><span class="p">;</span> <span class="c1">// simulate file I/O
-</span><span class="c1"></span><span class="kt">int</span> <span class="n">reader_cnt</span><span class="p">;</span>
-<span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span> <span class="c1">// mutux for reader_cnt
-</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">w</span><span class="p">;</span>     <span class="c1">// mutex for writer
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define THREAD_SIZE 10
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="n">file</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;Init file&#34;</span><span class="p">;</span> <span class="c1">// simulate file I/O
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">reader_cnt</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span> <span class="c1">// mutux for reader_cnt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sem_t</span> <span class="n">w</span><span class="p">;</span>     <span class="c1">// mutex for writer
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>main 函数，初始化信号量<code>mutex</code>和<code>w</code>为 1 ，并且创建读者和写者进程，使得读者进程个数大于写着进程：</p>
 <div class="highlight"><div class="chroma">
@@ -943,24 +943,24 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">pthread_t</span> <span class="n">tid_list</span><span class="p">[</span><span class="n">THREAD_SIZE</span><span class="p">];</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">THREAD_SIZE</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// more reader
-</span><span class="c1"></span>      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">reader_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-    <span class="k">else</span>
-      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">writer_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-    <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span> <span class="c1">// WAIT
-</span><span class="c1"></span>  <span class="p">}</span>
-
-  <span class="n">puts</span><span class="p">(</span><span class="s">&#34;Finally file:&#34;</span><span class="p">);</span>
-  <span class="n">puts</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pthread_t</span> <span class="n">tid_list</span><span class="p">[</span><span class="n">THREAD_SIZE</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">THREAD_SIZE</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// more reader
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">reader_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">writer_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Pthread_join</span><span class="p">(</span><span class="n">tid_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span> <span class="c1">// WAIT
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">puts</span><span class="p">(</span><span class="s">&#34;Finally file:&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">puts</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>读者进程，每个读者进程模拟进行5次读操作：</p>
 <div class="highlight"><div class="chroma">
@@ -988,28 +988,28 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">reader_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">cnt</span><span class="o">++</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// printf(&#34;%d\n&#34;, cnt);
-</span><span class="c1"></span>    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="n">reader_cnt</span><span class="o">++</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">reader_cnt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">// first reader
-</span><span class="c1"></span>      <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-
-    <span class="c1">// read file...
-</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Read file: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
-
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="n">reader_cnt</span><span class="o">--</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">reader_cnt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// last reader
-</span><span class="c1"></span>      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">reader_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">cnt</span><span class="o">++</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// printf(&#34;%d\n&#34;, cnt);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">reader_cnt</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">reader_cnt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">// first reader
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// read file...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Read file: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">reader_cnt</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">reader_cnt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// last reader
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>写者进程，每个写者同样模拟5次写操作：</p>
 <div class="highlight"><div class="chroma">
@@ -1027,18 +1027,18 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">writer_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">cnt</span><span class="o">++</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
-    <span class="c1">// critical section
-</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Writing file</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-    <span class="n">strcpy</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s">&#34;Hello world&#34;</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">writer_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">cnt</span><span class="o">++</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// critical section
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Writing file</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">strcpy</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s">&#34;Hello world&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>运行结果：</p>
 <p><img src="/images/sem-rw.png" alt="sem-rw"></p>
@@ -1052,10 +1052,10 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sem_t</span> <span class="n">barber_ready</span><span class="p">,</span> <span class="n">cust_ready</span><span class="p">;</span>
-<span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span>
-<span class="kt">int</span> <span class="n">free_seats</span><span class="p">,</span> <span class="n">wating</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">barber_ready</span><span class="p">,</span> <span class="n">cust_ready</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">free_seats</span><span class="p">,</span> <span class="n">wating</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>理发师进程：</p>
 <div class="highlight"><div class="chroma">
@@ -1079,30 +1079,28 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">barber</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">static</span> <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cust_ready</span><span class="p">);</span>  <span class="c1">// sleetp to wait customer
-</span><span class="c1"></span>    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="n">wating</span><span class="o">--</span><span class="p">;</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">barber_ready</span><span class="p">);</span>  <span class="c1">// ready to cut
-</span><span class="c1"></span>    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="n">cnt</span><span class="o">++</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">wating</span> <span class="o">=</span> <span class="n">free_seats</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="n">printf</span><span class="p">(</span><span class="s">&#34;close shop</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-      <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>  <span class="c1">// barber close shop after cut &lt;arg&gt; customers
-</span><span class="c1"></span>    <span class="p">}</span>
-    <span class="c1">// cuthair
-</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;I&#39;m cutting your hair</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">barber</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cust_ready</span><span class="p">);</span>  <span class="c1">// sleetp to wait customer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">wating</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">barber_ready</span><span class="p">);</span>  <span class="c1">// ready to cut
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cnt</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">wating</span> <span class="o">=</span> <span class="n">free_seats</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">printf</span><span class="p">(</span><span class="s">&#34;close shop</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>  <span class="c1">// barber close shop after cut &lt;arg&gt; customers
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// cuthair
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;I&#39;m cutting your hair</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>顾客进程：</p>
 <div class="highlight"><div class="chroma">
@@ -1124,22 +1122,22 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">customer</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">wating</span> <span class="o">&lt;</span> <span class="n">free_seats</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">wating</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cust_ready</span><span class="p">);</span>  <span class="c1">// notif barber
-</span><span class="c1"></span>    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">barber_ready</span><span class="p">);</span>  <span class="c1">// wait for barber
-</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;cut customer %d&#39;s hair</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">arg</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;I&#39;m leaving without cut</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">customer</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">wating</span> <span class="o">&lt;</span> <span class="n">free_seats</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">wating</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cust_ready</span><span class="p">);</span>  <span class="c1">// notif barber
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">barber_ready</span><span class="p">);</span>  <span class="c1">// wait for barber
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;cut customer %d&#39;s hair</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">arg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;I&#39;m leaving without cut</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>main 函数：</p>
 <div class="highlight"><div class="chroma">
@@ -1164,25 +1162,25 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="c1">// scanf(&#34;%d&#34;, &amp;free_seats);
-</span><span class="c1"></span>  <span class="n">free_seats</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">barber_ready</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cust_ready</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="n">pthread_t</span> <span class="n">b_tid</span><span class="p">,</span> <span class="n">c_tids</span><span class="p">[</span><span class="n">free_seats</span> <span class="o">*</span> <span class="mi">2</span><span class="p">];</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b_tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">barber</span><span class="p">,</span> <span class="n">free_seats</span> <span class="o">+</span> <span class="mi">2</span><span class="p">);</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">free_seats</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">c_tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">customer</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">i</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">b_tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">free_seats</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">Pthread_join</span><span class="p">(</span><span class="n">c_tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// scanf(&#34;%d&#34;, &amp;free_seats);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">free_seats</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">barber_ready</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cust_ready</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pthread_t</span> <span class="n">b_tid</span><span class="p">,</span> <span class="n">c_tids</span><span class="p">[</span><span class="n">free_seats</span> <span class="o">*</span> <span class="mi">2</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b_tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">barber</span><span class="p">,</span> <span class="n">free_seats</span> <span class="o">+</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">free_seats</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">c_tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">customer</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">b_tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">free_seats</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Pthread_join</span><span class="p">(</span><span class="n">c_tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="cigarette-smokers">Cigarette smokers</h2>
 <p>吸烟者问题：三个抽烟者和一个供应者。每个抽烟者需要有三种材料：烟草、纸和火柴，才可吸烟。三个抽烟者分别拥有三种材料中的一种。 供应者每次随机将两种材料放到桌子上，拥有剩下那种材料的抽烟者卷一根烟并抽掉它。材料被使用后，供应者按上述原则继续提供材料。</p>
@@ -1280,83 +1278,83 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">76
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&#34;csapp.h&#34;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="n">sem_t</span> <span class="n">offer1</span><span class="p">;</span>  <span class="c1">// offer paper and matchs
-</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">offer2</span><span class="p">;</span>  <span class="c1">// offer tobacco and matchs
-</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">offer3</span><span class="p">;</span>  <span class="c1">// offer tobacco and paper
-</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">finish</span><span class="p">;</span>
-
-<span class="kt">int</span> <span class="n">times</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>  <span class="c1">// offer 10 times somke
-</span><span class="c1"></span>
-<span class="kt">void</span> <span class="o">*</span><span class="nf">agent_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">times</span><span class="o">--</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">kase</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">3</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;time%d: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">kase</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">kase</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer1</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">kase</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer2</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer3</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>  <span class="c1">// wait somker finish
-</span><span class="c1"></span>  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="c1">// i hava tobacco
-</span><span class="c1"></span><span class="kt">void</span> <span class="o">*</span><span class="nf">somker1_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">times</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer1</span><span class="p">);</span>
-    <span class="c1">// smoke
-</span><span class="c1"></span>    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;somker1: that feeling...&#34;</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="c1">// i have paper
-</span><span class="c1"></span><span class="kt">void</span> <span class="o">*</span><span class="nf">somker2_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">times</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer2</span><span class="p">);</span>
-    <span class="c1">// smoke
-</span><span class="c1"></span>    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;somker2: that feeling...&#34;</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="c1">// i have matchs
-</span><span class="c1"></span><span class="kt">void</span> <span class="o">*</span><span class="nf">somker3_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">times</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer3</span><span class="p">);</span>
-    <span class="c1">// smoke
-</span><span class="c1"></span>    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;somker3: that feeling...&#34;</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">srand</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">pthread_t</span> <span class="n">somker1</span><span class="p">,</span> <span class="n">somker2</span><span class="p">,</span> <span class="n">somker3</span><span class="p">;</span>
-  <span class="n">pthread_t</span> <span class="n">agent</span><span class="p">;</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">somker1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">somker1_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">somker2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">somker1_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">somker3</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">somker1_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">agent</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">agent_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">somker3</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">somker2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">somker1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">puts</span><span class="p">(</span><span class="s">&#34;all threads created</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;csapp.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">offer1</span><span class="p">;</span>  <span class="c1">// offer paper and matchs
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sem_t</span> <span class="n">offer2</span><span class="p">;</span>  <span class="c1">// offer tobacco and matchs
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sem_t</span> <span class="n">offer3</span><span class="p">;</span>  <span class="c1">// offer tobacco and paper
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sem_t</span> <span class="n">finish</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">times</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>  <span class="c1">// offer 10 times somke
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">agent_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">times</span><span class="o">--</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">kase</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;time%d: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">kase</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">kase</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">kase</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>  <span class="c1">// wait somker finish
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// i hava tobacco
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="o">*</span><span class="nf">somker1_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">times</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// smoke
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;somker1: that feeling...&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// i have paper
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="o">*</span><span class="nf">somker2_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">times</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// smoke
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;somker2: that feeling...&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// i have matchs
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="o">*</span><span class="nf">somker3_thread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">times</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// smoke
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;somker3: that feeling...&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">srand</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">offer3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">finish</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pthread_t</span> <span class="n">somker1</span><span class="p">,</span> <span class="n">somker2</span><span class="p">,</span> <span class="n">somker3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pthread_t</span> <span class="n">agent</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">somker1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">somker1_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">somker2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">somker1_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">somker3</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">somker1_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">agent</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">agent_thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">somker3</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">somker2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">somker1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">puts</span><span class="p">(</span><span class="s">&#34;all threads created</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="和尚吃水问题">和尚吃水问题</h2>
 <p>某寺庙，有小、老和尚若干，有一水缸，有小和尚提水入缸供老和尚饮用。水缸可容 10 桶水，水取自同一井中。水井径窄，每次只能容一个桶取水。水桶总数为 3 个。每次入、取缸水仅为 1 桶，且不可同时进行。</p>
@@ -1375,13 +1373,13 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sem_t</span> <span class="n">mutex1</span><span class="p">,</span> <span class="n">mutex2</span><span class="p">;</span>
-<span class="n">sem_t</span> <span class="n">empty</span><span class="p">;</span>  <span class="c1">// 水缸中的空位
-</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">full</span><span class="p">;</span>   <span class="c1">//水缸中已经放入的水
-</span><span class="c1"></span><span class="n">sem_t</span> <span class="n">pail</span><span class="p">;</span>   <span class="c1">//水桶
-</span><span class="c1"></span>
-<span class="kt">int</span> <span class="n">water</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">//水缸中的水量
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">mutex1</span><span class="p">,</span> <span class="n">mutex2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">empty</span><span class="p">;</span>  <span class="c1">// 水缸中的空位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sem_t</span> <span class="n">full</span><span class="p">;</span>   <span class="c1">//水缸中已经放入的水
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sem_t</span> <span class="n">pail</span><span class="p">;</span>   <span class="c1">//水桶
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">water</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">//水缸中的水量
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>小和尚取水：</p>
 <div class="highlight"><div class="chroma">
@@ -1407,26 +1405,26 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">get_water</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex1</span><span class="p">);</span>
-    <span class="c1">// 从井中取水
-</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;little monk get water from wall</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex1</span><span class="p">);</span>
-
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
-    <span class="c1">// 倒入水缸
-</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;little monk put water to vat, water: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">water</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">full</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
-
-    <span class="n">Sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>  <span class="c1">// slow down...
-</span><span class="c1"></span>  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">get_water</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 从井中取水
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;little monk get water from wall</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 倒入水缸
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;little monk put water to vat, water: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">water</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">full</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">Sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>  <span class="c1">// slow down...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>老和尚喝水：</p>
 <div class="highlight"><div class="chroma">
@@ -1449,23 +1447,23 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="o">*</span><span class="nf">use_water</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">full</span><span class="p">);</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
-    <span class="c1">// 从水缸取水
-</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;old monk get water from vat, water: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">--</span><span class="n">water</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
-    <span class="c1">// 喝水
-</span><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;old monk drink water</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
-
-    <span class="n">Sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">use_water</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">full</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 从水缸取水
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;old monk get water from vat, water: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">--</span><span class="n">water</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 喝水
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;old monk drink water</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">Sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>main 函数：</p>
 <div class="highlight"><div class="chroma">
@@ -1486,21 +1484,21 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>  <span class="c1">//水缸中最多放10桶水
-</span><span class="c1"></span>  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">full</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>  <span class="c1">//三个木桶
-</span><span class="c1"></span>
-  <span class="n">pthread_t</span> <span class="n">little_id</span><span class="p">,</span> <span class="n">old_id</span><span class="p">;</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">little_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">get_water</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">old_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">use_water</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">little_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">old_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>  <span class="c1">//水缸中最多放10桶水
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">full</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pail</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>  <span class="c1">//三个木桶
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="n">pthread_t</span> <span class="n">little_id</span><span class="p">,</span> <span class="n">old_id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">little_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">get_water</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">old_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">use_water</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">little_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">old_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>运行结果：</p>
 <p><img src="/images/sem-monk.png" alt="sem-monk"></p>
@@ -1522,12 +1520,12 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">sem_t</span> <span class="n">empty</span><span class="p">,</span> <span class="n">orange</span><span class="p">,</span> <span class="n">apple</span><span class="p">;</span>
-<span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span>
-
-<span class="c1">// 盘子中的苹果数和橘子数
-</span><span class="c1"></span><span class="kt">int</span> <span class="n">apple_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">orange_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">empty</span><span class="p">,</span> <span class="n">orange</span><span class="p">,</span> <span class="n">apple</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="n">mutex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 盘子中的苹果数和橘子数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">apple_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">orange_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>四个进程分别如下：</p>
 <div class="highlight"><div class="chroma">
@@ -1579,52 +1577,52 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">45
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">father</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="c1">// put an apple
-</span><span class="c1"></span>    <span class="n">apple_num</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Put an apple: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">apple</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">mother</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="c1">// put an orange
-</span><span class="c1"></span>    <span class="n">orange_num</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Put an orange: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">orange</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">son</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">apple</span><span class="p">);</span>
-    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="c1">// eat apple
-</span><span class="c1"></span>    <span class="n">apple_num</span><span class="o">--</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Eat an apple: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">daugther</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">orange</span><span class="p">);</span>
-  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-  <span class="c1">// eat an orange
-</span><span class="c1"></span>  <span class="n">orange_num</span><span class="o">--</span><span class="p">;</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Eat an orange: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
-  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
-  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">father</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// put an apple
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">apple_num</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Put an apple: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">apple</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">mother</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// put an orange
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">orange_num</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Put an orange: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">orange</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">son</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">apple</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// eat apple
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">apple_num</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Eat an apple: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">daugther</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">orange</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">P</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// eat an orange
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">orange_num</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Eat an orange: %d apples, %d oranges</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">apple_num</span><span class="p">,</span> <span class="n">orange_num</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">V</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>main 函数：</p>
 <div class="highlight"><div class="chroma">
@@ -1648,24 +1646,24 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>  <span class="c1">// 盘子最多放三个水果
-</span><span class="c1"></span>  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">orange</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">apple</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="n">pthread_t</span> <span class="n">father_id</span><span class="p">,</span> <span class="n">mother_id</span><span class="p">,</span> <span class="n">son_id</span><span class="p">,</span> <span class="n">daugther_id</span><span class="p">;</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">father_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">father</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mother_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">mother</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">father_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">son</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">daugther_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">daugther</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">father_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">mother_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">son_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">daugther_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">empty</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>  <span class="c1">// 盘子最多放三个水果
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">orange</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">apple</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pthread_t</span> <span class="n">father_id</span><span class="p">,</span> <span class="n">mother_id</span><span class="p">,</span> <span class="n">son_id</span><span class="p">,</span> <span class="n">daugther_id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">father_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">father</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mother_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">mother</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">father_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">son</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">daugther_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">daugther</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">father_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">mother_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">son_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Pthread_join</span><span class="p">(</span><span class="n">daugther_id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>运行结果：</p>
 <p><img src="/images/sem-fruit.png" alt="sem-fruit"></p>
@@ -1800,7 +1798,7 @@ P 和 V 的执行过程都是不可打断的，并且 P 和 V 要成对的出现
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

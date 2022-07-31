@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2019/03/26/spring-security-architecture/" />
@@ -202,11 +202,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuthenticationManager</span> <span class="o">{</span>
-  <span class="n">Authentication</span> <span class="nf">authenticate</span><span class="o">(</span><span class="n">Authentication</span> <span class="n">authentication</span><span class="o">)</span>
-    <span class="kd">throws</span> <span class="n">AuthenticationException</span><span class="o">;</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuthenticationManager</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Authentication</span> <span class="nf">authenticate</span><span class="o">(</span><span class="n">Authentication</span> <span class="n">authentication</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">throws</span> <span class="n">AuthenticationException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>一个 <code>AuthenticationManager</code> 的<code>authenticate()</code>方法中有三种情况：</p>
 <ol>
@@ -226,13 +226,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuthenticationProvider</span> <span class="o">{</span>
-	<span class="n">Authentication</span> <span class="nf">authenticate</span><span class="o">(</span><span class="n">Authentication</span> <span class="n">authentication</span><span class="o">)</span>
-			<span class="kd">throws</span> <span class="n">AuthenticationException</span><span class="o">;</span>
-
-	<span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">authentication</span><span class="o">);</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuthenticationProvider</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">Authentication</span> <span class="nf">authenticate</span><span class="o">(</span><span class="n">Authentication</span> <span class="n">authentication</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">			<span class="kd">throws</span> <span class="n">AuthenticationException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">authentication</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>supports</code>方法的<code>Class&lt;?&gt; authentication </code>参数其实是<code>Class&lt;? extends Authentication&gt;</code>类型的。一个<code>ProviderManager</code>在一个应用中能支持多种不同的认证机制，通过将认证委托给一系列的<code>AuthenticationProvider</code>。<code>ProviderManager</code>没有识别出的认证类型，将会被忽略。</p>
 <p>每个<code>ProviderManager</code>可以有一个父类，如果所有<code>AuthenticationProvider</code>都返回<code>null</code>，那么就交给父类去认证。如果父类也不可用，则抛出<code>AuthenticationException</code>异常。</p>
@@ -259,19 +259,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Configuration</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationSecurity</span> <span class="kd">extends</span> <span class="n">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
-
-   <span class="o">...</span> <span class="c1">// web stuff here
-</span><span class="c1"></span>
-  <span class="nd">@Autowired</span>
-  <span class="kd">public</span> <span class="nf">initialize</span><span class="o">(</span><span class="n">AuthenticationManagerBuilder</span> <span class="n">builder</span><span class="o">,</span> <span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">builder</span><span class="o">.</span><span class="na">jdbcAuthentication</span><span class="o">().</span><span class="na">dataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">).</span><span class="na">withUser</span><span class="o">(</span><span class="s">&#34;dave&#34;</span><span class="o">)</span>
-      <span class="o">.</span><span class="na">password</span><span class="o">(</span><span class="s">&#34;secret&#34;</span><span class="o">).</span><span class="na">roles</span><span class="o">(</span><span class="s">&#34;USER&#34;</span><span class="o">);</span>
-  <span class="o">}</span>
-
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationSecurity</span> <span class="kd">extends</span> <span class="n">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="o">...</span> <span class="c1">// web stuff here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="nf">initialize</span><span class="o">(</span><span class="n">AuthenticationManagerBuilder</span> <span class="n">builder</span><span class="o">,</span> <span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">builder</span><span class="o">.</span><span class="na">jdbcAuthentication</span><span class="o">().</span><span class="na">dataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">).</span><span class="na">withUser</span><span class="o">(</span><span class="s">&#34;dave&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">password</span><span class="o">(</span><span class="s">&#34;secret&#34;</span><span class="o">).</span><span class="na">roles</span><span class="o">(</span><span class="s">&#34;USER&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>虽然这个例子仅仅设计一个 web 应用，但是<code>AuthenticationManagerBuilder</code>的用处大为广阔（详细情况请看[Web 安全](#Web 安全)是如何实现的）。请注意<code>AuthenticationManagerBuilder</code>是通过<code>@AutoWired</code>注入到被<code>@Bean</code>注解的一个方法中的，这使得它成为一个全局<code>AuthenticationManager</code>。相反的，如果我们这样写：</p>
 <div class="highlight"><div class="chroma">
@@ -293,22 +293,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Configuration</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationSecurity</span> <span class="kd">extends</span> <span class="n">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
-
-  <span class="nd">@Autowired</span>
-  <span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">;</span>
-
-   <span class="o">...</span> <span class="c1">// web stuff here
-</span><span class="c1"></span>
-  <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="nf">configure</span><span class="o">(</span><span class="n">AuthenticationManagerBuilder</span> <span class="n">builder</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">builder</span><span class="o">.</span><span class="na">jdbcAuthentication</span><span class="o">().</span><span class="na">dataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">).</span><span class="na">withUser</span><span class="o">(</span><span class="s">&#34;dave&#34;</span><span class="o">)</span>
-      <span class="o">.</span><span class="na">password</span><span class="o">(</span><span class="s">&#34;secret&#34;</span><span class="o">).</span><span class="na">roles</span><span class="o">(</span><span class="s">&#34;USER&#34;</span><span class="o">);</span>
-  <span class="o">}</span>
-
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationSecurity</span> <span class="kd">extends</span> <span class="n">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">  <span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="o">...</span> <span class="c1">// web stuff here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="nf">configure</span><span class="o">(</span><span class="n">AuthenticationManagerBuilder</span> <span class="n">builder</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">builder</span><span class="o">.</span><span class="na">jdbcAuthentication</span><span class="o">().</span><span class="na">dataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">).</span><span class="na">withUser</span><span class="o">(</span><span class="s">&#34;dave&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">password</span><span class="o">(</span><span class="s">&#34;secret&#34;</span><span class="o">).</span><span class="na">roles</span><span class="o">(</span><span class="s">&#34;USER&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>重写<code>configure(AuthenticationManagerBuilder builder)</code>方法，那么<code>AuthenticationManagerBuilder</code>仅会构造一个“本地”的<code>AuthenticationManager</code>，只是全局认证器的一个子实现。在 Spring Boot 应用中你可以使用<code>@Autowired</code>注入全局的<code>AuthenticationManager</code>，但是你不能注入“本地”的，除非你自己公开暴露它。</p>
 <p>Spring Boot 提供默认的全局<code>AuthenticationManager</code>，除非你提供自己的全局<code>AuthenticationManager</code>。不用担心，默认的已经足够安全了，除非你真的需要一个自定义的全局<code>AuthenticationManager</code>。一般的，你只需只用“本地”的<code>AuthenticationManagerBuilder</code>来配置，而不需要担心全局的。</p>
@@ -325,13 +325,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="n">ConfigAttribute</span> <span class="n">attribute</span><span class="o">);</span>
-
-<span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span><span class="o">);</span>
-
-<span class="kt">int</span> <span class="nf">vote</span><span class="o">(</span><span class="n">Authentication</span> <span class="n">authentication</span><span class="o">,</span> <span class="n">S</span> <span class="n">object</span><span class="o">,</span>
-        <span class="n">Collection</span><span class="o">&lt;</span><span class="n">ConfigAttribute</span><span class="o">&gt;</span> <span class="n">attributes</span><span class="o">);</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="n">ConfigAttribute</span> <span class="n">attribute</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">boolean</span> <span class="nf">supports</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">vote</span><span class="o">(</span><span class="n">Authentication</span> <span class="n">authentication</span><span class="o">,</span> <span class="n">S</span> <span class="n">object</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Collection</span><span class="o">&lt;</span><span class="n">ConfigAttribute</span><span class="o">&gt;</span> <span class="n">attributes</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>AccessDecisionVoter</code>和``AccessDecisionManager<code>方法中的</code>object<code>参数是完全泛型化的，它代表任何用户想要访问（web 资源或 Java 方法是最常见的两种情况）。</code>ConfigAttributes<code>也是相当泛型化的，它表示一个被装饰的安全对象并带有访问权限级别的元数据。</code>ConfigAttributes<code>是一个接口，仅有一个返回</code>String<code>的方法，返回的字符串中包含资源所有者，解释了访问资源的规则。常见的</code>ConfigAttributes<code>是用户的角色（比如</code>ROLE_ADMIN<code>和</code>ROLE_AUDIT<code>），它们通常有一定的格式（比如以</code>ROLE_`作为前缀）或者是可计算的表达式。</p>
 <p>大部分人使用默认的<code>AccessDecisionManager</code>，即<code>AffirmativeBased</code>（如果没有 voters 返回那么该访问将被授权）。任何自定义的行为最好放在 voter 中，不乱世添加一个新的 voter 还是修改已有的 voter。</p>
@@ -370,16 +370,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Configuration</span>
-<span class="nd">@Order</span><span class="o">(</span><span class="n">SecurityProperties</span><span class="o">.</span><span class="na">BASIC_AUTH_ORDER</span> <span class="o">-</span> <span class="n">10</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationConfigurerAdapter</span> <span class="kd">extends</span> <span class="n">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
-  <span class="nd">@Override</span>
-  <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">HttpSecurity</span> <span class="n">http</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="n">http</span><span class="o">.</span><span class="na">antMatcher</span><span class="o">(</span><span class="s">&#34;/foo/**&#34;</span><span class="o">)</span>
-     <span class="o">...;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Order</span><span class="o">(</span><span class="n">SecurityProperties</span><span class="o">.</span><span class="na">BASIC_AUTH_ORDER</span> <span class="o">-</span> <span class="n">10</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationConfigurerAdapter</span> <span class="kd">extends</span> <span class="n">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">HttpSecurity</span> <span class="n">http</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">http</span><span class="o">.</span><span class="na">antMatcher</span><span class="o">(</span><span class="s">&#34;/foo/**&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">     <span class="o">...;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这个 Bean 将导致 Spring Security 在默认的 fallback 之前添加一个过滤链。</p>
 <p>许多应用中对一组资源的和另一组资源的访问规则可能大不相同。比如一个有前端页面和后端 API 的应用支持基于 cookie 的认证将用户重定向到登录界面，同时也支持基于 token 的认证，认证失败将返回 401 响应码。每组资源有它自己的<code>WebSecurityConfigurerAdapter</code>，并且有这唯一的顺序和他自己的请求匹配规则。如果匹配规则重叠，则匹配顺序最前的过滤链。</p>
@@ -401,19 +401,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Configuration</span>
-<span class="nd">@Order</span><span class="o">(</span><span class="n">SecurityProperties</span><span class="o">.</span><span class="na">BASIC_AUTH_ORDER</span> <span class="o">-</span> <span class="n">10</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationConfigurerAdapter</span> <span class="kd">extends</span> <span class="n">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
-  <span class="nd">@Override</span>
-  <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">HttpSecurity</span> <span class="n">http</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="n">http</span><span class="o">.</span><span class="na">antMatcher</span><span class="o">(</span><span class="s">&#34;/foo/**&#34;</span><span class="o">)</span>
-      <span class="o">.</span><span class="na">authorizeRequests</span><span class="o">()</span>
-        <span class="o">.</span><span class="na">antMatchers</span><span class="o">(</span><span class="s">&#34;/foo/bar&#34;</span><span class="o">).</span><span class="na">hasRole</span><span class="o">(</span><span class="s">&#34;BAR&#34;</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">antMatchers</span><span class="o">(</span><span class="s">&#34;/foo/spam&#34;</span><span class="o">).</span><span class="na">hasRole</span><span class="o">(</span><span class="s">&#34;SPAM&#34;</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">anyRequest</span><span class="o">().</span><span class="na">isAuthenticated</span><span class="o">();</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Order</span><span class="o">(</span><span class="n">SecurityProperties</span><span class="o">.</span><span class="na">BASIC_AUTH_ORDER</span> <span class="o">-</span> <span class="n">10</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationConfigurerAdapter</span> <span class="kd">extends</span> <span class="n">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">HttpSecurity</span> <span class="n">http</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">http</span><span class="o">.</span><span class="na">antMatcher</span><span class="o">(</span><span class="s">&#34;/foo/**&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">authorizeRequests</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">        <span class="o">.</span><span class="na">antMatchers</span><span class="o">(</span><span class="s">&#34;/foo/bar&#34;</span><span class="o">).</span><span class="na">hasRole</span><span class="o">(</span><span class="s">&#34;BAR&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">.</span><span class="na">antMatchers</span><span class="o">(</span><span class="s">&#34;/foo/spam&#34;</span><span class="o">).</span><span class="na">hasRole</span><span class="o">(</span><span class="s">&#34;SPAM&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">.</span><span class="na">anyRequest</span><span class="o">().</span><span class="na">isAuthenticated</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>配置 Spring Security 最容易犯的一个错误就是忘记匹配规则可以应用在不同的范围中，一个是整条过滤链，另一个是应用于过滤链匹配规则中的规则。</p>
 <h4 id="将应用安全规则与actuator-规则结合">将应用安全规则与Actuator 规则结合</h4>
@@ -428,11 +428,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
-<span class="nd">@EnableGlobalMethodSecurity</span><span class="o">(</span><span class="n">securedEnabled</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSecureApplication</span> <span class="o">{</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@SpringBootApplication</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@EnableGlobalMethodSecurity</span><span class="o">(</span><span class="n">securedEnabled</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSecureApplication</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>之后，便可以在方法上直接使用注解：</p>
 <div class="highlight"><div class="chroma">
@@ -448,16 +448,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Service</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyService</span> <span class="o">{</span>
-
-  <span class="nd">@Secured</span><span class="o">(</span><span class="s">&#34;ROLE_USER&#34;</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">String</span> <span class="nf">secure</span><span class="o">()</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="s">&#34;Hello Security&#34;</span><span class="o">;</span>
-  <span class="o">}</span>
-
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyService</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@Secured</span><span class="o">(</span><span class="s">&#34;ROLE_USER&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="n">String</span> <span class="nf">secure</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="s">&#34;Hello Security&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这个例子是一个有<em>安全方法</em>的服务。如果 Spring 创建了<code>MyService</code> Bean，那么它将被代理，调用者必须在方法调用之前通过一个安全拦截器。如果访问被拒绝，调用者会抛出一个<code>AccessDeniedException</code>而不是执行这个方法的结果。</p>
 <p>还有其他可用于强制执行安全约束的方法注解，特别是<code>@PreAuthorize</code> 和 <code>@PostAuthorize</code>, 它们允许你在其中写 SpEL 表达式并可以引用方法的参数和返回值。</p>
@@ -473,10 +473,10 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">SecurityContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">SecurityContextHolder</span><span class="o">.</span><span class="na">getContext</span><span class="o">();</span>
-<span class="n">Authentication</span> <span class="n">authentication</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getAuthentication</span><span class="o">();</span>
-<span class="k">assert</span><span class="o">(</span><span class="n">authentication</span><span class="o">.</span><span class="na">isAuthenticated</span><span class="o">);</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">SecurityContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">SecurityContextHolder</span><span class="o">.</span><span class="na">getContext</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">Authentication</span> <span class="n">authentication</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getAuthentication</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="k">assert</span><span class="o">(</span><span class="n">authentication</span><span class="o">.</span><span class="na">isAuthenticated</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这种操作并不常见，但是它可能对你有帮助。比如，你需要写一个自定义的认证过滤器（尽管如此，Spring Security 中还有一些基类可用于避免使用<code>SecurityContextHolder</code>的地方）。</p>
 <p>如果需要访问 web endpoint（译者注：对应响应的 URL） 中经过身份验证的用户，则可以在<code>@RequestMapping</code>中使用方法参数注解。例如：</p>
@@ -488,11 +488,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/foo&#34;</span><span class="o">)</span>
-<span class="kd">public</span> <span class="n">String</span> <span class="nf">foo</span><span class="o">(</span><span class="nd">@AuthenticationPrincipal</span> <span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
-  <span class="o">...</span> <span class="c1">// do stuff with user
-</span><span class="c1"></span><span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/foo&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">foo</span><span class="o">(</span><span class="nd">@AuthenticationPrincipal</span> <span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="o">...</span> <span class="c1">// do stuff with user
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这个注解相当于从<code>SecurityContext</code>中获得当前<code>Authentication</code>，并调用<code>getPrincipal()</code>方法赋值给方法参数。<code>Authentication</code>中的<code>Principal</code>取决与用来认证的<code>AuthenticationManager</code>，所以这对于获得对用户数据类型的安全引用来说是一个有用的小技巧。</p>
 <p>如果使用了 Spring Security，那么在<code>HttpServletRequest</code>中的<code>Principal</code>将是<code>Authentication</code>类型，因此你也可以直接使用它：</p>
@@ -506,13 +506,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/foo&#34;</span><span class="o">)</span>
-<span class="kd">public</span> <span class="n">String</span> <span class="nf">foo</span><span class="o">(</span><span class="n">Principal</span> <span class="n">principal</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">Authentication</span> <span class="n">authentication</span> <span class="o">=</span> <span class="o">(</span><span class="n">Authentication</span><span class="o">)</span> <span class="n">principal</span><span class="o">;</span>
-  <span class="n">User</span> <span class="o">=</span> <span class="o">(</span><span class="n">User</span><span class="o">)</span> <span class="n">authentication</span><span class="o">.</span><span class="na">getPrincipal</span><span class="o">();</span>
-  <span class="o">...</span> <span class="c1">// do stuff with user
-</span><span class="c1"></span><span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/foo&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">foo</span><span class="o">(</span><span class="n">Principal</span> <span class="n">principal</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Authentication</span> <span class="n">authentication</span> <span class="o">=</span> <span class="o">(</span><span class="n">Authentication</span><span class="o">)</span> <span class="n">principal</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">User</span> <span class="o">=</span> <span class="o">(</span><span class="n">User</span><span class="o">)</span> <span class="n">authentication</span><span class="o">.</span><span class="na">getPrincipal</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">  <span class="o">...</span> <span class="c1">// do stuff with user
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>如果你需要编写在没有使用 Spring Security 的情况下的代码，那么这会很有用（你需要在加载<code>Authentication</code>类时更加谨慎）。</p>
 <h3 id="异步执行安全方法">异步执行安全方法</h3>
@@ -530,16 +530,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Configuration</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationConfiguration</span> <span class="kd">extends</span> <span class="n">AsyncConfigurerSupport</span> <span class="o">{</span>
-
-  <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="n">Executor</span> <span class="nf">getAsyncExecutor</span><span class="o">()</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="n">DelegatingSecurityContextExecutorService</span><span class="o">(</span><span class="n">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="n">5</span><span class="o">));</span>
-  <span class="o">}</span>
-
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApplicationConfiguration</span> <span class="kd">extends</span> <span class="n">AsyncConfigurerSupport</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="n">Executor</span> <span class="nf">getAsyncExecutor</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="n">DelegatingSecurityContextExecutorService</span><span class="o">(</span><span class="n">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="n">5</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div>
     </div>
@@ -649,7 +649,7 @@
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

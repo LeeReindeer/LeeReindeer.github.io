@@ -17,7 +17,7 @@
 
 
 <meta name="author" content="LeeReindeer" /><meta name="description" content=" 参考 Google 官方教程
- Activity 是什么 Activity 是四大组件之一，每个 Activity 有一个视图，是和用户交互的地方。一个 App 可以有零到多个 Activity，每个 Activity 都必须在 AndroidManifest.xml 清单文件中声明。
+Activity 是什么 Activity 是四大组件之一，每个 Activity 有一个视图，是和用户交互的地方。一个 App 可以有零到多个 Activity，每个 Activity 都必须在 AndroidManifest.xml 清单文件中声明。
 " /><meta name="keywords" content="LeeReindeer, Hugo, even" />
 
 
@@ -25,7 +25,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/05/16/Android-Activity/" />
@@ -278,49 +278,49 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </span><span class="lnt">42
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">abstract</span> <span class="k">class</span> <span class="nc">BaseActivity</span> <span class="p">:</span> <span class="n">AppCompatActivity</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">val</span> <span class="py">TAG</span> <span class="p">=</span> <span class="n">javaClass</span><span class="p">.</span><span class="n">simpleName</span>
-
-  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
-    <span class="n">title</span> <span class="p">=</span> <span class="n">javaClass</span><span class="p">.</span><span class="n">simpleName</span>
-    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onCreate&#34;</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">abstract</span> <span class="k">fun</span> <span class="nf">initView</span><span class="p">()</span>
-  <span class="k">fun</span> <span class="nf">initData</span><span class="p">()</span> <span class="p">{}</span>
-
-  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onStart</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onStart</span><span class="p">()</span>
-    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onStart&#34;</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onResume</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onResume</span><span class="p">()</span>
-    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResume&#34;</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onPause</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onPause</span><span class="p">()</span>
-    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onPause&#34;</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onStop</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onStop</span><span class="p">()</span>
-    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onStop&#34;</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onDestroy</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onDestroy</span><span class="p">()</span>
-    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onDestroy&#34;</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onRestart</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onRestart</span><span class="p">()</span>
-    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onRestart&#34;</span><span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">abstract</span> <span class="k">class</span> <span class="nc">BaseActivity</span> <span class="p">:</span> <span class="n">AppCompatActivity</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">val</span> <span class="py">TAG</span> <span class="p">=</span> <span class="n">javaClass</span><span class="p">.</span><span class="n">simpleName</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">title</span> <span class="p">=</span> <span class="n">javaClass</span><span class="p">.</span><span class="n">simpleName</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onCreate&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">abstract</span> <span class="k">fun</span> <span class="nf">initView</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="k">fun</span> <span class="nf">initData</span><span class="p">()</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onStart</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">onStart</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onStart&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onResume</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">onResume</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResume&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onPause</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">onPause</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onPause&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onStop</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">onStop</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onStop&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onDestroy</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">onDestroy</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onDestroy&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">override</span> <span class="k">fun</span> <span class="nf">onRestart</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">onRestart</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onRestart&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
 <p>名为“是否能事后终止？”的列表示系统是否能在不执行另一行 Activity 代码的情况下，在<em>方法返回后</em>随时终止承载 Activity 的进程。 有三个方法带有“是”标记：(<code>onPause()</code>、<code>onStop()</code> 和 <code>onDestroy()</code>)。由于 <code>onPause()</code> 是这三个方法中的第一个，因此 Activity 创建后，<code>onPause()</code> 必定成为最后调用的方法，然后才能终止进程 — 如果系统在紧急情况下必须恢复内存，则可能不会调用 <code>onStop()</code> 和 <code>onDestroy()</code>。**因此，您应该使用 <code>onPause()</code> 向存储设备写入至关重要的持久性数据（例如用户编辑）。**不过，您应该对 <code>onPause()</code> 调用期间必须保留的信息有所选择，因为该方法中的任何阻止过程都会妨碍向下一个 Activity 的转变并拖慢用户体验。</p>
@@ -336,8 +336,8 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">startActivity</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">SecondActivity</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">startActivity</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">SecondActivity</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
@@ -350,11 +350,11 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">intent</span> <span class="p">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">ACTION_SEND</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
-    <span class="n">putExtra</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">EXTRA_EMAIL</span><span class="p">,</span> <span class="n">recipientArray</span><span class="p">)</span>
-<span class="p">}</span>
-<span class="n">startActivity</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">val</span> <span class="py">intent</span> <span class="p">=</span> <span class="n">Intent</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">ACTION_SEND</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">putExtra</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">EXTRA_EMAIL</span><span class="p">,</span> <span class="n">recipientArray</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">startActivity</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
@@ -386,29 +386,29 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </span><span class="lnt">22
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">override</span> <span class="k">fun</span> <span class="nf">initView</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">first_button</span><span class="p">.</span><span class="n">setOnClickListener</span> <span class="p">{</span>
-    <span class="n">startActivityForResult</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">SecondActivity</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">text</span> <span class="p">=</span> <span class="n">first_edit</span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
-        <span class="n">putExtra</span><span class="p">(</span><span class="s2">&#34;sendToSecond&#34;</span><span class="p">,</span> <span class="n">rot13</span><span class="p">(</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">text</span><span class="p">.</span><span class="n">isNotBlank</span><span class="p">())</span> <span class="n">text</span> <span class="k">else</span> <span class="s2">&#34;Hello world&#34;</span><span class="p">)</span>
-        <span class="p">)</span>
-      <span class="p">},</span> <span class="m">1</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">override</span> <span class="k">fun</span> <span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">requestCode</span> <span class="o">==</span> <span class="m">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">resultCode</span> <span class="o">==</span> <span class="n">Activity</span><span class="p">.</span><span class="n">RESULT_OK</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">decrypted</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="n">getStringExtra</span><span class="p">(</span><span class="s2">&#34;fromSecond&#34;</span><span class="p">)</span>
-        <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;from SecondActivity: </span><span class="si">$decrypted</span><span class="s2">&#34;</span><span class="p">)</span>
-        <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onActivityResult: from SecondActivity: </span><span class="si">$decrypted</span><span class="s2">&#34;</span><span class="p">)</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;onActivityResult: no data from SecondActivity&#34;</span><span class="p">)</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">override</span> <span class="k">fun</span> <span class="nf">initView</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">first_button</span><span class="p">.</span><span class="n">setOnClickListener</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">startActivityForResult</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">SecondActivity</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">text</span> <span class="p">=</span> <span class="n">first_edit</span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">putExtra</span><span class="p">(</span><span class="s2">&#34;sendToSecond&#34;</span><span class="p">,</span> <span class="n">rot13</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">text</span><span class="p">.</span><span class="n">isNotBlank</span><span class="p">())</span> <span class="n">text</span> <span class="k">else</span> <span class="s2">&#34;Hello world&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span> <span class="m">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">override</span> <span class="k">fun</span> <span class="nf">onActivityResult</span><span class="p">(</span><span class="n">requestCode</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="n">resultCode</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="k">data</span><span class="p">:</span> <span class="n">Intent</span><span class="p">?)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">requestCode</span> <span class="o">==</span> <span class="m">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">resultCode</span> <span class="o">==</span> <span class="n">Activity</span><span class="p">.</span><span class="n">RESULT_OK</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">decrypted</span> <span class="p">=</span> <span class="k">data</span><span class="p">.</span><span class="n">getStringExtra</span><span class="p">(</span><span class="s2">&#34;fromSecond&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;from SecondActivity: </span><span class="si">$decrypted</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onActivityResult: from SecondActivity: </span><span class="si">$decrypted</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">toast</span><span class="p">(</span><span class="s2">&#34;onActivityResult: no data from SecondActivity&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="保存-activity-的状态">保存 Activity 的状态</h2>
 <h3 id="pause-和-stop-activity">pause 和 stop Activity</h3>
@@ -437,20 +437,20 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
-    <span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">activity_first</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">savedInstanceState</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">first_edit</span><span class="p">.</span><span class="n">setText</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="s2">&#34;edit&#34;</span><span class="p">)</span> <span class="o">?:</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-    <span class="p">}</span>
-    <span class="n">initView</span><span class="p">()</span>
-  <span class="p">}</span>
-<span class="k">override</span> <span class="k">fun</span> <span class="nf">onSaveInstanceState</span><span class="p">(</span><span class="n">outState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="n">onSaveInstanceState</span><span class="p">(</span><span class="n">outState</span><span class="p">)</span>
-    <span class="n">outState</span><span class="o">?.</span><span class="n">putString</span><span class="p">(</span><span class="s2">&#34;edit&#34;</span><span class="p">,</span> <span class="n">first_edit</span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
-  <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">activity_first</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">savedInstanceState</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">first_edit</span><span class="p">.</span><span class="n">setText</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="s2">&#34;edit&#34;</span><span class="p">)</span> <span class="o">?:</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">initView</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">override</span> <span class="k">fun</span> <span class="nf">onSaveInstanceState</span><span class="p">(</span><span class="n">outState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">onSaveInstanceState</span><span class="p">(</span><span class="n">outState</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">outState</span><span class="o">?.</span><span class="n">putString</span><span class="p">(</span><span class="s2">&#34;edit&#34;</span><span class="p">,</span> <span class="n">first_edit</span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>即使不实现 <code>onSaveInstanceState()</code> ,系统也会默认实现：为每个布局恢复状态，比如，<code>EditText</code> 小部件保存用户输入的任何文本，<code>CheckBox</code> 小部件保存复选框的选中或未选中状态。<strong>只需为想要保存其状态的每个小部件提供一个唯一的 ID（通过 <a href="https://developer.android.com/guide/topics/resources/layout-resource.html#idvalue"><code>android:id</code></a> 属性）。如果小部件没有 ID，则系统无法保存其状态。</strong></p>
 <p>这里使用 CheckBox 作为例子，只需要旋转一下屏幕就可以让 Activity 销毁并重建，可以发现有 ID 的 checkbox1 恢复了之前的选中状态，而第二个 CheckBox 则没有。</p>
@@ -470,19 +470,19 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml">    <span class="nt">&lt;CheckBox</span>
-        <span class="na">android:id=</span><span class="s">&#34;@+id/checkbox1&#34;</span>
-        <span class="na">android:hint=</span><span class="s">&#34;check1&#34;</span>
-        <span class="na">android:layout_width=</span><span class="s">&#34;wrap_content&#34;</span>
-        <span class="na">android:layout_height=</span><span class="s">&#34;wrap_content&#34;</span>
-        <span class="na">android:layout_below=</span><span class="s">&#34;@+id/home_text&#34;</span> <span class="nt">/&gt;</span>
-
-    <span class="nt">&lt;CheckBox</span>
-        <span class="na">android:hint=</span><span class="s">&#34;check2&#34;</span>
-        <span class="na">android:layout_width=</span><span class="s">&#34;wrap_content&#34;</span>
-        <span class="na">android:layout_height=</span><span class="s">&#34;wrap_content&#34;</span>
-        <span class="na">android:layout_below=</span><span class="s">&#34;@+id/check1&#34;</span> <span class="nt">/&gt;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">    <span class="nt">&lt;CheckBox</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:id=</span><span class="s">&#34;@+id/checkbox1&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:hint=</span><span class="s">&#34;check1&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:layout_width=</span><span class="s">&#34;wrap_content&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:layout_height=</span><span class="s">&#34;wrap_content&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:layout_below=</span><span class="s">&#34;@+id/home_text&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;CheckBox</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:hint=</span><span class="s">&#34;check2&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:layout_width=</span><span class="s">&#34;wrap_content&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:layout_height=</span><span class="s">&#34;wrap_content&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="na">android:layout_below=</span><span class="s">&#34;@+id/check1&#34;</span> <span class="nt">/&gt;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><img src="/images/android_lifecycle_log.png" alt="1526456700052"></p>
 <p><img src="/images/saveInstance.png" alt="Screenshot_1526456426"></p>
@@ -508,22 +508,22 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">class</span> <span class="nc">MainActivity</span> <span class="p">:</span> <span class="n">AppCompatActivity</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
-        <span class="k">var</span> <span class="py">thisCount</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
-        <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
-        <span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">activity_main</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="k">fun</span> <span class="nf">countUp</span><span class="p">(</span><span class="n">view</span><span class="p">:</span> <span class="n">View</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">thisCount</span><span class="o">++</span>
-        <span class="n">show_count</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="n">thisCount</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">MainActivity</span> <span class="p">:</span> <span class="n">AppCompatActivity</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">var</span> <span class="py">thisCount</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">activity_main</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">countUp</span><span class="p">(</span><span class="n">view</span><span class="p">:</span> <span class="n">View</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">thisCount</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="n">show_count</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="n">thisCount</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>在屏幕旋转后，<code>show_count</code>显示0，但是<code>count</code>的值仍然为之前的值。要让 TextView 保存之前的状态，可以参考 <a href="https://stackoverflow.com/questions/5179686/restoring-state-of-textview-after-screen-rotation%3E">stackoverflow</a>上的解答：</p>
 <div class="highlight"><div class="chroma">
@@ -533,10 +533,10 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;TextView</span>
-     <span class="err">...</span>
-     <span class="na">android:freezesText=</span><span class="s">&#34;true&#34;</span> <span class="nt">/&gt;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;TextView</span>
+</span></span><span class="line"><span class="cl">     <span class="err">...</span>
+</span></span><span class="line"><span class="cl">     <span class="na">android:freezesText=</span><span class="s">&#34;true&#34;</span> <span class="nt">/&gt;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="任务和返回栈httpsdeveloperandroidcomguidecomponentsactivitiestasks-and-back-stack"><a href="https://developer.android.com/guide/components/activities/tasks-and-back-stack">任务和返回栈</a></h2>
 <blockquote>
@@ -583,10 +583,10 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">startActivity</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">FirstActivity</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
-    <span class="n">addFlags</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">FLAG_ACTIVITY_CLEAR_TOP</span><span class="p">)</span>
-<span class="p">})</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">startActivity</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">FirstActivity</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">).</span><span class="n">apply</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">addFlags</span><span class="p">(</span><span class="n">Intent</span><span class="p">.</span><span class="n">FLAG_ACTIVITY_CLEAR_TOP</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>
@@ -708,7 +708,7 @@ Activity 是四大组件之一，每个 Activity 有一个视图，是和用户�
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

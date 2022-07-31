@@ -17,7 +17,7 @@
 
 
 <meta name="author" content="LeeReindeer" /><meta name="description" content=" 最近在看《深入理解Java虚拟机:JVM高级特性与最佳实践》这本书,觉得有必要记录一下. 如无说明,则图片是我用Google Drawings制作的, under CC BY-NC-SA 3.0 CN License.
- Java运行时内存 先上图
+Java运行时内存 先上图
 虽然Java中没有直接(明显)的指针操作,但是在内部的实现里用的还是指针的.在访问对象的过程中,有两种方式可以实现:句柄访问,直接指针.对象实际上是一个reference类型的数据,其中存储的是他自己的地址,通过句柄访问则是句柄的地址.
 " /><meta name="keywords" content="LeeReindeer, Hugo, even" />
 
@@ -26,7 +26,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2017/09/24/gc/" />
@@ -349,16 +349,16 @@ Survivor中的存活对象,移到另一块Survivor中(当然,在对象存活率�
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">ONEMB</span> <span class="o">=</span> <span class="n">1024</span> <span class="o">*</span> <span class="n">1024</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="o">{</span>
-    <span class="kt">byte</span><span class="o">[]</span> <span class="n">allocation1</span><span class="o">,</span> <span class="n">allocation2</span><span class="o">,</span> <span class="n">allocation3</span><span class="o">,</span> <span class="n">allocation4</span><span class="o">,</span> <span class="n">allocation5</span><span class="o">;</span>
-    <span class="n">allocation1</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
-    <span class="n">allocation2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
-    <span class="n">allocation3</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
-    <span class="n">allocation4</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">4</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">ONEMB</span> <span class="o">=</span> <span class="n">1024</span> <span class="o">*</span> <span class="n">1024</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">byte</span><span class="o">[]</span> <span class="n">allocation1</span><span class="o">,</span> <span class="n">allocation2</span><span class="o">,</span> <span class="n">allocation3</span><span class="o">,</span> <span class="n">allocation4</span><span class="o">,</span> <span class="n">allocation5</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allocation1</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allocation2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allocation3</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allocation4</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">4</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="useserialgc">UseSerialGC</h2>
 <p>参数设置为:</p>
@@ -374,15 +374,15 @@ Survivor中的存活对象,移到另一块Survivor中(当然,在对象存活率�
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">-Xms20m
--Xmx20m
--Xmn10m
--XX:+UseSerialGC
--XX:SurvivorRatio=8
--XX:+PrintGC
--XX:+PrintGCTimeStamps
--XX:+PrintGCDetails
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">-Xms20m
+</span></span><span class="line"><span class="cl">-Xmx20m
+</span></span><span class="line"><span class="cl">-Xmn10m
+</span></span><span class="line"><span class="cl">-XX:+UseSerialGC
+</span></span><span class="line"><span class="cl">-XX:SurvivorRatio=8
+</span></span><span class="line"><span class="cl">-XX:+PrintGC
+</span></span><span class="line"><span class="cl">-XX:+PrintGCTimeStamps
+</span></span><span class="line"><span class="cl">-XX:+PrintGCDetails
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>此时的GC日志:</p>
 <div class="highlight"><div class="chroma">
@@ -399,17 +399,17 @@ Survivor中的存活对象,移到另一块Survivor中(当然,在对象存活率�
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">0.103: [GC (Allocation Failure) 0.103: [DefNew: 8027K-&gt;358K(9216K), 0.0034545 secs] 8027K-&gt;6502K(19456K), 0.0034934 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
-Heap
- def new generation   total 9216K, used 4620K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
-  eden space 8192K,  52% used [0x00000000fec00000, 0x00000000ff029918, 0x00000000ff400000)
-  from space 1024K,  34% used [0x00000000ff500000, 0x00000000ff5598c8, 0x00000000ff600000)
-  to   space 1024K,   0% used [0x00000000ff400000, 0x00000000ff400000, 0x00000000ff500000)
- tenured generation   total 10240K, used 6144K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
-   the space 10240K,  60% used [0x00000000ff600000, 0x00000000ffc00030, 0x00000000ffc00200, 0x0000000100000000)
- Metaspace       used 3235K, capacity 4496K, committed 4864K, reserved 1056768K
-  class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0.103: [GC (Allocation Failure) 0.103: [DefNew: 8027K-&gt;358K(9216K), 0.0034545 secs] 8027K-&gt;6502K(19456K), 0.0034934 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+</span></span><span class="line"><span class="cl">Heap
+</span></span><span class="line"><span class="cl"> def new generation   total 9216K, used 4620K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
+</span></span><span class="line"><span class="cl">  eden space 8192K,  52% used [0x00000000fec00000, 0x00000000ff029918, 0x00000000ff400000)
+</span></span><span class="line"><span class="cl">  from space 1024K,  34% used [0x00000000ff500000, 0x00000000ff5598c8, 0x00000000ff600000)
+</span></span><span class="line"><span class="cl">  to   space 1024K,   0% used [0x00000000ff400000, 0x00000000ff400000, 0x00000000ff500000)
+</span></span><span class="line"><span class="cl"> tenured generation   total 10240K, used 6144K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
+</span></span><span class="line"><span class="cl">   the space 10240K,  60% used [0x00000000ff600000, 0x00000000ffc00030, 0x00000000ffc00200, 0x0000000100000000)
+</span></span><span class="line"><span class="cl"> Metaspace       used 3235K, capacity 4496K, committed 4864K, reserved 1056768K
+</span></span><span class="line"><span class="cl">  class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>注意到,新生代占用了差不多(大概其他的使用吧)4MB,而<strong>老年代却是6MB</strong>.这是为什么呢?</p>
 <p>在给 <code>allocation4</code> 分配内存的时候,Eden(8MB)已经使用了6MB,因此无法分配.发生了一次Minor GC,而三个2MB的对象(都是存活的)无法一次性放入另一个Survivor(1MB)里.所以就要依赖老年代了.把这三个对象移到了老年代.</p>
@@ -428,15 +428,15 @@ Heap
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">-Xms20m
--Xmx20m
--Xmn10m
--XX:+UseParallelGC
--XX:SurvivorRatio=8
--XX:+PrintGC
--XX:+PrintGCTimeStamps
--XX:+PrintGCDetails
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">-Xms20m
+</span></span><span class="line"><span class="cl">-Xmx20m
+</span></span><span class="line"><span class="cl">-Xmn10m
+</span></span><span class="line"><span class="cl">-XX:+UseParallelGC
+</span></span><span class="line"><span class="cl">-XX:SurvivorRatio=8
+</span></span><span class="line"><span class="cl">-XX:+PrintGC
+</span></span><span class="line"><span class="cl">-XX:+PrintGCTimeStamps
+</span></span><span class="line"><span class="cl">-XX:+PrintGCDetails
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>GC日志为:</p>
 <div class="highlight"><div class="chroma">
@@ -452,16 +452,16 @@ Heap
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Heap
- PSYoungGen      total 9216K, used 8028K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
-  eden space 8192K, 97% used [0x00000000ff600000,0x00000000ffdd7090,0x00000000ffe00000)
-  from space 1024K, 0% used [0x00000000fff00000,0x00000000fff00000,0x0000000100000000)
-  to   space 1024K, 0% used [0x00000000ffe00000,0x00000000ffe00000,0x00000000fff00000)
- ParOldGen       total 10240K, used 4096K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
-  object space 10240K, 40% used [0x00000000fec00000,0x00000000ff000010,0x00000000ff600000)
- Metaspace       used 3251K, capacity 4496K, committed 4864K, reserved 1056768K
-  class space    used 362K, capacity 388K, committed 512K, reserved 1048576K
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Heap
+</span></span><span class="line"><span class="cl"> PSYoungGen      total 9216K, used 8028K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
+</span></span><span class="line"><span class="cl">  eden space 8192K, 97% used [0x00000000ff600000,0x00000000ffdd7090,0x00000000ffe00000)
+</span></span><span class="line"><span class="cl">  from space 1024K, 0% used [0x00000000fff00000,0x00000000fff00000,0x0000000100000000)
+</span></span><span class="line"><span class="cl">  to   space 1024K, 0% used [0x00000000ffe00000,0x00000000ffe00000,0x00000000fff00000)
+</span></span><span class="line"><span class="cl"> ParOldGen       total 10240K, used 4096K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
+</span></span><span class="line"><span class="cl">  object space 10240K, 40% used [0x00000000fec00000,0x00000000ff000010,0x00000000ff600000)
+</span></span><span class="line"><span class="cl"> Metaspace       used 3251K, capacity 4496K, committed 4864K, reserved 1056768K
+</span></span><span class="line"><span class="cl">  class space    used 362K, capacity 388K, committed 512K, reserved 1048576K
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>通过日志可以看到,老年代的内存占用为 <code>4096kb=1024*4</code> .可以推测4MB的<em>大</em>对象直接进入了老年代.因此也没有触发GC.(对不对就不知道了(:3」∠❀)_)</p>
 <p>不过新生代占用了8028kb(7.8MB差不多),加起来11.8MB比对象总的10MB大啊(逃)&hellip;</p>
@@ -572,7 +572,7 @@ Heap
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/12/28/os-elevator-algorithm/" />
@@ -221,10 +221,10 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">200 50 1
-7
-150 30 190 20 100 55 90
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">200 50 1
+</span></span><span class="line"><span class="cl">7
+</span></span><span class="line"><span class="cl">150 30 190 20 100 55 90
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>输出样例：</p>
 <div class="highlight"><div class="chroma">
@@ -233,9 +233,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">55 90 100 150 190 30 20
-310
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">55 90 100 150 190 30 20
+</span></span><span class="line"><span class="cl">310
+</span></span></code></pre></td></tr></table>
 </div>
 </div></blockquote>
 <p>需要对访问的序列进行搜索，判断是否和当前所在的柱面相同，可以用二分法加快搜索速度。接下来根据它的移动方向，判断是否有比当前柱面大或这小的柱面，有的话就去处理大于当前柱面中最小的或者是小于当前柱面中最大的。这样可以一次性处理完同一个方向的请求，并且不会有重复的移动。</p>
@@ -282,45 +282,45 @@
 </span><span class="lnt">38
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">const</span> <span class="kt">int</span> <span class="n">maxn</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
-<span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="n">n</span><span class="p">;</span>
-<span class="kt">int</span> <span class="n">order</span><span class="p">[</span><span class="n">maxn</span><span class="p">],</span> <span class="n">ans</span><span class="p">[</span><span class="n">maxn</span><span class="p">];</span>
-<span class="kt">int</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">maxn</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">};</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">cur</span><span class="p">,</span> <span class="n">dir</span><span class="p">;</span>
-  <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">N</span> <span class="o">&gt;&gt;</span> <span class="n">cur</span> <span class="o">&gt;&gt;</span> <span class="n">dir</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="p">;</span>
-
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-  <span class="p">}</span>
-
-  <span class="n">sort</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">order</span> <span class="o">+</span> <span class="n">n</span><span class="p">);</span>
-  <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cur_order</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">cur_order</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">find_same</span><span class="p">(</span><span class="n">cur</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// find same
-</span><span class="c1"></span>      <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="n">ans</span><span class="p">[</span><span class="n">cur_order</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">index</span> <span class="o">=</span> <span class="n">find_greater_less</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">dir</span><span class="p">);</span>  <span class="c1">// find greater or less
-</span><span class="c1"></span>      <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">sum</span> <span class="o">+=</span> <span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-</span> <span class="n">cur</span><span class="p">));</span>
-        <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-        <span class="n">ans</span><span class="p">[</span><span class="n">cur_order</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
-        <span class="n">cur</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>  <span class="c1">// change cur
-</span><span class="c1"></span>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="c1">// change dir
-</span><span class="c1"></span>        <span class="n">dir</span> <span class="o">=</span> <span class="o">-</span><span class="n">dir</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="n">print_order</span><span class="p">(</span><span class="n">ans</span><span class="p">);</span>
-  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">sum</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">int</span> <span class="n">maxn</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="n">n</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">order</span><span class="p">[</span><span class="n">maxn</span><span class="p">],</span> <span class="n">ans</span><span class="p">[</span><span class="n">maxn</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">maxn</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">cur</span><span class="p">,</span> <span class="n">dir</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">N</span> <span class="o">&gt;&gt;</span> <span class="n">cur</span> <span class="o">&gt;&gt;</span> <span class="n">dir</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">sort</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">order</span> <span class="o">+</span> <span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cur_order</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">cur_order</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">find_same</span><span class="p">(</span><span class="n">cur</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// find same
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ans</span><span class="p">[</span><span class="n">cur_order</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">index</span> <span class="o">=</span> <span class="n">find_greater_less</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">dir</span><span class="p">);</span>  <span class="c1">// find greater or less
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sum</span> <span class="o">+=</span> <span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-</span> <span class="n">cur</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ans</span><span class="p">[</span><span class="n">cur_order</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cur</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>  <span class="c1">// change cur
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// change dir
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">dir</span> <span class="o">=</span> <span class="o">-</span><span class="n">dir</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">print_order</span><span class="p">(</span><span class="n">ans</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">sum</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>使用一个<code>cylinder</code> 数组来标记这个柱面是否已经访问过了，在二分查找时，如果这个柱面已经访问过了，就不记录。</p>
 <div class="highlight"><div class="chroma">
@@ -345,25 +345,25 @@
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
-</span><span class="cm"> * @brief  find the index of current cylinder,
-</span><span class="cm"> * if there is no same, return the
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="nf">find_same</span><span class="p">(</span><span class="kt">int</span> <span class="n">cur</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">L</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">L</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-    <span class="c1">// order[m] 没有被访问并且和当前柱面相同
-</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">==</span> <span class="n">cur</span> <span class="o">&amp;&amp;</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="n">m</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cur</span><span class="p">)</span>
-      <span class="n">R</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="k">else</span>
-      <span class="n">L</span> <span class="o">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief  find the index of current cylinder,
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * if there is no same, return the
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">find_same</span><span class="p">(</span><span class="kt">int</span> <span class="n">cur</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">L</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">L</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// order[m] 没有被访问并且和当前柱面相同
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">==</span> <span class="n">cur</span> <span class="o">&amp;&amp;</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cur</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">R</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">L</span> <span class="o">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>对于查找大于当前柱面中最小的或者是小于当前柱面中最大的，我直接使用了顺序查找，应该也可以使用二分法来查找，但我没有过多的去优化这个实现。</p>
 <div class="highlight"><div class="chroma">
@@ -388,25 +388,25 @@
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">find_greater_less</span><span class="p">(</span><span class="kt">int</span> <span class="n">current</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dir</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">dir</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">//向内,查找大于当前柱面中最小的
-</span><span class="c1"></span>    <span class="c1">// 从小到大搜索
-</span><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">&lt;</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">dir</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">//向外，查找小于当前柱面中最大的
-</span><span class="c1"></span>    <span class="c1">// 从大到小搜索
-</span><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">&gt;</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">find_greater_less</span><span class="p">(</span><span class="kt">int</span> <span class="n">current</span><span class="p">,</span> <span class="kt">int</span> <span class="n">dir</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">dir</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">//向内,查找大于当前柱面中最小的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 从小到大搜索
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">&lt;</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">dir</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">//向外，查找小于当前柱面中最大的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 从大到小搜索
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">&gt;</span> <span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">cylinder</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>运行结果和书上的一致：</p>
 <p><img src="/images/elevator-result.png" alt="elevator-result"></p>
@@ -527,7 +527,7 @@
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
   <script type="text/javascript">
     window.MathJax = {
       tex: {

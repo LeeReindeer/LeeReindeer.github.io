@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/12/14/java-fun-object-method/" />
@@ -223,47 +223,47 @@
 </span><span class="lnt">40
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">getClass</span><span class="o">();</span>
-
-<span class="kd">public</span> <span class="kd">native</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">();</span>
-
-<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">return</span> <span class="o">(</span><span class="k">this</span> <span class="o">==</span> <span class="n">obj</span><span class="o">);</span>
-<span class="o">}</span>
-
-<span class="kd">protected</span> <span class="kd">native</span> <span class="n">Object</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
-  <span class="k">return</span> <span class="n">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;@&#34;</span> <span class="o">+</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="n">hashCode</span><span class="o">());</span>
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">notify</span><span class="o">();</span>
-
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">notifyAll</span><span class="o">();</span>
-
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">wait</span><span class="o">(</span><span class="kt">long</span> <span class="n">timeout</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">wait</span><span class="o">(</span><span class="kt">long</span> <span class="n">timeout</span><span class="o">,</span> <span class="kt">int</span> <span class="n">nanos</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
-  <span class="k">if</span> <span class="o">(</span><span class="n">timeout</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;timeout value is negative&#34;</span><span class="o">);</span>
-  <span class="o">}</span>
-
-  <span class="k">if</span> <span class="o">(</span><span class="n">nanos</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span class="n">nanos</span> <span class="o">&gt;</span> <span class="n">999999</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;nanosecond timeout value out of range&#34;</span><span class="o">);</span>
-  <span class="o">}</span>
-
-  <span class="k">if</span> <span class="o">(</span><span class="n">nanos</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">timeout</span><span class="o">++;</span>
-  <span class="o">}</span>
-  <span class="n">wait</span><span class="o">(</span><span class="n">timeout</span><span class="o">);</span>
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">wait</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">{</span>
-  <span class="n">wait</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
-<span class="o">}</span>
-
-<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">finalize</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">getClass</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">native</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="o">(</span><span class="k">this</span> <span class="o">==</span> <span class="n">obj</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">protected</span> <span class="kd">native</span> <span class="n">Object</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;@&#34;</span> <span class="o">+</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="n">hashCode</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">notify</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">notifyAll</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">final</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">wait</span><span class="o">(</span><span class="kt">long</span> <span class="n">timeout</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">wait</span><span class="o">(</span><span class="kt">long</span> <span class="n">timeout</span><span class="o">,</span> <span class="kt">int</span> <span class="n">nanos</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="o">(</span><span class="n">timeout</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;timeout value is negative&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="o">(</span><span class="n">nanos</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span class="n">nanos</span> <span class="o">&gt;</span> <span class="n">999999</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;nanosecond timeout value out of range&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="o">(</span><span class="n">nanos</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">timeout</span><span class="o">++;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">wait</span><span class="o">(</span><span class="n">timeout</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">wait</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">wait</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">protected</span> <span class="kt">void</span> <span class="nf">finalize</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>其中<code>getclass</code>，<code>hashCode</code>，<code>clone</code>，<code>notify</code>，<code>notifyAll</code>，<code>wait(long timeout)</code>是native的方法，在C/C++层实现；<code>hashCode</code>，<code>equals</code>，<code>clone</code>，<code>toString</code>，<code>finalize</code>这五个方法没有被<em>final</em>修饰，可以被子类重写，其他方法都无法重写。</p>
 <p>接下来将会一个一个的分析，主要参考了<code>Object</code>类中的Java Doc。</p>
@@ -277,11 +277,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Number</span> <span class="n">n</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
-<span class="n">Class</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">n</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Number</span> <span class="n">n</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Class</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">n</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>两个输出语句都会输出<code>java.lang,Integer</code>，很好的说明了返回的<code>Class</code>是运行时的，因为Java中数值的默认实现是Integer类型的。</p>
 <h2 id="hashcode">hashCode</h2>
@@ -323,32 +323,32 @@
 </span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Coffee</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-    <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">;</span>
-
-    <span class="kd">public</span> <span class="nf">Coffee</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">hasSugar</span> <span class="o">=</span> <span class="n">hasSugar</span><span class="o">;</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="na">hashCode</span><span class="o">();</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">testHashCode</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Coffee</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
-    <span class="n">Coffee</span> <span class="n">coffee1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Coffee</span><span class="o">(</span><span class="s">&#34;bar&#34;</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
-    <span class="n">Coffee</span> <span class="n">coffee2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Coffee</span><span class="o">(</span><span class="s">&#34;bar&#34;</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
-
-    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">coffee1</span><span class="o">,</span> <span class="n">123</span><span class="o">);</span>
-    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">coffee2</span><span class="o">,</span> <span class="n">123</span><span class="o">);</span>
-    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">coffee2</span><span class="o">,</span> <span class="n">124</span><span class="o">);</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Coffee</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Coffee</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">hasSugar</span> <span class="o">=</span> <span class="n">hasSugar</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="na">hashCode</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">testHashCode</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Coffee</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Coffee</span> <span class="n">coffee1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Coffee</span><span class="o">(</span><span class="s">&#34;bar&#34;</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Coffee</span> <span class="n">coffee2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Coffee</span><span class="o">(</span><span class="s">&#34;bar&#34;</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">coffee1</span><span class="o">,</span> <span class="n">123</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">coffee2</span><span class="o">,</span> <span class="n">123</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">coffee2</span><span class="o">,</span> <span class="n">124</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>最终<code>map</code>里会有两个元素。<code>Coffee</code>类重写了<code>hashCode</code>方法，我们想要一个这样的咖啡类：如果名字相同相同，它们就是同一个对象。所以<code>hashCode</code>方法中只是取<code>name</code>的hashCode。但是<code>map</code>为什么会有两个元素呢？因为<code>HashMap</code>判断两个key是否重复的逻辑如下：</p>
 <div class="highlight"><div class="chroma">
@@ -356,8 +356,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">if</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">hash</span> <span class="o">==</span> <span class="n">hash</span> <span class="o">&amp;&amp;</span> <span class="o">((</span><span class="n">k</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">key</span><span class="o">)</span> <span class="o">==</span> <span class="n">key</span> <span class="o">||</span> <span class="o">(</span><span class="n">key</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">k</span><span class="o">))))</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">if</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">hash</span> <span class="o">==</span> <span class="n">hash</span> <span class="o">&amp;&amp;</span> <span class="o">((</span><span class="n">k</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">key</span><span class="o">)</span> <span class="o">==</span> <span class="n">key</span> <span class="o">||</span> <span class="o">(</span><span class="n">key</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">k</span><span class="o">))))</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>就是key的hash值一样，并且key的内存地址相等（同一个对象）或是key的<code>equals</code>方法返回值相同。<strong>Java中没有运算符重载，<code>==</code>默认就是比较两个对象的内存地址。</strong></p>
 <p>上面的<code>Coffee</code>类没有重写<code>equals</code>方法，所以不同的<code>Coffee</code>对象它们的<code>equals</code>返回值肯定不同。<strong>那么上面的<code>coffee1</code>和<code>coffee2</code>虽然它们的<code>hashCode</code>相同，但是<code>equals</code>不同</strong>，所以是两个不同的<code>key</code>。同时它们还是在<code>HashMap</code>的同一个桶中的（这一部分在下次讲<code>HashMap</code>的时，还会详细的讲），也就是在同一条链表下，所以在查找的时候需要遍历链表，造成性能的损失。只要重写<code>Coffee</code>的<code>equals</code>方法即可：</p>
@@ -372,14 +372,14 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">if</span> <span class="o">(</span><span class="k">this</span> <span class="o">==</span> <span class="n">o</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-      <span class="k">if</span> <span class="o">(!(</span><span class="n">o</span> <span class="k">instanceof</span> <span class="n">Coffee</span><span class="o">))</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-      <span class="n">Coffee</span> <span class="n">coffee</span> <span class="o">=</span> <span class="o">(</span><span class="n">Coffee</span><span class="o">)</span> <span class="n">o</span><span class="o">;</span>
-      <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">coffee</span><span class="o">.</span><span class="na">name</span><span class="o">);</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(</span><span class="k">this</span> <span class="o">==</span> <span class="n">o</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(!(</span><span class="n">o</span> <span class="k">instanceof</span> <span class="n">Coffee</span><span class="o">))</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">Coffee</span> <span class="n">coffee</span> <span class="o">=</span> <span class="o">(</span><span class="n">Coffee</span><span class="o">)</span> <span class="n">o</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">coffee</span><span class="o">.</span><span class="na">name</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这就是上述的第三条准则：当两个对象不相等（<code>equals</code>方法判断）时，它们的<code>hashCode</code>返回值<strong>可以相等</strong>。但是必须意识到，返回不相等的值可以提高哈希表应用（比如<code>HashMap</code>）的性能。</p>
 <p>还有另一种情况是，<code>equals</code>返回值相同，<code>hashCode</code>的返回值不同。这就违背了第二条准则。比如这种奇葩的<code>hashCode</code>方法：</p>
@@ -391,11 +391,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">hash</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">hasSugar</span><span class="o">)</span> <span class="o">+</span> <span class="k">new</span> <span class="n">Random</span><span class="o">().</span><span class="na">nextInt</span><span class="o">(</span><span class="n">100</span><span class="o">);</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">hash</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">hasSugar</span><span class="o">)</span> <span class="o">+</span> <span class="k">new</span> <span class="n">Random</span><span class="o">().</span><span class="na">nextInt</span><span class="o">(</span><span class="n">100</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这会导致本来是两个相等的对象在<code>HashMap</code>中有两个实例，这也就不符合<code>HashMap</code>的属性了。</p>
 <blockquote>
@@ -451,28 +451,28 @@ performs a &ldquo;shallow copy&rdquo; of this object, not a &ldquo;deep copy&rdq
 </span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="nf">Bar</span><span class="o">()</span> <span class="o">{</span>
-      <span class="kd">super</span><span class="o">();</span>
-    <span class="o">}</span>
-	<span class="kd">static</span> <span class="kd">class</span> <span class="nc">Coffee</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-    <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">;</span>
-    <span class="n">Bar</span> <span class="n">bar</span><span class="o">;</span>
-
-    <span class="kd">public</span> <span class="nf">Coffee</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">,</span> <span class="n">Bar</span> <span class="n">bar</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">hasSugar</span> <span class="o">=</span> <span class="n">hasSugar</span><span class="o">;</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">bar</span> <span class="o">=</span> <span class="n">bar</span><span class="o">;</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="n">Coffee</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span> <span class="o">{</span>
-      <span class="n">Coffee</span> <span class="n">c</span> <span class="o">=</span> <span class="o">(</span><span class="n">Coffee</span><span class="o">)</span> <span class="kd">super</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
-      <span class="k">return</span> <span class="n">c</span><span class="o">;</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Bar</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">super</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">static</span> <span class="kd">class</span> <span class="nc">Coffee</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Bar</span> <span class="n">bar</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Coffee</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">hasSugar</span><span class="o">,</span> <span class="n">Bar</span> <span class="n">bar</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">hasSugar</span> <span class="o">=</span> <span class="n">hasSugar</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">bar</span> <span class="o">=</span> <span class="n">bar</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">protected</span> <span class="n">Coffee</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">Coffee</span> <span class="n">c</span> <span class="o">=</span> <span class="o">(</span><span class="n">Coffee</span><span class="o">)</span> <span class="kd">super</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">c</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>编写测试方法：</p>
 <div class="highlight"><div class="chroma">
@@ -491,19 +491,19 @@ performs a &ldquo;shallow copy&rdquo; of this object, not a &ldquo;deep copy&rdq
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kt">void</span> <span class="nf">testClone</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Coffee</span> <span class="n">coffee</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Coffee</span><span class="o">(</span><span class="s">&#34;coffee&#34;</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="k">new</span> <span class="n">Bar</span><span class="o">());</span>
-
-    <span class="k">try</span> <span class="o">{</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">()</span> <span class="o">==</span> <span class="n">coffee</span><span class="o">);</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">().</span><span class="na">getClass</span><span class="o">()</span> <span class="o">==</span> <span class="n">coffee</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">coffee</span><span class="o">));</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;shallow copy? &#34;</span> <span class="o">+</span> <span class="o">(((</span><span class="n">Coffee</span><span class="o">)</span> <span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">()).</span><span class="na">bar</span> <span class="o">==</span> <span class="n">coffee</span><span class="o">.</span><span class="na">getBar</span><span class="o">()));</span>
-    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">CloneNotSupportedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kt">void</span> <span class="nf">testClone</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Coffee</span> <span class="n">coffee</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Coffee</span><span class="o">(</span><span class="s">&#34;coffee&#34;</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="k">new</span> <span class="n">Bar</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">()</span> <span class="o">==</span> <span class="n">coffee</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">().</span><span class="na">getClass</span><span class="o">()</span> <span class="o">==</span> <span class="n">coffee</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">coffee</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;shallow copy? &#34;</span> <span class="o">+</span> <span class="o">(((</span><span class="n">Coffee</span><span class="o">)</span> <span class="n">coffee</span><span class="o">.</span><span class="na">clone</span><span class="o">()).</span><span class="na">bar</span> <span class="o">==</span> <span class="n">coffee</span><span class="o">.</span><span class="na">getBar</span><span class="o">()));</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">CloneNotSupportedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>输出为：</p>
 <div class="highlight"><div class="chroma">
@@ -514,11 +514,11 @@ performs a &ldquo;shallow copy&rdquo; of this object, not a &ldquo;deep copy&rdq
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">false
-true
-true
-shallow copy? true
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">false
+</span></span><span class="line"><span class="cl">true
+</span></span><span class="line"><span class="cl">true
+</span></span><span class="line"><span class="cl">shallow copy? true
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>前三条输出表明<code>Coffee</code>类是符合三条准则的。最后一条输出语句测试<code>Coffee</code>类是否是浅拷贝的，也就是判断<code>bar</code>对象是否为同一个引用，结果表明它们是同一个对象，所以<code>Object</code>的<code>clone</code>方法，不会拷贝对象字段，而是直接使用同一个引用。这就是浅拷贝了。</p>
 <h3 id="deep-copy">Deep copy</h3>
@@ -546,26 +546,26 @@ shallow copy? true
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="nf">Bar</span><span class="o">()</span> <span class="o">{</span>
-      <span class="kd">super</span><span class="o">();</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="n">Object</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-	<span class="kd">static</span> <span class="kd">class</span> <span class="nc">Coffee</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="n">Coffee</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span> <span class="o">{</span>
-      <span class="n">Coffee</span> <span class="n">c</span> <span class="o">=</span> <span class="o">(</span><span class="n">Coffee</span><span class="o">)</span> <span class="kd">super</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
-      <span class="n">c</span><span class="o">.</span><span class="na">bar</span> <span class="o">=</span> <span class="o">(</span><span class="n">Bar</span><span class="o">)</span><span class="n">bar</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
-      <span class="c1">//c.bar = new Bar();
-</span><span class="c1"></span>      <span class="k">return</span> <span class="n">c</span><span class="o">;</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Bar</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">super</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">protected</span> <span class="n">Object</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">static</span> <span class="kd">class</span> <span class="nc">Coffee</span> <span class="kd">implements</span> <span class="n">Cloneable</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">protected</span> <span class="n">Coffee</span> <span class="nf">clone</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">Coffee</span> <span class="n">c</span> <span class="o">=</span> <span class="o">(</span><span class="n">Coffee</span><span class="o">)</span> <span class="kd">super</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">c</span><span class="o">.</span><span class="na">bar</span> <span class="o">=</span> <span class="o">(</span><span class="n">Bar</span><span class="o">)</span><span class="n">bar</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">//c.bar = new Bar();
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">return</span> <span class="n">c</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>但是这样实现的深拷贝有几个明显的缺点，如果是我们使用的是第三方库呢？怎么拷贝它们？你可能会说可以继承它们并且实现自己的<code>equals</code>方法。那么如果有<code>private</code>字段呢，如果类被<code>final</code>修饰呢？如果有泛型呢？O.O</p>
 <h4 id="序列化实现深拷贝">序列化实现深拷贝</h4>
@@ -601,34 +601,34 @@ shallow copy? true
 </span><span class="lnt">27
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DeepCopy</span> <span class="o">{</span>
-
-  <span class="cm">/**
-</span><span class="cm">   * Returns a copy of the object, or null if the object cannot
-</span><span class="cm">   * be serialized.
-</span><span class="cm">   */</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">copy</span><span class="o">(</span><span class="n">Object</span> <span class="n">orig</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-    <span class="k">try</span> <span class="o">{</span>
-      <span class="c1">// Write the object out to a byte array
-</span><span class="c1"></span>      <span class="n">ByteArrayOutputStream</span> <span class="n">bos</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
-      <span class="n">ObjectOutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="n">bos</span><span class="o">);</span>
-      <span class="n">out</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">orig</span><span class="o">);</span>
-      <span class="n">out</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
-      <span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-
-      <span class="c1">// Make an input stream from the byte array and read
-</span><span class="c1"></span>      <span class="c1">// a copy of the object back in.
-</span><span class="c1"></span>      <span class="n">ObjectInputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span>
-          <span class="k">new</span> <span class="n">ByteArrayInputStream</span><span class="o">(</span><span class="n">bos</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">()));</span>
-      <span class="n">obj</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
-    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="o">|</span> <span class="n">ClassNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="n">obj</span><span class="o">;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DeepCopy</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * Returns a copy of the object, or null if the object cannot
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * be serialized.
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">copy</span><span class="o">(</span><span class="n">Object</span> <span class="n">orig</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// Write the object out to a byte array
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">ByteArrayOutputStream</span> <span class="n">bos</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ObjectOutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="n">bos</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">out</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">orig</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">out</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">// Make an input stream from the byte array and read
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="c1">// a copy of the object back in.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">ObjectInputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">          <span class="k">new</span> <span class="n">ByteArrayInputStream</span><span class="o">(</span><span class="n">bos</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">()));</span>
+</span></span><span class="line"><span class="cl">      <span class="n">obj</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="o">|</span> <span class="n">ClassNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">obj</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>当然这种方法也是有不足的：</p>
 <ul>
@@ -651,10 +651,10 @@ shallow copy? true
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
-  <span class="k">return</span> <span class="n">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;@&#34;</span> <span class="o">+</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="n">hashCode</span><span class="o">());</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;@&#34;</span> <span class="o">+</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="n">hashCode</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>子类可以重写这个方法，使得以简明易读的方式展示这个对象，推荐所以子类都重写这个方法。</p>
 <hr>
@@ -713,40 +713,40 @@ shallow copy? true
 </span><span class="lnt">33
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Factory</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">BUFFER_SIZE</span> <span class="o">=</span> <span class="n">100</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="kt">int</span> <span class="n">currentNum</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
-
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">consume</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
-      <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">while</span> <span class="o">(</span><span class="n">currentNum</span> <span class="o">-</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
-          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: waiting...&#34;</span><span class="o">);</span>
-          <span class="k">this</span><span class="o">.</span><span class="na">wait</span><span class="o">();</span>
-        <span class="o">}</span>
-        <span class="c1">// consume num product
-</span><span class="c1"></span>        <span class="n">currentNum</span> <span class="o">-=</span> <span class="n">num</span><span class="o">;</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: consume: &#34;</span> <span class="o">+</span> <span class="n">num</span> <span class="o">+</span> <span class="s">&#34;, left: &#34;</span> <span class="o">+</span> <span class="n">currentNum</span><span class="o">);</span>
-        <span class="c1">// notify producer
-</span><span class="c1">//        this.notifyAll();
-</span><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">notify</span><span class="o">();</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">product</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
-      <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">while</span> <span class="o">(</span><span class="n">currentNum</span> <span class="o">+</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="n">BUFFER_SIZE</span><span class="o">)</span> <span class="o">{</span>
-          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: waiting...&#34;</span><span class="o">);</span>
-          <span class="k">this</span><span class="o">.</span><span class="na">wait</span><span class="o">();</span>
-        <span class="o">}</span>
-        <span class="n">currentNum</span> <span class="o">+=</span> <span class="n">num</span><span class="o">;</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: product: &#34;</span> <span class="o">+</span> <span class="n">num</span> <span class="o">+</span> <span class="s">&#34;, left: &#34;</span> <span class="o">+</span> <span class="n">currentNum</span><span class="o">);</span>
-        <span class="c1">// notify consumer
-</span><span class="c1">//        this.notifyAll();
-</span><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">notify</span><span class="o">();</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Factory</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">BUFFER_SIZE</span> <span class="o">=</span> <span class="n">100</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">currentNum</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">consume</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="o">(</span><span class="n">currentNum</span> <span class="o">-</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: waiting...&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">          <span class="k">this</span><span class="o">.</span><span class="na">wait</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// consume num product
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">currentNum</span> <span class="o">-=</span> <span class="n">num</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: consume: &#34;</span> <span class="o">+</span> <span class="n">num</span> <span class="o">+</span> <span class="s">&#34;, left: &#34;</span> <span class="o">+</span> <span class="n">currentNum</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// notify producer
+</span></span></span><span class="line"><span class="cl"><span class="c1">//        this.notifyAll();
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">notify</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">product</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="o">(</span><span class="n">currentNum</span> <span class="o">+</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="n">BUFFER_SIZE</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: waiting...&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">          <span class="k">this</span><span class="o">.</span><span class="na">wait</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">currentNum</span> <span class="o">+=</span> <span class="n">num</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#34;: product: &#34;</span> <span class="o">+</span> <span class="n">num</span> <span class="o">+</span> <span class="s">&#34;, left: &#34;</span> <span class="o">+</span> <span class="n">currentNum</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// notify consumer
+</span></span></span><span class="line"><span class="cl"><span class="c1">//        this.notifyAll();
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">notify</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这里使用<code>synchronized</code>语句锁住<code>Factory</code>对象，使得当前调用这个方法的进程成为该对象的监视器，从而可以调用<code>wait</code>，<code>notify</code>或<code>notifyAll</code>方法。</p>
 <div class="highlight"><div class="chroma">
@@ -770,24 +770,24 @@ shallow copy? true
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Producer</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Factory</span> <span class="n">factory</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="kt">int</span> <span class="n">num</span><span class="o">;</span>
-
-    <span class="kd">public</span> <span class="nf">Producer</span><span class="o">(</span><span class="n">Factory</span> <span class="n">factory</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">factory</span> <span class="o">=</span> <span class="n">factory</span><span class="o">;</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-      <span class="k">try</span> <span class="o">{</span>
-        <span class="n">factory</span><span class="o">.</span><span class="na">product</span><span class="o">(</span><span class="n">num</span><span class="o">,</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
-      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Producer</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Factory</span> <span class="n">factory</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">num</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Producer</span><span class="o">(</span><span class="n">Factory</span> <span class="n">factory</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">factory</span> <span class="o">=</span> <span class="n">factory</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">factory</span><span class="o">.</span><span class="na">product</span><span class="o">(</span><span class="n">num</span><span class="o">,</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -811,25 +811,25 @@ shallow copy? true
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Consumer</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Factory</span> <span class="n">factory</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="kt">int</span> <span class="n">num</span><span class="o">;</span>
-
-    <span class="kd">public</span> <span class="nf">Consumer</span><span class="o">(</span><span class="n">Factory</span> <span class="n">factory</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">factory</span> <span class="o">=</span> <span class="n">factory</span><span class="o">;</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-      <span class="k">try</span> <span class="o">{</span>
-        <span class="n">factory</span><span class="o">.</span><span class="na">consume</span><span class="o">(</span><span class="n">num</span><span class="o">,</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
-      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Consumer</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Factory</span> <span class="n">factory</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">num</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Consumer</span><span class="o">(</span><span class="n">Factory</span> <span class="n">factory</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">factory</span> <span class="o">=</span> <span class="n">factory</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">factory</span><span class="o">.</span><span class="na">consume</span><span class="o">(</span><span class="n">num</span><span class="o">,</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>测试代码：</p>
 <div class="highlight"><div class="chroma">
@@ -848,19 +848,19 @@ shallow copy? true
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">Factory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Factory</span><span class="o">();</span>
-    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">10</span><span class="o">),</span> <span class="s">&#34;Consumer1&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
-    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Producer1&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
-    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Producer2&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
-    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">20</span><span class="o">),</span> <span class="s">&#34;Producer3&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
-    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">30</span><span class="o">),</span> <span class="s">&#34;Producer4&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
-    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">20</span><span class="o">),</span> <span class="s">&#34;Consumer2&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
-    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Consumer3&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
-    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Consumer4&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
-    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">20</span><span class="o">),</span> <span class="s">&#34;Consumer5&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Factory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Factory</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">10</span><span class="o">),</span> <span class="s">&#34;Consumer1&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Producer1&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Producer2&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">20</span><span class="o">),</span> <span class="s">&#34;Producer3&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">30</span><span class="o">),</span> <span class="s">&#34;Producer4&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">20</span><span class="o">),</span> <span class="s">&#34;Consumer2&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Consumer3&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">5</span><span class="o">),</span> <span class="s">&#34;Consumer4&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="n">20</span><span class="o">),</span> <span class="s">&#34;Consumer5&#34;</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>结果如下：</p>
 <p><img src="/images/waitnotify-producer-consumer.png" alt="1544867554606"></p>
@@ -975,7 +975,7 @@ shallow copy? true
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

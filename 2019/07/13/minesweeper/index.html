@@ -26,7 +26,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2019/07/13/minesweeper/" />
@@ -206,19 +206,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">genRandomMines</span><span class="o">(</span><span class="kt">int</span> <span class="n">mineSize</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">());</span>
-    <span class="k">while</span> <span class="o">(</span><span class="n">mines</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">!=</span> <span class="n">mineSize</span><span class="o">)</span> <span class="o">{</span>
-      <span class="c1">// [0, 63]
-</span><span class="c1"></span>      <span class="kt">int</span> <span class="n">nextMine</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">size</span> <span class="o">*</span> <span class="n">size</span><span class="o">);</span>
-      <span class="n">Point</span> <span class="n">point</span> <span class="o">=</span> <span class="n">oneD2point</span><span class="o">(</span><span class="n">nextMine</span><span class="o">);</span>
-      <span class="k">if</span> <span class="o">(!</span><span class="n">mines</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">point</span><span class="o">))</span> <span class="o">{</span>
-        <span class="n">board</span><span class="o">[</span><span class="n">point</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
-        <span class="n">mines</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">point</span><span class="o">);</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">genRandomMines</span><span class="o">(</span><span class="kt">int</span> <span class="n">mineSize</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="o">(</span><span class="n">mines</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">!=</span> <span class="n">mineSize</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// [0, 63]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="kt">int</span> <span class="n">nextMine</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">size</span> <span class="o">*</span> <span class="n">size</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">Point</span> <span class="n">point</span> <span class="o">=</span> <span class="n">oneD2point</span><span class="o">(</span><span class="n">nextMine</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(!</span><span class="n">mines</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">point</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">board</span><span class="o">[</span><span class="n">point</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">mines</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">point</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="洗牌法">洗牌法</h3>
 <p>然后一年过去，在知乎上偶然看到关于雷生成的算法，里面提到了洗牌法（<strong>shuffle</strong>）。使用的是 <strong>Knuth shuffle</strong> ，简单的说就是遍历数组，随机交换两个元素：</p>
@@ -229,10 +229,10 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">for i from 0 to n−2 do
-     j ← random integer such that i ≤ j &lt; n
-     exchange a[i] and a[j]
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">for i from 0 to n−2 do
+</span></span><span class="line"><span class="cl">     j ← random integer such that i ≤ j &lt; n
+</span></span><span class="line"><span class="cl">     exchange a[i] and a[j]
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>洗牌法分为两步：</p>
 <ul>
@@ -270,33 +270,33 @@
 </span><span class="lnt">26
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">   <span class="c1">// ensure excludePoint is not mine
-</span><span class="c1"></span>	<span class="kd">private</span> <span class="kt">void</span> <span class="nf">genRandomMinesEnsured</span><span class="o">(</span><span class="kt">int</span> <span class="n">mineSize</span><span class="o">,</span> <span class="n">Point</span> <span class="n">excludePoint</span><span class="o">)</span> <span class="o">{</span>
-    <span class="c1">// fill mines
-</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">minesCnt</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
-    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">excludePoint</span><span class="o">.</span><span class="na">x</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">==</span> <span class="n">excludePoint</span><span class="o">.</span><span class="na">y</span><span class="o">)</span> <span class="k">continue</span><span class="o">;</span>
-        <span class="n">board</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
-        <span class="n">minesCnt</span><span class="o">++;</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">minesCnt</span> <span class="o">==</span> <span class="n">mineSize</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>
-      <span class="o">}</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">minesCnt</span> <span class="o">==</span> <span class="n">mineSize</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="c1">// shuffle array
-</span><span class="c1"></span>    <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">());</span>
-    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
-        <span class="kt">int</span> <span class="n">randomPoint</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">size</span> <span class="o">*</span> <span class="n">size</span><span class="o">);</span>
-        <span class="n">Point</span> <span class="n">point</span> <span class="o">=</span> <span class="n">oneD2point</span><span class="o">(</span><span class="n">randomPoint</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">excludePoint</span><span class="o">.</span><span class="na">x</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">==</span> <span class="n">excludePoint</span><span class="o">.</span><span class="na">y</span> <span class="o">||</span> <span class="n">point</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">excludePoint</span><span class="o">))</span> <span class="k">continue</span><span class="o">;</span>
-        <span class="kt">boolean</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">board</span><span class="o">[</span><span class="n">point</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">];</span>
-        <span class="n">board</span><span class="o">[</span><span class="n">point</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">board</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
-        <span class="n">board</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="n">temp</span><span class="o">;</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">   <span class="c1">// ensure excludePoint is not mine
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kd">private</span> <span class="kt">void</span> <span class="nf">genRandomMinesEnsured</span><span class="o">(</span><span class="kt">int</span> <span class="n">mineSize</span><span class="o">,</span> <span class="n">Point</span> <span class="n">excludePoint</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// fill mines
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">minesCnt</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">excludePoint</span><span class="o">.</span><span class="na">x</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">==</span> <span class="n">excludePoint</span><span class="o">.</span><span class="na">y</span><span class="o">)</span> <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">board</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">minesCnt</span><span class="o">++;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">minesCnt</span> <span class="o">==</span> <span class="n">mineSize</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(</span><span class="n">minesCnt</span> <span class="o">==</span> <span class="n">mineSize</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// shuffle array
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">randomPoint</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">size</span> <span class="o">*</span> <span class="n">size</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Point</span> <span class="n">point</span> <span class="o">=</span> <span class="n">oneD2point</span><span class="o">(</span><span class="n">randomPoint</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">excludePoint</span><span class="o">.</span><span class="na">x</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">==</span> <span class="n">excludePoint</span><span class="o">.</span><span class="na">y</span> <span class="o">||</span> <span class="n">point</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">excludePoint</span><span class="o">))</span> <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">boolean</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">board</span><span class="o">[</span><span class="n">point</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">        <span class="n">board</span><span class="o">[</span><span class="n">point</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">board</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">        <span class="n">board</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="n">temp</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="空白区域">空白区域</h2>
 <p>当点击空白方块，会连带出所有连通的空白方块和周围的数字方块。如下图所示：</p>
@@ -314,10 +314,10 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-	<span class="n">parent</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">parent</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></blockquote>
 <ul>
@@ -334,14 +334,14 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">union</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">,</span> <span class="kt">int</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
-        <span class="kt">int</span> <span class="n">rootP</span> <span class="o">=</span> <span class="n">find</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
-        <span class="kt">int</span> <span class="n">rootQ</span> <span class="o">=</span> <span class="n">find</span><span class="o">(</span><span class="n">q</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">rootP</span> <span class="o">==</span> <span class="n">rootQ</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
-        <span class="n">parent</span><span class="o">[</span><span class="n">rootP</span><span class="o">]</span> <span class="o">=</span> <span class="n">rootQ</span><span class="o">;</span>
-        <span class="n">count</span><span class="o">--;</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">union</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">,</span> <span class="kt">int</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">rootP</span> <span class="o">=</span> <span class="n">find</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">rootQ</span> <span class="o">=</span> <span class="n">find</span><span class="o">(</span><span class="n">q</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">rootP</span> <span class="o">==</span> <span class="n">rootQ</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">parent</span><span class="o">[</span><span class="n">rootP</span><span class="o">]</span> <span class="o">=</span> <span class="n">rootQ</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">count</span><span class="o">--;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li><code>connected</code>：判断两个连通块是否相连。相同<code>root</code>的两个连通块就是连通的。</li>
@@ -359,16 +359,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">find</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">validate</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
-        <span class="k">while</span> <span class="o">(</span><span class="n">p</span> <span class="o">!=</span> <span class="n">parent</span><span class="o">[</span><span class="n">p</span><span class="o">])</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">parent</span><span class="o">[</span><span class="n">p</span><span class="o">];</span>
-        <span class="k">return</span> <span class="n">p</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">connected</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">,</span> <span class="kt">int</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">find</span><span class="o">(</span><span class="n">p</span><span class="o">)</span> <span class="o">==</span> <span class="n">find</span><span class="o">(</span><span class="n">q</span><span class="o">);</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">find</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">validate</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="o">(</span><span class="n">p</span> <span class="o">!=</span> <span class="n">parent</span><span class="o">[</span><span class="n">p</span><span class="o">])</span>
+</span></span><span class="line"><span class="cl">            <span class="n">p</span> <span class="o">=</span> <span class="n">parent</span><span class="o">[</span><span class="n">p</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">p</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">connected</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">,</span> <span class="kt">int</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">find</span><span class="o">(</span><span class="n">p</span><span class="o">)</span> <span class="o">==</span> <span class="n">find</span><span class="o">(</span><span class="n">q</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="应用到扫雷游戏">应用到扫雷游戏</h4>
 <p>我们可以利用<code>union</code>操作将全部空白方块合成一个连通块，到我们点击到一个空白方块时，遍历游戏地图，将与其连通的空白方块都显示出来。因为游戏地图为二维数组，需要将二维坐标转化为一维坐标。</p>
@@ -403,33 +403,33 @@
 </span><span class="lnt">26
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">unionAllBlankBlock</span><span class="o">()</span> <span class="o">{</span>
-    <span class="c1">//as known, [i, j] is already a blank.
-</span><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">row</span><span class="o">++)</span> <span class="o">{</span>
-      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">col</span><span class="o">++)</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span><span class="o">))</span> <span class="o">{</span>
-          <span class="kt">int</span> <span class="n">thisPoint</span> <span class="o">=</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span><span class="o">);</span>
-          <span class="c1">// top
-</span><span class="c1"></span>          <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span> <span class="o">-</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">))</span> <span class="o">{</span>
-            <span class="n">unionUF</span><span class="o">.</span><span class="na">union</span><span class="o">(</span><span class="n">thisPoint</span><span class="o">,</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span><span class="o">));</span>
-          <span class="o">}</span>
-          <span class="c1">// left
-</span><span class="c1"></span>          <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span> <span class="o">-</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">))</span> <span class="o">{</span>
-            <span class="n">unionUF</span><span class="o">.</span><span class="na">union</span><span class="o">(</span><span class="n">thisPoint</span><span class="o">,</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span> <span class="o">-</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">));</span>
-          <span class="o">}</span>
-          <span class="c1">// bottom
-</span><span class="c1"></span>          <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span> <span class="o">+</span> <span class="n">1</span><span class="o">))</span> <span class="o">{</span>
-            <span class="n">unionUF</span><span class="o">.</span><span class="na">union</span><span class="o">(</span><span class="n">thisPoint</span><span class="o">,</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span> <span class="o">+</span> <span class="n">1</span><span class="o">));</span>
-          <span class="o">}</span>
-          <span class="c1">// right
-</span><span class="c1"></span>          <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span> <span class="o">+</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">))</span> <span class="o">{</span>
-            <span class="n">unionUF</span><span class="o">.</span><span class="na">union</span><span class="o">(</span><span class="n">thisPoint</span><span class="o">,</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span> <span class="o">+</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">));</span>
-          <span class="o">}</span>
-        <span class="o">}</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">unionAllBlankBlock</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//as known, [i, j] is already a blank.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">row</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">col</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="kt">int</span> <span class="n">thisPoint</span> <span class="o">=</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// top
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span> <span class="o">-</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">unionUF</span><span class="o">.</span><span class="na">union</span><span class="o">(</span><span class="n">thisPoint</span><span class="o">,</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">          <span class="o">}</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// left
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span> <span class="o">-</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">unionUF</span><span class="o">.</span><span class="na">union</span><span class="o">(</span><span class="n">thisPoint</span><span class="o">,</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span> <span class="o">-</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">          <span class="o">}</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// bottom
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span> <span class="o">+</span> <span class="n">1</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">unionUF</span><span class="o">.</span><span class="na">union</span><span class="o">(</span><span class="n">thisPoint</span><span class="o">,</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span> <span class="o">+</span> <span class="n">1</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">          <span class="o">}</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// right
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="k">if</span> <span class="o">(</span><span class="n">isBlank</span><span class="o">(</span><span class="n">row</span> <span class="o">+</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">unionUF</span><span class="o">.</span><span class="na">union</span><span class="o">(</span><span class="n">thisPoint</span><span class="o">,</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">row</span> <span class="o">+</span> <span class="n">1</span><span class="o">,</span> <span class="n">col</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">          <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>显示和当前空白方块相连的空白方块：</p>
 <div class="highlight"><div class="chroma">
@@ -455,26 +455,26 @@
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showUnionBlankBlock</span><span class="o">(</span><span class="n">Point</span> <span class="n">point</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">isFirstTimeBlankClick</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">unionAllBlankBlock</span><span class="o">();</span>
-      <span class="n">isFirstTimeBlankClick</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
-        <span class="c1">// 判断是否相连
-</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">unionUF</span><span class="o">.</span><span class="na">connected</span><span class="o">(</span><span class="n">xyTo1D</span><span class="o">(</span><span class="n">point</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">),</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">)))</span> <span class="o">{</span>
-          <span class="n">Point</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Point</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">);</span>
-          <span class="c1">// 显示空白方块
-</span><span class="c1"></span>          <span class="n">setBlankBox</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
-          <span class="c1">// 显示周围的数字
-</span><span class="c1"></span>          <span class="n">showNumberAroundBlank</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">);</span>
-          <span class="n">clearFlag</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
-        <span class="o">}</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showUnionBlankBlock</span><span class="o">(</span><span class="n">Point</span> <span class="n">point</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">isFirstTimeBlankClick</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">unionAllBlankBlock</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">isFirstTimeBlankClick</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 判断是否相连
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">unionUF</span><span class="o">.</span><span class="na">connected</span><span class="o">(</span><span class="n">xyTo1D</span><span class="o">(</span><span class="n">point</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">),</span> <span class="n">xyTo1D</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">)))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">Point</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Point</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 显示空白方块
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="n">setBlankBox</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 显示周围的数字
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="n">showNumberAroundBlank</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">          <span class="n">clearFlag</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="flood-fill">Flood Fill</h3>
 <p>Flood Fill（平铺算法？）其实就是个DFS，递归遍历四连通的方块，并将其标记。同样可以用来连带出所有连通的空白方块。</p>
@@ -497,17 +497,17 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">    int[][] board = new int[][]{
-        {0, 0, 1, 1, 2, 9, 1, 0},
-        {1, 1, 2, 9, 3, 2, 2, 0},
-        {1, 9, 3, 2, 3, 9, 2, 1},
-        {1, 1, 2, 9, 2, 2, 9, 1},
-        {1, 1, 2, 1, 1, 1, 2, 2},
-        {1, 9, 1, 0, 0, 0, 1, 9},
-        {1, 2, 2, 1, 0, 1, 2, 2},
-        {0, 1, 9, 1, 0, 1, 9, 1}
-    };
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    int[][] board = new int[][]{
+</span></span><span class="line"><span class="cl">        {0, 0, 1, 1, 2, 9, 1, 0},
+</span></span><span class="line"><span class="cl">        {1, 1, 2, 9, 3, 2, 2, 0},
+</span></span><span class="line"><span class="cl">        {1, 9, 3, 2, 3, 9, 2, 1},
+</span></span><span class="line"><span class="cl">        {1, 1, 2, 9, 2, 2, 9, 1},
+</span></span><span class="line"><span class="cl">        {1, 1, 2, 1, 1, 1, 2, 2},
+</span></span><span class="line"><span class="cl">        {1, 9, 1, 0, 0, 0, 1, 9},
+</span></span><span class="line"><span class="cl">        {1, 2, 2, 1, 0, 1, 2, 2},
+</span></span><span class="line"><span class="cl">        {0, 1, 9, 1, 0, 1, 9, 1}
+</span></span><span class="line"><span class="cl">    };
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -526,20 +526,20 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">floodFill</span><span class="o">(</span><span class="kt">int</span><span class="o">[][]</span> <span class="n">board</span><span class="o">,</span> <span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">rows</span> <span class="o">||</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">cols</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span> <span class="o">!=</span> <span class="n">0</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
-    <span class="c1">// show blank box
-</span><span class="c1"></span>    <span class="n">board</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">10</span><span class="o">;</span> <span class="c1">// showed
-</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;show blank: (%d, %d)\n&#34;</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
-    <span class="n">showNumberAroundBlank</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
-    <span class="c1">// DFS right, left, up, down
-</span><span class="c1"></span>    <span class="n">floodFill</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">1</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
-    <span class="n">floodFill</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span> <span class="o">-</span> <span class="n">1</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
-    <span class="n">floodFill</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">1</span><span class="o">);</span>
-    <span class="n">floodFill</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">1</span><span class="o">);</span>
-  <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">floodFill</span><span class="o">(</span><span class="kt">int</span><span class="o">[][]</span> <span class="n">board</span><span class="o">,</span> <span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">rows</span> <span class="o">||</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">cols</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span> <span class="o">!=</span> <span class="n">0</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// show blank box
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">board</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">10</span><span class="o">;</span> <span class="c1">// showed
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;show blank: (%d, %d)\n&#34;</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">showNumberAroundBlank</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// DFS right, left, up, down
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">floodFill</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">1</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">floodFill</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span> <span class="o">-</span> <span class="n">1</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">floodFill</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">floodFill</span><span class="o">(</span><span class="n">board</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>输出如下：</p>
 <div class="highlight"><div class="chroma">
@@ -551,12 +551,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">show blank: (5, 4)
-show blank: (6, 4)
-show blank: (7, 4)
-show blank: (5, 5)
-show blank: (5, 3)
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">show blank: (5, 4)
+</span></span><span class="line"><span class="cl">show blank: (6, 4)
+</span></span><span class="line"><span class="cl">show blank: (7, 4)
+</span></span><span class="line"><span class="cl">show blank: (5, 5)
+</span></span><span class="line"><span class="cl">show blank: (5, 3)
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="使用哪个算法">使用哪个算法</h3>
 <p>首先还是推荐使用 Flood Fill 算法，因为它更加适合这个场景，实现简单。</p>
@@ -667,7 +667,7 @@ show blank: (5, 3)
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

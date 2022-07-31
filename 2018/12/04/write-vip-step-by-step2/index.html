@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/12/04/write-vip-step-by-step2/" />
@@ -235,45 +235,45 @@
 </span><span class="lnt">38
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define CTRL_KEY(k) ((k)&amp;0x1f)
-</span><span class="cp"></span>
-<span class="kt">char</span> <span class="nf">ed_read_Key</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">nread</span><span class="p">;</span>
-  <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
-  <span class="c1">// read() has a timeout, timeout return 0, so it loop read util a key press
-</span><span class="c1"></span>  <span class="c1">// screen refresh after keypress
-</span><span class="c1"></span>  <span class="k">while</span> <span class="p">((</span><span class="n">nread</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">nread</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">errno</span> <span class="o">!=</span> <span class="n">EAGAIN</span><span class="p">)</span> <span class="n">die</span><span class="p">(</span><span class="s">&#34;read&#34;</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="n">c</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="cm">/* input */</span>
-
-<span class="kt">void</span> <span class="nf">ed_process_keypress</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">ed_read_Key</span><span class="p">();</span>
-  <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="n">CTRL_KEY</span><span class="p">(</span><span class="sc">&#39;q&#39;</span><span class="p">)</span><span class="o">:</span>
-      <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-      <span class="k">break</span><span class="p">;</span>
-    <span class="k">default</span><span class="o">:</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">iscntrl</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="n">println</span><span class="p">(</span><span class="s">&#34;%d (&#39;%c&#39;)&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">break</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">enable_raw_mode</span><span class="p">();</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">ed_process_keypress</span><span class="p">();</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define CTRL_KEY(k) ((k)&amp;0x1f)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="nf">ed_read_Key</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">nread</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// read() has a timeout, timeout return 0, so it loop read util a key press
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// screen refresh after keypress
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">while</span> <span class="p">((</span><span class="n">nread</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">nread</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">errno</span> <span class="o">!=</span> <span class="n">EAGAIN</span><span class="p">)</span> <span class="n">die</span><span class="p">(</span><span class="s">&#34;read&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">c</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* input */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_process_keypress</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">ed_read_Key</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="n">CTRL_KEY</span><span class="p">(</span><span class="sc">&#39;q&#39;</span><span class="p">)</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">default</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">iscntrl</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">println</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">println</span><span class="p">(</span><span class="s">&#34;%d (&#39;%c&#39;)&#34;</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">enable_raw_mode</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ed_process_keypress</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>使用<code> while ((nread = read(STDIN_FILENO, &amp;c, 1)) != 1)</code>来读取一个字符，因为超时的<code>read()</code>会 return 0，所以会一直循环直到你按下一个按键。程序阻塞在这个循环中，直到按下按键。这样重写之后，我们的<code>main()</code>函数变得简单多了。</p>
 <p>同时使用<code>#define CTRL_KEY(k) ((k)&amp;0x1f)</code>这个宏，来获取<code>CTRL-WORD</code>。我的<a href="/2018/11/26/csapp_data_lab/#CTRL-KEY">另一篇博客</a>)中有详细的解释，就不再重复。</p>
@@ -297,20 +297,20 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ed_clear</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// clear screen
-</span><span class="c1"></span>  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[2J&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
-  <span class="c1">// reposition cursor
-</span><span class="c1"></span>  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">ed_refresh</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// clear screen
-</span><span class="c1"></span>  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[2J&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
-  <span class="c1">// reposition cursor
-</span><span class="c1"></span>  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_clear</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// clear screen
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[2J&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// reposition cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_refresh</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// clear screen
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[2J&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// reposition cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这里我定义两个不同名的函数，目前它们的功能相同，只是清空屏幕而已。但是<code>ed_refresh()</code>之后会添加更多功能，是渲染屏幕主要的地方，而<code>ed_clear()</code>的功能只是清屏而已。</p>
 <p>可以看到这里用到了转义序列，<code>\x1b[2J</code>就是一个转义序列，它以<code>\x1b</code>（27）开头。更多的信息可以参考这本 <a href="http://vt100.net/docs/vt100-ug/chapter3.html">VT100 User Guide</a> 。因为现代大多数的终端模拟器，都使用<code>VT100</code>的转义序列。</p>
@@ -338,24 +338,24 @@
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">die</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">ed_clear</span><span class="p">();</span>
-  <span class="n">perror</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-  <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">ed_process_keypress</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">ed_read_key</span><span class="p">();</span>
-  <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="n">CTRL_KEY</span><span class="p">(</span><span class="sc">&#39;q&#39;</span><span class="p">)</span><span class="o">:</span>
-      <span class="n">ed_clear</span><span class="p">();</span>
-      <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-      <span class="k">break</span><span class="p">;</span>
-    <span class="k">default</span><span class="o">:</span>
-      <span class="k">break</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">die</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ed_clear</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">perror</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_process_keypress</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">ed_read_key</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="n">CTRL_KEY</span><span class="p">(</span><span class="sc">&#39;q&#39;</span><span class="p">)</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ed_clear</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">default</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="获取窗口大小">获取窗口大小</h2>
 <div class="highlight"><div class="chroma">
@@ -403,48 +403,48 @@
 </span><span class="lnt">41
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">win_size_t</span><span class="p">;</span> <span class="c1">// in vip.h
-</span><span class="c1"></span>
-<span class="k">typedef</span> <span class="k">struct</span> <span class="n">editor_config</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">termios</span> <span class="n">origin_termios</span><span class="p">;</span>
-  <span class="n">win_size_t</span> <span class="n">winrows</span><span class="p">;</span>
-  <span class="n">win_size_t</span> <span class="n">wincols</span><span class="p">;</span>
-<span class="p">}</span> <span class="n">Editor</span><span class="p">;</span>
-
-<span class="cm">/**
-</span><span class="cm"> * @brief get win rows and cols
-</span><span class="cm"> * @retval return -1 when failed, return 0 when successd
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="nf">get_winsize</span><span class="p">(</span><span class="n">win_size_t</span> <span class="o">*</span><span class="n">rows</span><span class="p">,</span> <span class="n">win_size_t</span> <span class="o">*</span><span class="n">cols</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">winsize</span> <span class="n">ws</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">TIOCGWINSZ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ws</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="o">*</span><span class="n">rows</span> <span class="o">=</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_row</span><span class="p">;</span>
-    <span class="o">*</span><span class="n">cols</span> <span class="o">=</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span><span class="p">;</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="cm">/* init */</span>
-
-<span class="kt">void</span> <span class="nf">init_editor</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">enable_raw_mode</span><span class="p">();</span>
-
-  <span class="k">if</span> <span class="p">(</span><span class="n">get_winsize</span><span class="p">(</span><span class="o">&amp;</span><span class="n">editor</span><span class="p">.</span><span class="n">winrows</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">editor</span><span class="p">.</span><span class="n">wincols</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">die</span><span class="p">(</span><span class="s">&#34;get_winsize&#34;</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">init_editor</span><span class="p">();</span>
-
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">ed_refresh</span><span class="p">();</span>
-    <span class="n">ed_process_keypress</span><span class="p">();</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">win_size_t</span><span class="p">;</span> <span class="c1">// in vip.h
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">editor_config</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">termios</span> <span class="n">origin_termios</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">win_size_t</span> <span class="n">winrows</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">win_size_t</span> <span class="n">wincols</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">Editor</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief get win rows and cols
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @retval return -1 when failed, return 0 when successd
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">get_winsize</span><span class="p">(</span><span class="n">win_size_t</span> <span class="o">*</span><span class="n">rows</span><span class="p">,</span> <span class="n">win_size_t</span> <span class="o">*</span><span class="n">cols</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">winsize</span> <span class="n">ws</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">TIOCGWINSZ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ws</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">rows</span> <span class="o">=</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_row</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">cols</span> <span class="o">=</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* init */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">init_editor</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">enable_raw_mode</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">get_winsize</span><span class="p">(</span><span class="o">&amp;</span><span class="n">editor</span><span class="p">.</span><span class="n">winrows</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">editor</span><span class="p">.</span><span class="n">wincols</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">die</span><span class="p">(</span><span class="s">&#34;get_winsize&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">init_editor</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ed_refresh</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ed_process_keypress</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>ioctl()</code>，<code>TIOCGWINSZ</code>和<code>struct winsize</code>来自<code>&lt;sys / ioctl.h&gt;</code>。这是在C中返回有多个值函数的一种常用写法，就是利用指针来修改参数的值，我一般把这种参数叫做<code>receiver</code>，不知道准确不准确（同时还允许使用返回值来指示成功或失败。如果用 go 写的话了就爽了。）</p>
 <p>使用<code>typedef unsigned short win_size_t;</code>定义一个专用于窗口大小的数据类型，免得和其他类型混淆。</p>
@@ -477,28 +477,28 @@
 </span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
-</span><span class="cm"> * @brief send \x1b[6n to get cursor reply like \x1b[24;80R,
-</span><span class="cm"> * then parse the reply.
-</span><span class="cm"> */</span>
-<span class="kt">int</span> <span class="nf">get_cursor_pos</span><span class="p">(</span><span class="n">win_size_t</span> <span class="o">*</span><span class="n">rows</span><span class="p">,</span> <span class="n">win_size_t</span> <span class="o">*</span><span class="n">cols</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[6n&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-
-  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
-  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;R&#39;</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
-    <span class="n">i</span><span class="o">++</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
-  <span class="c1">// println(&#34;\r\n&amp;buf[1]: &#39;%s&#39;&#34;, &amp;buf[1]);
-</span><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;\x1b&#39;</span> <span class="o">||</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;[&#39;</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">sscanf</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buf</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s">&#34;%hu;%hu&#34;</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief send \x1b[6n to get cursor reply like \x1b[24;80R,
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * then parse the reply.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">get_cursor_pos</span><span class="p">(</span><span class="n">win_size_t</span> <span class="o">*</span><span class="n">rows</span><span class="p">,</span> <span class="n">win_size_t</span> <span class="o">*</span><span class="n">cols</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[6n&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;R&#39;</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// println(&#34;\r\n&amp;buf[1]: &#39;%s&#39;&#34;, &amp;buf[1]);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;\x1b&#39;</span> <span class="o">||</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="sc">&#39;[&#39;</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">sscanf</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buf</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s">&#34;%hu;%hu&#34;</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>使用<code>\x1b[6n</code><a href="http://vt100.net/docs/vt100-ug/chapter3.html#DSR">这个转义序列</a>来获取光标的位置，之后终端会有回应。我们从标准输入读入字符，并且解析它。它和我们之前的光标位置的转义序列类似，只是最后一个字符变成了<code>R</code>，即 Report。</p>
 <h2 id="再次获取窗口大小">再次获取窗口大小</h2>
@@ -522,21 +522,21 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">get_winsize</span><span class="p">(</span><span class="n">win_size_t</span> <span class="o">*</span><span class="n">rows</span><span class="p">,</span> <span class="n">win_size_t</span> <span class="o">*</span><span class="n">cols</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">winsize</span> <span class="n">ws</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">TIOCGWINSZ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ws</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// move cursor to right 999 and move down to 999
-</span><span class="c1"></span>    <span class="c1">// The C and B commands are specifically documented
-</span><span class="c1"></span>    <span class="c1">// to stop the cursor from going past the edge of the screen.
-</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[999C</span><span class="se">\x1b</span><span class="s">[999B&#34;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">12</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">get_cursor_pos</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="o">*</span><span class="n">rows</span> <span class="o">=</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_row</span><span class="p">;</span>
-    <span class="o">*</span><span class="n">cols</span> <span class="o">=</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span><span class="p">;</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">get_winsize</span><span class="p">(</span><span class="n">win_size_t</span> <span class="o">*</span><span class="n">rows</span><span class="p">,</span> <span class="n">win_size_t</span> <span class="o">*</span><span class="n">cols</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">winsize</span> <span class="n">ws</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">TIOCGWINSZ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ws</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// move cursor to right 999 and move down to 999
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// The C and B commands are specifically documented
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// to stop the cursor from going past the edge of the screen.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[999C</span><span class="se">\x1b</span><span class="s">[999B&#34;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">12</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">get_cursor_pos</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">rows</span> <span class="o">=</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_row</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">cols</span> <span class="o">=</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>主要的解释都写在注释里了，当<code>ioctl()</code>方法失败的时候，我们把光标移动到右下角，获取光标的位置作为窗口大小。不用担心光标的位置会出现在右下角，因为进入主循环后首先会刷新屏幕。</p>
 <p>可以使用一个小技巧来测试这种情况，把第 3 行代码修改为：</p>
@@ -545,8 +545,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c">  <span class="k">if</span> <span class="p">(</span><span class="mi">1</span> <span class="o">||</span> <span class="n">ioctl</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">TIOCGWINSZ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ws</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="mi">1</span> <span class="o">||</span> <span class="n">ioctl</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">TIOCGWINSZ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ws</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="n">ws</span><span class="p">.</span><span class="n">ws_col</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>测试完，记得改回来（</p>
 <h2 id="append-buffer">Append buffer</h2>
@@ -577,29 +577,29 @@
 </span><span class="lnt">22
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// in vip.h
-</span><span class="c1"></span><span class="k">struct</span> <span class="n">abuf</span> <span class="p">{</span>
-  <span class="kt">char</span> <span class="o">*</span><span class="n">b</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="cp">#define ABUF_INIT \
-</span><span class="cp">  { NULL, 0 }
-</span><span class="cp"></span>
-<span class="cm">/* append buffer */</span>
-
-<span class="kt">void</span> <span class="nf">ab_append</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">char</span> <span class="o">*</span><span class="n">new</span> <span class="o">=</span> <span class="n">realloc</span><span class="p">(</span><span class="n">ab</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">,</span> <span class="n">ab</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">+</span> <span class="n">len</span><span class="p">);</span>
-
-  <span class="k">if</span> <span class="p">(</span><span class="n">new</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
-  <span class="c1">// appand s at end of new
-</span><span class="c1"></span>  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">new</span><span class="p">[</span><span class="n">ab</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">],</span> <span class="n">s</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
-  <span class="n">ab</span><span class="o">-&gt;</span><span class="n">b</span> <span class="o">=</span> <span class="n">new</span><span class="p">;</span>
-  <span class="n">ab</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">+=</span> <span class="n">len</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">ab_free</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">)</span> <span class="p">{</span> <span class="n">free</span><span class="p">(</span><span class="n">ab</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">);</span> <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// in vip.h
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">abuf</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#define ABUF_INIT \
+</span></span></span><span class="line"><span class="cl"><span class="cp">  { NULL, 0 }
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* append buffer */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ab_append</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">new</span> <span class="o">=</span> <span class="n">realloc</span><span class="p">(</span><span class="n">ab</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">,</span> <span class="n">ab</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">+</span> <span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">new</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// appand s at end of new
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">new</span><span class="p">[</span><span class="n">ab</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">],</span> <span class="n">s</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ab</span><span class="o">-&gt;</span><span class="n">b</span> <span class="o">=</span> <span class="n">new</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ab</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">+=</span> <span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ab_free</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">)</span> <span class="p">{</span> <span class="n">free</span><span class="p">(</span><span class="n">ab</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">);</span> <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>将<code>ed_refresh()</code>中的<code>write()</code>用<code>ab_append()</code>代替：</p>
 <div class="highlight"><div class="chroma">
@@ -616,17 +616,17 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ed_refresh</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">abuf</span> <span class="n">ab</span> <span class="o">=</span> <span class="n">ABUF_INIT</span><span class="p">;</span>
-
-  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[2J&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>  <span class="c1">// clear entire screen`;
-</span><span class="c1"></span>  <span class="c1">// reposition cursor
-</span><span class="c1"></span>  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-
-  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">b</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">len</span><span class="p">);</span>
-  <span class="n">ab_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_refresh</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">abuf</span> <span class="n">ab</span> <span class="o">=</span> <span class="n">ABUF_INIT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[2J&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>  <span class="c1">// clear entire screen`;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// reposition cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">b</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ab_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="渲染">渲染</h2>
 <p>现在，我们终于可以在屏幕上画点东西了。</p>
@@ -643,13 +643,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ed_draw_rows</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span><span class="p">;</span> <span class="n">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;~&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\r\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_draw_rows</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span><span class="p">;</span> <span class="n">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;~&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\r\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>注意最后一行不需要打印<code>\r\n</code>，如果打印的话，光标会移动到下一行，那么就会多处一行，多出的一行会导致终端滚动，这样我们的第一行被滚上去了（这不是我们想要的。</p>
 <h3 id="欢迎信息">欢迎信息</h3>
@@ -687,37 +687,37 @@
 </span><span class="lnt">30
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="c1">// center a line, appand spaces in front of it
-</span><span class="c1"></span><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">ed_draw_center</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">,</span> <span class="kt">int</span> <span class="n">line_size</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">margin</span> <span class="o">=</span> <span class="p">(</span><span class="n">editor</span><span class="p">.</span><span class="n">wincols</span> <span class="o">-</span> <span class="n">line_size</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">margin</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34; &#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">ed_draw_rows</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span><span class="p">;</span> <span class="n">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;~&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">80</span><span class="p">];</span>
-      <span class="kt">int</span> <span class="n">welcomelen</span> <span class="o">=</span> <span class="n">snprintf</span><span class="p">(</span>
-          <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="s">&#34;VIP Editor - Vi Poor - version %s&#34;</span><span class="p">,</span> <span class="n">VIP_VERSION</span><span class="p">);</span>
-      <span class="n">ed_draw_center</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">welcomelen</span><span class="p">);</span>
-      <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span>
-                <span class="n">welcomelen</span> <span class="o">&gt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">wincols</span> <span class="o">?</span> <span class="n">editor</span><span class="p">.</span><span class="nl">wincols</span> <span class="p">:</span> <span class="n">welcomelen</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
-      <span class="kt">int</span> <span class="n">authorlen</span> <span class="o">=</span> <span class="n">snprintf</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="s">&#34;by LeeReindeer.&#34;</span><span class="p">);</span>
-      <span class="n">ed_draw_center</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">authorlen</span><span class="p">);</span>
-      <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">authorlen</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\r\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// center a line, appand spaces in front of it
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">ed_draw_center</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">,</span> <span class="kt">int</span> <span class="n">line_size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">margin</span> <span class="o">=</span> <span class="p">(</span><span class="n">editor</span><span class="p">.</span><span class="n">wincols</span> <span class="o">-</span> <span class="n">line_size</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">margin</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34; &#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_draw_rows</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span><span class="p">;</span> <span class="n">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;~&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">80</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">int</span> <span class="n">welcomelen</span> <span class="o">=</span> <span class="n">snprintf</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="s">&#34;VIP Editor - Vi Poor - version %s&#34;</span><span class="p">,</span> <span class="n">VIP_VERSION</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ed_draw_center</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">welcomelen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="n">welcomelen</span> <span class="o">&gt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">wincols</span> <span class="o">?</span> <span class="n">editor</span><span class="p">.</span><span class="nl">wincols</span> <span class="p">:</span> <span class="n">welcomelen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">int</span> <span class="n">authorlen</span> <span class="o">=</span> <span class="n">snprintf</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="s">&#34;by LeeReindeer.&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ed_draw_center</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">authorlen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">authorlen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\r\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>ed_draw_center()</code>通过<code>(editor.wincols - line_size) / 2</code>来计算偏移，并且在我们想要的打印的文字之前添加空格，来达到居中的效果。</p>
 <p><img src="/images/vip-welcome.png" alt="vip-welcome"></p>
@@ -743,24 +743,24 @@
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ed_refresh</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">abuf</span> <span class="n">ab</span> <span class="o">=</span> <span class="n">ABUF_INIT</span><span class="p">;</span>
-  <span class="c1">// hide cursor
-</span><span class="c1"></span>  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[?25l&#34;</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
-  <span class="c1">// clear entrie screen
-</span><span class="c1"></span>  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[2J&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
-  <span class="c1">// reposition cursor
-</span><span class="c1"></span>  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-
-  <span class="n">editorDrawRows</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
-
-  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-  <span class="c1">//show cursor
-</span><span class="c1"></span>  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[?25h&#34;</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
-  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">b</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">len</span><span class="p">);</span>
-  <span class="n">abFree</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_refresh</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">abuf</span> <span class="n">ab</span> <span class="o">=</span> <span class="n">ABUF_INIT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// hide cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[?25l&#34;</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// clear entrie screen
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[2J&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// reposition cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">editorDrawRows</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//show cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">abAppend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[?25h&#34;</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">b</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">abFree</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="逐行清空">逐行清空</h3>
 <div class="highlight"><div class="chroma">
@@ -807,47 +807,47 @@
 </span><span class="lnt">40
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ed_draw_rows</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span><span class="p">;</span> <span class="n">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;~&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">80</span><span class="p">];</span>
-      <span class="kt">int</span> <span class="n">welcomelen</span> <span class="o">=</span> <span class="n">snprintf</span><span class="p">(</span>
-          <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="s">&#34;VIP Editor - Vi Poor - version %s&#34;</span><span class="p">,</span> <span class="n">VIP_VERSION</span><span class="p">);</span>
-      <span class="n">ed_draw_center</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">welcomelen</span><span class="p">);</span>
-      <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span>
-                <span class="n">welcomelen</span> <span class="o">&gt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">wincols</span> <span class="o">?</span> <span class="n">editor</span><span class="p">.</span><span class="nl">wincols</span> <span class="p">:</span> <span class="n">welcomelen</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
-      <span class="kt">int</span> <span class="n">authorlen</span> <span class="o">=</span> <span class="n">snprintf</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="s">&#34;by LeeReindeer.&#34;</span><span class="p">);</span>
-      <span class="n">ed_draw_center</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">authorlen</span><span class="p">);</span>
-      <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">authorlen</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="c1">// erases the part of the line to the right of the cursor.
-</span><span class="c1"></span>    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[K&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\r\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">ed_refresh</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">abuf</span> <span class="n">ab</span> <span class="o">=</span> <span class="n">ABUF_INIT</span><span class="p">;</span>
-  <span class="c1">// hide cursor
-</span><span class="c1"></span>  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[?25l&#34;</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
-
-  <span class="c1">//ab_append(&amp;ab, &#34;\x1b[2J&#34;, 4);  // clear entire screen`;
-</span><span class="c1"></span>  <span class="c1">// reposition cursor
-</span><span class="c1"></span>  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-  <span class="n">ed_draw_rows</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
-  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-
-  <span class="c1">// hide cursor
-</span><span class="c1"></span>  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[?25h&#34;</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
-  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">b</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">len</span><span class="p">);</span>
-  <span class="n">ab_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_draw_rows</span><span class="p">(</span><span class="k">struct</span> <span class="n">abuf</span> <span class="o">*</span><span class="n">ab</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span><span class="p">;</span> <span class="n">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;~&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">80</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">int</span> <span class="n">welcomelen</span> <span class="o">=</span> <span class="n">snprintf</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="s">&#34;VIP Editor - Vi Poor - version %s&#34;</span><span class="p">,</span> <span class="n">VIP_VERSION</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ed_draw_center</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">welcomelen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="n">welcomelen</span> <span class="o">&gt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">wincols</span> <span class="o">?</span> <span class="n">editor</span><span class="p">.</span><span class="nl">wincols</span> <span class="p">:</span> <span class="n">welcomelen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">int</span> <span class="n">authorlen</span> <span class="o">=</span> <span class="n">snprintf</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="s">&#34;by LeeReindeer.&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ed_draw_center</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">authorlen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">authorlen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// erases the part of the line to the right of the cursor.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[K&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">editor</span><span class="p">.</span><span class="n">winrows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="n">ab_append</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\r\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_refresh</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">abuf</span> <span class="n">ab</span> <span class="o">=</span> <span class="n">ABUF_INIT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// hide cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[?25l&#34;</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">//ab_append(&amp;ab, &#34;\x1b[2J&#34;, 4);  // clear entire screen`;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// reposition cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ed_draw_rows</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[H&#34;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// hide cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ab_append</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\x1b</span><span class="s">[?25h&#34;</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">b</span><span class="p">,</span> <span class="n">ab</span><span class="p">.</span><span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ab_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ab</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>注释掉<code>e_refresh</code>中的<code>ab_append(&amp;ab, &quot;\x1b[2J&quot;, 4);</code>一行，这一行输出的转义序列可以清空整个屏幕。我们换一种做法，在<code>ed_draw_rows()</code>方法的循环中，加上<code>ab_append(ab, &quot;\x1b[K&quot;, 3);</code>来清空这一行光标右边的内容。</p>
 <h2 id="移动光标">移动光标</h2>
@@ -865,15 +865,15 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">editor_config</span> <span class="p">{</span>
-  <span class="n">win_size_t</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">;</span>
-
-  <span class="n">win_size_t</span> <span class="n">winrows</span><span class="p">;</span>
-  <span class="n">win_size_t</span> <span class="n">wincols</span><span class="p">;</span>
-  <span class="k">enum</span> <span class="n">EditorMode</span> <span class="n">mode</span><span class="p">;</span>  <span class="c1">// NORMAL_MODE, INSERT_MODE
-</span><span class="c1"></span>  <span class="k">struct</span> <span class="n">termios</span> <span class="n">origin_termios</span><span class="p">;</span>
-<span class="p">}</span> <span class="n">Editor</span><span class="p">;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">editor_config</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">win_size_t</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">win_size_t</span> <span class="n">winrows</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">win_size_t</span> <span class="n">wincols</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">enum</span> <span class="n">EditorMode</span> <span class="n">mode</span><span class="p">;</span>  <span class="c1">// NORMAL_MODE, INSERT_MODE
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">struct</span> <span class="n">termios</span> <span class="n">origin_termios</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">Editor</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="模仿vi的键位">模仿Vi的键位</h3>
 <p>定义键位的<code>enum</code>：</p>
@@ -894,20 +894,20 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">enum</span> <span class="n">EditorKey</span> <span class="p">{</span>
-  <span class="n">ARROW_LEFT</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
-  <span class="n">ARROW_RIGHT</span> <span class="o">=</span> <span class="mi">1001</span><span class="p">,</span>
-  <span class="n">ARROW_UP</span> <span class="o">=</span> <span class="mi">1002</span><span class="p">,</span>
-  <span class="n">ARROW_DOWN</span> <span class="o">=</span> <span class="mi">1003</span><span class="p">,</span>
-
-  <span class="n">LEFT</span> <span class="o">=</span> <span class="sc">&#39;h&#39;</span><span class="p">,</span>
-  <span class="n">RIGHT</span> <span class="o">=</span> <span class="sc">&#39;l&#39;</span><span class="p">,</span>
-  <span class="n">UP</span> <span class="o">=</span> <span class="sc">&#39;k&#39;</span><span class="p">,</span>
-  <span class="n">DOWN</span> <span class="o">=</span> <span class="sc">&#39;j&#39;</span><span class="p">,</span>
-  <span class="n">LINE_START</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span><span class="p">,</span>
-  <span class="n">LINE_END</span> <span class="o">=</span> <span class="sc">&#39;$&#39;</span><span class="p">,</span>
-<span class="p">};</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">EditorKey</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ARROW_LEFT</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ARROW_RIGHT</span> <span class="o">=</span> <span class="mi">1001</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ARROW_UP</span> <span class="o">=</span> <span class="mi">1002</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ARROW_DOWN</span> <span class="o">=</span> <span class="mi">1003</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">LEFT</span> <span class="o">=</span> <span class="sc">&#39;h&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">RIGHT</span> <span class="o">=</span> <span class="sc">&#39;l&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">UP</span> <span class="o">=</span> <span class="sc">&#39;k&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">DOWN</span> <span class="o">=</span> <span class="sc">&#39;j&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">LINE_START</span> <span class="o">=</span> <span class="sc">&#39;0&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">LINE_END</span> <span class="o">=</span> <span class="sc">&#39;$&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>和 Vim 一样，不止可以使用<code>hjkl</code>来移动，同时还可以使用方向键来移动。由于方向键映射多个 ASCII 码。这里使用大于<code>127</code>的数字来表示它们（这样就不会和 ASCII 码冲突了）。</p>
 <p><code>LINE_START</code>和<code>LINE_END</code>在这里只是简单的跳到屏幕起始和屏幕末尾处。</p>
@@ -922,13 +922,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="k">enum</span> <span class="n">EditorMode</span> <span class="p">{</span> <span class="n">NORMAL_MODE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">INSERT_MODE</span> <span class="p">};</span>
-<span class="k">enum</span> <span class="n">EditorKey</span> <span class="p">{</span>
- 	<span class="c1">//...
-</span><span class="c1"></span>  <span class="n">INSERT_MODE_KEY</span> <span class="o">=</span> <span class="sc">&#39;i&#39;</span><span class="p">,</span>
-  <span class="n">NORMAL_MODE_KEY</span> <span class="o">=</span> <span class="sc">&#39;\x1b&#39;</span>
-<span class="p">};</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">EditorMode</span> <span class="p">{</span> <span class="n">NORMAL_MODE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">INSERT_MODE</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">EditorKey</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> 	<span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">INSERT_MODE_KEY</span> <span class="o">=</span> <span class="sc">&#39;i&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">NORMAL_MODE_KEY</span> <span class="o">=</span> <span class="sc">&#39;\x1b&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Vim 里有<a href="https://en.wikibooks.org/wiki/Learning_the_vi_Editor/Vim/Modes">六个模式</a>？目前先简单的定义两个模式：NORMAL 和 INSERT。</p>
 <p>在 NORMAL 下可以同时使用<code>hjkl</code>和方向键来移动光标，在 INSERT 模式下当然只能使用方向键来移动光标。</p>
@@ -944,15 +944,15 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ed_process_keypress</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">key</span> <span class="o">=</span> <span class="n">ed_read_key</span><span class="p">();</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">editor</span><span class="p">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">INSERT_MODE</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">ed_insert_process</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">editor</span><span class="p">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">NORMAL_MODE</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">ed_normal_process</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_process_keypress</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">key</span> <span class="o">=</span> <span class="n">ed_read_key</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">editor</span><span class="p">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">INSERT_MODE</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ed_insert_process</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">editor</span><span class="p">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">NORMAL_MODE</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ed_normal_process</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>以上代码根据不同的模式来处理按键。</p>
 <div class="highlight"><div class="chroma">
@@ -986,34 +986,34 @@
 </span><span class="lnt">27
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">ed_normal_process</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="nl">INSERT_MODE_KEY</span><span class="p">:</span>
-      <span class="n">editor</span><span class="p">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">INSERT_MODE</span><span class="p">;</span>
-      <span class="k">break</span><span class="p">;</span>
-    <span class="k">case</span> <span class="n">CTRL_KEY</span><span class="p">(</span><span class="sc">&#39;q&#39;</span><span class="p">)</span><span class="o">:</span>
-      <span class="n">ed_clear</span><span class="p">();</span>
-      <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-      <span class="k">break</span><span class="p">;</span>
-    <span class="k">case</span> <span class="nl">LEFT</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">ARROW_LEFT</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">RIGHT</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">ARROW_RIGHT</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">DOWN</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">ARROW_DOWN</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">UP</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">ARROW_UP</span><span class="p">:</span>
-
-    <span class="k">case</span> <span class="nl">HOME_KEY</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">LINE_START</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">END_KEY</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">LINE_END</span><span class="p">:</span>
-      <span class="n">ed_process_move</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
-    <span class="k">default</span><span class="o">:</span>
-      <span class="k">break</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_normal_process</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">INSERT_MODE_KEY</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">editor</span><span class="p">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">INSERT_MODE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="n">CTRL_KEY</span><span class="p">(</span><span class="sc">&#39;q&#39;</span><span class="p">)</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ed_clear</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">LEFT</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">ARROW_LEFT</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">RIGHT</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">ARROW_RIGHT</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">DOWN</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">ARROW_DOWN</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">UP</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">ARROW_UP</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">HOME_KEY</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">LINE_START</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">END_KEY</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">LINE_END</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ed_process_move</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">default</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>在 NORMAL 模式下，按下<code>i</code>可以变成 INSERT 模式。这里把方向键和<code>hjkl</code>的还有其他移动光标的键委托给<code>ed_process_move()</code>函数来处理。同样的，在 INSERT 模式下，按下<code>Esc</code>可以变成 NORMAL 模式，对与移动光标的按键也委托给<code>ed_process_move()</code>。</p>
 <div class="highlight"><div class="chroma">
@@ -1039,26 +1039,26 @@
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c">
-<span class="kt">void</span> <span class="nf">ed_insert_process</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="nl">NORMAL_MODE_KEY</span><span class="p">:</span>
-      <span class="n">editor</span><span class="p">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">NORMAL_MODE</span><span class="p">;</span>
-      <span class="k">break</span><span class="p">;</span>
-    <span class="k">case</span> <span class="nl">ARROW_DOWN</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">ARROW_UP</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">ARROW_LEFT</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">ARROW_RIGHT</span><span class="p">:</span>
-
-    <span class="k">case</span> <span class="nl">HOME_KEY</span><span class="p">:</span>
-    <span class="k">case</span> <span class="nl">END_KEY</span><span class="p">:</span>
-      <span class="n">ed_process_move</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
-      <span class="k">break</span><span class="p">;</span>
-    <span class="k">default</span><span class="o">:</span>
-      <span class="k">break</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ed_insert_process</span><span class="p">(</span><span class="kt">int</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">NORMAL_MODE_KEY</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">editor</span><span class="p">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">NORMAL_MODE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">ARROW_DOWN</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">ARROW_UP</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">ARROW_LEFT</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">ARROW_RIGHT</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">HOME_KEY</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nl">END_KEY</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ed_process_move</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">default</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="小结">小结</h2>
 <p>_(:зゝ∠)_现在我们有了一个欢迎界面，还可以 <em>play with cursor</em>。现在，VIP只是徒有其表而已，没有编辑器的功能。文本编辑器可以简单的分为两个功能：查看和编辑。下一步，先实现一下带行号的文本查看器。</p>
@@ -1169,7 +1169,7 @@
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

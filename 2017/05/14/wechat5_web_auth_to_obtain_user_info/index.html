@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2017/05/14/wechat5_web_auth_to_obtain_user_info/" />
@@ -175,8 +175,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这里的redirect_uri的就是自己的业务页面．在用户主动同意授权后，页面将跳转至 redirect_uri/?code=CODE&amp;state=STATE．这个state参数貌似有点意思，我曾经想过用这个参数来传递学工号来着，然后在跳转后的页面绑定．但是后来又改成了先用学工号登录自己的网站，把学工号存在cookie里，在跳转后读取cookie然后绑定．这样顺便也利用cookie实现了一下自动登录之类的功能．
 好了，接下来新建一个OAuth2Servlet类，来处理网页的参数和跳转自己的页面．</p>
@@ -192,15 +192,15 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="nf">respons</span><span class="o">(</span>
-            <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span><span class="n">IOException</span> <span class="o">{</span>
-        <span class="n">request</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="n">response</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="c1">// 用户同意授权后，能获取到code
-</span><span class="c1"></span>        <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;code&#34;</span><span class="o">);</span>
-        <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="nf">respons</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span><span class="n">IOException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">request</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">response</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 用户同意授权后，能获取到code
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;code&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>所以可以向而知了，这个OAuth2Servlet就是我们的redirect_uri，需要在测试号里设置一下网址(测试号可以用ip)，以确保可以访问.
 <img src="/images/wechat_redirect.png" alt=""></p>
@@ -211,8 +211,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&amp;secret=SECRET&amp;code=CODE&amp;grant_type=authorization_code
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&amp;secret=SECRET&amp;code=CODE&amp;grant_type=authorization_code
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这里将处理网页的实现，放在一个新的WebUtil类中继承WechatUtil，便可以直接用父类的doGet(),doPost()和一些字段了.具体代码如下:</p>
 <div class="highlight"><div class="chroma">
@@ -232,20 +232,20 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="n">OAuth2AccessToken</span> <span class="nf">getOAuth2AccessToken</span><span class="o">(</span><span class="n">String</span> <span class="n">code</span><span class="o">){</span>
-        <span class="n">OAuth2AccessToken</span> <span class="n">oAuth2AccessToken</span><span class="o">=</span><span class="k">new</span> <span class="n">OAuth2AccessToken</span><span class="o">();</span>
-        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">WEB_ACCESS_TOKEN_URL</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;APPID&#34;</span><span class="o">,</span> <span class="n">getAPPID</span><span class="o">()).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;SECRET&#34;</span><span class="o">,</span> <span class="n">getAPPSECRET</span><span class="o">()).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;CODE&#34;</span><span class="o">,</span><span class="n">code</span><span class="o">);</span>
-        <span class="n">JSONObject</span> <span class="n">jsonObject</span> <span class="o">=</span> <span class="n">doGet</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">jsonObject</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setAccess_token</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;access_token&#34;</span><span class="o">));</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setExpires_in</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&#34;expires_in&#34;</span><span class="o">));</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setRefresh_token</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;refresh_token&#34;</span><span class="o">));</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setOpenid</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;openid&#34;</span><span class="o">));</span>
-            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setScope</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;scope&#34;</span><span class="o">));</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="n">oAuth2AccessToken</span><span class="o">;</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">OAuth2AccessToken</span> <span class="nf">getOAuth2AccessToken</span><span class="o">(</span><span class="n">String</span> <span class="n">code</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">OAuth2AccessToken</span> <span class="n">oAuth2AccessToken</span><span class="o">=</span><span class="k">new</span> <span class="n">OAuth2AccessToken</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">WEB_ACCESS_TOKEN_URL</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;APPID&#34;</span><span class="o">,</span> <span class="n">getAPPID</span><span class="o">()).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;SECRET&#34;</span><span class="o">,</span> <span class="n">getAPPSECRET</span><span class="o">()).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;CODE&#34;</span><span class="o">,</span><span class="n">code</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">JSONObject</span> <span class="n">jsonObject</span> <span class="o">=</span> <span class="n">doGet</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">jsonObject</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setAccess_token</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;access_token&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setExpires_in</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&#34;expires_in&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setRefresh_token</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;refresh_token&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setOpenid</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;openid&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">setScope</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;scope&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">oAuth2AccessToken</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这里有一个坑啊，因为此access_token，非彼access_token.<code>这里通过code换取的是一个特殊的网页授权access_token,与基础支持中的access_token（该access_token用于调用其他接口）不同</code>.所以微信为了安全又在这里搞了另一个token，来增大在网页获取用户信息的难度？</p>
 <h1 id="用access_token和openid获取用户基本信息">用access_token和openid获取用户基本信息</h1>
@@ -270,23 +270,23 @@
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="n">UserInfo</span> <span class="nf">getUserInfo</span><span class="o">(</span><span class="n">String</span> <span class="n">webAccessToken</span><span class="o">,</span> <span class="n">String</span> <span class="n">openid</span><span class="o">){</span>
-        <span class="n">UserInfo</span> <span class="n">userInfo</span><span class="o">=</span><span class="k">new</span> <span class="n">UserInfo</span><span class="o">();</span>
-        <span class="n">String</span> <span class="n">url</span><span class="o">=</span><span class="n">USER_INFO_URL</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;ACCESS_TOKEN&#34;</span><span class="o">,</span><span class="n">webAccessToken</span><span class="o">).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;OPENID&#34;</span><span class="o">,</span><span class="n">openid</span><span class="o">);</span>
-        <span class="n">JSONObject</span> <span class="n">jsonObject</span> <span class="o">=</span> <span class="n">doGet</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">jsonObject</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setOpenid</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;openid&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setNickname</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;nickname&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setSex</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;sex&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setProvince</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;province&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setCity</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;city&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setCountry</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;country&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setHeadimgurl</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;headimgurl&#34;</span><span class="o">));</span>
-            <span class="n">userInfo</span><span class="o">.</span><span class="na">setPrivilege</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;privilege&#34;</span><span class="o">));</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="n">userInfo</span><span class="o">;</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">UserInfo</span> <span class="nf">getUserInfo</span><span class="o">(</span><span class="n">String</span> <span class="n">webAccessToken</span><span class="o">,</span> <span class="n">String</span> <span class="n">openid</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">UserInfo</span> <span class="n">userInfo</span><span class="o">=</span><span class="k">new</span> <span class="n">UserInfo</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">url</span><span class="o">=</span><span class="n">USER_INFO_URL</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;ACCESS_TOKEN&#34;</span><span class="o">,</span><span class="n">webAccessToken</span><span class="o">).</span><span class="na">replace</span><span class="o">(</span><span class="s">&#34;OPENID&#34;</span><span class="o">,</span><span class="n">openid</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">JSONObject</span> <span class="n">jsonObject</span> <span class="o">=</span> <span class="n">doGet</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">jsonObject</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">userInfo</span><span class="o">.</span><span class="na">setOpenid</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;openid&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">userInfo</span><span class="o">.</span><span class="na">setNickname</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;nickname&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">userInfo</span><span class="o">.</span><span class="na">setSex</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;sex&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">userInfo</span><span class="o">.</span><span class="na">setProvince</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;province&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">userInfo</span><span class="o">.</span><span class="na">setCity</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;city&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">userInfo</span><span class="o">.</span><span class="na">setCountry</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;country&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">userInfo</span><span class="o">.</span><span class="na">setHeadimgurl</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;headimgurl&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">userInfo</span><span class="o">.</span><span class="na">setPrivilege</span><span class="o">(</span><span class="n">jsonObject</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&#34;privilege&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">userInfo</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这样就已经实现了获取用户的基本信息，但是还没有结束，再在OAuth2Servlet()类中调用以上的方法，</p>
 <div class="highlight"><div class="chroma">
@@ -315,29 +315,29 @@
 </span><span class="lnt">22
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span>
-            <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span><span class="n">IOException</span> <span class="o">{</span>
-        <span class="n">request</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="n">response</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="c1">// 用户同意授权后，能获取到code
-</span><span class="c1"></span>        <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;code&#34;</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">code</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;!</span><span class="n">code</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;&#34;</span><span class="o">))</span> <span class="o">{</span>
-                <span class="n">WebUtil</span> <span class="n">webUtil</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebUtil</span><span class="o">();</span>
-                <span class="c1">//通过code换取网页授权的access_token
-</span><span class="c1"></span>                <span class="n">OAuth2AccessToken</span> <span class="n">oAuth2AccessToken</span> <span class="o">=</span> <span class="n">webUtil</span><span class="o">.</span><span class="na">getOAuth2AccessToken</span><span class="o">(</span><span class="n">code</span><span class="o">);</span>
-                <span class="c1">//access_token
-</span><span class="c1"></span>                <span class="n">String</span> <span class="n">access_token</span> <span class="o">=</span> <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">getAccess_token</span><span class="o">();</span>
-                <span class="c1">//openid
-</span><span class="c1"></span>                <span class="n">String</span> <span class="n">openid</span> <span class="o">=</span> <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">getOpenid</span><span class="o">();</span>
-                <span class="c1">//获取用户信息
-</span><span class="c1"></span>                <span class="n">UserInfo</span> <span class="n">userInfo</span> <span class="o">=</span> <span class="n">webUtil</span><span class="o">.</span><span class="na">getUserInfo</span><span class="o">(</span><span class="n">access_token</span><span class="o">,</span> <span class="n">openid</span><span class="o">);</span>
-                <span class="c1">//todo 可以改成跳转到profile.jsp页面，通过参数（）来显示是否已经绑定
-</span><span class="c1"></span>                <span class="n">request</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">&#34;UserInfo&#34;</span><span class="o">,</span> <span class="n">userInfo</span><span class="o">);</span>
-                <span class="n">request</span><span class="o">.</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">&#34;message.jsp&#34;</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">request</span><span class="o">,</span><span class="n">response</span><span class="o">);</span>
-            <span class="o">}</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span><span class="n">IOException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">request</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">response</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 用户同意授权后，能获取到code
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;code&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">code</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;!</span><span class="n">code</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;&#34;</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">WebUtil</span> <span class="n">webUtil</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebUtil</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">//通过code换取网页授权的access_token
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">OAuth2AccessToken</span> <span class="n">oAuth2AccessToken</span> <span class="o">=</span> <span class="n">webUtil</span><span class="o">.</span><span class="na">getOAuth2AccessToken</span><span class="o">(</span><span class="n">code</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">//access_token
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">String</span> <span class="n">access_token</span> <span class="o">=</span> <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">getAccess_token</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">//openid
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">String</span> <span class="n">openid</span> <span class="o">=</span> <span class="n">oAuth2AccessToken</span><span class="o">.</span><span class="na">getOpenid</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">//获取用户信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">UserInfo</span> <span class="n">userInfo</span> <span class="o">=</span> <span class="n">webUtil</span><span class="o">.</span><span class="na">getUserInfo</span><span class="o">(</span><span class="n">access_token</span><span class="o">,</span> <span class="n">openid</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">//todo 可以改成跳转到profile.jsp页面，通过参数（）来显示是否已经绑定
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">request</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">&#34;UserInfo&#34;</span><span class="o">,</span> <span class="n">userInfo</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">request</span><span class="o">.</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">&#34;message.jsp&#34;</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">request</span><span class="o">,</span><span class="n">response</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>可以看到在经过一系列操作之后得到了userInfo对象，并且将他传递到下一个页面．</p>
 <h1 id="实现自己的跳转页面">实现自己的跳转页面</h1>
@@ -393,54 +393,54 @@
 </span><span class="lnt">47
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">&lt;%@ page language=&#34;java&#34; pageEncoding=&#34;UTF-8&#34;%&gt;
-&lt;%@ page import=&#34;ObjectC.UserInfo&#34;%&gt;
-&lt;html&gt;
-&lt;head&gt;
-	&lt;title&gt;账号设置&lt;/title&gt;
-	&lt;meta name=&#34;viewport&#34; content=&#34;width=device-width,user-scalable=0&#34;&gt;
-	&lt;link rel=&#34;shortcut icon&#34; href=&#34;home/favicon.ico&#34;&gt;
-	&lt;style type=&#34;text/css&#34;&gt;
-		*{margin:0; padding:0}
-		table{border:1px dashed #B9B9DD;font-size:12pt}
-		td{border:1px dashed #B9B9DD;word-break:break-all; word-wrap:break-word;}
-		#under{width: 200px;height: 20px;margin-top: 350px;}
-	&lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-	&lt;%
-		UserInfo user = (UserInfo)request.getAttribute(&#34;UserInfo&#34;);
-		if(null != user) {
-		String name=user.getName();
-		String openid=user.getOpenid();
-		String schoolid=user.getSchoolid();
-		String headImage=user.getHeadimgurl();
-	%&gt;
-
-    &lt;center&gt;
-	    &lt;div id=&#34;users&#34;&gt;&lt;p&gt;
-    	  &lt;%=name %&gt;&lt;br&gt;
-    	  &lt;%=schoolid%&gt;&lt;br&gt;
-    	  &lt;%=openid%&gt;&lt;br&gt;
-    	  &lt;%=headImage%&gt;&lt;br&gt;
-           绑定成功！&lt;br&gt;
-    	&lt;a href=&#34;profile.jsp&#34;&gt;返回个人设置&lt;/a&gt;
-	&lt;/center&gt;
-
-    &lt;center&gt;
-	&lt;div id=&#34;under&#34;&gt;
-	&lt;p&gt;Copyright © 2016-2017 Yappy Doggie&lt;/p&gt;
-	&lt;/div&gt;
-	&lt;/center&gt;
-
-	&lt;%
-		}
-		else
-			out.print(&#34;用户不同意授权,未获取到用户信息！&#34;);
-	%&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;%@ page language=&#34;java&#34; pageEncoding=&#34;UTF-8&#34;%&gt;
+</span></span><span class="line"><span class="cl">&lt;%@ page import=&#34;ObjectC.UserInfo&#34;%&gt;
+</span></span><span class="line"><span class="cl">&lt;html&gt;
+</span></span><span class="line"><span class="cl">&lt;head&gt;
+</span></span><span class="line"><span class="cl">	&lt;title&gt;账号设置&lt;/title&gt;
+</span></span><span class="line"><span class="cl">	&lt;meta name=&#34;viewport&#34; content=&#34;width=device-width,user-scalable=0&#34;&gt;
+</span></span><span class="line"><span class="cl">	&lt;link rel=&#34;shortcut icon&#34; href=&#34;home/favicon.ico&#34;&gt;
+</span></span><span class="line"><span class="cl">	&lt;style type=&#34;text/css&#34;&gt;
+</span></span><span class="line"><span class="cl">		*{margin:0; padding:0}
+</span></span><span class="line"><span class="cl">		table{border:1px dashed #B9B9DD;font-size:12pt}
+</span></span><span class="line"><span class="cl">		td{border:1px dashed #B9B9DD;word-break:break-all; word-wrap:break-word;}
+</span></span><span class="line"><span class="cl">		#under{width: 200px;height: 20px;margin-top: 350px;}
+</span></span><span class="line"><span class="cl">	&lt;/style&gt;
+</span></span><span class="line"><span class="cl">&lt;/head&gt;
+</span></span><span class="line"><span class="cl">&lt;body&gt;
+</span></span><span class="line"><span class="cl">	&lt;%
+</span></span><span class="line"><span class="cl">		UserInfo user = (UserInfo)request.getAttribute(&#34;UserInfo&#34;);
+</span></span><span class="line"><span class="cl">		if(null != user) {
+</span></span><span class="line"><span class="cl">		String name=user.getName();
+</span></span><span class="line"><span class="cl">		String openid=user.getOpenid();
+</span></span><span class="line"><span class="cl">		String schoolid=user.getSchoolid();
+</span></span><span class="line"><span class="cl">		String headImage=user.getHeadimgurl();
+</span></span><span class="line"><span class="cl">	%&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    &lt;center&gt;
+</span></span><span class="line"><span class="cl">	    &lt;div id=&#34;users&#34;&gt;&lt;p&gt;
+</span></span><span class="line"><span class="cl">    	  &lt;%=name %&gt;&lt;br&gt;
+</span></span><span class="line"><span class="cl">    	  &lt;%=schoolid%&gt;&lt;br&gt;
+</span></span><span class="line"><span class="cl">    	  &lt;%=openid%&gt;&lt;br&gt;
+</span></span><span class="line"><span class="cl">    	  &lt;%=headImage%&gt;&lt;br&gt;
+</span></span><span class="line"><span class="cl">           绑定成功！&lt;br&gt;
+</span></span><span class="line"><span class="cl">    	&lt;a href=&#34;profile.jsp&#34;&gt;返回个人设置&lt;/a&gt;
+</span></span><span class="line"><span class="cl">	&lt;/center&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    &lt;center&gt;
+</span></span><span class="line"><span class="cl">	&lt;div id=&#34;under&#34;&gt;
+</span></span><span class="line"><span class="cl">	&lt;p&gt;Copyright © 2016-2017 Yappy Doggie&lt;/p&gt;
+</span></span><span class="line"><span class="cl">	&lt;/div&gt;
+</span></span><span class="line"><span class="cl">	&lt;/center&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	&lt;%
+</span></span><span class="line"><span class="cl">		}
+</span></span><span class="line"><span class="cl">		else
+</span></span><span class="line"><span class="cl">			out.print(&#34;用户不同意授权,未获取到用户信息！&#34;);
+</span></span><span class="line"><span class="cl">	%&gt;
+</span></span><span class="line"><span class="cl">&lt;/body&gt;
+</span></span><span class="line"><span class="cl">&lt;/html&gt;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>主要是判断了一下用户是否授权，如果没有就显示＂用户不同意授权,未获取到用户信息！＂。这样基本的获取用户信息和跳转自己的页面就实现了。</p>
 <h1 id="最后">最后</h1>
@@ -552,7 +552,7 @@
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

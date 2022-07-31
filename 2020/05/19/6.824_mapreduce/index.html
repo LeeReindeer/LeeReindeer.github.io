@@ -25,7 +25,7 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2020/05/19/6.824_mapreduce/" />
@@ -260,23 +260,23 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">WorkerTask</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">filename</span> <span class="kt">string</span> <span class="c1">// for map tasks
-</span><span class="c1"></span>	<span class="nx">state</span>    <span class="nx">TaskState</span>
-	<span class="nx">id</span>       <span class="kt">int</span> <span class="c1">// for non-idle tasks
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="kd">type</span> <span class="nx">Master</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">allMapTaksDone</span>    <span class="kt">bool</span>
-	<span class="nx">allReduceTaksDone</span> <span class="kt">bool</span>
-	<span class="nx">mapTask</span>    <span class="p">[]</span><span class="nx">WorkerTask</span>
-	<span class="nx">reduceTask</span> <span class="p">[]</span><span class="nx">WorkerTask</span>
-	<span class="nx">nReduce</span>    <span class="kt">int</span>
-	<span class="nx">nFiles</span>     <span class="kt">int</span>
-
-	<span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">WorkerTask</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">filename</span> <span class="kt">string</span> <span class="c1">// for map tasks
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">state</span>    <span class="nx">TaskState</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">id</span>       <span class="kt">int</span> <span class="c1">// for non-idle tasks
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Master</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">allMapTaksDone</span>    <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">allReduceTaksDone</span> <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">mapTask</span>    <span class="p">[]</span><span class="nx">WorkerTask</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">reduceTask</span> <span class="p">[]</span><span class="nx">WorkerTask</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">nReduce</span>    <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">nFiles</span>     <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
@@ -298,20 +298,20 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">Worker</span><span class="p">(</span><span class="nx">mapf</span> <span class="kd">func</span><span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="nx">KeyValue</span><span class="p">,</span>
-	<span class="nx">reducef</span> <span class="kd">func</span><span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-	<span class="k">for</span> <span class="p">{</span>
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-		<span class="nx">reply</span> <span class="o">:=</span> <span class="nf">askTask</span><span class="p">()</span>
-
-		<span class="k">if</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">Phase</span> <span class="o">==</span> <span class="nx">MapPhase</span> <span class="p">{</span>
-			<span class="k">go</span> <span class="nf">doMapTask</span><span class="p">(</span><span class="nx">mapf</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">File</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">Id</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">NumForOtherPhase</span><span class="p">)</span>
-		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">Phase</span> <span class="o">==</span> <span class="nx">ReducePhase</span> <span class="p">{</span>
-			<span class="k">go</span> <span class="nf">doReduceTask</span><span class="p">(</span><span class="nx">reducef</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">Id</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">NumForOtherPhase</span><span class="p">)</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Worker</span><span class="p">(</span><span class="nx">mapf</span> <span class="kd">func</span><span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="nx">KeyValue</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">reducef</span> <span class="kd">func</span><span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">reply</span> <span class="o">:=</span> <span class="nf">askTask</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">Phase</span> <span class="o">==</span> <span class="nx">MapPhase</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">go</span> <span class="nf">doMapTask</span><span class="p">(</span><span class="nx">mapf</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">File</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">Id</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">NumForOtherPhase</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">Phase</span> <span class="o">==</span> <span class="nx">ReducePhase</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">go</span> <span class="nf">doReduceTask</span><span class="p">(</span><span class="nx">reducef</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">Id</span><span class="p">,</span> <span class="nx">reply</span><span class="p">.</span><span class="nx">NumForOtherPhase</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
@@ -329,16 +329,16 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">TaskReply</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">File</span>  <span class="kt">string</span> <span class="c1">// only for map phase
-</span><span class="c1"></span>	<span class="nx">Phase</span> <span class="nx">JobPhase</span>
-	<span class="nx">Id</span>    <span class="kt">int</span> <span class="c1">//task index
-</span><span class="c1"></span>	<span class="c1">// for map, it&#39;s nReduce to naming the intermediate file,
-</span><span class="c1"></span>	<span class="c1">// for reduce, it&#39;s nFile to collect intermediate files
-</span><span class="c1"></span>	<span class="nx">NumForOtherPhase</span> <span class="kt">int</span>
-	<span class="nx">Kill</span>             <span class="kt">bool</span> <span class="c1">// all task done, kill the worker
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">TaskReply</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">File</span>  <span class="kt">string</span> <span class="c1">// only for map phase
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">Phase</span> <span class="nx">JobPhase</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Id</span>    <span class="kt">int</span> <span class="c1">//task index
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// for map, it&#39;s nReduce to naming the intermediate file,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// for reduce, it&#39;s nFile to collect intermediate files
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">NumForOtherPhase</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Kill</span>             <span class="kt">bool</span> <span class="c1">// all task done, kill the worker
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
@@ -352,12 +352,12 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">TaskDoneArgs</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">Id</span>    <span class="kt">int</span> <span class="c1">// done task id
-</span><span class="c1"></span>	<span class="nx">Phase</span> <span class="nx">JobPhase</span>
-	<span class="c1">// TempFiles *[]os.File
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">TaskDoneArgs</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Id</span>    <span class="kt">int</span> <span class="c1">// done task id
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">Phase</span> <span class="nx">JobPhase</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// TempFiles *[]os.File
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
@@ -471,7 +471,7 @@ MapReduce Framework hides the messy details of parallelization, fault-tolerance,
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

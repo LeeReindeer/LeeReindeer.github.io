@@ -18,7 +18,7 @@
 
 <meta name="author" content="LeeReindeer" /><meta name="description" content=" Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务器接口，卒。 最近发现了一个新的可用的网站，所以重构的时候到了，在框架的选择上我一直纠结是用 MVP 还是 MVVM，最后还是用了 MVVM 配合 Google 的 Jetpack，使用起来很奇妙，也有很多坑。
 目前 App 确定的几个功能是：查成绩、校园卡、借阅查询。
- 这次我用的数据来源是学校的官网，可以在外网访问，貌似知道这个网站的同学很少啊。
+这次我用的数据来源是学校的官网，可以在外网访问，貌似知道这个网站的同学很少啊。
 " /><meta name="keywords" content="LeeReindeer, Hugo, even" />
 
 
@@ -26,7 +26,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2019/01/16/grain-refactor-1/" />
@@ -276,25 +276,25 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">getExecution</span><span class="p">():</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">executionRequest</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(!</span><span class="n">response</span><span class="p">.</span><span class="n">isSuccessful</span><span class="p">)</span> <span class="p">{</span>
-                <span class="s2">&#34;&#34;</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="k">val</span> <span class="py">respString</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">string</span><span class="p">()</span>
-                <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">respString</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">selected</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;input[type=hidden]&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">executionNode</span> <span class="p">=</span> <span class="n">selected</span><span class="p">[</span><span class="m">1</span><span class="p">]</span>
-                <span class="k">val</span> <span class="py">executionStr</span> <span class="p">=</span> <span class="n">executionNode</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s2">&#34;value&#34;</span><span class="p">)</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResponse: execution: </span><span class="si">$executionStr</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="n">executionStr</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">getExecution</span><span class="p">():</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">executionRequest</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(!</span><span class="n">response</span><span class="p">.</span><span class="n">isSuccessful</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">respString</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">string</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">respString</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">selected</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;input[type=hidden]&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">executionNode</span> <span class="p">=</span> <span class="n">selected</span><span class="p">[</span><span class="m">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">executionStr</span> <span class="p">=</span> <span class="n">executionNode</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s2">&#34;value&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResponse: execution: </span><span class="si">$executionStr</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">executionStr</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="登录">登录</h4>
 <div class="highlight"><div class="chroma">
@@ -343,49 +343,49 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">42
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="cm">/**
-</span><span class="cm">     * @param user user to login with is and password
-</span><span class="cm">     * @return return observable of login status code
-</span><span class="cm">     * @see LOGIN_NET_ERROR -1 -&gt; network error
-</span><span class="cm">     * @see LOGIN_ID_PASS_ERROR 0 -&gt; password error
-</span><span class="cm">     * @see LOGIN_SUCCESS 1 -&gt; success
-</span><span class="cm">     */</span>
-    <span class="k">fun</span> <span class="nf">login</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">execution</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">execution</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
-            <span class="n">Log</span><span class="p">.</span><span class="n">e</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;getExecution failed&#34;</span><span class="p">);</span>
-            <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span> <span class="n">LOGIN_NET_ERROR</span> <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="k">val</span> <span class="py">formBody</span> <span class="p">=</span> <span class="n">FormBody</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;authType&#34;</span><span class="p">,</span> <span class="s2">&#34;0&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;username&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">id</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;password&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">password</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;lt&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;execution&#34;</span><span class="p">,</span> <span class="n">execution</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;_eventId&#34;</span><span class="p">,</span> <span class="s2">&#34;submit&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;randomStr&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">val</span> <span class="py">loginRequest</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;https://my.zjou.edu.cn/cas/login?service=http%3A%2F%2Fportal.zjou.edu.cn%2Findex.portal&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="n">formBody</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">loginRequest</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;login: respose code: </span><span class="si">${response.code()}</span><span class="s2">&#34;</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">?.</span><span class="n">string</span><span class="p">())</span>
-            <span class="c1">// password or ID error
-</span><span class="c1"></span>            <span class="k">val</span> <span class="py">statusDiv</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s2">&#34;status&#34;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">statusDiv</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">LOGIN_ID_PASS_ERROR</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// login succeed, redirect to home page
-</span><span class="c1"></span>                <span class="n">LOGIN_SUCCESS</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">    <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param user user to login with is and password
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @return return observable of login status code
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @see LOGIN_NET_ERROR -1 -&gt; network error
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @see LOGIN_ID_PASS_ERROR 0 -&gt; password error
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @see LOGIN_SUCCESS 1 -&gt; success
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">login</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">execution</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">execution</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Log</span><span class="p">.</span><span class="n">e</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;getExecution failed&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span> <span class="n">LOGIN_NET_ERROR</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">formBody</span> <span class="p">=</span> <span class="n">FormBody</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;authType&#34;</span><span class="p">,</span> <span class="s2">&#34;0&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;username&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">id</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;password&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">password</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;lt&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;execution&#34;</span><span class="p">,</span> <span class="n">execution</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;_eventId&#34;</span><span class="p">,</span> <span class="s2">&#34;submit&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;randomStr&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">loginRequest</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;https://my.zjou.edu.cn/cas/login?service=http%3A%2F%2Fportal.zjou.edu.cn%2Findex.portal&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="n">formBody</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">loginRequest</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;login: respose code: </span><span class="si">${response.code()}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">?.</span><span class="n">string</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// password or ID error
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">val</span> <span class="py">statusDiv</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s2">&#34;status&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">statusDiv</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">LOGIN_ID_PASS_ERROR</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// login succeed, redirect to home page
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">LOGIN_SUCCESS</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>login</code>方法需要用户id、密码和<code>execution</code>。所以需要在登录之前先获取<code>execution</code>，获取成功之后才会登录。</p>
 <h4 id="登出">登出</h4>
@@ -401,15 +401,15 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">logoutAsync</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">logoutRequest</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;https://my.zjou.edu.cn/cas/logout?service=http://portal.zjou.edu.cn&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
-            <span class="p">.</span><span class="k">get</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">logoutRequest</span><span class="p">).</span><span class="n">enqueue</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">logoutAsync</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">logoutRequest</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;https://my.zjou.edu.cn/cas/logout?service=http://portal.zjou.edu.cn&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="k">get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">logoutRequest</span><span class="p">).</span><span class="n">enqueue</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>logout</code>没有返回<code>Rxjava</code>的<code>Observable</code>，而是传入<code>okhttp3.Callback</code>，<code>Callback</code>中的方法是异步的，不在主线程。其实效果和<code>Rxjava</code>差不多，返回的<code>Observable</code>可以<code>subscribe</code>一个<code>Observer</code>。在<code>Observable</code>中处理网络请求，在<code>Observer</code>中处理结果。</p>
 <div class="highlight"><div class="chroma">
@@ -419,10 +419,10 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="n">observable</span>
-	<span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span> <span class="c1">// Observable 运行在 IO 线程
-</span><span class="c1"></span>	<span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span> <span class="c1">// Observer 运行在 Main 线程
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">observable</span>
+</span></span><span class="line"><span class="cl">	<span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span> <span class="c1">// Observable 运行在 IO 线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span> <span class="c1">// Observer 运行在 Main 线程
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>我个人比较喜欢<code>Rxjava</code>的链式调用。</p>
 <h2 id="成绩">成绩</h2>
@@ -448,23 +448,23 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">getTranscript</span><span class="p">():</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">MutableList</span><span class="p">&lt;</span><span class="n">Transcript</span><span class="p">&gt;?&gt;</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">transcriptRequest</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResponse: code: </span><span class="si">${response.code()}</span><span class="s2">&#34;</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">resp</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">?.</span><span class="n">string</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">resp</span><span class="o">?.</span><span class="n">startsWith</span><span class="p">(</span><span class="s2">&#34;{&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="k">true</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResponse: </span><span class="si">$resp</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">transcriptResponse</span> <span class="p">=</span> <span class="n">Gson</span><span class="p">().</span><span class="n">parseJson</span><span class="p">&lt;</span><span class="n">TranscriptResponse</span><span class="p">&gt;(</span><span class="n">resp</span><span class="p">)</span>
-                <span class="n">transcriptResponse</span><span class="o">?.</span><span class="n">transcriptList</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">Transcript</span><span class="p">&gt;()</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">getTranscript</span><span class="p">():</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">MutableList</span><span class="p">&lt;</span><span class="n">Transcript</span><span class="p">&gt;?&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">transcriptRequest</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResponse: code: </span><span class="si">${response.code()}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">resp</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">?.</span><span class="n">string</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">resp</span><span class="o">?.</span><span class="n">startsWith</span><span class="p">(</span><span class="s2">&#34;{&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="k">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;onResponse: </span><span class="si">$resp</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">transcriptResponse</span> <span class="p">=</span> <span class="n">Gson</span><span class="p">().</span><span class="n">parseJson</span><span class="p">&lt;</span><span class="n">TranscriptResponse</span><span class="p">&gt;(</span><span class="n">resp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">transcriptResponse</span><span class="o">?.</span><span class="n">transcriptList</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">Transcript</span><span class="p">&gt;()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><hr>
 <p>剩下的校园卡和借阅的数据需要用<code>Jsoup</code>解析HTML去获取，下回再写。</p>
@@ -502,32 +502,32 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="cm">/**
-</span><span class="cm">     * @param pageIndex page start from 1
-</span><span class="cm">     */</span>
-    <span class="k">fun</span> <span class="nf">getECardList</span><span class="p">(</span><span class="n">pageIndex</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="n">pageSize</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">ECard</span><span class="p">&gt;?&gt;</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">form</span> <span class="p">=</span> <span class="n">FormBody</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;pageIndex&#34;</span><span class="p">,</span> <span class="n">pageIndex</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;pageSize&#34;</span><span class="p">,</span> <span class="n">pageSize</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">val</span> <span class="py">request</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;http://portal.zjou.edu.cn/independent.portal?.cs=ZHxjb20uZWR1LmRrLnN0YXJnYXRlLnBvcnRhbC5jb250YWluZXIuY29yZS5pbXBsLlBvcnRsZXRFbnRpdHlXaW5kb3d8aW50ZS1qeXh4fHZpZXd8bm9ybWFsfHBtX2ludGUtanl4eF9hY3Rpb249cXVlcnlKeXh4fHJtX3xwcm1f&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">request</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(!</span><span class="n">response</span><span class="p">.</span><span class="n">isSuccessful</span> <span class="o">||</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">ArrayList</span><span class="p">()</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="n">parseCardTable</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">string</span><span class="p">())</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">    <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param pageIndex page start from 1
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">getECardList</span><span class="p">(</span><span class="n">pageIndex</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="n">pageSize</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">ECard</span><span class="p">&gt;?&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">form</span> <span class="p">=</span> <span class="n">FormBody</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;pageIndex&#34;</span><span class="p">,</span> <span class="n">pageIndex</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;pageSize&#34;</span><span class="p">,</span> <span class="n">pageSize</span><span class="p">.</span><span class="n">toString</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">request</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;http://portal.zjou.edu.cn/independent.portal?.cs=ZHxjb20uZWR1LmRrLnN0YXJnYXRlLnBvcnRhbC5jb250YWluZXIuY29yZS5pbXBsLlBvcnRsZXRFbnRpdHlXaW5kb3d8aW50ZS1qeXh4fHZpZXd8bm9ybWFsfHBtX2ludGUtanl4eF9hY3Rpb249cXVlcnlKeXh4fHJtX3xwcm1f&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">request</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(!</span><span class="n">response</span><span class="p">.</span><span class="n">isSuccessful</span> <span class="o">||</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">ArrayList</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">parseCardTable</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="n">string</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>校园卡的消费记录是一个表单 post 请求，response 是 html。。。大概是没有做专门的 RESTful API 吧。所以只能使用 Jsoup 解析表格。</p>
 <p>下面是一段 HTML 表格代码的截取：第一个<code>tr</code>标签是表头，不需要。从第二个<code>tr</code>开始提取我们想要的<code>td</code>，组成每一项消费记录。</p>
@@ -563,35 +563,35 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">28
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">table</span> <span class="na">isscroll</span><span class="o">=</span><span class="s">&#34;false&#34;</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;portlet-table&#34;</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;queryGridPluto_inte_jyxx_&#34;</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">thead</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>卡号<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易流水号<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易时间<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>商户代码<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易类型<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易金额<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易余额<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;&lt;/</span><span class="nt">thead</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tbody</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tr</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;odd&#34;</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>57016<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>219171082<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>2019-01-12 11:41:05<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>长峙学生宿舍P<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>收费冲正<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>4.69<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>43.3<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tr</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;even&#34;</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>57016<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>219169846<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>2019-01-12 11:32:01<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>长峙学生宿舍P<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>商务收费<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>-5<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>38.61<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;&lt;/</span><span class="nt">tbody</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">table</span> <span class="na">isscroll</span><span class="o">=</span><span class="s">&#34;false&#34;</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;portlet-table&#34;</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;queryGridPluto_inte_jyxx_&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">thead</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>卡号<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易流水号<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易时间<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>商户代码<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易类型<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易金额<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>交易余额<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;&lt;/</span><span class="nt">thead</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">tbody</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">tr</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;odd&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>57016<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>219171082<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>2019-01-12 11:41:05<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>长峙学生宿舍P<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>收费冲正<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>4.69<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>43.3<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">tr</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;even&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>57016<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>219169846<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>2019-01-12 11:32:01<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:6%;&#34;</span><span class="p">&gt;</span>长峙学生宿舍P<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:10%;&#34;</span><span class="p">&gt;</span>商务收费<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>-5<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width:8%;&#34;</span><span class="p">&gt;</span>38.61<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;&lt;/</span><span class="nt">tbody</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -603,13 +603,13 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="k">val</span> <span class="py">table</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s2">&#34;queryGridPluto_inte_jyxx_&#34;</span><span class="p">)</span>
-<span class="k">val</span> <span class="py">rows</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;tr&#34;</span><span class="p">)</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">1</span> <span class="n">until</span> <span class="n">rows</span><span class="p">.</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">val</span> <span class="py">cols</span> <span class="p">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;td&#34;</span><span class="p">)</span>
-	<span class="c1">//...
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">val</span> <span class="py">table</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s2">&#34;queryGridPluto_inte_jyxx_&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">val</span> <span class="py">rows</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;tr&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">1</span> <span class="n">until</span> <span class="n">rows</span><span class="p">.</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">val</span> <span class="py">cols</span> <span class="p">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;td&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>交易流水号、交易时间、商户代码、交易金额都是我们需要的数据，分别对其进行提取和提纯：</p>
 <div class="highlight"><div class="chroma">
@@ -660,51 +660,51 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">44
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">private</span> <span class="k">val</span> <span class="py">regex1</span> <span class="p">=</span> <span class="n">Regex</span><span class="p">(</span><span class="s2">&#34;(消费机|同力|多媒体)[0-9]*&#34;</span><span class="p">)</span>
-    <span class="k">private</span> <span class="k">val</span> <span class="py">regexToRemoveNum</span> <span class="p">=</span> <span class="n">Regex</span><span class="p">(</span><span class="s2">&#34;[0-9]+&#34;</span><span class="p">)</span>
-    <span class="k">private</span> <span class="k">fun</span> <span class="nf">parseCardTable</span><span class="p">(</span><span class="n">responseString</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="n">pageSize</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">ECard</span><span class="p">&gt;?</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">responseString</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="k">null</span>
-        <span class="p">}</span>
-        <span class="k">val</span> <span class="py">itemList</span> <span class="p">=</span> <span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">ECard</span><span class="p">&gt;(</span><span class="n">pageSize</span><span class="p">)</span>
-        <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">responseString</span><span class="p">)</span>
-        <span class="k">val</span> <span class="py">table</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s2">&#34;queryGridPluto_inte_jyxx_&#34;</span><span class="p">)</span>
-        <span class="k">val</span> <span class="py">rows</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;tr&#34;</span><span class="p">)</span>
-
-        <span class="n">Util</span><span class="p">.</span><span class="n">formatSecondThreadLocal</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">SimpleDateFormat</span><span class="p">(</span><span class="s2">&#34;yyyy-MM-dd HH:mm:ss&#34;</span><span class="p">,</span> <span class="n">Locale</span><span class="p">.</span><span class="n">CHINA</span><span class="p">))</span>
-
-        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">1</span> <span class="n">until</span> <span class="n">rows</span><span class="p">.</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">cols</span> <span class="p">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;td&#34;</span><span class="p">)</span>
-            <span class="k">var</span> <span class="py">money</span> <span class="p">=</span> <span class="m">0.0</span>
-            <span class="k">try</span> <span class="p">{</span>
-                <span class="n">money</span> <span class="p">=</span> <span class="n">cols</span><span class="p">[</span><span class="m">5</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">toDouble</span><span class="p">()</span>
-            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">NumberFormatException</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">continue</span>
-            <span class="p">}</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">money</span> <span class="o">!=</span> <span class="m">0.0</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">val</span> <span class="py">name</span> <span class="p">=</span> <span class="n">prettyName</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="m">3</span><span class="p">].</span><span class="n">text</span><span class="p">())</span>
-                <span class="k">var</span> <span class="py">item</span><span class="p">:</span> <span class="n">ECard</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
-                <span class="k">try</span> <span class="p">{</span>
-                    <span class="k">val</span> <span class="py">date</span> <span class="p">=</span> <span class="n">Util</span><span class="p">.</span><span class="n">getTimeDate</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="m">2</span><span class="p">].</span><span class="n">text</span><span class="p">())</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">date</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="k">continue</span>
-                    <span class="n">item</span> <span class="p">=</span> <span class="n">ECard</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">toLong</span><span class="p">(),</span> <span class="n">name</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">money</span><span class="p">)</span>
-                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">ArrayIndexOutOfBoundsException</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">()</span>
-                    <span class="k">continue</span>
-                <span class="p">}</span>
-                <span class="n">itemList</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">itemList</span>
-    <span class="p">}</span>
-
-    <span class="k">private</span> <span class="k">fun</span> <span class="nf">prettyName</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="n">String</span> <span class="p">{</span>
-        <span class="k">var</span> <span class="py">tmp</span> <span class="p">=</span> <span class="n">name</span>
-        <span class="n">tmp</span> <span class="p">=</span> <span class="n">tmp</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="n">regex1</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-        <span class="n">tmp</span> <span class="p">=</span> <span class="n">tmp</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="n">regexToRemoveNum</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">tmp</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">val</span> <span class="py">regex1</span> <span class="p">=</span> <span class="n">Regex</span><span class="p">(</span><span class="s2">&#34;(消费机|同力|多媒体)[0-9]*&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">val</span> <span class="py">regexToRemoveNum</span> <span class="p">=</span> <span class="n">Regex</span><span class="p">(</span><span class="s2">&#34;[0-9]+&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">fun</span> <span class="nf">parseCardTable</span><span class="p">(</span><span class="n">responseString</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="n">pageSize</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">ECard</span><span class="p">&gt;?</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">responseString</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="k">null</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">itemList</span> <span class="p">=</span> <span class="n">ArrayList</span><span class="p">&lt;</span><span class="n">ECard</span><span class="p">&gt;(</span><span class="n">pageSize</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">responseString</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">table</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s2">&#34;queryGridPluto_inte_jyxx_&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">rows</span> <span class="p">=</span> <span class="n">table</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;tr&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">Util</span><span class="p">.</span><span class="n">formatSecondThreadLocal</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">SimpleDateFormat</span><span class="p">(</span><span class="s2">&#34;yyyy-MM-dd HH:mm:ss&#34;</span><span class="p">,</span> <span class="n">Locale</span><span class="p">.</span><span class="n">CHINA</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">1</span> <span class="n">until</span> <span class="n">rows</span><span class="p">.</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">cols</span> <span class="p">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;td&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">var</span> <span class="py">money</span> <span class="p">=</span> <span class="m">0.0</span>
+</span></span><span class="line"><span class="cl">            <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">money</span> <span class="p">=</span> <span class="n">cols</span><span class="p">[</span><span class="m">5</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">toDouble</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">NumberFormatException</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">money</span> <span class="o">!=</span> <span class="m">0.0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">name</span> <span class="p">=</span> <span class="n">prettyName</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="m">3</span><span class="p">].</span><span class="n">text</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">                <span class="k">var</span> <span class="py">item</span><span class="p">:</span> <span class="n">ECard</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+</span></span><span class="line"><span class="cl">                <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">val</span> <span class="py">date</span> <span class="p">=</span> <span class="n">Util</span><span class="p">.</span><span class="n">getTimeDate</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="m">2</span><span class="p">].</span><span class="n">text</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="n">date</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">item</span> <span class="p">=</span> <span class="n">ECard</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">toLong</span><span class="p">(),</span> <span class="n">name</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">money</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">ArrayIndexOutOfBoundsException</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">itemList</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">itemList</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">fun</span> <span class="nf">prettyName</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="n">String</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">var</span> <span class="py">tmp</span> <span class="p">=</span> <span class="n">name</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tmp</span> <span class="p">=</span> <span class="n">tmp</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="n">regex1</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tmp</span> <span class="p">=</span> <span class="n">tmp</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="n">regexToRemoveNum</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">tmp</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="用户信息">用户信息</h2>
 <p>网站的主页包含一些用户的信息：班级，学号，校园卡余额，图书借阅情况，同样可以用 Jsoup 对其进行提取，在 app 中展示。</p>
@@ -777,70 +777,70 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 </span><span class="lnt">63
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin">    <span class="k">fun</span> <span class="nf">getUserInfo</span><span class="p">():</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="p">{</span>
-        <span class="k">val</span> <span class="py">request</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;http://portal.zjou.edu.cn/index.portal&#34;</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
-            <span class="p">.</span><span class="k">get</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
-            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">request</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
-            <span class="k">val</span> <span class="py">user</span> <span class="p">=</span> <span class="n">User</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
-            <span class="k">val</span> <span class="py">resp</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">?.</span><span class="n">string</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">resp</span><span class="p">.</span><span class="n">isNullOrEmpty</span><span class="p">())</span> <span class="p">{</span>
-                <span class="n">user</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
-                <span class="k">var</span> <span class="py">div</span><span class="p">:</span> <span class="n">Elements</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
-                <span class="k">try</span> <span class="p">{</span>
-                    <span class="n">div</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementsByClass</span><span class="p">(</span><span class="s2">&#34;user_info&#34;</span><span class="p">)[</span><span class="m">0</span><span class="p">].</span><span class="n">allElements</span>
-                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">Exception</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="k">return</span><span class="nd">@fromCallable</span> <span class="n">user</span>
-                <span class="p">}</span>
-
-                <span class="c1">// index 0 is all content text in the div
-</span><span class="c1"></span>                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;nameText: </span><span class="si">${div!![1].text()}</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">nameText</span> <span class="p">=</span> <span class="n">div</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">let</span> <span class="p">{</span> <span class="n">str</span> <span class="o">-&gt;</span>
-                    <span class="k">val</span> <span class="py">index</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">indexOfFirst</span> <span class="p">{</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;，&#39;</span> <span class="p">}</span>
-                    <span class="n">str</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-                <span class="p">}</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;name: </span><span class="si">$nameText</span><span class="s2">&#34;</span><span class="p">)</span>
-
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;idText: </span><span class="si">${div[2].text()}</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">idText</span> <span class="p">=</span> <span class="n">div</span><span class="p">[</span><span class="m">2</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">let</span> <span class="p">{</span> <span class="n">str</span> <span class="o">-&gt;</span>
-                    <span class="k">val</span> <span class="py">index</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">indexOfFirst</span> <span class="p">{</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;：&#39;</span> <span class="p">}</span>
-                    <span class="n">str</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="n">index</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">str</span><span class="p">.</span><span class="n">length</span><span class="p">)</span>
-                <span class="p">}</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;id: </span><span class="si">$idText</span><span class="s2">&#34;</span><span class="p">)</span>
-
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;classText: </span><span class="si">${div[3].text()}</span><span class="s2">&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">classText</span> <span class="p">=</span> <span class="n">div</span><span class="p">[</span><span class="m">3</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">let</span> <span class="p">{</span> <span class="n">str</span> <span class="o">-&gt;</span>
-                    <span class="k">val</span> <span class="py">index</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">indexOfFirst</span> <span class="p">{</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;：&#39;</span> <span class="p">}</span>
-                    <span class="n">str</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="n">index</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">str</span><span class="p">.</span><span class="n">length</span><span class="p">)</span>
-                <span class="p">}</span>
-                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;class: </span><span class="si">$classText</span><span class="s2">&#34;</span><span class="p">)</span>
-
-                <span class="k">val</span> <span class="py">cardLi</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementsByClass</span><span class="p">(</span><span class="s2">&#34;ykt&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">libraryLi</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementsByClass</span><span class="p">(</span><span class="s2">&#34;tsg&#34;</span><span class="p">)</span>
-                <span class="k">val</span> <span class="py">bookRentTexts</span> <span class="p">=</span> <span class="n">libraryLi</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">allElements</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34; &#34;</span><span class="p">)</span>
-
-                <span class="k">var</span> <span class="py">moneyRem</span> <span class="p">=</span> <span class="m">0.0</span>
-                <span class="k">var</span> <span class="py">bookRentNum</span> <span class="p">=</span> <span class="m">0</span>
-                <span class="k">var</span> <span class="py">bookRentOutDateNum</span> <span class="p">=</span> <span class="m">0</span>
-                <span class="k">try</span> <span class="p">{</span>
-                    <span class="n">moneyRem</span> <span class="p">=</span> <span class="n">cardLi</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">allElements</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">filter</span> <span class="p">{</span> <span class="k">it</span><span class="p">.</span><span class="n">isDigit</span><span class="p">()</span> <span class="o">||</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;.&#39;</span> <span class="p">}.</span><span class="n">toDouble</span><span class="p">()</span>
-                    <span class="n">bookRentNum</span> <span class="p">=</span> <span class="n">bookRentTexts</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">toInt</span><span class="p">()</span>
-                    <span class="n">bookRentOutDateNum</span> <span class="p">=</span> <span class="n">bookRentTexts</span><span class="p">[</span><span class="m">2</span><span class="p">].</span><span class="n">filter</span> <span class="p">{</span> <span class="k">it</span><span class="p">.</span><span class="n">isDigit</span><span class="p">()</span> <span class="p">}.</span><span class="n">toInt</span><span class="p">()</span>
-                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">NumberFormatException</span><span class="p">)</span> <span class="p">{</span>
-                <span class="p">}</span>
-
-                <span class="n">User</span><span class="p">(</span><span class="n">idText</span><span class="p">.</span><span class="n">toInt</span><span class="p">(),</span> <span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="n">nameText</span><span class="p">,</span> <span class="n">classText</span><span class="p">,</span> <span class="n">moneyRem</span><span class="p">,</span> <span class="n">bookRentNum</span><span class="p">,</span> <span class="n">bookRentOutDateNum</span><span class="p">)</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
-    <span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">getUserInfo</span><span class="p">():</span> <span class="n">Observable</span><span class="p">&lt;</span><span class="n">User</span><span class="p">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">request</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;http://portal.zjou.edu.cn/index.portal&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&#34;User-Agent&#34;</span><span class="p">,</span> <span class="n">USER_AGENT</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="k">get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">build</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromCallable</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">request</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">user</span> <span class="p">=</span> <span class="n">User</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">val</span> <span class="py">resp</span> <span class="p">=</span> <span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="o">?.</span><span class="n">string</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">resp</span><span class="p">.</span><span class="n">isNullOrEmpty</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">user</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">doc</span> <span class="p">=</span> <span class="n">Jsoup</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">var</span> <span class="py">div</span><span class="p">:</span> <span class="n">Elements</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+</span></span><span class="line"><span class="cl">                <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">div</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementsByClass</span><span class="p">(</span><span class="s2">&#34;user_info&#34;</span><span class="p">)[</span><span class="m">0</span><span class="p">].</span><span class="n">allElements</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">Exception</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span><span class="nd">@fromCallable</span> <span class="n">user</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="c1">// index 0 is all content text in the div
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;nameText: </span><span class="si">${div!![1].text()}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">nameText</span> <span class="p">=</span> <span class="n">div</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">let</span> <span class="p">{</span> <span class="n">str</span> <span class="o">-&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">val</span> <span class="py">index</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">indexOfFirst</span> <span class="p">{</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;，&#39;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">str</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;name: </span><span class="si">$nameText</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;idText: </span><span class="si">${div[2].text()}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">idText</span> <span class="p">=</span> <span class="n">div</span><span class="p">[</span><span class="m">2</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">let</span> <span class="p">{</span> <span class="n">str</span> <span class="o">-&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">val</span> <span class="py">index</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">indexOfFirst</span> <span class="p">{</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;：&#39;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">str</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="n">index</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">str</span><span class="p">.</span><span class="n">length</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;id: </span><span class="si">$idText</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;classText: </span><span class="si">${div[3].text()}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">classText</span> <span class="p">=</span> <span class="n">div</span><span class="p">[</span><span class="m">3</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">let</span> <span class="p">{</span> <span class="n">str</span> <span class="o">-&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">val</span> <span class="py">index</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">indexOfFirst</span> <span class="p">{</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;：&#39;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">str</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="n">index</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">str</span><span class="p">.</span><span class="n">length</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Log</span><span class="p">.</span><span class="n">d</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s2">&#34;class: </span><span class="si">$classText</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">cardLi</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementsByClass</span><span class="p">(</span><span class="s2">&#34;ykt&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">libraryLi</span> <span class="p">=</span> <span class="n">doc</span><span class="p">.</span><span class="n">getElementsByClass</span><span class="p">(</span><span class="s2">&#34;tsg&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">val</span> <span class="py">bookRentTexts</span> <span class="p">=</span> <span class="n">libraryLi</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">allElements</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34; &#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="k">var</span> <span class="py">moneyRem</span> <span class="p">=</span> <span class="m">0.0</span>
+</span></span><span class="line"><span class="cl">                <span class="k">var</span> <span class="py">bookRentNum</span> <span class="p">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl">                <span class="k">var</span> <span class="py">bookRentOutDateNum</span> <span class="p">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl">                <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">moneyRem</span> <span class="p">=</span> <span class="n">cardLi</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">allElements</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">text</span><span class="p">().</span><span class="n">filter</span> <span class="p">{</span> <span class="k">it</span><span class="p">.</span><span class="n">isDigit</span><span class="p">()</span> <span class="o">||</span> <span class="k">it</span> <span class="o">==</span> <span class="sc">&#39;.&#39;</span> <span class="p">}.</span><span class="n">toDouble</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">bookRentNum</span> <span class="p">=</span> <span class="n">bookRentTexts</span><span class="p">[</span><span class="m">1</span><span class="p">].</span><span class="n">toInt</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">bookRentOutDateNum</span> <span class="p">=</span> <span class="n">bookRentTexts</span><span class="p">[</span><span class="m">2</span><span class="p">].</span><span class="n">filter</span> <span class="p">{</span> <span class="k">it</span><span class="p">.</span><span class="n">isDigit</span><span class="p">()</span> <span class="p">}.</span><span class="n">toInt</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">NumberFormatException</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="n">User</span><span class="p">(</span><span class="n">idText</span><span class="p">.</span><span class="n">toInt</span><span class="p">(),</span> <span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="n">nameText</span><span class="p">,</span> <span class="n">classText</span><span class="p">,</span> <span class="n">moneyRem</span><span class="p">,</span> <span class="n">bookRentNum</span><span class="p">,</span> <span class="n">bookRentOutDateNum</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">subscribeOn</span><span class="p">(</span><span class="n">Schedulers</span><span class="p">.</span><span class="n">io</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">observeOn</span><span class="p">(</span><span class="n">AndroidSchedulers</span><span class="p">.</span><span class="n">mainThread</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div>
     </div>
@@ -949,7 +949,7 @@ Grain 是我大一自学 Android 时写的一个App，最终学校关闭服务�
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

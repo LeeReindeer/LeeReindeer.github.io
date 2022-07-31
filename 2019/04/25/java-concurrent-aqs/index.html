@@ -25,7 +25,7 @@ Java并发-目录
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2019/04/25/java-concurrent-aqs/" />
@@ -227,11 +227,11 @@ Java并发-目录
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">while (syncronization state does not allow acquire) {
-  enqueue current thread if not already queued;
-  possiblly block current thread;
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">while (syncronization state does not allow acquire) {
+</span></span><span class="line"><span class="cl">  enqueue current thread if not already queued;
+</span></span><span class="line"><span class="cl">  possiblly block current thread;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>release</p>
 <div class="highlight"><div class="chroma">
@@ -242,11 +242,11 @@ Java并发-目录
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">update synchronization state;
-if (state may premit a blocked thread acuire) {
-  unblock one or more queued thread;
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">update synchronization state;
+</span></span><span class="line"><span class="cl">if (state may premit a blocked thread acuire) {
+</span></span><span class="line"><span class="cl">  unblock one or more queued thread;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>要实现这两个操作，需要三个基本模块的配合：</p>
 <ul>
@@ -289,19 +289,19 @@ if (state may premit a blocked thread acuire) {
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (!tryAcquire(arg)) {
-  node = create and enqueue new node;
-  pred = node&#39;s effective predecessor;
-  while (pred is not head node || !tryAcquire(arg)) {
-    if (pred&#39;s signal bit is set)
-    	park();
-    else
-    	compareAndSet pred&#39;s signal bit to ture
-    pred = node&#39;s effective predecessor;
-  }
-  head = node;
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">if (!tryAcquire(arg)) {
+</span></span><span class="line"><span class="cl">  node = create and enqueue new node;
+</span></span><span class="line"><span class="cl">  pred = node&#39;s effective predecessor;
+</span></span><span class="line"><span class="cl">  while (pred is not head node || !tryAcquire(arg)) {
+</span></span><span class="line"><span class="cl">    if (pred&#39;s signal bit is set)
+</span></span><span class="line"><span class="cl">    	park();
+</span></span><span class="line"><span class="cl">    else
+</span></span><span class="line"><span class="cl">    	compareAndSet pred&#39;s signal bit to ture
+</span></span><span class="line"><span class="cl">    pred = node&#39;s effective predecessor;
+</span></span><span class="line"><span class="cl">  }
+</span></span><span class="line"><span class="cl">  head = node;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>release:</p>
 <div class="highlight"><div class="chroma">
@@ -312,11 +312,11 @@ if (state may premit a blocked thread acuire) {
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (tryRelease(arg) &amp;&amp; head node&#39;s signal bit is set) {
-  compareAndSet head&#39;s signal bit to false;
-  unpack head&#39;s successor, if one exists
-}s
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">if (tryRelease(arg) &amp;&amp; head node&#39;s signal bit is set) {
+</span></span><span class="line"><span class="cl">  compareAndSet head&#39;s signal bit to false;
+</span></span><span class="line"><span class="cl">  unpack head&#39;s successor, if one exists
+</span></span><span class="line"><span class="cl">}s
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="使用">使用</h2>
 <p>实现一个同步器需要实现下面的方法：</p>
@@ -329,12 +329,12 @@ if (state may premit a blocked thread acuire) {
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">tryAcquire</span><span class="o">()</span>
-<span class="n">tryRelease</span><span class="o">()</span>
-<span class="n">tryAcquireShared</span><span class="o">()</span>
-<span class="n">tryReleaseShared</span><span class="o">()</span>
-<span class="n">isHeldExclusively</span><span class="o">()</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">tryAcquire</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">tryRelease</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">tryAcquireShared</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">tryReleaseShared</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">isHeldExclusively</span><span class="o">()</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>以上方法不需要全部实现，根据获取的锁的种类可以选择实现不同的方法.</p>
 <ul>
@@ -380,37 +380,37 @@ if (state may premit a blocked thread acuire) {
 </span><span class="lnt">30
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.util.concurrent.locks.AbstractQueuedSynchronizer</span><span class="o">;</span>
-
-<span class="cm">/**
-</span><span class="cm"> * @author leer
-</span><span class="cm"> * Created at 4/25/19 6:24 PM
-</span><span class="cm"> * 一个不可重入的互斥锁
-</span><span class="cm"> */</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Mutex</span> <span class="o">{</span>
-  <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Sync</span> <span class="kd">extends</span> <span class="n">AbstractQueuedSynchronizer</span> <span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryAcquire</span><span class="o">(</span><span class="kt">int</span> <span class="n">ignore</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="n">compareAndSetState</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryRelease</span><span class="o">(</span><span class="kt">int</span> <span class="n">ignore</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">setState</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
-      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Sync</span> <span class="n">sync</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Sync</span><span class="o">();</span>
-
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">lock</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">sync</span><span class="o">.</span><span class="na">acquire</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
-  <span class="o">}</span>
-
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">unlock</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">sync</span><span class="o">.</span><span class="na">release</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.concurrent.locks.AbstractQueuedSynchronizer</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author leer
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * Created at 4/25/19 6:24 PM
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 一个不可重入的互斥锁
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Mutex</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Sync</span> <span class="kd">extends</span> <span class="n">AbstractQueuedSynchronizer</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryAcquire</span><span class="o">(</span><span class="kt">int</span> <span class="n">ignore</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">compareAndSetState</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryRelease</span><span class="o">(</span><span class="kt">int</span> <span class="n">ignore</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">setState</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Sync</span> <span class="n">sync</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Sync</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">lock</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sync</span><span class="o">.</span><span class="na">acquire</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">unlock</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sync</span><span class="o">.</span><span class="na">release</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="aqs-在-synchronizers-中的具体实现">AQS 在 Synchronizers 中的具体实现</h2>
 <h3 id="reentrantlock">ReentrantLock</h3>
@@ -441,25 +441,25 @@ if (state may premit a blocked thread acuire) {
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">       <span class="kd">final</span> <span class="kt">boolean</span> <span class="nf">nonfairTryAcquire</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
-            <span class="kd">final</span> <span class="n">Thread</span> <span class="n">current</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">();</span>
-            <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">acquires</span><span class="o">))</span> <span class="o">{</span>
-                    <span class="n">setExclusiveOwnerThread</span><span class="o">(</span><span class="n">current</span><span class="o">);</span>
-                    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-            <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">current</span> <span class="o">==</span> <span class="n">getExclusiveOwnerThread</span><span class="o">())</span> <span class="o">{</span>
-                <span class="kt">int</span> <span class="n">nextc</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">acquires</span><span class="o">;</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">nextc</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="c1">// overflow
-</span><span class="c1"></span>                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Error</span><span class="o">(</span><span class="s">&#34;Maximum lock count exceeded&#34;</span><span class="o">);</span>
-                <span class="n">setState</span><span class="o">(</span><span class="n">nextc</span><span class="o">);</span>
-                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-            <span class="o">}</span>
-            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-        <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">       <span class="kd">final</span> <span class="kt">boolean</span> <span class="nf">nonfairTryAcquire</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">final</span> <span class="n">Thread</span> <span class="n">current</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">acquires</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">setExclusiveOwnerThread</span><span class="o">(</span><span class="n">current</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">current</span> <span class="o">==</span> <span class="n">getExclusiveOwnerThread</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">nextc</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">acquires</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">nextc</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="c1">// overflow
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Error</span><span class="o">(</span><span class="s">&#34;Maximum lock count exceeded&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">setState</span><span class="o">(</span><span class="n">nextc</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="reentrantreadwritelock">ReentrantReadWriteLock</h3>
 <p>ReentrantReadWriteLock 使用 同步状态的 16 位来存放读锁计数，另外的 16 位存放写锁计数。</p>
@@ -493,27 +493,27 @@ if (state may premit a blocked thread acuire) {
 </span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">        <span class="kd">final</span> <span class="kt">int</span> <span class="nf">nonfairTryAcquireShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
-                <span class="kt">int</span> <span class="n">available</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
-                <span class="kt">int</span> <span class="n">remaining</span> <span class="o">=</span> <span class="n">available</span> <span class="o">-</span> <span class="n">acquires</span><span class="o">;</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">remaining</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span>
-                    <span class="n">compareAndSetState</span><span class="o">(</span><span class="n">available</span><span class="o">,</span> <span class="n">remaining</span><span class="o">))</span>
-                    <span class="k">return</span> <span class="n">remaining</span><span class="o">;</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-
-        <span class="kd">protected</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="nf">tryReleaseShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">releases</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
-                <span class="kt">int</span> <span class="n">current</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
-                <span class="kt">int</span> <span class="n">next</span> <span class="o">=</span> <span class="n">current</span> <span class="o">+</span> <span class="n">releases</span><span class="o">;</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">next</span> <span class="o">&lt;</span> <span class="n">current</span><span class="o">)</span> <span class="c1">// overflow
-</span><span class="c1"></span>                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Error</span><span class="o">(</span><span class="s">&#34;Maximum permit count exceeded&#34;</span><span class="o">);</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">current</span><span class="o">,</span> <span class="n">next</span><span class="o">))</span>
-                    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">        <span class="kd">final</span> <span class="kt">int</span> <span class="nf">nonfairTryAcquireShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">available</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">remaining</span> <span class="o">=</span> <span class="n">available</span> <span class="o">-</span> <span class="n">acquires</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">remaining</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">compareAndSetState</span><span class="o">(</span><span class="n">available</span><span class="o">,</span> <span class="n">remaining</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="n">remaining</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">protected</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="nf">tryReleaseShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">releases</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">current</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">next</span> <span class="o">=</span> <span class="n">current</span> <span class="o">+</span> <span class="n">releases</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">next</span> <span class="o">&lt;</span> <span class="n">current</span><span class="o">)</span> <span class="c1">// overflow
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Error</span><span class="o">(</span><span class="s">&#34;Maximum permit count exceeded&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">current</span><span class="o">,</span> <span class="n">next</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="countdownlatch">CountDownLatch</h3>
 <p>和<code>Semaphore</code>类似，同步状态保存当前的计数值。<code>countDown()</code>调用<code>releaseShared()</code>，<code>await()</code>方法调用<code>acquireShared()</code>，等待计数器到零。</p>
@@ -536,22 +536,22 @@ if (state may premit a blocked thread acuire) {
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">        <span class="kd">protected</span> <span class="kt">int</span> <span class="nf">tryAcquireShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="o">(</span><span class="n">getState</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">?</span> <span class="n">1</span> <span class="o">:</span> <span class="o">-</span><span class="n">1</span><span class="o">;</span>
-        <span class="o">}</span>
-
-        <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryReleaseShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">releases</span><span class="o">)</span> <span class="o">{</span>
-            <span class="c1">// Decrement count; signal when transition to zero
-</span><span class="c1"></span>            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
-                <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span>
-                    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-                <span class="kt">int</span> <span class="n">nextc</span> <span class="o">=</span> <span class="n">c</span><span class="o">-</span><span class="n">1</span><span class="o">;</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="n">nextc</span><span class="o">))</span>
-                    <span class="k">return</span> <span class="n">nextc</span> <span class="o">==</span> <span class="n">0</span><span class="o">;</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">        <span class="kd">protected</span> <span class="kt">int</span> <span class="nf">tryAcquireShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">acquires</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="o">(</span><span class="n">getState</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">?</span> <span class="n">1</span> <span class="o">:</span> <span class="o">-</span><span class="n">1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">tryReleaseShared</span><span class="o">(</span><span class="kt">int</span> <span class="n">releases</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// Decrement count; signal when transition to zero
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">for</span> <span class="o">(;;)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">nextc</span> <span class="o">=</span> <span class="n">c</span><span class="o">-</span><span class="n">1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">compareAndSetState</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="n">nextc</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="n">nextc</span> <span class="o">==</span> <span class="n">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="futuretask">FutureTask</h3>
 <blockquote>
@@ -672,7 +672,7 @@ if (state may premit a blocked thread acuire) {
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

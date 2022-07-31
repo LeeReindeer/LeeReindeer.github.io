@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2017/04/20/wechat1_development_of_the_environment/" />
@@ -201,10 +201,10 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">export JAVA_HOME=/usr/local/jdk1.8.0_121                      //jdk安装目录
-export PATH=$JAVA_HOME/bin:$PATH
-export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">export JAVA_HOME=/usr/local/jdk1.8.0_121                      //jdk安装目录
+</span></span><span class="line"><span class="cl">export PATH=$JAVA_HOME/bin:$PATH
+</span></span><span class="line"><span class="cl">export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>验证
@@ -218,10 +218,10 @@ shell输入<code>java -version</code>
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">java version &#34;1.8.0_121&#34;
-Java(TM) SE Runtime Environment (build 1.8.0_121-b13)
-Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">java version &#34;1.8.0_121&#34;
+</span></span><span class="line"><span class="cl">Java(TM) SE Runtime Environment (build 1.8.0_121-b13)
+</span></span><span class="line"><span class="cl">Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="tomcat下载">Tomcat下载</h2>
 <blockquote>
@@ -248,10 +248,10 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"> &lt;Connector port=&#34;8081&#34; protocol=&#34;HTTP/1.1&#34;
-               connectionTimeout=&#34;20000&#34;
-               redirectPort=&#34;8443&#34; /&gt;
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> &lt;Connector port=&#34;8081&#34; protocol=&#34;HTTP/1.1&#34;
+</span></span><span class="line"><span class="cl">               connectionTimeout=&#34;20000&#34;
+</span></span><span class="line"><span class="cl">               redirectPort=&#34;8443&#34; /&gt;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>Tomcat Manager配置
@@ -268,13 +268,13 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">  &lt;role rolename=&#34;tomcat&#34;/&gt;
-  &lt;role rolename=&#34;role1&#34;/&gt;
-  &lt;role rolename=&#34;manager&#34;/&gt;
-  &lt;user username=&#34;tomcat&#34; password=&#34;yourpassword&#34; roles=&#34;tomcat,manager&#34;/&gt;
-  &lt;user username=&#34;role1&#34; password=&#34;yourpassword&#34; roles=&#34;role1&#34;/&gt;
-  &lt;user username=&#34;both&#34; password=&#34;yourpassword&#34; roles=&#34;tomcat,role1&#34;/&gt;
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  &lt;role rolename=&#34;tomcat&#34;/&gt;
+</span></span><span class="line"><span class="cl">  &lt;role rolename=&#34;role1&#34;/&gt;
+</span></span><span class="line"><span class="cl">  &lt;role rolename=&#34;manager&#34;/&gt;
+</span></span><span class="line"><span class="cl">  &lt;user username=&#34;tomcat&#34; password=&#34;yourpassword&#34; roles=&#34;tomcat,manager&#34;/&gt;
+</span></span><span class="line"><span class="cl">  &lt;user username=&#34;role1&#34; password=&#34;yourpassword&#34; roles=&#34;role1&#34;/&gt;
+</span></span><span class="line"><span class="cl">  &lt;user username=&#34;both&#34; password=&#34;yourpassword&#34; roles=&#34;tomcat,role1&#34;/&gt;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>常见坑．启动时报错<code>Tomcat Neither the JAVA_HOME nor the JRE_HOME environment variable is defined</code>.应该是java环境变量的问题，但是系统环境的变量已经配置好了．于是又在tomcat/bin/catalina.sh
@@ -286,9 +286,9 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, mixed mode)
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">export JAVA_HOME=/usr/local/jdk1.8.0_121
-export JRE_HOME=/usr/local/jdk1.8.0_121 /jre
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">export JAVA_HOME=/usr/local/jdk1.8.0_121
+</span></span><span class="line"><span class="cl">export JRE_HOME=/usr/local/jdk1.8.0_121 /jre
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="mysql">MySQL</h2>
 <p>查看MySQL进程</p>
@@ -299,10 +299,10 @@ export JRE_HOME=/usr/local/jdk1.8.0_121 /jre
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">ps -aux|grep mysql
-mysql     1379  0.0  1.9 1236388 155188 ?      Ssl  17:42   0:01 /usr/sbin/mysqld
-lee      13163  0.0  0.0  15964   960 pts/7    S+   19:04   0:00 grep --color=auto mysql
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ps -aux|grep mysql
+</span></span><span class="line"><span class="cl">mysql     1379  0.0  1.9 1236388 155188 ?      Ssl  17:42   0:01 /usr/sbin/mysqld
+</span></span><span class="line"><span class="cl">lee      13163  0.0  0.0  15964   960 pts/7    S+   19:04   0:00 grep --color=auto mysql
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>检查MySQL监听端口</p>
 <div class="highlight"><div class="chroma">
@@ -311,9 +311,9 @@ lee      13163  0.0  0.0  15964   960 pts/7    S+   19:04   0:00 grep --color=au
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">netstat -nlt|grep 3306
-tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">netstat -nlt|grep 3306
+</span></span><span class="line"><span class="cl">tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>访问MySQL</p>
 <div class="highlight"><div class="chroma">
@@ -321,8 +321,8 @@ tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">msql -u root -p
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">msql -u root -p
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>输入安装时设置的密码．
 <img src="/images/mysqllogin.png" alt="">
@@ -340,12 +340,12 @@ tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">[client]
-default-character-set=utf8
-[mysqld]
-character-set-server=utf8
-collation-server=utf8_general_ci
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[client]
+</span></span><span class="line"><span class="cl">default-character-set=utf8
+</span></span><span class="line"><span class="cl">[mysqld]
+</span></span><span class="line"><span class="cl">character-set-server=utf8
+</span></span><span class="line"><span class="cl">collation-server=utf8_general_ci
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>重启MySQL<code>sudo /etc/init.d/mysql restart</code>,再次查看字符编码看是否生效了．</p>
 <h2 id="intellij-idea">IntelliJ IDEA</h2>
@@ -382,16 +382,16 @@ collation-server=utf8_general_ci
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"> &lt;servlet&gt;
-    &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
-    &lt;servlet-class&gt;Servlet.TestServlet&lt;/servlet-class&gt;
-  &lt;/servlet&gt;
-
-  &lt;servlet-mapping&gt;
-    &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
-    &lt;url-pattern&gt;/test1&lt;/url-pattern&gt;
-  &lt;/servlet-mapping&gt;
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> &lt;servlet&gt;
+</span></span><span class="line"><span class="cl">    &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
+</span></span><span class="line"><span class="cl">    &lt;servlet-class&gt;Servlet.TestServlet&lt;/servlet-class&gt;
+</span></span><span class="line"><span class="cl">  &lt;/servlet&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  &lt;servlet-mapping&gt;
+</span></span><span class="line"><span class="cl">    &lt;servlet-name&gt;TestServlet&lt;/servlet-name&gt;
+</span></span><span class="line"><span class="cl">    &lt;url-pattern&gt;/test1&lt;/url-pattern&gt;
+</span></span><span class="line"><span class="cl">  &lt;/servlet-mapping&gt;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>也可以在TestServlet里用注释方法配置<code>@WebServlet(name = &quot;TestServlet&quot;,urlPatterns={&quot;/test1&quot;})</code>
 <img src="/images/helloservlet.png" alt=""></p>
@@ -503,7 +503,7 @@ collation-server=utf8_general_ci
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

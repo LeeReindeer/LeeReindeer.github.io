@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/11/16/springboot-https/" />
@@ -186,12 +186,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">server.port=8443
-server.ssl.key-store=/usr/local/ssl/ssl.pfx
-server.ssl.key-store-password=password
-server.ssl.keyStoreType=PKCS12
-server.ssl.enabled=true
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">server.port=8443
+</span></span><span class="line"><span class="cl">server.ssl.key-store=/usr/local/ssl/ssl.pfx
+</span></span><span class="line"><span class="cl">server.ssl.key-store-password=password
+</span></span><span class="line"><span class="cl">server.ssl.keyStoreType=PKCS12
+</span></span><span class="line"><span class="cl">server.ssl.enabled=true
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="打包-jar">打包 jar</h2>
 <div class="highlight"><div class="chroma">
@@ -201,10 +201,10 @@ server.ssl.enabled=true
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="n">bootJar</span> <span class="o">{</span>
-    <span class="n">launchScript</span><span class="o">()</span>
-<span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">bootJar</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">launchScript</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>运行 Gradle 命令：<code>gradle bootJar</code>，会在 <code>build/libs</code>下生成 jar 包。</p>
 <h2 id="上传到服务器">上传到服务器</h2>
@@ -213,8 +213,8 @@ server.ssl.enabled=true
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">scp lightblog-java-1.2-beta.jar root@yourserver:~/
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">scp lightblog-java-1.2-beta.jar root@yourserver:~/
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="启动-spring-boot-应用">启动 spring boot 应用</h2>
 <div class="highlight"><div class="chroma">
@@ -223,9 +223,9 @@ server.ssl.enabled=true
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">screen -S blog
-java -jar lightblog-java-1.2-beta.jar
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">screen -S blog
+</span></span><span class="line"><span class="cl">java -jar lightblog-java-1.2-beta.jar
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>现在，网站运行在端口：8443，我们想要的是直接访问：<a href="https://lightblog.xyz">https://lightblog.xyz</a>。所以需要一个从 <a href="https://lightblog.xyz">https://:8443</a> 到 <a href="https://lightblog.xyz">https://lightblog.xyz</a> 的映射。（HTTPS 默认端口：443）。</p>
 <h2 id="端口映射">端口映射</h2>
@@ -237,10 +237,10 @@ java -jar lightblog-java-1.2-beta.jar
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">sudo apt install firewall
-firewall-cmd --add-port<span class="o">=</span>443/tcp
-firewall-cmd --add-forward-port<span class="o">=</span><span class="nv">port</span><span class="o">=</span>443:proto<span class="o">=</span>tcp:toport<span class="o">=</span><span class="m">8443</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo apt install firewall
+</span></span><span class="line"><span class="cl">firewall-cmd --add-port<span class="o">=</span>443/tcp
+</span></span><span class="line"><span class="cl">firewall-cmd --add-forward-port<span class="o">=</span><span class="nv">port</span><span class="o">=</span>443:proto<span class="o">=</span>tcp:toport<span class="o">=</span><span class="m">8443</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>通过<code>firewall</code>,把所以在 <code>443</code>端口的请求转发到 <code>8443</code>。</p>
 <p>至此可爱的小绿锁终于出现了！！！</p>
@@ -355,7 +355,7 @@ firewall-cmd --add-forward-port<span class="o">=</span><span class="nv">port</sp
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

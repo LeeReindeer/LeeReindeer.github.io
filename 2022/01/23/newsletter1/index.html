@@ -17,7 +17,7 @@
 
 
 <meta name="author" content="LeeReindeer" /><meta name="description" content="周末偶然看到这篇 Coroutines in C，作者利用达夫设备（Duff’s Device）定义了几个宏，在 C 语言中模拟了协程的实现。然后又警告读者不要在公司写这样的代码 😅：
- Of course, this trick violates every coding standard in the book. Try doing this in your company&amp;rsquo;s code and you will probably be subject to a stern telling off if not disciplinary action! . . . It&amp;rsquo;s a wonder you haven&amp;rsquo;t been fired on the spot for such irresponsible coding practice. You should be ashamed of yourself.
+Of course, this trick violates every coding standard in the book. Try doing this in your company&amp;rsquo;s code and you will probably be subject to a stern telling off if not disciplinary action! . . . It&amp;rsquo;s a wonder you haven&amp;rsquo;t been fired on the spot for such irresponsible coding practice. You should be ashamed of yourself.
 " /><meta name="keywords" content="LeeReindeer, Hugo, even" />
 
 
@@ -25,7 +25,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2022/01/23/newsletter1/" />
@@ -158,6 +158,11 @@ Of course, this trick violates every coding standard in the book. Try doing this
     </header>
 
     
+  <div class="post-outdated">
+    <div class="hint">
+      <p>[NOTE] Updated <span class="timeago" datetime="2022-01-23T21:46:10" title="January 23, 2022">January 23, 2022</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
     <div class="post-content">
       <p>周末偶然看到这篇 <a href="https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html" title="Coroutines in C">Coroutines in C</a>，作者利用达夫设备（Duff’s Device）定义了几个宏，在 C 语言中模拟了协程的实现。然后又警告读者不要在公司写这样的代码 😅：</p>
 <blockquote>
@@ -186,18 +191,18 @@ Of course, this trick violates every coding standard in the book. Try doing this
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">static</span> <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">switch</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="n">state</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
-      <span class="k">case</span> <span class="mi">1</span><span class="o">:</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">switch</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">state</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">case</span> <span class="mi">1</span><span class="o">:</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>全局变量保存栈变量和需要跳转的位置: <code>static int i, state = 0;</code></li>
@@ -245,45 +250,45 @@ Of course, this trick violates every coding standard in the book. Try doing this
 </span><span class="lnt">38
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="cp">#define crBegin static int state=0; switch(state) { case 0:
-</span><span class="cp">#define crSuspend(x) do { state=__LINE__; return x; \
-</span><span class="cp">                         case __LINE__:; } while (0)
-</span><span class="cp">#define crFinish(x) } return x;
-</span><span class="cp"></span>
-<span class="c1">// 模拟生产者，读取并返回一个字符
-</span><span class="c1"></span><span class="kt">int</span> <span class="nf">produce</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">static</span> <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-  <span class="n">crBegin</span><span class="p">;</span>
-  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">();</span>
-    <span class="n">getchar</span><span class="p">();</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">EOF</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;produce %c</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
-    <span class="n">crSuspend</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">crFinish</span><span class="p">(</span><span class="n">EOF</span><span class="p">);</span>
-<span class="p">}</span>
-
-
-<span class="kt">void</span> <span class="nf">consume</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-<span class="c1">// 模拟消费者，打印字符
-</span><span class="c1"></span>  <span class="n">crBegin</span><span class="p">;</span>
-  <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="n">EOF</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;consume: %c</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
-    <span class="n">crSuspend</span><span class="p">();</span>
-  <span class="p">}</span>
-  <span class="n">crFinish</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-  <span class="k">while</span><span class="p">(</span><span class="n">t</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">consume</span><span class="p">(</span><span class="n">produce</span><span class="p">());</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define crBegin static int state=0; switch(state) { case 0:
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define crSuspend(x) do { state=__LINE__; return x; \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                         case __LINE__:; } while (0)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define crFinish(x) } return x;
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 模拟生产者，读取并返回一个字符
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">produce</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">crBegin</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">i</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">getchar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">EOF</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;produce %c</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">crSuspend</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">crFinish</span><span class="p">(</span><span class="n">EOF</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">consume</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 模拟消费者，打印字符
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">crBegin</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="n">EOF</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;consume: %c</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">crSuspend</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">crFinish</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="n">t</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">consume</span><span class="p">(</span><span class="n">produce</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>看完觉得不过瘾，又去搜了下 Stackful / Stackless Coroutine 的区别，在 <a href="https://news.ycombinator.com/item?id=16317820" title="Hack News">Hack News</a> 的讨论里点进去看了几篇关于 Coroutine 的论文 🙄：</p>
 <ul>
@@ -445,7 +450,7 @@ Of course, this trick violates every coding standard in the book. Try doing this
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 

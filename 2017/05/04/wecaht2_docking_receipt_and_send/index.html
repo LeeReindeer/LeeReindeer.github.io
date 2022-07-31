@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.92.1 with theme even" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2017/05/04/wecaht2_docking_receipt_and_send/" />
@@ -201,11 +201,11 @@ Servlet 用于和微信服务器通信．根据<a href="https://mp.weixin.qq.com
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">        <span class="n">String</span> <span class="n">signature</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;signature&#34;</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;timestamp&#34;</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">nonce</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;nonce&#34;</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">echostr</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;echostr&#34;</span><span class="o">);</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">signature</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;signature&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;timestamp&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">nonce</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;nonce&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">echostr</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;echostr&#34;</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>然后就是验证的工作了．
 排序：</p>
@@ -221,15 +221,15 @@ Servlet 用于和微信服务器通信．根据<a href="https://mp.weixin.qq.com
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">        <span class="n">String</span> <span class="n">array</span><span class="o">[]=</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="n">token</span><span class="o">,</span><span class="n">timestamp</span><span class="o">,</span><span class="n">nonce</span><span class="o">};</span>
-        <span class="c1">//将token、timestamp、nonce三个参数进行字典序排序
-</span><span class="c1"></span>        <span class="n">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">array</span><span class="o">);</span>
-        <span class="c1">//重组字符串
-</span><span class="c1"></span>        <span class="n">StringBuilder</span> <span class="n">builder</span><span class="o">=</span><span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
-        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="n">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">array</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++){</span>
-            <span class="n">builder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
-        <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">array</span><span class="o">[]=</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="n">token</span><span class="o">,</span><span class="n">timestamp</span><span class="o">,</span><span class="n">nonce</span><span class="o">};</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//将token、timestamp、nonce三个参数进行字典序排序
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">array</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//重组字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">StringBuilder</span> <span class="n">builder</span><span class="o">=</span><span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="n">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">array</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++){</span>
+</span></span><span class="line"><span class="cl">            <span class="n">builder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>加密:</p>
 <div class="highlight"><div class="chroma">
@@ -251,22 +251,22 @@ Servlet 用于和微信服务器通信．根据<a href="https://mp.weixin.qq.com
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">        <span class="n">MessageDigest</span> <span class="n">md</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-        <span class="n">String</span> <span class="n">tmpStr</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">md</span> <span class="o">=</span> <span class="n">MessageDigest</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">&#34;SHA-1&#34;</span><span class="o">);</span>
-            <span class="c1">// 将三个参数字符串拼接成一个字符串进行sha1加密
-</span><span class="c1"></span>            <span class="kt">byte</span><span class="o">[]</span> <span class="n">digest</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="na">digest</span><span class="o">(</span><span class="n">builder</span><span class="o">.</span><span class="na">toString</span><span class="o">().</span><span class="na">getBytes</span><span class="o">());</span>
-            <span class="n">tmpStr</span> <span class="o">=</span> <span class="n">byteToStr</span><span class="o">(</span><span class="n">digest</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchAlgorithmException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-        <span class="n">builder</span><span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">tmpStr</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;</span><span class="n">tmpStr</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">signature</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">())){</span>
-            <span class="n">isTrue</span><span class="o">=</span><span class="kc">true</span><span class="o">;</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="n">isTrue</span><span class="o">;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">        <span class="n">MessageDigest</span> <span class="n">md</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">tmpStr</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">md</span> <span class="o">=</span> <span class="n">MessageDigest</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">&#34;SHA-1&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 将三个参数字符串拼接成一个字符串进行sha1加密
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">byte</span><span class="o">[]</span> <span class="n">digest</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="na">digest</span><span class="o">(</span><span class="n">builder</span><span class="o">.</span><span class="na">toString</span><span class="o">().</span><span class="na">getBytes</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">            <span class="n">tmpStr</span> <span class="o">=</span> <span class="n">byteToStr</span><span class="o">(</span><span class="n">digest</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchAlgorithmException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">builder</span><span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">tmpStr</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;</span><span class="n">tmpStr</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">signature</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">())){</span>
+</span></span><span class="line"><span class="cl">            <span class="n">isTrue</span><span class="o">=</span><span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">isTrue</span><span class="o">;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>整体代码，看下图
 <img src="/images/signUtil.png" alt="代码图">
@@ -295,15 +295,15 @@ xml的数据结构是这样的</li>
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"> <span class="nt">&lt;xml&gt;</span>
- <span class="nt">&lt;ToUserName&gt;</span><span class="cp">&lt;![CDATA[toUser]]&gt;</span><span class="nt">&lt;/ToUserName&gt;</span>
- <span class="nt">&lt;FromUserName&gt;</span><span class="cp">&lt;![CDATA[fromUser]]&gt;</span><span class="nt">&lt;/FromUserName&gt;</span>
- <span class="nt">&lt;CreateTime&gt;</span>1348831860<span class="nt">&lt;/CreateTime&gt;</span>
- <span class="nt">&lt;MsgType&gt;</span><span class="cp">&lt;![CDATA[text]]&gt;</span><span class="nt">&lt;/MsgType&gt;</span>
- <span class="nt">&lt;Content&gt;</span><span class="cp">&lt;![CDATA[this is a test]]&gt;</span><span class="nt">&lt;/Content&gt;</span>
- <span class="nt">&lt;MsgId&gt;</span>1234567890123456<span class="nt">&lt;/MsgId&gt;</span>
- <span class="nt">&lt;/xml&gt;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"> <span class="nt">&lt;xml&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&lt;ToUserName&gt;</span><span class="cp">&lt;![CDATA[toUser]]&gt;</span><span class="nt">&lt;/ToUserName&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&lt;FromUserName&gt;</span><span class="cp">&lt;![CDATA[fromUser]]&gt;</span><span class="nt">&lt;/FromUserName&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&lt;CreateTime&gt;</span>1348831860<span class="nt">&lt;/CreateTime&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&lt;MsgType&gt;</span><span class="cp">&lt;![CDATA[text]]&gt;</span><span class="nt">&lt;/MsgType&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&lt;Content&gt;</span><span class="cp">&lt;![CDATA[this is a test]]&gt;</span><span class="nt">&lt;/Content&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&lt;MsgId&gt;</span>1234567890123456<span class="nt">&lt;/MsgId&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&lt;/xml&gt;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>可以把这些数据都封装成一个TextMsg对象，如果考虑到其他类型的消息，那么可以有一个BaseMsg类,让TextMsg,ImageMsg等等去继承他．</li>
@@ -341,30 +341,30 @@ xml的数据结构是这样的</li>
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span>
-        <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span><span class="n">IOException</span><span class="o">{</span>
-        <span class="n">request</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="n">response</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
-        <span class="n">PrintWriter</span> <span class="n">writer</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
-        <span class="n">MsgUtil</span> <span class="n">msgUtil</span><span class="o">=</span><span class="k">new</span> <span class="n">MsgUtil</span><span class="o">();</span>
-        <span class="n">String</span> <span class="n">sendMsg</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="c1">//解析xml
-</span><span class="c1"></span>            <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">=</span><span class="n">msgUtil</span><span class="o">.</span><span class="na">parseXml</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">ToUserName</span><span class="o">=</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;ToUserName&#34;</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">FromUserName</span><span class="o">=</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;FromUserName&#34;</span><span class="o">);</span>
-            <span class="n">Long</span> <span class="n">CreateTime</span><span class="o">=</span> <span class="n">Long</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;CreateTime&#34;</span><span class="o">)));</span>
-            <span class="n">String</span> <span class="n">Content</span><span class="o">=</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;Content&#34;</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">MsgType</span><span class="o">=</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;MsgType&#34;</span><span class="o">);</span>
-            <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-            <span class="o">}</span><span class="k">finally</span> <span class="o">{</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">writer</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
-                <span class="n">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span><span class="n">IOException</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">request</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">response</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&#34;UTF-8&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">PrintWriter</span> <span class="n">writer</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">MsgUtil</span> <span class="n">msgUtil</span><span class="o">=</span><span class="k">new</span> <span class="n">MsgUtil</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">sendMsg</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//解析xml
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">=</span><span class="n">msgUtil</span><span class="o">.</span><span class="na">parseXml</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">ToUserName</span><span class="o">=</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;ToUserName&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">FromUserName</span><span class="o">=</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;FromUserName&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Long</span> <span class="n">CreateTime</span><span class="o">=</span> <span class="n">Long</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;CreateTime&#34;</span><span class="o">)));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">Content</span><span class="o">=</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;Content&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">MsgType</span><span class="o">=</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;MsgType&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span><span class="k">finally</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">writer</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="被动发送消息">被动发送消息</h2>
 <p>上面已经从用户发送过来的消息里得到了用户的openid(FromUserName).需要注意的是发送消息时，FromUserName就变成了公众号的Appid,ToUserName才是用户的openid.MsgUtil里添加一个方法：</p>
@@ -383,18 +383,18 @@ xml的数据结构是这样的</li>
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">initalMessage</span><span class="o">(</span><span class="n">String</span> <span class="n">ToUserName</span><span class="o">,</span><span class="n">String</span> <span class="n">FromUserName</span><span class="o">,</span><span class="n">String</span> <span class="n">Content</span><span class="o">){</span>
-        <span class="n">TextMsg</span> <span class="n">textMsg</span><span class="o">=</span><span class="k">new</span> <span class="n">TextMsg</span><span class="o">();</span>
-        <span class="n">textMsg</span><span class="o">.</span><span class="na">setContent</span><span class="o">(</span><span class="n">Content</span><span class="o">);</span>
-        <span class="n">textMsg</span><span class="o">.</span><span class="na">setFromUserName</span><span class="o">(</span><span class="n">ToUserName</span><span class="o">);</span>
-        <span class="n">textMsg</span><span class="o">.</span><span class="na">setToUserName</span><span class="o">(</span><span class="n">FromUserName</span><span class="o">);</span>
-        <span class="n">textMsg</span><span class="o">.</span><span class="na">setMsgType</span><span class="o">(</span><span class="n">MESSAGE_TEXT</span><span class="o">);</span>
-        <span class="n">textMsg</span><span class="o">.</span><span class="na">setCreateTime</span><span class="o">(</span><span class="k">new</span> <span class="n">Date</span><span class="o">().</span><span class="na">getTime</span><span class="o">());</span>
-        <span class="c1">//打包成xml格式
-</span><span class="c1"></span>        <span class="n">String</span> <span class="n">xmlmsg</span><span class="o">=</span><span class="n">messageToXml</span><span class="o">(</span><span class="n">textMsg</span><span class="o">);</span>
-        <span class="k">return</span> <span class="n">xmlmsg</span><span class="o">;</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">initalMessage</span><span class="o">(</span><span class="n">String</span> <span class="n">ToUserName</span><span class="o">,</span><span class="n">String</span> <span class="n">FromUserName</span><span class="o">,</span><span class="n">String</span> <span class="n">Content</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">TextMsg</span> <span class="n">textMsg</span><span class="o">=</span><span class="k">new</span> <span class="n">TextMsg</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">textMsg</span><span class="o">.</span><span class="na">setContent</span><span class="o">(</span><span class="n">Content</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">textMsg</span><span class="o">.</span><span class="na">setFromUserName</span><span class="o">(</span><span class="n">ToUserName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">textMsg</span><span class="o">.</span><span class="na">setToUserName</span><span class="o">(</span><span class="n">FromUserName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">textMsg</span><span class="o">.</span><span class="na">setMsgType</span><span class="o">(</span><span class="n">MESSAGE_TEXT</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">textMsg</span><span class="o">.</span><span class="na">setCreateTime</span><span class="o">(</span><span class="k">new</span> <span class="n">Date</span><span class="o">().</span><span class="na">getTime</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//打包成xml格式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">String</span> <span class="n">xmlmsg</span><span class="o">=</span><span class="n">messageToXml</span><span class="o">(</span><span class="n">textMsg</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">xmlmsg</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>然后在WechatServlet里调用，</p>
 <div class="highlight"><div class="chroma">
@@ -407,13 +407,13 @@ xml的数据结构是这样的</li>
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java">   <span class="k">if</span> <span class="o">(</span><span class="n">msgUtil</span><span class="o">.</span><span class="na">MESSAGE_TEXT</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">MsgType</span><span class="o">)){</span>
-                <span class="n">sendMsg</span><span class="o">=</span><span class="n">msgUtil</span><span class="o">.</span><span class="na">initalMessage</span><span class="o">(</span><span class="n">ToUserName</span><span class="o">,</span><span class="n">FromUserName</span><span class="o">,</span><span class="s">&#34;Hello &#34;</span><span class="o">+</span><span class="n">Content</span><span class="o">);</span>
-             <span class="k">if</span> <span class="o">(</span><span class="n">Content</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;view&#34;</span><span class="o">)){</span>
-                    <span class="c1">//Todo
-</span><span class="c1"></span>             <span class="o">}</span>
-   <span class="o">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">   <span class="k">if</span> <span class="o">(</span><span class="n">msgUtil</span><span class="o">.</span><span class="na">MESSAGE_TEXT</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">MsgType</span><span class="o">)){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">sendMsg</span><span class="o">=</span><span class="n">msgUtil</span><span class="o">.</span><span class="na">initalMessage</span><span class="o">(</span><span class="n">ToUserName</span><span class="o">,</span><span class="n">FromUserName</span><span class="o">,</span><span class="s">&#34;Hello &#34;</span><span class="o">+</span><span class="n">Content</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">             <span class="k">if</span> <span class="o">(</span><span class="n">Content</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;view&#34;</span><span class="o">)){</span>
+</span></span><span class="line"><span class="cl">                    <span class="c1">//Todo
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>             <span class="o">}</span>
+</span></span><span class="line"><span class="cl">   <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="打包xml">打包xml</h3>
 <p><img src="/images/page_xml.png" alt=""></p>
@@ -526,7 +526,7 @@ xml的数据结构是这样的</li>
 
 
 
-<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 
