@@ -30,7 +30,7 @@ a ^ b = (~a | ~b) &amp;amp; (a | b) (~a | ~b) = ~(a &amp;amp; b) " /><meta name=
 
 
 
-<meta name="generator" content="Hugo 0.101.0 with theme even" />
+<meta name="generator" content="Hugo 0.120.4 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/11/26/csapp_data_lab/" />
@@ -46,155 +46,8 @@ a ^ b = (~a | ~b) &amp;amp; (a | b) (~a | ~b) = ~(a &amp;amp; b) " /><meta name=
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css"  crossorigin="anonymous">
 
 
-<meta property="og:title" content="CSAPP Data Lab 思路和笔记" />
-<meta property="og:description" content="Data Lab[Updated 11/2/18]
-
-11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。
-肝了两天还是没有全部做出来，之前很以为很简单呢（
-最近也终于买了 CS:APP3e 英文版，配合 CMU 的课程视频食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（
-解题的思路一般会写在注释里的。
-
-bitXor
 
 
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-
-
-/*s
- * bitXor - x^y using only ~ and &amp;
- *   Example: bitXor(4, 5) = 1
- *   Legal ops: ~ &amp;
- *   Max ops: 14
- *   Rating: 1
- */
-int bitXor(int x, int y) {
-  // 德摩根定律
-  // a xor b = (~a | ~b) &amp; (a | b)
-  // = ~(a &amp; b) &amp; ~(~a &amp; ~b)
-  return ~(~x &amp; ~y) &amp; ~(x &amp; y);
-}
-
-
-虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。
-利用的性质主要是：
-
-a ^ b = (~a | ~b) &amp; (a | b)
-(~a | ~b) = ~(a &amp; b)
-" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/2018/11/26/csapp_data_lab/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2018-11-26T15:31:21+00:00" />
-<meta property="article:modified_time" content="2018-11-26T15:31:21+00:00" />
-
-<meta itemprop="name" content="CSAPP Data Lab 思路和笔记">
-<meta itemprop="description" content="Data Lab[Updated 11/2/18]
-
-11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。
-肝了两天还是没有全部做出来，之前很以为很简单呢（
-最近也终于买了 CS:APP3e 英文版，配合 CMU 的课程视频食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（
-解题的思路一般会写在注释里的。
-
-bitXor
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-
-
-/*s
- * bitXor - x^y using only ~ and &amp;
- *   Example: bitXor(4, 5) = 1
- *   Legal ops: ~ &amp;
- *   Max ops: 14
- *   Rating: 1
- */
-int bitXor(int x, int y) {
-  // 德摩根定律
-  // a xor b = (~a | ~b) &amp; (a | b)
-  // = ~(a &amp; b) &amp; ~(~a &amp; ~b)
-  return ~(~x &amp; ~y) &amp; ~(x &amp; y);
-}
-
-
-虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。
-利用的性质主要是：
-
-a ^ b = (~a | ~b) &amp; (a | b)
-(~a | ~b) = ~(a &amp; b)
-"><meta itemprop="datePublished" content="2018-11-26T15:31:21+00:00" />
-<meta itemprop="dateModified" content="2018-11-26T15:31:21+00:00" />
-<meta itemprop="wordCount" content="3237">
-<meta itemprop="keywords" content="CSAPP,C," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="CSAPP Data Lab 思路和笔记"/>
-<meta name="twitter:description" content="Data Lab[Updated 11/2/18]
-
-11/2/18 新鲜出炉的 Data Lab，不同时期的 lab 内容会不一样。
-肝了两天还是没有全部做出来，之前很以为很简单呢（
-最近也终于买了 CS:APP3e 英文版，配合 CMU 的课程视频食用更佳。顺便可以练习英语听力和阅读，阅读已经可以流畅了，这种英文书基本看得懂，但是听力就不行（
-解题的思路一般会写在注释里的。
-
-bitXor
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-
-
-/*s
- * bitXor - x^y using only ~ and &amp;
- *   Example: bitXor(4, 5) = 1
- *   Legal ops: ~ &amp;
- *   Max ops: 14
- *   Rating: 1
- */
-int bitXor(int x, int y) {
-  // 德摩根定律
-  // a xor b = (~a | ~b) &amp; (a | b)
-  // = ~(a &amp; b) &amp; ~(~a &amp; ~b)
-  return ~(~x &amp; ~y) &amp; ~(x &amp; y);
-}
-
-
-虽然这题比较简单，但我还是想了好久。主要是我把这个德摩根定律忘得差不多了，记得在离散数学里讲过。
-利用的性质主要是：
-
-a ^ b = (~a | ~b) &amp; (a | b)
-(~a | ~b) = ~(a &amp; b)
-"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -417,8 +270,8 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Integer constants 0 through 255 (0xFF), inclusive. You are
-</span></span><span class="line"><span class="cl">      not allowed to use big constants such as 0xffffffff.
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">Integer</span> <span class="n">constants</span> <span class="mi">0</span> <span class="n">through</span> <span class="mi">255</span> <span class="p">(</span><span class="mh">0xFF</span><span class="p">),</span> <span class="n">inclusive</span><span class="o">.</span> <span class="n">You</span> <span class="n">are</span>
+</span></span><span class="line"><span class="cl">      <span class="ow">not</span> <span class="n">allowed</span> <span class="n">to</span> <span class="n">use</span> <span class="n">big</span> <span class="n">constants</span> <span class="n">such</span> <span class="n">as</span> <span class="mh">0xffffffff</span><span class="o">.</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>而且这一题不能使用移位操作，就不能通过移位来得到 <code>0x7fffffff</code>。然后只能Google了。。。</p>
@@ -467,8 +320,8 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Integer constants 0 through 255 (0xFF), inclusive. You are
-</span></span><span class="line"><span class="cl">      not allowed to use big constants such as 0xffffffff.
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">Integer</span> <span class="n">constants</span> <span class="mi">0</span> <span class="n">through</span> <span class="mi">255</span> <span class="p">(</span><span class="mh">0xFF</span><span class="p">),</span> <span class="n">inclusive</span><span class="o">.</span> <span class="n">You</span> <span class="n">are</span>
+</span></span><span class="line"><span class="cl">      <span class="ow">not</span> <span class="n">allowed</span> <span class="n">to</span> <span class="n">use</span> <span class="n">big</span> <span class="n">constants</span> <span class="n">such</span> <span class="n">as</span> <span class="mh">0xffffffff</span><span class="o">.</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>幸运的是，这题可以用移位：</p>
@@ -865,15 +718,15 @@ a ^ b = (~a | ~b) &amp; (a | b)
 </span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">shift</span> <span class="o">=</span> <span class="n">neg_one</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">shift_inline</span> <span class="o">=</span> <span class="mh">0xffffffff</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;------right shift-----</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span><span class="p">,</span> <span class="n">shift</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34; = </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">show_bytes</span><span class="p">((</span><span class="n">byte_pointer</span><span class="p">)</span><span class="o">&amp;</span><span class="n">shift</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;------right shift-----</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span><span class="p">,</span> <span class="n">shift</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">printf</span><span class="p">(</span><span class="s">&#34; = </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">show_bytes</span><span class="p">((</span><span class="n">byte_pointer</span><span class="p">)</span><span class="o">&amp;</span><span class="n">shift</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;------right shift inline-----</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span><span class="p">,</span> <span class="n">shift_inline</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34; = </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">show_bytes</span><span class="p">((</span><span class="n">byte_pointer</span><span class="p">)</span><span class="o">&amp;</span><span class="n">shift_inline</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;------right shift inline-----</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;0xffffffff &gt;&gt; 31 = %d&#34;</span><span class="p">,</span> <span class="n">shift_inline</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">printf</span><span class="p">(</span><span class="s">&#34; = </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">show_bytes</span><span class="p">((</span><span class="n">byte_pointer</span><span class="p">)</span><span class="o">&amp;</span><span class="n">shift_inline</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -1033,7 +886,7 @@ a ^ b = (~a | ~b) &amp; (a | b)
   <span class="copyright-year">
     &copy;
     2017 -
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
   </span>
 </div>
 

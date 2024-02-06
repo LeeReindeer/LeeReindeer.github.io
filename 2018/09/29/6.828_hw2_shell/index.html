@@ -27,7 +27,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.101.0 with theme even" />
+<meta name="generator" content="Hugo 0.120.4 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/09/29/6.828_hw2_shell/" />
@@ -43,170 +43,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css"  crossorigin="anonymous">
 
 
-<meta property="og:title" content="6.828 Homework 2:Shell" />
-<meta property="og:description" content="这次的作业是实现一个简单的 shell。通过阅读 xv6 book 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。
-题目提供的sh.c已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成runcmd函数中缺少的代码即可。
-流程
-先从 main 函数看起：
 
 
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-
-
-int main(void) {
-  static char buf[100];
-  int fd, r;
-
-  // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) &gt;= 0) {
-    if (buf[0] == &#39;c&#39; &amp;&amp; buf[1] == &#39;d&#39; &amp;&amp; buf[2] == &#39; &#39;) {
-      // Clumsy but will have to do for now.
-      // Chdir has no effect on the parent if run in the child.
-      buf[strlen(buf) - 1] = 0; // chop \n
-      if (chdir(buf &#43; 3) &lt; 0)
-        fprintf(stderr, &#34;cannot cd %s\n&#34;, buf &#43; 3);
-      continue;
-    }
-    if (fork1() == 0)
-      runcmd(parsecmd(buf));
-    wait(&amp;r);
-  }
-  exit(0);
-}
-
-
-main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特别处理。之后fork创建子进程，调用parsecmd解析命令，再调用runcmd执行得到的命令。最后调用wait等待子进程结束。main 的基本流程就这样。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/2018/09/29/6.828_hw2_shell/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2018-09-29T16:31:21+00:00" />
-<meta property="article:modified_time" content="2018-09-29T16:31:21+00:00" />
-
-<meta itemprop="name" content="6.828 Homework 2:Shell">
-<meta itemprop="description" content="这次的作业是实现一个简单的 shell。通过阅读 xv6 book 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。
-题目提供的sh.c已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成runcmd函数中缺少的代码即可。
-流程
-先从 main 函数看起：
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-
-
-int main(void) {
-  static char buf[100];
-  int fd, r;
-
-  // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) &gt;= 0) {
-    if (buf[0] == &#39;c&#39; &amp;&amp; buf[1] == &#39;d&#39; &amp;&amp; buf[2] == &#39; &#39;) {
-      // Clumsy but will have to do for now.
-      // Chdir has no effect on the parent if run in the child.
-      buf[strlen(buf) - 1] = 0; // chop \n
-      if (chdir(buf &#43; 3) &lt; 0)
-        fprintf(stderr, &#34;cannot cd %s\n&#34;, buf &#43; 3);
-      continue;
-    }
-    if (fork1() == 0)
-      runcmd(parsecmd(buf));
-    wait(&amp;r);
-  }
-  exit(0);
-}
-
-
-main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特别处理。之后fork创建子进程，调用parsecmd解析命令，再调用runcmd执行得到的命令。最后调用wait等待子进程结束。main 的基本流程就这样。"><meta itemprop="datePublished" content="2018-09-29T16:31:21+00:00" />
-<meta itemprop="dateModified" content="2018-09-29T16:31:21+00:00" />
-<meta itemprop="wordCount" content="2473">
-<meta itemprop="keywords" content="OS," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="6.828 Homework 2:Shell"/>
-<meta name="twitter:description" content="这次的作业是实现一个简单的 shell。通过阅读 xv6 book 的第零章，基本上就可以实现题目中所说的三个功能，也是shell的基本功能：运行简单的命令，输入输出重定向，管道。
-题目提供的sh.c已经实现了命令的解析（大概看了一下流程，大概就是个递归下降解释器吧，这次作业无需关心这个），只需要完成runcmd函数中缺少的代码即可。
-流程
-先从 main 函数看起：
-
-
- 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-
-
-int main(void) {
-  static char buf[100];
-  int fd, r;
-
-  // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) &gt;= 0) {
-    if (buf[0] == &#39;c&#39; &amp;&amp; buf[1] == &#39;d&#39; &amp;&amp; buf[2] == &#39; &#39;) {
-      // Clumsy but will have to do for now.
-      // Chdir has no effect on the parent if run in the child.
-      buf[strlen(buf) - 1] = 0; // chop \n
-      if (chdir(buf &#43; 3) &lt; 0)
-        fprintf(stderr, &#34;cannot cd %s\n&#34;, buf &#43; 3);
-      continue;
-    }
-    if (fork1() == 0)
-      runcmd(parsecmd(buf));
-    wait(&amp;r);
-  }
-  exit(0);
-}
-
-
-main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特别处理。之后fork创建子进程，调用parsecmd解析命令，再调用runcmd执行得到的命令。最后调用wait等待子进程结束。main 的基本流程就这样。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -348,20 +186,20 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 </span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">r</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="c1">// Read and run input commands.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">while</span> <span class="p">(</span><span class="n">getcmd</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">while</span> <span class="p">(</span><span class="nf">getcmd</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;c&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;d&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">buf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39; &#39;</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">      <span class="c1">// Clumsy but will have to do for now.
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="c1">// Chdir has no effect on the parent if run in the child.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">buf</span><span class="p">[</span><span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// chop \n
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">if</span> <span class="p">(</span><span class="n">chdir</span><span class="p">(</span><span class="n">buf</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;cannot cd %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">buf</span> <span class="o">+</span> <span class="mi">3</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">buf</span><span class="p">[</span><span class="nf">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// chop \n
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">if</span> <span class="p">(</span><span class="nf">chdir</span><span class="p">(</span><span class="n">buf</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;cannot cd %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">buf</span> <span class="o">+</span> <span class="mi">3</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">      <span class="k">continue</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">      <span class="n">runcmd</span><span class="p">(</span><span class="n">parsecmd</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">    <span class="n">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="nf">parsecmd</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -430,7 +268,7 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">execv</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">execv</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>第一个参数是命令所在的执行文件的绝对路径。比如调用<code>ls</code>时，需要输入<code>/bin/ls</code>。每次都这样输入很麻烦，而且不一定每个命令都在<code>/bin</code> 下面。那么我们平时使用的 shell 是怎么实现的呢？</p>
@@ -494,18 +332,18 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39; &#39;</span><span class="o">:</span>
 </span></span><span class="line"><span class="cl">    <span class="n">ecmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">execcmd</span> <span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">      <span class="n">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">access</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">F_OK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// check current dir
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">execv</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">access</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">F_OK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// check current dir
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="nf">execv</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">      <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">      <span class="kt">char</span> <span class="o">*</span><span class="n">str1</span><span class="p">,</span> <span class="o">*</span><span class="n">token</span><span class="p">,</span> <span class="o">*</span><span class="n">saveptr1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">      <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">      <span class="kt">char</span> <span class="o">*</span><span class="n">env_path</span> <span class="o">=</span> <span class="n">getenv</span><span class="p">(</span><span class="s">&#34;PATH&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">char</span> <span class="o">*</span><span class="n">env_path</span> <span class="o">=</span> <span class="nf">getenv</span><span class="p">(</span><span class="s">&#34;PATH&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">      <span class="kt">char</span> <span class="o">*</span><span class="n">env_paths</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">str1</span> <span class="o">=</span> <span class="n">env_path</span><span class="p">;;</span> <span class="n">i</span><span class="o">++</span><span class="p">,</span> <span class="n">str1</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">token</span> <span class="o">=</span> <span class="n">strtok_r</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="s">&#34;:&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">saveptr1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">token</span> <span class="o">=</span> <span class="nf">strtok_r</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="s">&#34;:&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">saveptr1</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">token</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">          <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        <span class="n">env_paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span><span class="p">;</span>
@@ -514,18 +352,18 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 </span></span><span class="line"><span class="cl">      <span class="kt">char</span> <span class="o">*</span><span class="n">abs_path</span><span class="p">;</span> <span class="c1">// evn_path[i] + &#34;/&#34; + path;
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="kt">int</span> <span class="n">j</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">      <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">&amp;&amp;</span> <span class="n">find</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">abs_path</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">env_paths</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="n">strlen</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="n">strcpy</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">env_paths</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">        <span class="n">strcat</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="s">&#34;/&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="n">strcat</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">access</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">F_OK</span> <span class="o">|</span> <span class="n">X_OK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">abs_path</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="nf">strlen</span><span class="p">(</span><span class="n">env_paths</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">strcpy</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">env_paths</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">strcat</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="s">&#34;/&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">strcat</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="nf">access</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">F_OK</span> <span class="o">|</span> <span class="n">X_OK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">          <span class="n">find</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="n">execv</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">execv</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="n">free</span><span class="p">(</span><span class="n">abs_path</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">abs_path</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">      <span class="p">}</span>
 </span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">find</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Command not find: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Command not find: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
@@ -553,8 +391,8 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="nf">redircmd</span><span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">subcmd</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">redircmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="n">cmd</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">  <span class="n">memset</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memset</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">type</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">=</span> <span class="n">subcmd</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">file</span> <span class="o">=</span> <span class="n">file</span><span class="p">;</span>
@@ -584,12 +422,12 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 </span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39;&lt;&#39;</span><span class="o">:</span>
 </span></span><span class="line"><span class="cl">    <span class="n">rcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">redircmd</span> <span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="n">errno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">close</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">fd</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">file</span><span class="p">,</span> <span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">,</span> <span class="mo">0644</span><span class="p">);</span><span class="c1">//注意第三个参数是权限
+</span></span><span class="line"><span class="cl">    <span class="nf">close</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">fd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">=</span> <span class="nf">open</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">file</span><span class="p">,</span> <span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">,</span> <span class="mo">0644</span><span class="p">);</span><span class="c1">//注意第三个参数是权限
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Error: %s&#34;</span><span class="p">,</span> <span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Error: %s&#34;</span><span class="p">,</span> <span class="nf">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">runcmd</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">runcmd</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -640,26 +478,26 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 </span></span><span class="line"><span class="cl">  <span class="c1">//...
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">case</span> <span class="sc">&#39;|&#39;</span><span class="o">:</span>
 </span></span><span class="line"><span class="cl">    <span class="n">pcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pipecmd</span> <span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="n">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// use 1, write left cmd&#39;s output to p[1];
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// use 1, write left cmd&#39;s output to p[1];
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="n">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// read right cmd&#39;s input from p[0]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// read right cmd&#39;s input from p[0]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">    <span class="cm">/**
 </span></span></span><span class="line"><span class="cl"><span class="cm">     * The wait() system call suspends execution of the calling
 </span></span></span><span class="line"><span class="cl"><span class="cm">     * process  until one  of its children terminates.  The call wait(&amp;wstatus)
 </span></span></span><span class="line"><span class="cl"><span class="cm">     * is equivalent to: waitpid(-1, &amp;wstatus, 0);
 </span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
-</span></span><span class="line"><span class="cl">    <span class="n">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -695,25 +533,25 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39;|&#39;</span><span class="o">:</span>
 </span></span><span class="line"><span class="cl">    <span class="n">pcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pipecmd</span> <span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="n">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// write left cmd&#39;s output to p[1];
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// write left cmd&#39;s output to p[1];
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="n">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// read right cmd&#39;s input from p[0]
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// read right cmd&#39;s input from p[0]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -798,7 +636,7 @@ main 函数循环调用 getcmd从 console 读取命令，对 cd 命令做了特�
   <span class="copyright-year">
     &copy;
     2017 -
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
   </span>
 </div>
 

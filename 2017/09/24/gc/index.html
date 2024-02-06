@@ -26,7 +26,7 @@ Java运行时内存 先上图
 
 
 
-<meta name="generator" content="Hugo 0.101.0 with theme even" />
+<meta name="generator" content="Hugo 0.120.4 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2017/09/24/gc/" />
@@ -42,41 +42,8 @@ Java运行时内存 先上图
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css"  crossorigin="anonymous">
 
 
-<meta property="og:title" content="Java垃圾收集器与内存分配策略" />
-<meta property="og:description" content="
-最近在看《深入理解Java虚拟机:JVM高级特性与最佳实践》这本书,觉得有必要记录一下.
-如无说明,则图片是我用Google Drawings制作的,  under CC BY-NC-SA 3.0 CN License.
 
-Java运行时内存
-先上图
 
-虽然Java中没有直接(明显)的指针操作,但是在内部的实现里用的还是指针的.在访问对象的过程中,有两种方式可以实现:句柄访问,直接指针.对象实际上是一个reference类型的数据,其中存储的是他自己的地址,通过句柄访问则是句柄的地址." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/2017/09/24/gc/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2017-09-24T20:31:21+00:00" />
-<meta property="article:modified_time" content="2017-09-24T20:31:21+00:00" />
-
-<meta itemprop="name" content="Java垃圾收集器与内存分配策略">
-<meta itemprop="description" content="
-最近在看《深入理解Java虚拟机:JVM高级特性与最佳实践》这本书,觉得有必要记录一下.
-如无说明,则图片是我用Google Drawings制作的,  under CC BY-NC-SA 3.0 CN License.
-
-Java运行时内存
-先上图
-
-虽然Java中没有直接(明显)的指针操作,但是在内部的实现里用的还是指针的.在访问对象的过程中,有两种方式可以实现:句柄访问,直接指针.对象实际上是一个reference类型的数据,其中存储的是他自己的地址,通过句柄访问则是句柄的地址."><meta itemprop="datePublished" content="2017-09-24T20:31:21+00:00" />
-<meta itemprop="dateModified" content="2017-09-24T20:31:21+00:00" />
-<meta itemprop="wordCount" content="2064">
-<meta itemprop="keywords" content="Java,JVM," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Java垃圾收集器与内存分配策略"/>
-<meta name="twitter:description" content="
-最近在看《深入理解Java虚拟机:JVM高级特性与最佳实践》这本书,觉得有必要记录一下.
-如无说明,则图片是我用Google Drawings制作的,  under CC BY-NC-SA 3.0 CN License.
-
-Java运行时内存
-先上图
-
-虽然Java中没有直接(明显)的指针操作,但是在内部的实现里用的还是指针的.在访问对象的过程中,有两种方式可以实现:句柄访问,直接指针.对象实际上是一个reference类型的数据,其中存储的是他自己的地址,通过句柄访问则是句柄的地址."/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -340,16 +307,16 @@ Survivor中的存活对象,移到另一块Survivor中(当然,在对象存活率�
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">ONEMB</span> <span class="o">=</span> <span class="n">1024</span> <span class="o">*</span> <span class="n">1024</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">byte</span><span class="o">[]</span> <span class="n">allocation1</span><span class="o">,</span> <span class="n">allocation2</span><span class="o">,</span> <span class="n">allocation3</span><span class="o">,</span> <span class="n">allocation4</span><span class="o">,</span> <span class="n">allocation5</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">allocation1</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
-</span></span><span class="line"><span class="cl">    <span class="n">allocation2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
-</span></span><span class="line"><span class="cl">    <span class="n">allocation3</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">2</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
-</span></span><span class="line"><span class="cl">    <span class="n">allocation4</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">4</span> <span class="o">*</span> <span class="n">ONEMB</span><span class="o">];</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ONEMB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">1024</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">allocation1</span><span class="p">,</span><span class="w"> </span><span class="n">allocation2</span><span class="p">,</span><span class="w"> </span><span class="n">allocation3</span><span class="p">,</span><span class="w"> </span><span class="n">allocation4</span><span class="p">,</span><span class="w"> </span><span class="n">allocation5</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">allocation1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[</span><span class="n">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ONEMB</span><span class="o">]</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">allocation2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[</span><span class="n">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ONEMB</span><span class="o">]</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">allocation3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[</span><span class="n">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ONEMB</span><span class="o">]</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">allocation4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[</span><span class="n">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ONEMB</span><span class="o">]</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="useserialgc">UseSerialGC</h2>
 <p>参数设置为:</p>
@@ -535,7 +502,7 @@ Survivor中的存活对象,移到另一块Survivor中(当然,在对象存活率�
   <span class="copyright-year">
     &copy;
     2017 -
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
   </span>
 </div>
 

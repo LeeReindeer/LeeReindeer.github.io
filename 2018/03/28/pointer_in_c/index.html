@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.101.0 with theme even" />
+<meta name="generator" content="Hugo 0.120.4 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/03/28/pointer_in_c/" />
@@ -39,20 +39,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css"  crossorigin="anonymous">
 
 
-<meta property="og:title" content="C语言-可怕的指针" />
-<meta property="og:description" content="帮你理清C语言的指针...对于 “assignment to expression with array type” 这样的错误就是没有分清字符串和字符数组的区别" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/2018/03/28/pointer_in_c/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2018-03-28T07:30:00+00:00" />
-<meta property="article:modified_time" content="2018-03-28T07:30:00+00:00" />
 
-<meta itemprop="name" content="C语言-可怕的指针">
-<meta itemprop="description" content="帮你理清C语言的指针...对于 “assignment to expression with array type” 这样的错误就是没有分清字符串和字符数组的区别"><meta itemprop="datePublished" content="2018-03-28T07:30:00+00:00" />
-<meta itemprop="dateModified" content="2018-03-28T07:30:00+00:00" />
-<meta itemprop="wordCount" content="2164">
-<meta itemprop="keywords" content="C," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="C语言-可怕的指针"/>
-<meta name="twitter:description" content="帮你理清C语言的指针...对于 “assignment to expression with array type” 这样的错误就是没有分清字符串和字符数组的区别"/>
+
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -179,8 +167,8 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">;</span> <span class="c1">//defines an pointer to a, the address where a store.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">);</span> <span class="c1">//here * is poiner operator, get the value of address = a.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">);</span> <span class="c1">//here * is poiner operator, get the value of address = a.
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="数组指针">数组指针</h3>
@@ -200,8 +188,8 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"> <span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">};</span>
 </span></span><span class="line"><span class="cl"> <span class="kt">int</span> <span class="o">*</span><span class="n">p1</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">//2
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="p">(</span><span class="o">*++</span><span class="n">p1</span><span class="p">));</span> <span class="c1">//2
+</span></span><span class="line"><span class="cl"> <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">//2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="p">(</span><span class="o">*++</span><span class="n">p1</span><span class="p">));</span> <span class="c1">//2
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -387,12 +375,12 @@
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">return</span> <span class="p">(</span><span class="n">p2</span><span class="o">-&gt;</span><span class="n">power</span> <span class="o">-</span> <span class="n">p1</span><span class="o">-&gt;</span><span class="n">power</span><span class="p">);</span><span class="c1">//from lager to smaller
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">Poly</span> <span class="nf">NewPoly</span><span class="p">(</span><span class="n">Item</span> <span class="o">*</span><span class="n">items</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="n">qsort</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Item</span><span class="p">),</span> <span class="n">comparItem</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Poly</span> <span class="nf">NewPoly</span><span class="p">(</span><span class="n">Item</span> <span class="o">*</span><span class="n">items</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">qsort</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Item</span><span class="p">),</span> <span class="n">comparItem</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="n">Poly</span> <span class="n">p</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Polynomial</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Poly</span> <span class="n">p</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Polynomial</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">  <span class="n">Poly</span> <span class="n">header</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">  <span class="n">ZeroPoly</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">ZeroPoly</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
@@ -465,10 +453,10 @@ list_head = entry-&gt;next;</p>
 </span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="o">**</span> <span class="n">curr</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span> <span class="o">*</span><span class="n">curr</span><span class="p">;</span> <span class="p">)</span>
 </span></span><span class="line"><span class="cl">    <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="n">node</span> <span class="o">*</span> <span class="n">entry</span> <span class="o">=</span> <span class="o">*</span><span class="n">curr</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rm</span><span class="p">(</span><span class="n">entry</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="nf">rm</span><span class="p">(</span><span class="n">entry</span><span class="p">))</span>
 </span></span><span class="line"><span class="cl">        <span class="p">{</span>
 </span></span><span class="line"><span class="cl">            <span class="o">*</span><span class="n">curr</span> <span class="o">=</span> <span class="n">entry</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">free</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">free</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
 </span></span><span class="line"><span class="cl">        <span class="k">else</span>
 </span></span><span class="line"><span class="cl">            <span class="n">curr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
@@ -526,9 +514,9 @@ list_head = entry-&gt;next;</p>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">cmp</span><span class="p">)(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">max</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Max: %d&#34;</span><span class="p">,</span> <span class="n">cmp</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Max: %d&#34;</span><span class="p">,</span> <span class="nf">cmp</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">    <span class="n">cmp</span> <span class="o">=</span> <span class="n">min</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Min: %d&#34;</span><span class="p">,</span> <span class="n">cmp</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Min: %d&#34;</span><span class="p">,</span> <span class="nf">cmp</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -615,7 +603,7 @@ list_head = entry-&gt;next;</p>
   <span class="copyright-year">
     &copy;
     2017 -
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
   </span>
 </div>
 

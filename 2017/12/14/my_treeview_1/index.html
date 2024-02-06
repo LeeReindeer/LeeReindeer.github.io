@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.101.0 with theme even" />
+<meta name="generator" content="Hugo 0.120.4 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2017/12/14/my_treeview_1/" />
@@ -40,131 +40,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css"  crossorigin="anonymous">
 
 
-<meta property="og:title" content="Android Tree2View 1-Introduction" />
-<meta property="og:description" content="Tree2View
 
 
-See on Github
-
-主要功能 - Features
-
-
-
-Tree2View
-FileManage
-
-
-
-
-①多级分层的树结构视图
-基本的文件管理器布局
-
-
-②记忆展开状态
-自动展开上次打开未关闭的目录
-
-
-③使用适配器设计模式，用户可自定义 TreeAdapter
-对不同类型的文件显示不同的Icon
-
-
-④动态增删节点
-删除和添加文件后可自动刷新状态(To-do)
-
-
-⑤选择模式
-长按节点进行文件操作(Copy, Cut, Rename, Delete)
-
-
-
-效果预览 - Preview
-" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/2017/12/14/my_treeview_1/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2017-12-14T21:31:21+00:00" />
-<meta property="article:modified_time" content="2017-12-14T21:31:21+00:00" />
-
-<meta itemprop="name" content="Android Tree2View 1-Introduction">
-<meta itemprop="description" content="Tree2View
-
-
-See on Github
-
-主要功能 - Features
-
-
-
-Tree2View
-FileManage
-
-
-
-
-①多级分层的树结构视图
-基本的文件管理器布局
-
-
-②记忆展开状态
-自动展开上次打开未关闭的目录
-
-
-③使用适配器设计模式，用户可自定义 TreeAdapter
-对不同类型的文件显示不同的Icon
-
-
-④动态增删节点
-删除和添加文件后可自动刷新状态(To-do)
-
-
-⑤选择模式
-长按节点进行文件操作(Copy, Cut, Rename, Delete)
-
-
-
-效果预览 - Preview
-"><meta itemprop="datePublished" content="2017-12-14T21:31:21+00:00" />
-<meta itemprop="dateModified" content="2017-12-14T21:31:21+00:00" />
-<meta itemprop="wordCount" content="841">
-<meta itemprop="keywords" content="Android,数据结构," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Android Tree2View 1-Introduction"/>
-<meta name="twitter:description" content="Tree2View
-
-
-See on Github
-
-主要功能 - Features
-
-
-
-Tree2View
-FileManage
-
-
-
-
-①多级分层的树结构视图
-基本的文件管理器布局
-
-
-②记忆展开状态
-自动展开上次打开未关闭的目录
-
-
-③使用适配器设计模式，用户可自定义 TreeAdapter
-对不同类型的文件显示不同的Icon
-
-
-④动态增删节点
-删除和添加文件后可自动刷新状态(To-do)
-
-
-⑤选择模式
-长按节点进行文件操作(Copy, Cut, Rename, Delete)
-
-
-
-效果预览 - Preview
-"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -426,26 +303,26 @@ module.</p>
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileTreeAdapter</span> <span class="kd">extends</span> <span class="n">TreeAdapter</span><span class="o">&lt;</span><span class="n">FileItem</span><span class="o">&gt;</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">  <span class="c1">//resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">public</span> <span class="nf">FileTreeAdapter</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">DefaultTreeNode</span> <span class="n">root</span><span class="o">,</span> <span class="kt">int</span> <span class="n">resourceId</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">root</span><span class="o">,</span> <span class="n">resourceId</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">View</span> <span class="nf">getView</span><span class="o">(</span><span class="kt">int</span> <span class="n">position</span><span class="o">,</span> <span class="n">View</span> <span class="n">convertView</span><span class="o">,</span> <span class="n">ViewGroup</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">     <span class="c1">//your code here
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="c1">//...
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="c1">//call padding for a better UI
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="n">setPadding</span><span class="o">(</span><span class="n">holder</span><span class="o">.</span><span class="na">arrowIcon</span><span class="o">,</span> <span class="n">depth</span><span class="o">,</span> <span class="o">-</span><span class="n">1</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">     <span class="c1">//toggle your view&#39;s status here
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="n">toggle</span><span class="o">(</span><span class="n">node</span><span class="o">,</span> <span class="n">holder</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
-</span></span><span class="line"><span class="cl">     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">toggle</span><span class="o">(</span><span class="n">Object</span><span class="o">...</span> <span class="n">objects</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">     <span class="o">}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">FileTreeAdapter</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">TreeAdapter</span><span class="o">&lt;</span><span class="n">FileItem</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="nf">FileTreeAdapter</span><span class="p">(</span><span class="n">Context</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">DefaultTreeNode</span><span class="w"> </span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">resourceId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">super</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="n">resourceId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">View</span><span class="w"> </span><span class="nf">getView</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="n">View</span><span class="w"> </span><span class="n">convertView</span><span class="p">,</span><span class="w"> </span><span class="n">ViewGroup</span><span class="w"> </span><span class="n">parent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="c1">//your code here</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="c1">//...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="c1">//call padding for a better UI</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">setPadding</span><span class="p">(</span><span class="n">holder</span><span class="p">.</span><span class="na">arrowIcon</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="c1">//toggle your view&#39;s status here</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">toggle</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="w"> </span><span class="n">holder</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">toggle</span><span class="p">(</span><span class="n">Object</span><span class="p">...</span><span class="w"> </span><span class="n">objects</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>Then simply add:</p>
 <div class="highlight"><div class="chroma">
@@ -454,7 +331,7 @@ module.</p>
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">  <span class="k">val</span> <span class="py">adapter</span> <span class="p">=</span> <span class="n">FileTreeAdapter</span><span class="p">(</span><span class="k">this</span><span class="nd">@MainActivity</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">layout_file_tree_item</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl">  <span class="k">val</span> <span class="py">adapter</span> <span class="p">=</span> <span class="n">FileTreeAdapter</span><span class="p">(</span><span class="k">this</span><span class="nd">@MainActivity</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="nc">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">layout_file_tree_item</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="n">treeView</span><span class="p">.</span><span class="n">treeAdapter</span> <span class="p">=</span> <span class="n">adapter</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -541,7 +418,7 @@ module.</p>
   <span class="copyright-year">
     &copy;
     2017 -
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
   </span>
 </div>
 

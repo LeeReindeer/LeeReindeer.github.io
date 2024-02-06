@@ -24,7 +24,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.101.0 with theme even" />
+<meta name="generator" content="Hugo 0.120.4 with theme even" />
 
 
 <link rel="canonical" href="https://leer.moe/2018/12/20/java-fun-pass-by-value/" />
@@ -40,26 +40,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css"  crossorigin="anonymous">
 
 
-<meta property="og:title" content="Java基础-Pass by value" />
-<meta property="og:description" content="
-Java的方法参数是按值传递的，这篇主要是把Java的传值机制和C语言的指针和二重指针进行比较，并基于汇编代码更深入的理解传值和传引用。
-" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://leer.moe/2018/12/20/java-fun-pass-by-value/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2018-12-20T16:31:21+00:00" />
-<meta property="article:modified_time" content="2018-12-20T16:31:21+00:00" />
 
-<meta itemprop="name" content="Java基础-Pass by value">
-<meta itemprop="description" content="
-Java的方法参数是按值传递的，这篇主要是把Java的传值机制和C语言的指针和二重指针进行比较，并基于汇编代码更深入的理解传值和传引用。
-"><meta itemprop="datePublished" content="2018-12-20T16:31:21+00:00" />
-<meta itemprop="dateModified" content="2018-12-20T16:31:21+00:00" />
-<meta itemprop="wordCount" content="1083">
-<meta itemprop="keywords" content="Java," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Java基础-Pass by value"/>
-<meta name="twitter:description" content="
-Java的方法参数是按值传递的，这篇主要是把Java的传值机制和C语言的指针和二重指针进行比较，并基于汇编代码更深入的理解传值和传引用。
-"/>
+
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -228,9 +210,9 @@ Java的方法参数是按值传递的，这篇主要是把Java的传值机制和
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">change_point</span><span class="p">(</span><span class="n">Point</span> <span class="o">**</span><span class="n">point_ref</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">point_ref</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">x</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">point_ref</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">y</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">  <span class="n">free</span><span class="p">(</span><span class="o">*</span><span class="n">point_ref</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">free</span><span class="p">(</span><span class="o">*</span><span class="n">point_ref</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="n">point_ref</span> <span class="o">=</span> <span class="n">realloc</span><span class="p">(</span><span class="o">*</span><span class="n">point_ref</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Point</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="n">point_ref</span> <span class="o">=</span> <span class="nf">realloc</span><span class="p">(</span><span class="o">*</span><span class="n">point_ref</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Point</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">point_ref</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">(</span><span class="o">*</span><span class="n">point_ref</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">10</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">(</span><span class="o">*</span><span class="n">point_ref</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">10</span><span class="p">;</span>
@@ -238,20 +220,20 @@ Java的方法参数是按值传递的，这篇主要是把Java的传值机制和
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">show_point</span><span class="p">(</span><span class="n">Point</span> <span class="o">*</span><span class="n">point</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;(%d, %d)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">point</span><span class="o">-&gt;</span><span class="n">x</span><span class="p">,</span> <span class="n">point</span><span class="o">-&gt;</span><span class="n">y</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;(%d, %d)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">point</span><span class="o">-&gt;</span><span class="n">x</span><span class="p">,</span> <span class="n">point</span><span class="o">-&gt;</span><span class="n">y</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="n">Point</span> <span class="o">*</span><span class="n">point</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Point</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Point</span> <span class="o">*</span><span class="n">point</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Point</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">  <span class="n">point</span><span class="o">-&gt;</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">point</span><span class="o">-&gt;</span><span class="n">y</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">  <span class="n">show_point</span><span class="p">(</span><span class="n">point</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">show_point</span><span class="p">(</span><span class="n">point</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="n">edit_point</span><span class="p">(</span><span class="n">point</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">show_point</span><span class="p">(</span><span class="n">point</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">edit_point</span><span class="p">(</span><span class="n">point</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">show_point</span><span class="p">(</span><span class="n">point</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="n">change_point</span><span class="p">(</span><span class="o">&amp;</span><span class="n">point</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">show_point</span><span class="p">(</span><span class="n">point</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">change_point</span><span class="p">(</span><span class="o">&amp;</span><span class="n">point</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">show_point</span><span class="p">(</span><span class="n">point</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -312,42 +294,42 @@ Java的方法参数是按值传递的，这篇主要是把Java的传值机制和
 </span><span class="lnt">35
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Pass</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Point</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Point</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="o">.</span><span class="na">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;(%d, %d)&#34;</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">y</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kt">void</span> <span class="nf">editPoint</span><span class="o">(</span><span class="n">Point</span> <span class="n">pointCopy</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">pointCopy</span><span class="o">.</span><span class="na">x</span> <span class="o">+=</span> <span class="n">1</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">pointCopy</span><span class="o">.</span><span class="na">y</span> <span class="o">+=</span> <span class="n">1</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="kd">static</span> <span class="n">Point</span> <span class="nf">changePoint</span><span class="o">(</span><span class="n">Point</span> <span class="n">pointCopy</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="n">Point</span><span class="o">(</span><span class="n">pointCopy</span><span class="o">.</span><span class="na">x</span> <span class="o">*</span> <span class="n">10</span><span class="o">,</span> <span class="n">pointCopy</span><span class="o">.</span><span class="na">y</span> <span class="o">*</span> <span class="n">10</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Point</span> <span class="n">point</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Point</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">2</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">point</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="n">editPoint</span><span class="o">(</span><span class="n">point</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">point</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="n">point</span> <span class="o">=</span> <span class="n">changePoint</span><span class="o">(</span><span class="n">point</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">point</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Pass</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Point</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">Point</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="na">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="na">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">toString</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">String</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="s">&#34;(%d, %d)&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="na">x</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="na">y</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">editPoint</span><span class="p">(</span><span class="n">Point</span><span class="w"> </span><span class="n">pointCopy</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">pointCopy</span><span class="p">.</span><span class="na">x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">pointCopy</span><span class="p">.</span><span class="na">y</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="n">Point</span><span class="w"> </span><span class="nf">changePoint</span><span class="p">(</span><span class="n">Point</span><span class="w"> </span><span class="n">pointCopy</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Point</span><span class="p">(</span><span class="n">pointCopy</span><span class="p">.</span><span class="na">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">10</span><span class="p">,</span><span class="w"> </span><span class="n">pointCopy</span><span class="p">.</span><span class="na">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">10</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Point</span><span class="w"> </span><span class="n">point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Point</span><span class="p">(</span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">2</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">point</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">editPoint</span><span class="p">(</span><span class="n">point</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">point</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">changePoint</span><span class="p">(</span><span class="n">point</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">point</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>由于Java没有二级指针这个概念，所以没办法在另一个方法中得到原来对象的真实引用（除非是字段，即全局变量），只能通过返回新的引用，并在调用者那里进行赋值。</p>
 <h2 id="和汇编代码的比较">和汇编代码的比较</h2>
@@ -439,10 +421,10 @@ Java的方法参数是按值传递的，这篇主要是把Java的传值机制和
 </span></span><span class="line"><span class="cl">	<span class="nf">pushq</span>	<span class="nv">%rbp</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">pushq</span>	<span class="nv">%rbx</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">movq</span>	<span class="nv">%rdi</span><span class="p">,</span> <span class="nv">%rbx</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">movq</span>	<span class="p">(</span><span class="nv">%rdi</span><span class="p">),</span> <span class="nv">%rdi</span> <span class="c"># 此时%rdi为0x7fffffffe040，这条指令把0x7fffffffe040内存位置中的值（0x555555756260）复制到%rdi
-</span></span></span><span class="line"><span class="cl"><span class="c"></span>	<span class="no">movl</span>	<span class="p">(</span><span class="nv">%rdi</span><span class="p">),</span> <span class="nv">%r12d</span> <span class="c"># 0x7fffffffe040中存储的是0x555555756260，这才是Point所在的内存地址，把point-&gt;x复制给%r12
-</span></span></span><span class="line"><span class="cl"><span class="c"></span>	<span class="no">movl</span>	<span class="mi">4</span><span class="p">(</span><span class="nv">%rdi</span><span class="p">),</span> <span class="nv">%ebp</span> <span class="c"># 把 point-&gt;y 复制给%ebp
-</span></span></span><span class="line"><span class="cl"><span class="c"></span>	<span class="no">call</span>	<span class="no">free@PLT</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">movq</span>	<span class="p">(</span><span class="nv">%rdi</span><span class="p">),</span> <span class="nv">%rdi</span> <span class="c1"># 此时%rdi为0x7fffffffe040，这条指令把0x7fffffffe040内存位置中的值（0x555555756260）复制到%rdi
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">movl</span>	<span class="p">(</span><span class="nv">%rdi</span><span class="p">),</span> <span class="nv">%r12d</span> <span class="c1"># 0x7fffffffe040中存储的是0x555555756260，这才是Point所在的内存地址，把point-&gt;x复制给%r12
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">movl</span>	<span class="mi">4</span><span class="p">(</span><span class="nv">%rdi</span><span class="p">),</span> <span class="nv">%ebp</span> <span class="c1"># 把 point-&gt;y 复制给%ebp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">call</span>	<span class="no">free@PLT</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">movl</span>	<span class="no">$8</span><span class="p">,</span> <span class="nv">%esi</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">movq</span>	<span class="p">(</span><span class="nv">%rbx</span><span class="p">),</span> <span class="nv">%rdi</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">call</span>	<span class="no">realloc@PLT</span>
@@ -482,8 +464,8 @@ Java的方法参数是按值传递的，这篇主要是把Java的传值机制和
 </span></span><span class="line"><span class="cl">	<span class="nf">call</span>	<span class="no">edit_point</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">movq</span>	<span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span> <span class="nv">%rdi</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">call</span>	<span class="no">show_point</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">movq</span>	<span class="nv">%rsp</span><span class="p">,</span> <span class="nv">%rdi</span> <span class="c"># %rps中保存的是二级指针的内存地址（0x7fffffffe040）
-</span></span></span><span class="line"><span class="cl"><span class="c"></span>	<span class="no">call</span>	<span class="no">change_point</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">movq</span>	<span class="nv">%rsp</span><span class="p">,</span> <span class="nv">%rdi</span> <span class="c1"># %rps中保存的是二级指针的内存地址（0x7fffffffe040）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">call</span>	<span class="no">change_point</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">movq</span>	<span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span> <span class="nv">%rdi</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">call</span>	<span class="no">show_point</span>
 </span></span><span class="line"><span class="cl">	<span class="nf">movq</span>	<span class="mi">8</span><span class="p">(</span><span class="nv">%rsp</span><span class="p">),</span> <span class="nv">%rdx</span>
@@ -576,7 +558,7 @@ Java的方法参数是按值传递的，这篇主要是把Java的传值机制和
   <span class="copyright-year">
     &copy;
     2017 -
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
   </span>
 </div>
 
