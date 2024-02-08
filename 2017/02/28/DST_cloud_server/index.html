@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>【瞎折腾】饥荒服务器搭建 - LeeReindeer&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="LeeReindeer" /><meta name="description" content=" 为了愉快)的玩饥荒.
+" /><meta name="keywords" content="LeeReindeer, Hugo, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.120.4 with theme even" />
+
+
+<link rel="canonical" href="https://leer.moe/2017/02/28/DST_cloud_server/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css"  crossorigin="anonymous">
+
+
+
+
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/categories/Newsletter/">
+        <li class="mobile-menu-item">Weekly</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">LeeReindeer&#39;s Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/Newsletter/">Weekly</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">【瞎折腾】饥荒服务器搭建</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-02-28 </span>
+        <div class="post-category">
+            <a href="/categories/%E5%AE%9E%E9%AA%8C%E5%AE%A4/"> 实验室 </a>
+            </div>
+          <span class="more-meta"> 1233 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#下载安装">下载＆安装</a></li>
+    <li><a href="#配置文件">配置文件</a></li>
+    <li><a href="#获取令牌">获取令牌</a></li>
+    <li><a href="#配置-clusterini-serverini">配置 cluster.ini &amp;server.ini</a></li>
+  </ol>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>为了愉快)的玩饥荒.</p>
+</blockquote>
+<h1 id="你需要一个服务器">你需要一个服务器</h1>
+<p><del>这个不用说了．</del> 我这里用的是阿里云,Ubuntu 16.04.</p>
+<h1 id="配置服务器">配置服务器</h1>
+<h2 id="下载安装">下载＆安装</h2>
+<ul>
+<li>ssh 连接你的服务器,
+接下来会有这样的提示，就是在本地加入秘钥</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">The authenticity of host ‘120.77.209.6 (120.77.209.6)’ can’t be established.
+</span></span><span class="line"><span class="cl">ECDSA key fingerprint is SHA256:/C8zCZOLXgZJ+QAWjWFKAZx+BS/LlX68jBmoAPaODIE.
+</span></span><span class="line"><span class="cl">Are you sure you want to continue connecting (yes/no)?
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>输入 <em>yes</em>.然后依次输入下面的命令,</p>
+<ul>
+<li><code>apt-get update</code>　//更新一下</li>
+<li><code>apt-get install screen vim libgcc1 libcurl4-gnutls-dev:i386</code>　//安装 vim ,sreen,还有32位的库</li>
+<li><code>mkdir ~/steamcmd</code></li>
+<li><code>cd ~/steamcmd</code></li>
+<li><code>wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz</code>　//下载steamcmd,这个相当于本地的steam</li>
+<li><code>tar -xvzf steamcmd_linux.tar.gz </code>//解压</li>
+<li><code>./steamcmd.sh</code></li>
+<li><code>login anonymous</code>　//匿名登入</li>
+<li><code>app_update 343050 validate</code> //下载饥荒｜更新</li>
+<li><code>quit</code> //退出steamcmd</li>
+</ul>
+<h2 id="配置文件">配置文件</h2>
+<ul>
+<li><code>cd ~/bin</code>//没有的话，就mkdir bin</li>
+<li><code>export PATH=~/bin:&quot;$PATH&quot;</code></li>
+<li><code>vim startDST</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">cd</span> Steam/steamapps/common/Don<span class="se">\&#39;</span>t<span class="se">\ </span>Starve<span class="se">\ </span>Together<span class="se">\ </span>Dedicated<span class="se">\ </span>Server/bin/
+</span></span><span class="line"><span class="cl">screen -S <span class="s2">&#34;DST Server&#34;</span>./dontstarve_dedicated_server_nullrenderer
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>//这里建一个脚本简化一下命令，不然每次都要输入一大行</p>
+<ul>
+<li>chmod 775 startDST</li>
+<li>试运行　<code>startDST</code></li>
+</ul>
+<p>接下来会出现这样的报错，此时服务并没有启动
+<img src="/images/clustertoken.png" alt="">
+一大堆英文，总之就是说缺少令牌文件（klei认证用户身份的秘钥，后面添加管理员也要用到）</p>
+<h2 id="获取令牌">获取令牌</h2>
+<ol>
+<li>
+<p>打开DST,点击右下角的account
+<img src="/images/dst_account.png" alt=""></p>
+</li>
+<li>
+<p>打开以后点击Generate Server Token.
+<img src="/images/takenp.png" alt="">
+好丑的马赛克＝＝
+复制到Cluster_taken.txt里，放在cluster_1文件夹里 。</p>
+</li>
+</ol>
+<h2 id="配置-clusterini-serverini">配置 cluster.ini &amp;server.ini</h2>
+<ul>
+<li>cluster.ini</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[GMEPLAY]
+</span></span><span class="line"><span class="cl">game_mode = survival
+</span></span><span class="line"><span class="cl">max_players = 6
+</span></span><span class="line"><span class="cl">pvp = false
+</span></span><span class="line"><span class="cl">pause_when_empty = true
+</span></span><span class="line"><span class="cl">[NETWORK]
+</span></span><span class="line"><span class="cl">cluster_description =
+</span></span><span class="line"><span class="cl">cluster_name =
+</span></span><span class="line"><span class="cl">cluster_intention = cooperative
+</span></span><span class="line"><span class="cl">cluster_password =
+</span></span><span class="line"><span class="cl">autosaver_enabled = true
+</span></span><span class="line"><span class="cl">enable_vote_kick = true
+</span></span><span class="line"><span class="cl">[MISC]
+</span></span><span class="line"><span class="cl">console_enabled = true
+</span></span><span class="line"><span class="cl">[SHARD]
+</span></span><span class="line"><span class="cl">shard_enabled = true
+</span></span><span class="line"><span class="cl">bind_ip = 127.0.0.1
+</span></span><span class="line"><span class="cl">master_ip = 127.0.0.1
+</span></span><span class="line"><span class="cl">master_port = 10889
+</span></span><span class="line"><span class="cl">cluster_key = supersecretkey
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>放在同上的文件夹。
+详细解释参考klei的<a href="http://forums.kleientertainment.com/topic/64743-dedicated-server-command-line-options-guide/#comment-726427">论坛</a></p>
+<ul>
+<li>server.ini
+这个文件很多都是重写cluster.ini里内容，文件放在.klei/DoNotStarveTogether/Cluster_1/Master里
+大功告成
+这时再次启动服务应该就一切正常了(&rsquo;・ω・&rsquo;) ,<a href="http://my.jacklul.com/dstservers/">服务器列表</a>可以查看自己的服务器
+不加mod也没关系，我觉得加了mod更好玩一些，特别是那个地上洞穴．这样也省了再开一个存档作为洞穴的配置了．</li>
+</ul>
+<h1 id="使用mod">使用mod</h1>
+<p>直接暴力解决好了，用最简单的方法．</p>
+<ul>
+<li>
+<p>查找mod的id,进入网页steam的饥荒创意工坊，点进去需要的mod,然后然后<code>http://steamcommunity.com/sharedfiles/filedetails/?id=635020562</code>id=xxxxxxx就是mod的id了．</p>
+</li>
+<li>
+<p>进入到　Steam/steamapps/common/Don&rsquo;t Starve Together Dedicated Server/mods　将下载好的几个mod上传到服务器．</p>
+</li>
+<li>
+<p>配置modsettings.lua.<code>ForceEnableMod(&quot;workshop-666132449&quot;)</code>用这样的形式强制启动mod.</p>
+</li>
+</ul>
+<h1 id="常用的lua命令">常用的lua命令</h1>
+<p>进入游戏后，先按＂～＂键，再按crtl键，旁边出现remote字符时，就可以输入服务端命令了．</p>
+<ul>
+<li>AllPlayers[number]:PushEvent(&lsquo;respawnfromghost&rsquo;) &mdash;复活，超级好用．．要不是这个命令，游戏都不知道重置几次了．</li>
+<li>c_rollback(X) 回档到第X个存档，如果没有自己手动保存的话就是第几天</li>
+<li>c_announce(&ldquo;内容&rdquo;)</li>
+<li>c_shutdown(true|false) &mdash;true保存并关闭当前世界； false不保存直接关闭当前世界</li>
+<li>c_connect(&quot;&quot;, 10999, &ldquo;000&rdquo;) &mdash;IP ，端口，密码 服务器直连，也可以在服务器列表里搜索进入．</li>
+</ul>
+<h1 id="reference">reference</h1>
+<p><a href="http://steamcommunity.com/sharedfiles/filedetails/?l=ukrainian&amp;id=772942647">link1</a></p>
+<p><a href="https://www.nevermoe.com/?p=695">link2</a></p>
+<p><a href="https://blog.cuican.name/?p=517">link3</a></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">LeeReindeer</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-02-28
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2017/03/13/peak_of_wave/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">浪潮之巅</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2017/02/13/2017-books/">
+            <span class="next-text nav-default">2017年书单</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+    <script src="https://utteranc.es/client.js"
+            repo="LeeReindeer/LeeReindeer.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/utterance">comments powered by utterances.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://stackoverflow.com/users/7247458/leer" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="https://github.com/LeeReindeer" class="iconfont icon-github" title="github"></a>
+  <a href="https://leer.moe/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme -
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy;
+    2017 -
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>LeeReindeer</span>
+  </span>
+</div>
+
+<div class="copyright" id="showDays">
+
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js"  crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js"  crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+<script defer src="/js/sitedate.js"></script>
+
+
+
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ed681cb7afd944b3befe979a9f047e05"}'></script>
+
+
+</body>
+</html>
